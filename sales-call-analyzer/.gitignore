@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Database files
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# Environment files with secrets (keep .env.example)
+# Note: frontend/.env is safe to commit (no secrets)
+
+# Build output
+build/
+dist/
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
