@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const fireflies = require('../services/fireflies');
-const { analyzeTranscript } = require('../services/analyzer');
+const { analyzeTranscript, isSalesCall } = require('../services/analyzer');
 const {
   saveCall,
   getCalls,
@@ -15,6 +15,7 @@ const {
 } = require('../services/database');
 const { generateDFYReport } = require('../utils/dfyDetector');
 const { aggregatePainPoints } = require('../utils/painPointExtractor');
+const { getProspectDealStatus, isSlackConfigured } = require('../services/slack');
 
 // Store analysis progress
 const analysisProgress = {
@@ -22,7 +23,8 @@ const analysisProgress = {
   current: 0,
   total: 0,
   currentCall: '',
-  errors: []
+  errors: [],
+  skipped: 0
 };
 
 /**
@@ -105,6 +107,7 @@ router.post('/analyze', async (req, res) => {
     analysisProgress.total = 0;
     analysisProgress.currentCall = '';
     analysisProgress.errors = [];
+    analysisProgress.skipped = 0;
 
     // Respond immediately
     res.json({
@@ -190,6 +193,13 @@ async function runAnalysis(startDate, endDate, reanalyze, transcriptIds) {
     analysisProgress.currentCall = t.title || t.id;
 
     try {
+      // Skip non-sales calls (catch-ups, weekly meetings, etc.)
+      if (!isSalesCall(t.title, t.participants)) {
+        console.log(`Skipping non-sales call: ${t.title}`);
+        analysisProgress.skipped++;
+        continue;
+      }
+
       // Fetch full transcript if we only have summary
       let fullTranscript = t;
       if (!t.sentences) {
@@ -253,15 +263,15 @@ router.get('/stats', async (req, res) => {
 
 /**
  * GET /api/pain-points
- * Get aggregated pain points
+ * Get aggregated pain points with ALL quotes for "See more" functionality
  */
 router.get('/pain-points', async (req, res) => {
   try {
-    const { startDate, endDate, salesRep } = req.query;
+    const { startDate, endDate, salesRep, limit } = req.query;
 
     const rawPainPoints = await getAggregatedPainPoints({ startDate, endDate, salesRep });
 
-    // Group by category
+    // Group by category - keep ALL quotes
     const grouped = {};
     for (const pp of rawPainPoints) {
       if (!grouped[pp.category]) {
@@ -274,17 +284,28 @@ router.get('/pain-points', async (req, res) => {
       grouped[pp.category].count++;
       grouped[pp.category].quotes.push({
         quote: pp.quote,
+        context: pp.context,
         prospect: pp.prospect_name,
         date: pp.date,
-        intensity: pp.intensity
+        intensity: pp.intensity,
+        timestamp: pp.timestamp,
+        callId: pp.call_id
       });
     }
 
+    // Sort by count and sort quotes by intensity/date
     const result = Object.values(grouped)
       .sort((a, b) => b.count - a.count)
       .map(g => ({
         ...g,
-        quotes: g.quotes.slice(0, 10)
+        // Sort quotes: high intensity first, then most recent
+        quotes: g.quotes.sort((a, b) => {
+          const intensityOrder = { 'High': 0, 'Medium': 1, 'Low': 2 };
+          const intensityDiff = (intensityOrder[a.intensity] || 1) - (intensityOrder[b.intensity] || 1);
+          if (intensityDiff !== 0) return intensityDiff;
+          return new Date(b.date) - new Date(a.date);
+        })
+        // Note: NOT limiting quotes - frontend will handle "See more"
       }));
 
     res.json({
@@ -501,5 +522,178 @@ function generateMarkdownReport(calls, stats, dfyReport, filters) {
 
   return md;
 }
+
+/**
+ * GET /api/slack/status
+ * Check if Slack integration is configured
+ */
+router.get('/slack/status', (req, res) => {
+  res.json({
+    success: true,
+    data: {
+      configured: isSlackConfigured(),
+      hasToken: !!process.env.SLACK_BOT_TOKEN
+    }
+  });
+});
+
+/**
+ * GET /api/slack/deal-status/:callId
+ * Get deal status for a specific call's prospect from Slack
+ */
+router.get('/slack/deal-status/:callId', async (req, res) => {
+  try {
+    if (!isSlackConfigured()) {
+      return res.json({
+        success: false,
+        error: 'Slack integration not configured'
+      });
+    }
+
+    const call = await getCallById(req.params.callId);
+    if (!call) {
+      return res.status(404).json({
+        success: false,
+        error: 'Call not found'
+      });
+    }
+
+    const analysis = call.analysis || {};
+    const prospectName = call.prospect_name;
+    const website = analysis.prospectProfile?.website;
+    const brand = analysis.prospectProfile?.company;
+
+    const dealStatus = await getProspectDealStatus(prospectName, website, brand);
+
+    res.json({
+      success: true,
+      data: {
+        callId: call.id,
+        prospectName,
+        ...dealStatus
+      }
+    });
+  } catch (error) {
+    console.error('Error getting deal status:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/slack/check-deal
+ * Check deal status for a prospect by name/website/brand
+ */
+router.post('/slack/check-deal', async (req, res) => {
+  try {
+    if (!isSlackConfigured()) {
+      return res.json({
+        success: false,
+        error: 'Slack integration not configured'
+      });
+    }
+
+    const { prospectName, website, brand } = req.body;
+
+    if (!prospectName && !website && !brand) {
+      return res.status(400).json({
+        success: false,
+        error: 'At least one of prospectName, website, or brand is required'
+      });
+    }
+
+    const dealStatus = await getProspectDealStatus(prospectName, website, brand);
+
+    res.json({
+      success: true,
+      data: dealStatus
+    });
+  } catch (error) {
+    console.error('Error checking deal:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/slack/bulk-check
+ * Check deal status for all analyzed calls
+ */
+router.get('/slack/bulk-check', async (req, res) => {
+  try {
+    if (!isSlackConfigured()) {
+      return res.json({
+        success: false,
+        error: 'Slack integration not configured'
+      });
+    }
+
+    const { startDate, endDate, limit } = req.query;
+
+    const calls = await getCalls({
+      startDate,
+      endDate,
+      limit: limit ? parseInt(limit) : 100
+    });
+
+    const results = [];
+
+    for (const call of calls) {
+      const analysis = call.analysis || {};
+      const prospectName = call.prospect_name;
+      const website = analysis.prospectProfile?.website;
+      const brand = analysis.prospectProfile?.company;
+
+      try {
+        const dealStatus = await getProspectDealStatus(prospectName, website, brand);
+        results.push({
+          callId: call.id,
+          prospectName,
+          date: call.date,
+          ...dealStatus.summary
+        });
+      } catch (err) {
+        results.push({
+          callId: call.id,
+          prospectName,
+          date: call.date,
+          error: err.message
+        });
+      }
+
+      // Rate limiting
+      await new Promise(resolve => setTimeout(resolve, 200));
+    }
+
+    // Summary stats
+    const summary = {
+      totalChecked: results.length,
+      dealsClosed: results.filter(r => r.dealClosed).length,
+      softwareDeals: results.filter(r => r.dealType === 'software').length,
+      dfyDeals: results.filter(r => r.dealType === 'dfy').length,
+      activeCustomers: results.filter(r => r.isActive).length,
+      churned: results.filter(r => r.isChurned).length,
+      notFound: results.filter(r => r.status === 'not_found').length
+    };
+
+    res.json({
+      success: true,
+      data: {
+        summary,
+        results
+      }
+    });
+  } catch (error) {
+    console.error('Error in bulk check:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
 
 module.exports = router;

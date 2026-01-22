@@ -2,6 +2,56 @@ const { detectDFY } = require('../utils/dfyDetector');
 const { extractPainPoints } = require('../utils/painPointExtractor');
 
 /**
+ * Non-sales call patterns to filter out
+ */
+const NON_SALES_CALL_PATTERNS = [
+  /catch\s*up/i,
+  /weekly\s*(call|meeting|sync)/i,
+  /team\s*(meeting|call|sync)/i,
+  /stand\s*-?\s*up/i,
+  /1\s*:\s*1/i,
+  /one\s*on\s*one/i,
+  /internal\s*(call|meeting)/i,
+  /sync\s*(call|meeting)/i,
+  /check\s*-?\s*in/i,
+  /planning\s*(call|meeting|session)/i,
+  /retrospective/i,
+  /sprint\s*(review|planning)/i,
+  /status\s*update/i,
+  /debrief/i,
+  /training\s*(session|call)/i,
+  /onboarding\s*(call|session)/i,
+  /^meeting$/i,
+  /all\s*hands/i
+];
+
+/**
+ * Check if a call is a sales call (not internal/catchup)
+ */
+function isSalesCall(title, participants) {
+  if (!title) return false;
+
+  // Check if title matches any non-sales patterns
+  for (const pattern of NON_SALES_CALL_PATTERNS) {
+    if (pattern.test(title)) {
+      return false;
+    }
+  }
+
+  // Must have "and" in title (prospect and sales rep pattern)
+  if (!title.toLowerCase().includes(' and ')) {
+    // Could still be a sales call if it has a prospect-like name
+    // but likely not if it's just a generic title
+    const genericTitles = ['meeting', 'call', 'discussion', 'chat'];
+    if (genericTitles.some(g => title.toLowerCase() === g)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/**
  * Parse call title to extract prospect and sales rep names
  */
 function parseCallTitle(title) {
@@ -407,8 +457,8 @@ function analyzeTranscript(transcript) {
   const sentences = transcript.sentences || [];
   const prospectSentences = extractProspectQuotes(sentences, prospect);
 
-  // Extract all components
-  const painPoints = extractPainPoints(prospectSentences);
+  // Extract all components - pass all sentences for context
+  const painPoints = extractPainPoints(sentences, prospectSentences);
   const dfyAnalysis = detectDFY(sentences, prospect);
   const excitementTriggers = extractExcitementTriggers(prospectSentences);
   const objections = extractObjections(prospectSentences);
@@ -467,5 +517,6 @@ module.exports = {
   parseCallTitle,
   isProspectSpeaker,
   analyzeTranscript,
-  formatTimestamp
+  formatTimestamp,
+  isSalesCall
 };

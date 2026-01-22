@@ -85,6 +85,8 @@ function AggregatedReports({ filters }) {
 }
 
 function PainPointsReport({ painPoints }) {
+  const [expandedCategory, setExpandedCategory] = useState(null);
+
   if (!painPoints || painPoints.length === 0) {
     return (
       <div className="text-center py-8">
@@ -103,40 +105,117 @@ function PainPointsReport({ painPoints }) {
       <div>
         <h3 className="text-lg font-medium text-gray-900 mb-4">Top Pain Points by Frequency</h3>
         <div className="space-y-4">
-          {painPoints.map((pp, i) => (
-            <div key={i} className="border border-gray-200 rounded-lg p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-medium text-gray-900">{pp.category}</span>
-                <span className="px-2 py-1 bg-primary-100 text-primary-700 rounded text-sm font-medium">
-                  {pp.count} mentions
-                </span>
-              </div>
+          {painPoints.map((pp, i) => {
+            const isExpanded = expandedCategory === pp.category;
+            const displayedQuotes = isExpanded ? pp.quotes : pp.quotes.slice(0, 3);
+            const hasMore = pp.quotes.length > 3;
 
-              {/* Bar */}
-              <div className="w-full bg-gray-100 rounded-full h-2 mb-3">
-                <div
-                  className="bg-primary-500 h-2 rounded-full transition-all"
-                  style={{ width: `${(pp.count / maxCount) * 100}%` }}
-                />
-              </div>
-
-              {/* Sample quotes */}
-              {pp.quotes && pp.quotes.length > 0 && (
-                <div className="space-y-2">
-                  <p className="text-xs font-medium text-gray-500 uppercase">Sample Quotes:</p>
-                  {pp.quotes.slice(0, 3).map((q, j) => (
-                    <div key={j} className="text-sm bg-gray-50 rounded p-2">
-                      <p className="text-gray-700 italic">"{q.quote}"</p>
-                      <p className="text-xs text-gray-500 mt-1">
-                        — {q.prospect} ({q.date ? new Date(q.date).toLocaleDateString() : '-'})
-                      </p>
-                    </div>
-                  ))}
+            return (
+              <div key={i} className="border border-gray-200 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-medium text-gray-900">{pp.category}</span>
+                  <span className="px-2 py-1 bg-primary-100 text-primary-700 rounded text-sm font-medium">
+                    {pp.count} mentions
+                  </span>
                 </div>
-              )}
-            </div>
-          ))}
+
+                {/* Progress Bar */}
+                <div className="w-full bg-gray-100 rounded-full h-2 mb-4">
+                  <div
+                    className="bg-primary-500 h-2 rounded-full transition-all"
+                    style={{ width: `${(pp.count / maxCount) * 100}%` }}
+                  />
+                </div>
+
+                {/* Quotes with full context */}
+                {pp.quotes && pp.quotes.length > 0 && (
+                  <div className="space-y-3">
+                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                      Sample Quotes ({pp.quotes.length} total):
+                    </p>
+                    {displayedQuotes.map((q, j) => (
+                      <QuoteCard key={j} quote={q} />
+                    ))}
+
+                    {/* See More / See Less Button */}
+                    {hasMore && (
+                      <button
+                        onClick={() => setExpandedCategory(isExpanded ? null : pp.category)}
+                        className="w-full py-2 px-4 text-sm font-medium text-primary-600 hover:text-primary-700 hover:bg-primary-50 rounded-lg border border-primary-200 transition-colors flex items-center justify-center gap-2"
+                      >
+                        {isExpanded ? (
+                          <>
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                            </svg>
+                            Show Less
+                          </>
+                        ) : (
+                          <>
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                            See All {pp.quotes.length} Mentions
+                          </>
+                        )}
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
+      </div>
+    </div>
+  );
+}
+
+function QuoteCard({ quote }) {
+  const intensityColors = {
+    High: 'border-l-red-500 bg-red-50',
+    Medium: 'border-l-amber-500 bg-amber-50',
+    Low: 'border-l-blue-500 bg-blue-50'
+  };
+
+  const intensityBadge = {
+    High: 'bg-red-100 text-red-700',
+    Medium: 'bg-amber-100 text-amber-700',
+    Low: 'bg-blue-100 text-blue-700'
+  };
+
+  return (
+    <div className={`border-l-4 rounded-r-lg p-3 ${intensityColors[quote.intensity] || 'border-l-gray-300 bg-gray-50'}`}>
+      {/* Context (what the sales rep asked) */}
+      {quote.context && (
+        <p className="text-xs text-gray-500 mb-2 italic">
+          {quote.context}
+        </p>
+      )}
+
+      {/* Main Quote */}
+      <p className="text-gray-800 leading-relaxed">
+        "{quote.quote}"
+      </p>
+
+      {/* Footer: prospect, date, intensity */}
+      <div className="flex items-center justify-between mt-3 pt-2 border-t border-gray-200">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium text-gray-700">
+            {quote.prospect || 'Unknown'}
+          </span>
+          <span className="text-xs text-gray-400">
+            {quote.date ? new Date(quote.date).toLocaleDateString() : ''}
+          </span>
+          {quote.timestamp && (
+            <span className="text-xs text-gray-400">
+              @ {quote.timestamp}
+            </span>
+          )}
+        </div>
+        <span className={`px-2 py-0.5 text-xs font-medium rounded ${intensityBadge[quote.intensity] || 'bg-gray-100 text-gray-600'}`}>
+          {quote.intensity || 'Medium'}
+        </span>
       </div>
     </div>
   );
