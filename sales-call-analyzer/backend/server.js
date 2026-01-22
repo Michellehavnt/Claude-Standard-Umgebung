@@ -14,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 // Initialize database
-initDatabase();
+initDatabase().catch(err => console.error('Database init error:', err));
 
 // Routes
 app.use('/api/transcripts', transcriptsRouter);

@@ -29,11 +29,11 @@ const analysisProgress = {
  * GET /api/calls
  * Get analyzed calls with filters
  */
-router.get('/calls', (req, res) => {
+router.get('/calls', async (req, res) => {
   try {
     const { startDate, endDate, salesRep, limit, offset } = req.query;
 
-    const calls = getCalls({
+    const calls = await getCalls({
       startDate,
       endDate,
       salesRep,
@@ -59,9 +59,9 @@ router.get('/calls', (req, res) => {
  * GET /api/calls/:id
  * Get single call full analysis
  */
-router.get('/calls/:id', (req, res) => {
+router.get('/calls/:id', async (req, res) => {
   try {
-    const call = getCallById(req.params.id);
+    const call = await getCallById(req.params.id);
 
     if (!call) {
       return res.status(404).json({
@@ -143,7 +143,7 @@ async function runAnalysis(startDate, endDate, reanalyze, transcriptIds) {
 
     for (const id of transcriptIds) {
       try {
-        const existing = getCallByFirefliesId(id);
+        const existing = await getCallByFirefliesId(id);
         if (existing && !reanalyze) continue;
 
         const transcript = await fireflies.getTranscript(id);
@@ -163,19 +163,19 @@ async function runAnalysis(startDate, endDate, reanalyze, transcriptIds) {
 
     // If reanalyze, delete existing analyses in range first
     if (reanalyze) {
-      deleteCallsInRange(startDate, endDate);
+      await deleteCallsInRange(startDate, endDate);
     }
 
     // Filter out already analyzed unless reanalyze
     for (const t of transcripts) {
-      const existing = getCallByFirefliesId(t.id);
+      const existing = await getCallByFirefliesId(t.id);
       if (!existing || reanalyze) {
         transcriptsToAnalyze.push(t);
       }
     }
   } else {
     // Get new transcripts (not yet analyzed)
-    const existingCalls = getCalls({ limit: 1000 });
+    const existingCalls = await getCalls({ limit: 1000 });
     const existingIds = existingCalls.map(c => c.fireflies_id);
     const newTranscripts = await fireflies.getNewTranscripts(existingIds);
     transcriptsToAnalyze = newTranscripts;
@@ -205,7 +205,7 @@ async function runAnalysis(startDate, endDate, reanalyze, transcriptIds) {
       const analysis = analyzeTranscript(fullTranscript);
 
       // Save to database
-      saveCall(analysis);
+      await saveCall(analysis);
 
       // Rate limiting
       await new Promise(resolve => setTimeout(resolve, 500));
@@ -232,11 +232,11 @@ router.get('/analyze/progress', (req, res) => {
  * GET /api/stats
  * Get aggregated statistics
  */
-router.get('/stats', (req, res) => {
+router.get('/stats', async (req, res) => {
   try {
     const { startDate, endDate, salesRep } = req.query;
 
-    const stats = getStats({ startDate, endDate, salesRep });
+    const stats = await getStats({ startDate, endDate, salesRep });
 
     res.json({
       success: true,
@@ -255,11 +255,11 @@ router.get('/stats', (req, res) => {
  * GET /api/pain-points
  * Get aggregated pain points
  */
-router.get('/pain-points', (req, res) => {
+router.get('/pain-points', async (req, res) => {
   try {
     const { startDate, endDate, salesRep } = req.query;
 
-    const rawPainPoints = getAggregatedPainPoints({ startDate, endDate, salesRep });
+    const rawPainPoints = await getAggregatedPainPoints({ startDate, endDate, salesRep });
 
     // Group by category
     const grouped = {};
@@ -304,11 +304,11 @@ router.get('/pain-points', (req, res) => {
  * GET /api/language
  * Get customer language database
  */
-router.get('/language', (req, res) => {
+router.get('/language', async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
 
-    const language = getLanguageDatabase({ startDate, endDate });
+    const language = await getLanguageDatabase({ startDate, endDate });
 
     // Group by type
     const grouped = {
@@ -346,11 +346,11 @@ router.get('/language', (req, res) => {
  * GET /api/dfy-report
  * Get DFY tracking report
  */
-router.get('/dfy-report', (req, res) => {
+router.get('/dfy-report', async (req, res) => {
   try {
     const { startDate, endDate, salesRep } = req.query;
 
-    const report = getDFYReport({ startDate, endDate, salesRep });
+    const report = await getDFYReport({ startDate, endDate, salesRep });
 
     res.json({
       success: true,
@@ -369,13 +369,13 @@ router.get('/dfy-report', (req, res) => {
  * POST /api/export
  * Export report as markdown
  */
-router.post('/export', (req, res) => {
+router.post('/export', async (req, res) => {
   try {
     const { startDate, endDate, salesRep, format } = req.body;
 
-    const calls = getCalls({ startDate, endDate, salesRep });
-    const stats = getStats({ startDate, endDate, salesRep });
-    const dfyReport = getDFYReport({ startDate, endDate, salesRep });
+    const calls = await getCalls({ startDate, endDate, salesRep });
+    const stats = await getStats({ startDate, endDate, salesRep });
+    const dfyReport = await getDFYReport({ startDate, endDate, salesRep });
 
     const markdown = generateMarkdownReport(calls, stats, dfyReport, { startDate, endDate, salesRep });
 

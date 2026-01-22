@@ -15,10 +15,14 @@ router.get('/', async (req, res) => {
     const transcripts = await fireflies.getTranscripts(limit, skip);
 
     // Mark which ones we've already analyzed
-    const enrichedTranscripts = transcripts.map(t => ({
-      ...t,
-      analyzed: !!getCallByFirefliesId(t.id)
-    }));
+    const enrichedTranscripts = [];
+    for (const t of transcripts) {
+      const existing = await getCallByFirefliesId(t.id);
+      enrichedTranscripts.push({
+        ...t,
+        analyzed: !!existing
+      });
+    }
 
     res.json({
       success: true,
@@ -50,7 +54,7 @@ router.get('/:id', async (req, res) => {
     }
 
     // Check if already analyzed
-    const existingAnalysis = getCallByFirefliesId(req.params.id);
+    const existingAnalysis = await getCallByFirefliesId(req.params.id);
 
     res.json({
       success: true,
@@ -80,10 +84,14 @@ router.get('/date-range/:startDate/:endDate', async (req, res) => {
     const transcripts = await fireflies.getTranscriptsInDateRange(startDate, endDate);
 
     // Mark which ones we've already analyzed
-    const enrichedTranscripts = transcripts.map(t => ({
-      ...t,
-      analyzed: !!getCallByFirefliesId(t.id)
-    }));
+    const enrichedTranscripts = [];
+    for (const t of transcripts) {
+      const existing = await getCallByFirefliesId(t.id);
+      enrichedTranscripts.push({
+        ...t,
+        analyzed: !!existing
+      });
+    }
 
     res.json({
       success: true,
