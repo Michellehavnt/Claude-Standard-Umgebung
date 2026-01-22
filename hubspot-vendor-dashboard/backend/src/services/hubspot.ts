@@ -22,6 +22,8 @@ export class HubSpotService {
       'utm_medium',
       'utm_campaign',
       'hs_analytics_first_url',
+      'role',
+      'language',
     ];
 
     const response = await this.client.crm.contacts.basicApi.getPage(
@@ -164,6 +166,8 @@ export class HubSpotService {
       'utm_source',
       'utm_medium',
       'utm_campaign',
+      'role',
+      'language',
     ];
 
     const response = await this.client.crm.contacts.searchApi.doSearch({

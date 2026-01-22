@@ -11,6 +11,13 @@ export interface Vendor {
   utmMedium: string | null;
   utmCampaign: string | null;
   status: 'active' | 'churned' | 'declining' | 'new';
+  role: string | null;
+  language: string | null;
+}
+
+export interface VendorFilter {
+  role?: string;
+  language?: string;
 }
 
 export interface VendorSummary {
@@ -53,6 +60,9 @@ export interface DashboardData {
   weeklyOnboarding: WeeklyOnboarding[];
   utmAttribution: UTMAttribution[];
   filter: DateFilter;
+  vendorFilter: VendorFilter;
+  availableRoles: string[];
+  availableLanguages: string[];
 }
 
 export interface HubSpotDeal {

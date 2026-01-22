@@ -1,4 +1,4 @@
-import { DashboardData, DateFilter, Vendor, WeeklyOnboarding, UTMAttribution } from '../types';
+import { DashboardData, DateFilter, Vendor, WeeklyOnboarding, UTMAttribution, VendorFilter } from '../types';
 
 const API_BASE = '/api';
 
@@ -18,7 +18,7 @@ async function fetchAPI<T>(endpoint: string, options?: RequestInit): Promise<T> 
   return response.json();
 }
 
-function buildQueryString(filter: DateFilter): string {
+function buildQueryString(filter: DateFilter, vendorFilter?: VendorFilter): string {
   const params = new URLSearchParams();
   params.set('filter', filter.type);
 
@@ -27,11 +27,19 @@ function buildQueryString(filter: DateFilter): string {
     params.set('endDate', filter.endDate);
   }
 
+  if (vendorFilter?.role) {
+    params.set('role', vendorFilter.role);
+  }
+
+  if (vendorFilter?.language) {
+    params.set('language', vendorFilter.language);
+  }
+
   return params.toString();
 }
 
-export async function fetchDashboardData(filter: DateFilter): Promise<DashboardData> {
-  const query = buildQueryString(filter);
+export async function fetchDashboardData(filter: DateFilter, vendorFilter?: VendorFilter): Promise<DashboardData> {
+  const query = buildQueryString(filter, vendorFilter);
   return fetchAPI<DashboardData>(`/vendors/dashboard?${query}`);
 }
 

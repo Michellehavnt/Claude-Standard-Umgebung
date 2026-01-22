@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { RefreshCw, AlertCircle } from 'lucide-react';
-import { DateFilter as DateFilterType } from '../types';
+import { DateFilter as DateFilterType, VendorFilter } from '../types';
 import { useDashboard } from '../hooks/useVendorData';
 import { DateFilter } from './DateFilter';
+import { VendorFilterPanel } from './VendorFilterPanel';
 import { KPICards } from './KPICards';
 import { VendorList } from './VendorList';
 import { AlertPanel } from './AlertPanel';
@@ -10,7 +11,9 @@ import { OnboardingTable } from './OnboardingTable';
 import { UTMChart } from './UTMChart';
 
 export function Dashboard() {
-  const [filter, setFilter] = useState<DateFilterType>({ type: 'this_month' });
+  const [dateFilter, setDateFilter] = useState<DateFilterType>({ type: 'this_month' });
+  const [vendorFilter, setVendorFilter] = useState<VendorFilter>({});
+
   const {
     isLoading,
     error,
@@ -21,7 +24,9 @@ export function Dashboard() {
     decliningVendors,
     weeklyOnboarding,
     utmAttribution,
-  } = useDashboard(filter);
+    availableRoles,
+    availableLanguages,
+  } = useDashboard(dateFilter, vendorFilter);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -49,9 +54,17 @@ export function Dashboard() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-4">
         {/* Date Filter */}
-        <DateFilter value={filter} onChange={setFilter} />
+        <DateFilter value={dateFilter} onChange={setDateFilter} />
+
+        {/* Vendor Filter (Role & Language) */}
+        <VendorFilterPanel
+          value={vendorFilter}
+          onChange={setVendorFilter}
+          availableRoles={availableRoles}
+          availableLanguages={availableLanguages}
+        />
 
         {/* Error State */}
         {error && (

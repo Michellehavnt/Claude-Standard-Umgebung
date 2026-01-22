@@ -5,6 +5,7 @@ import {
   UTMAttribution,
   HubSpotContact,
   HubSpotDeal,
+  VendorFilter,
 } from '../types/vendor';
 import { daysBetween, getWeekNumber, formatWeekLabel, getWeeksInRange } from './dateFilters';
 
@@ -94,6 +95,8 @@ export function buildVendorData(
       utmMedium: contact.properties.utm_medium || null,
       utmCampaign: contact.properties.utm_campaign || null,
       status,
+      role: contact.properties.role || null,
+      language: contact.properties.language || null,
     });
   });
 
@@ -322,4 +325,41 @@ export function sortVendorsByRevenue(vendors: Vendor[], ascending = false): Vend
       ? a.totalRevenue - b.totalRevenue
       : b.totalRevenue - a.totalRevenue;
   });
+}
+
+export function filterVendorsByRoleAndLanguage(
+  vendors: Vendor[],
+  filter: VendorFilter
+): Vendor[] {
+  return vendors.filter((vendor) => {
+    // Filter by role
+    if (filter.role && vendor.role !== filter.role) {
+      return false;
+    }
+    // Filter by language
+    if (filter.language && vendor.language !== filter.language) {
+      return false;
+    }
+    return true;
+  });
+}
+
+export function getAvailableRoles(vendors: Vendor[]): string[] {
+  const roles = new Set<string>();
+  vendors.forEach((vendor) => {
+    if (vendor.role) {
+      roles.add(vendor.role);
+    }
+  });
+  return Array.from(roles).sort();
+}
+
+export function getAvailableLanguages(vendors: Vendor[]): string[] {
+  const languages = new Set<string>();
+  vendors.forEach((vendor) => {
+    if (vendor.language) {
+      languages.add(vendor.language);
+    }
+  });
+  return Array.from(languages).sort();
 }

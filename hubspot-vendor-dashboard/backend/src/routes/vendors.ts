@@ -8,8 +8,11 @@ import {
   calculateUTMAttribution,
   sortVendorsByRevenue,
   filterVendorsByStatus,
+  filterVendorsByRoleAndLanguage,
+  getAvailableRoles,
+  getAvailableLanguages,
 } from '../utils/analytics';
-import { DateFilter, DashboardData } from '../types/vendor';
+import { DateFilter, DashboardData, VendorFilter } from '../types/vendor';
 
 const router = Router();
 
@@ -36,11 +39,18 @@ router.get('/dashboard', async (req: Request, res: Response) => {
     const filterType = (req.query.filter as string) || 'this_month';
     const startDateParam = req.query.startDate as string;
     const endDateParam = req.query.endDate as string;
+    const roleFilter = req.query.role as string;
+    const languageFilter = req.query.language as string;
 
     const filter: DateFilter = {
       type: filterType as DateFilter['type'],
       startDate: startDateParam,
       endDate: endDateParam,
+    };
+
+    const vendorFilter: VendorFilter = {
+      role: roleFilter || undefined,
+      language: languageFilter || undefined,
     };
 
     const { startDate, endDate } = getDateRange(filter);
@@ -56,14 +66,21 @@ router.get('/dashboard', async (req: Request, res: Response) => {
     ]);
 
     // Berechne Vendor-Daten
-    const vendors = buildVendorData(contacts, deals, previousDeals, startDate, endDate);
+    let vendors = buildVendorData(contacts, deals, previousDeals, startDate, endDate);
+
+    // Hole verfügbare Optionen BEVOR der Filter angewendet wird
+    const availableRoles = getAvailableRoles(vendors);
+    const availableLanguages = getAvailableLanguages(vendors);
+
+    // Wende Role/Language Filter an
+    vendors = filterVendorsByRoleAndLanguage(vendors, vendorFilter);
 
     // Berechne Statistiken
     const summary = calculateSummary(vendors, startDate, endDate);
     const weeklyOnboarding = calculateWeeklyOnboarding(vendors, startDate, endDate);
     const utmAttribution = calculateUTMAttribution(vendors);
 
-    // Filtere und sortiere Vendoren
+    // Filtere und sortiere Vendoren nach Status
     const activeVendors = sortVendorsByRevenue(filterVendorsByStatus(vendors, 'active'));
     const newVendors = sortVendorsByRevenue(filterVendorsByStatus(vendors, 'new'));
     const churnedVendors = filterVendorsByStatus(vendors, 'churned');
@@ -77,6 +94,9 @@ router.get('/dashboard', async (req: Request, res: Response) => {
       weeklyOnboarding,
       utmAttribution,
       filter,
+      vendorFilter,
+      availableRoles,
+      availableLanguages,
     };
 
     res.json(dashboardData);
