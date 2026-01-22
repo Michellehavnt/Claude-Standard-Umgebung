@@ -16,6 +16,7 @@ const {
 const { generateDFYReport } = require('../utils/dfyDetector');
 const { aggregatePainPoints } = require('../utils/painPointExtractor');
 const { getProspectDealStatus, isSlackConfigured } = require('../services/slack');
+const { getCustomerStatus, isStripeConfigured, getSubscriptionStats } = require('../services/stripe');
 
 // Store analysis progress
 const analysisProgress = {
@@ -689,6 +690,280 @@ router.get('/slack/bulk-check', async (req, res) => {
     });
   } catch (error) {
     console.error('Error in bulk check:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// ============================================
+// STRIPE INTEGRATION ENDPOINTS
+// ============================================
+
+/**
+ * GET /api/stripe/status
+ * Check if Stripe integration is configured
+ */
+router.get('/stripe/status', async (req, res) => {
+  try {
+    const configured = isStripeConfigured();
+    let stats = null;
+
+    if (configured) {
+      stats = await getSubscriptionStats();
+    }
+
+    res.json({
+      success: true,
+      data: {
+        configured,
+        stats
+      }
+    });
+  } catch (error) {
+    console.error('Error checking Stripe status:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/stripe/customer/:callId
+ * Get Stripe customer status for a specific call's prospect
+ */
+router.get('/stripe/customer/:callId', async (req, res) => {
+  try {
+    if (!isStripeConfigured()) {
+      return res.json({
+        success: false,
+        error: 'Stripe integration not configured'
+      });
+    }
+
+    const call = await getCallById(req.params.callId);
+    if (!call) {
+      return res.status(404).json({
+        success: false,
+        error: 'Call not found'
+      });
+    }
+
+    const analysis = call.analysis || {};
+    const prospectName = call.prospect_name;
+    const email = analysis.prospectProfile?.email;
+    const company = analysis.prospectProfile?.company;
+
+    const customerStatus = await getCustomerStatus(email, prospectName, company);
+
+    res.json({
+      success: true,
+      data: {
+        callId: call.id,
+        prospectName,
+        ...customerStatus
+      }
+    });
+  } catch (error) {
+    console.error('Error getting Stripe customer status:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/stripe/check-customer
+ * Check customer status by email, name, or company
+ */
+router.post('/stripe/check-customer', async (req, res) => {
+  try {
+    if (!isStripeConfigured()) {
+      return res.json({
+        success: false,
+        error: 'Stripe integration not configured'
+      });
+    }
+
+    const { email, name, company } = req.body;
+
+    if (!email && !name && !company) {
+      return res.status(400).json({
+        success: false,
+        error: 'At least one of email, name, or company is required'
+      });
+    }
+
+    const customerStatus = await getCustomerStatus(email, name, company);
+
+    res.json({
+      success: true,
+      data: customerStatus
+    });
+  } catch (error) {
+    console.error('Error checking Stripe customer:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/stripe/bulk-check
+ * Check Stripe customer status for all analyzed calls
+ */
+router.get('/stripe/bulk-check', async (req, res) => {
+  try {
+    if (!isStripeConfigured()) {
+      return res.json({
+        success: false,
+        error: 'Stripe integration not configured'
+      });
+    }
+
+    const { startDate, endDate, limit } = req.query;
+
+    const calls = await getCalls({
+      startDate,
+      endDate,
+      limit: limit ? parseInt(limit) : 100
+    });
+
+    const results = [];
+
+    for (const call of calls) {
+      const analysis = call.analysis || {};
+      const prospectName = call.prospect_name;
+      const email = analysis.prospectProfile?.email;
+      const company = analysis.prospectProfile?.company;
+
+      try {
+        const customerStatus = await getCustomerStatus(email, prospectName, company);
+        results.push({
+          callId: call.id,
+          prospectName,
+          date: call.date,
+          outcome: call.outcome,
+          stripeStatus: customerStatus.status,
+          isActive: customerStatus.isActive || false,
+          isChurned: customerStatus.isChurned || false,
+          matchedBy: customerStatus.matchedBy,
+          plan: customerStatus.plan,
+          mrr: customerStatus.mrr,
+          ltv: customerStatus.ltv,
+          lastPaymentDate: customerStatus.lastPaymentDate
+        });
+      } catch (err) {
+        results.push({
+          callId: call.id,
+          prospectName,
+          date: call.date,
+          outcome: call.outcome,
+          error: err.message
+        });
+      }
+
+      // Rate limiting for Stripe API
+      await new Promise(resolve => setTimeout(resolve, 200));
+    }
+
+    // Summary stats
+    const summary = {
+      totalChecked: results.length,
+      foundInStripe: results.filter(r => r.stripeStatus && r.stripeStatus !== 'not_found').length,
+      activeCustomers: results.filter(r => r.isActive).length,
+      churned: results.filter(r => r.isChurned).length,
+      pastDue: results.filter(r => r.stripeStatus === 'past_due').length,
+      notFound: results.filter(r => !r.stripeStatus || r.stripeStatus === 'not_found').length,
+      totalMRR: results.reduce((sum, r) => sum + (r.mrr || 0), 0),
+      totalLTV: results.reduce((sum, r) => sum + (r.ltv || 0), 0)
+    };
+
+    res.json({
+      success: true,
+      data: {
+        summary,
+        results
+      }
+    });
+  } catch (error) {
+    console.error('Error in Stripe bulk check:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/customer-status/:callId
+ * Combined endpoint: Get both Slack deal status and Stripe customer status
+ */
+router.get('/customer-status/:callId', async (req, res) => {
+  try {
+    const call = await getCallById(req.params.callId);
+    if (!call) {
+      return res.status(404).json({
+        success: false,
+        error: 'Call not found'
+      });
+    }
+
+    const analysis = call.analysis || {};
+    const prospectName = call.prospect_name;
+    const email = analysis.prospectProfile?.email;
+    const website = analysis.prospectProfile?.website;
+    const company = analysis.prospectProfile?.company;
+
+    const result = {
+      callId: call.id,
+      prospectName,
+      callDate: call.date,
+      callOutcome: call.outcome,
+      slackStatus: null,
+      stripeStatus: null
+    };
+
+    // Get Slack deal status if configured
+    if (isSlackConfigured()) {
+      try {
+        result.slackStatus = await getProspectDealStatus(prospectName, website, company);
+      } catch (err) {
+        result.slackStatus = { error: err.message };
+      }
+    }
+
+    // Get Stripe customer status if configured
+    if (isStripeConfigured()) {
+      try {
+        result.stripeStatus = await getCustomerStatus(email, prospectName, company);
+      } catch (err) {
+        result.stripeStatus = { error: err.message };
+      }
+    }
+
+    // Combined summary
+    result.summary = {
+      dealClosed: result.slackStatus?.summary?.dealClosed || false,
+      dealType: result.slackStatus?.summary?.dealType || 'unknown',
+      isActiveCustomer: result.stripeStatus?.isActive || false,
+      isChurned: result.stripeStatus?.isChurned || false,
+      isPastDue: result.stripeStatus?.isPastDue || false,
+      currentPlan: result.stripeStatus?.plan,
+      mrr: result.stripeStatus?.mrr || 0,
+      ltv: result.stripeStatus?.ltv || 0
+    };
+
+    res.json({
+      success: true,
+      data: result
+    });
+  } catch (error) {
+    console.error('Error getting combined customer status:', error);
     res.status(500).json({
       success: false,
       error: error.message
