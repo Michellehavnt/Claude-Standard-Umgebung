@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CopeCart Strategische Partnerschaft</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ========================================
+       CSS VARIABLES & BASE STYLES
+    ======================================== */
+    :root {
+      --bg-dark: #0A0E1A;
+      --bg-secondary: #1A1F2E;
+      --gradient-start: #7B93FF;
+      --gradient-end: #B8C4FF;
+      --accent-blue: #4A90D9;
+      --accent-cyan: #00D4FF;
+      --text-primary: #FFFFFF;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --text-muted: rgba(255, 255, 255, 0.5);
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --success-green: #22C55E;
+      --slide-padding: 60px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.6;
+      font-size: 16px;
+      overflow-x: hidden;
+    }
+
+    /* ========================================
+       SLIDE CONTAINER
+    ======================================== */
+    .slide {
+      min-height: 100vh;
+      width: 100%;
+      padding: var(--slide-padding);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-secondary) 100%);
+      overflow: hidden;
+    }
+
+    .slide::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .slide-content {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ========================================
+       TYPOGRAPHY
+    ======================================== */
+    .headline-xl {
+      font-size: 72px;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .headline-lg {
+      font-size: 56px;
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+
+    .headline-md {
+      font-size: 42px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .subheadline {
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .body-text {
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    .text-gradient {
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ========================================
+       BADGE / PILL
+    ======================================== */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-primary);
+      width: fit-content;
+      margin-bottom: 24px;
+    }
+
+    .badge-highlight {
+      background: linear-gradient(135deg, rgba(123, 147, 255, 0.2), rgba(184, 196, 255, 0.1));
+      border-color: rgba(123, 147, 255, 0.3);
+    }
+
+    /* ========================================
+       GLASSMORPHISM CARDS
+    ======================================== */
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 32px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-highlight {
+      background: linear-gradient(135deg, rgba(123, 147, 255, 0.15), rgba(184, 196, 255, 0.05));
+      border-color: rgba(123, 147, 255, 0.3);
+    }
+
+    .card-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .card-icon {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, rgba(123, 147, 255, 0.2), rgba(184, 196, 255, 0.1));
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .card-icon svg {
+      width: 28px;
+      height: 28px;
+      color: var(--gradient-start);
+    }
+
+    /* ========================================
+       FEATURE LIST WITH CHECKMARKS
+    ======================================== */
+    .feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 16px;
+      color: var(--text-secondary);
+    }
+
+    .checkmark {
+      width: 24px;
+      height: 24px;
+      min-width: 24px;
+      color: var(--success-green);
+      background: rgba(34, 197, 94, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+    }
+
+    .checkmark svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* ========================================
+       STAT BOXES
+    ======================================== */
+    .stat-box {
+      background: linear-gradient(135deg, rgba(123, 147, 255, 0.1), rgba(184, 196, 255, 0.05));
+      border: 1px solid rgba(123, 147, 255, 0.2);
+      border-radius: 20px;
+      padding: 32px;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .stat-box:hover {
+      transform: scale(1.02);
+    }
+
+    .stat-number {
+      font-size: 48px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* ========================================
+       DECORATIVE ELEMENTS
+    ======================================== */
+    .glow-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .glow-orb-blue {
+      background: radial-gradient(circle, rgba(74, 144, 217, 0.4) 0%, transparent 70%);
+    }
+
+    .glow-orb-cyan {
+      background: radial-gradient(circle, rgba(0, 212, 255, 0.3) 0%, transparent 70%);
+    }
+
+    .glow-orb-purple {
+      background: radial-gradient(circle, rgba(123, 147, 255, 0.3) 0%, transparent 70%);
+    }
+
+    .flow-lines {
+      position: absolute;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .flow-lines svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ========================================
+       LAYOUT UTILITIES
+    ======================================== */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .grid-6 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .flex-center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .flex-between {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .gap-16 { gap: 16px; }
+    .gap-24 { gap: 24px; }
+    .gap-32 { gap: 32px; }
+    .gap-48 { gap: 48px; }
+
+    .mt-auto { margin-top: auto; }
+    .mb-16 { margin-bottom: 16px; }
+    .mb-24 { margin-bottom: 24px; }
+    .mb-32 { margin-bottom: 32px; }
+    .mb-48 { margin-bottom: 48px; }
+
+    /* ========================================
+       LOGO PLACEHOLDER
+    ======================================== */
+    .logo-placeholder {
+      width: 300px;
+      height: 80px;
+      border: 2px dashed rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* ========================================
+       TIMELINE
+    ======================================== */
+    .timeline {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      position: relative;
+      padding: 0 40px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: 80px;
+      right: 80px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+      z-index: 0;
+    }
+
+    .timeline-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      flex: 1;
+    }
+
+    .timeline-number {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--bg-dark);
+      margin-bottom: 20px;
+    }
+
+    .timeline-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .timeline-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      max-width: 180px;
+    }
+
+    /* ========================================
+       AWARDS
+    ======================================== */
+    .awards-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .award-badge {
+      background: linear-gradient(135deg, rgba(123, 147, 255, 0.15), rgba(184, 196, 255, 0.05));
+      border: 1px solid rgba(123, 147, 255, 0.3);
+      border-radius: 16px;
+      padding: 24px 32px;
+      text-align: center;
+      transition: all 0.3s ease;
+      min-width: 120px;
+    }
+
+    .award-badge:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(123, 147, 255, 0.3);
+    }
+
+    .award-amount {
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .award-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .award-connector {
+      width: 40px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+    }
+
+    /* ========================================
+       PRICING HIGHLIGHT
+    ======================================== */
+    .pricing-highlight {
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      border-radius: 12px;
+      padding: 16px 24px;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .pricing-highlight .price {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--bg-dark);
+    }
+
+    .pricing-highlight .price-desc {
+      font-size: 12px;
+      color: rgba(10, 14, 26, 0.7);
+    }
+
+    /* ========================================
+       QUOTE BOX
+    ======================================== */
+    .quote-box {
+      background: linear-gradient(135deg, rgba(123, 147, 255, 0.2), rgba(184, 196, 255, 0.1));
+      border-left: 4px solid var(--gradient-start);
+      border-radius: 0 16px 16px 0;
+      padding: 32px 40px;
+      font-size: 24px;
+      font-weight: 600;
+      font-style: italic;
+      color: var(--text-primary);
+    }
+
+    /* ========================================
+       NAVIGATION (Optional)
+    ======================================== */
+    .slide-nav {
+      position: fixed;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 1000;
+    }
+
+    .slide-nav-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .slide-nav-dot:hover,
+    .slide-nav-dot.active {
+      background: var(--gradient-start);
+      transform: scale(1.2);
+    }
+
+    /* ========================================
+       PRINT STYLES
+    ======================================== */
+    @media print {
+      .slide {
+        min-height: auto;
+        page-break-after: always;
+        page-break-inside: avoid;
+        padding: 40px;
+      }
+
+      .slide-nav {
+        display: none;
+      }
+
+      .glow-orb,
+      .flow-lines {
+        display: none;
+      }
+
+      .card:hover,
+      .stat-box:hover,
+      .award-badge:hover {
+        transform: none;
+        box-shadow: none;
+      }
+
+      body {
+        background: white;
+        color: black;
+      }
+
+      .slide {
+        background: white !important;
+      }
+
+      .text-gradient,
+      .stat-number,
+      .award-amount {
+        -webkit-text-fill-color: var(--accent-blue);
+        color: var(--accent-blue);
+      }
+    }
+
+    /* ========================================
+       RESPONSIVE
+    ======================================== */
+    @media (max-width: 1200px) {
+      :root {
+        --slide-padding: 40px;
+      }
+
+      .headline-xl {
+        font-size: 56px;
+      }
+
+      .headline-lg {
+        font-size: 42px;
+      }
+
+      .grid-3 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      :root {
+        --slide-padding: 24px;
+      }
+
+      .headline-xl {
+        font-size: 40px;
+      }
+
+      .headline-lg {
+        font-size: 32px;
+      }
+
+      .headline-md {
+        font-size: 28px;
+      }
+
+      .subheadline {
+        font-size: 20px;
+      }
+
+      .grid-2,
+      .grid-3,
+      .grid-4,
+      .grid-6 {
+        grid-template-columns: 1fr;
+      }
+
+      .timeline {
+        flex-direction: column;
+        gap: 32px;
+        padding: 0;
+      }
+
+      .timeline::before {
+        display: none;
+      }
+
+      .awards-row {
+        flex-direction: column;
+      }
+
+      .award-connector {
+        width: 2px;
+        height: 20px;
+      }
+
+      .stat-number {
+        font-size: 36px;
+      }
+
+      .slide-nav {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Dots -->
+  <nav class="slide-nav" aria-label="Slide Navigation">
+    <button class="slide-nav-dot active" onclick="scrollToSlide(1)" aria-label="Slide 1"></button>
+    <button class="slide-nav-dot" onclick="scrollToSlide(2)" aria-label="Slide 2"></button>
+    <button class="slide-nav-dot" onclick="scrollToSlide(3)" aria-label="Slide 3"></button>
+    <button class="slide-nav-dot" onclick="scrollToSlide(4)" aria-label="Slide 4"></button>
+    <button class="slide-nav-dot" onclick="scrollToSlide(5)" aria-label="Slide 5"></button>
+    <button class="slide-nav-dot" onclick="scrollToSlide(6)" aria-label="Slide 6"></button>
+    <button class="slide-nav-dot" onclick="scrollToSlide(7)" aria-label="Slide 7"></button>
+    <button class="slide-nav-dot" onclick="scrollToSlide(8)" aria-label="Slide 8"></button>
+    <button class="slide-nav-dot" onclick="scrollToSlide(9)" aria-label="Slide 9"></button>
+    <button class="slide-nav-dot" onclick="scrollToSlide(10)" aria-label="Slide 10"></button>
+    <button class="slide-nav-dot" onclick="scrollToSlide(11)" aria-label="Slide 11"></button>
+    <button class="slide-nav-dot" onclick="scrollToSlide(12)" aria-label="Slide 12"></button>
+    <button class="slide-nav-dot" onclick="scrollToSlide(13)" aria-label="Slide 13"></button>
+  </nav>
+
+  <!-- ========================================
+       SLIDE 1: COVER
+  ======================================== -->
+  <section class="slide" id="slide-1">
+    <!-- Decorative Elements -->
+    <div class="glow-orb glow-orb-blue" style="width: 400px; height: 400px; top: -100px; right: -100px;"></div>
+    <div class="glow-orb glow-orb-cyan" style="width: 300px; height: 300px; bottom: 10%; right: 20%;"></div>
+    <div class="glow-orb glow-orb-purple" style="width: 250px; height: 250px; bottom: -50px; left: 30%;"></div>
+
+    <!-- Flow Lines -->
+    <div class="flow-lines" style="position: absolute; right: 0; top: 0; width: 60%; height: 100%;">
+      <svg viewBox="0 0 800 900" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <path d="M0 200 Q200 250 300 400 T600 500 T800 450" stroke="url(#gradient1)" stroke-width="2" fill="none" opacity="0.6"/>
+        <path d="M0 300 Q250 200 400 350 T700 400 T800 550" stroke="url(#gradient2)" stroke-width="1.5" fill="none" opacity="0.4"/>
+        <path d="M0 450 Q150 500 350 450 T650 550 T800 600" stroke="url(#gradient1)" stroke-width="1" fill="none" opacity="0.3"/>
+        <defs>
+          <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#00D4FF" stop-opacity="0"/>
+            <stop offset="50%" stop-color="#7B93FF"/>
+            <stop offset="100%" stop-color="#B8C4FF" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#4A90D9" stop-opacity="0"/>
+            <stop offset="50%" stop-color="#00D4FF"/>
+            <stop offset="100%" stop-color="#7B93FF" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <div class="slide-content">
+      <!-- LOGO PLACEHOLDER: 300x80px -->
+      <div class="logo-placeholder mb-48">
+        Logo hier einfügen (300x80px)
+      </div>
+
+      <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; max-width: 700px;">
+        <div class="badge badge-highlight mb-24">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+          Strategische Partnerschaft
+        </div>
+
+        <h1 class="headline-xl mb-24">
+          <span class="text-gradient">Strategische</span><br>
+          Partnerschaft
+        </h1>
+
+        <p class="subheadline mb-48">
+          Zahlungen. Steuern. Inkasso.<br>
+          Komplett automatisiert für Online-Unternehmer.
+        </p>
+
+        <div class="card" style="max-width: 500px;">
+          <p class="body-text">
+            Die All-in-One Lösung für digitale Verkäufe in der DACH-Region.
+            Werden Sie Teil unseres Partner-Netzwerks.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================
+       SLIDE 2: EXECUTIVE SUMMARY
+  ======================================== -->
+  <section class="slide" id="slide-2">
+    <div class="glow-orb glow-orb-purple" style="width: 350px; height: 350px; top: 20%; left: -100px;"></div>
+    <div class="glow-orb glow-orb-cyan" style="width: 280px; height: 280px; bottom: 20%; right: 10%;"></div>
+
+    <div class="slide-content">
+      <div class="badge mb-32">Executive Summary</div>
+
+      <div class="grid-2" style="flex: 1; align-items: center;">
+        <div>
+          <h2 class="headline-lg mb-24">
+            Die <span class="text-gradient">Opportunity</span>
+          </h2>
+          <p class="body-text mb-32">
+            CopeCart ist der führende Merchant of Record für digitale Produkte
+            im deutschsprachigen Raum. Wir übernehmen die komplette Abwicklung
+            von Zahlungen, Steuern und Inkasso.
+          </p>
+
+          <div class="grid-2 gap-16">
+            <div class="stat-box">
+              <div class="stat-number">530K+</div>
+              <div class="stat-label">Aktive Vendoren</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number">€2B+</div>
+              <div class="stat-label">Transaktionsvolumen</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-highlight">
+          <h3 class="card-title mb-16">Kernbotschaft</h3>
+          <p class="body-text mb-24">
+            Ihre Kunden kämpfen mit Zahlungsabwicklung, Steuer-Compliance
+            und Forderungsmanagement. CopeCart löst all diese Probleme
+            in einer Plattform.
+          </p>
+          <ul class="feature-list">
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Kein Zahlungsausfall-Risiko</span>
+            </li>
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Automatische Steuerabführung</span>
+            </li>
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Integriertes Inkasso</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================
+       SLIDE 3: MARKTPOSITION
+  ======================================== -->
+  <section class="slide" id="slide-3">
+    <div class="glow-orb glow-orb-blue" style="width: 300px; height: 300px; top: 10%; right: 20%;"></div>
+    <div class="glow-orb glow-orb-purple" style="width: 250px; height: 250px; bottom: 15%; left: 10%;"></div>
+
+    <div class="slide-content">
+      <div class="badge mb-32">Marktposition</div>
+
+      <h2 class="headline-lg mb-16">
+        Warum <span class="text-gradient">CopeCart</span>
+      </h2>
+      <p class="subheadline mb-48" style="max-width: 700px;">
+        Wir sind mehr als ein Payment-Provider. Wir sind Ihre Infrastruktur.
+      </p>
+
+      <div class="grid-3" style="flex: 1; align-content: center;">
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <polyline points="9 12 11 14 15 10"/>
+            </svg>
+          </div>
+          <h3 class="card-title">Merchant of Record Status</h3>
+          <p class="body-text">
+            Als Merchant of Record übernehmen wir die volle rechtliche
+            Verantwortung für jede Transaktion. Ihre Kunden verkaufen,
+            wir kümmern uns um den Rest.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2"/>
+              <path d="M8 21h8"/>
+              <path d="M12 17v4"/>
+              <path d="M7 8h10"/>
+              <path d="M7 12h6"/>
+            </svg>
+          </div>
+          <h3 class="card-title">Infrastruktur, nicht nur Payment</h3>
+          <p class="body-text">
+            Checkout, Rechnungsstellung, Mahnwesen, Steuer-Compliance,
+            Affiliate-System – alles aus einer Hand, nahtlos integriert.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v4"/>
+              <path d="M12 18v4"/>
+              <path d="M4.93 4.93l2.83 2.83"/>
+              <path d="M16.24 16.24l2.83 2.83"/>
+              <path d="M2 12h4"/>
+              <path d="M18 12h4"/>
+              <path d="M4.93 19.07l2.83-2.83"/>
+              <path d="M16.24 7.76l2.83-2.83"/>
+            </svg>
+          </div>
+          <h3 class="card-title">Nachweisbarer Track Record</h3>
+          <p class="body-text">
+            Über 530.000 Vendoren vertrauen CopeCart.
+            Top Company Auszeichnung 2022, 2023 und 2024.
+            Höchste Bewertungen auf allen Plattformen.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================
+       SLIDE 4: TRUST INDICATORS
+  ======================================== -->
+  <section class="slide" id="slide-4">
+    <div class="glow-orb glow-orb-cyan" style="width: 400px; height: 400px; top: -50px; left: 50%; transform: translateX(-50%);"></div>
+    <div class="glow-orb glow-orb-purple" style="width: 200px; height: 200px; bottom: 20%; right: 5%;"></div>
+
+    <div class="slide-content">
+      <div class="badge mb-32">Trust Indicators</div>
+
+      <h2 class="headline-lg mb-48" style="text-align: center;">
+        Fakten & <span class="text-gradient">Kennzahlen</span>
+      </h2>
+
+      <div class="grid-3 gap-24" style="flex: 1; align-content: center;">
+        <div class="stat-box">
+          <div class="stat-number">530.000+</div>
+          <div class="stat-label">Aktive Vendoren</div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-number">4.4★</div>
+          <div class="stat-label">Trustpilot Rating</div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-number">3x</div>
+          <div class="stat-label">Top Company 2022-2024</div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-number">4.6★</div>
+          <div class="stat-label">OMR Reviews</div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-number">9+</div>
+          <div class="stat-label">Zahlungsmethoden</div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-number">99%</div>
+          <div class="stat-label">Uptime Garantie</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================
+       SLIDE 5: ZIELGRUPPEN-SYNERGIEN
+  ======================================== -->
+  <section class="slide" id="slide-5">
+    <div class="glow-orb glow-orb-blue" style="width: 350px; height: 350px; bottom: 10%; left: -100px;"></div>
+    <div class="glow-orb glow-orb-purple" style="width: 280px; height: 280px; top: 20%; right: 5%;"></div>
+
+    <div class="slide-content">
+      <div class="badge mb-32">Zielgruppen-Synergien</div>
+
+      <div class="grid-2" style="flex: 1; align-items: center;">
+        <div>
+          <h2 class="headline-lg mb-24">
+            Perfekte <span class="text-gradient">Synergien</span>
+          </h2>
+          <p class="body-text mb-32">
+            Unsere Zielgruppen überschneiden sich optimal.
+            Online-Unternehmer, Coaches, Kursersteller,
+            und digitale Dienstleister benötigen genau
+            die Lösungen, die wir gemeinsam bieten können.
+          </p>
+
+          <div class="quote-box">
+            „Dieselbe Zielgruppe. Unterschiedliche Probleme. Null Konkurrenz."
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div class="card">
+            <h4 style="font-weight: 600; margin-bottom: 8px;">Online-Coaches & Trainer</h4>
+            <p class="body-text" style="font-size: 14px;">Kurse, Mentoring, Gruppenprogramme</p>
+          </div>
+          <div class="card">
+            <h4 style="font-weight: 600; margin-bottom: 8px;">Digitale Dienstleister</h4>
+            <p class="body-text" style="font-size: 14px;">Agenturen, Berater, Freelancer</p>
+          </div>
+          <div class="card">
+            <h4 style="font-weight: 600; margin-bottom: 8px;">Content Creator</h4>
+            <p class="body-text" style="font-size: 14px;">E-Books, Templates, Membership-Seiten</p>
+          </div>
+          <div class="card">
+            <h4 style="font-weight: 600; margin-bottom: 8px;">Software & SaaS</h4>
+            <p class="body-text" style="font-size: 14px;">Tools, Plugins, Abonnement-Dienste</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================
+       SLIDE 6: PARTNERSCHAFTSMODELL
+  ======================================== -->
+  <section class="slide" id="slide-6">
+    <div class="glow-orb glow-orb-cyan" style="width: 300px; height: 300px; top: 30%; right: -100px;"></div>
+    <div class="glow-orb glow-orb-purple" style="width: 250px; height: 250px; bottom: 10%; left: 20%;"></div>
+
+    <div class="slide-content">
+      <div class="badge mb-32">Partnerschaftsmodell</div>
+
+      <h2 class="headline-lg mb-16">
+        Was wir <span class="text-gradient">bieten</span>
+      </h2>
+      <p class="subheadline mb-48" style="max-width: 600px;">
+        Eine Partnerschaft auf Augenhöhe mit attraktiven Konditionen.
+      </p>
+
+      <div class="grid-3 gap-24" style="flex: 1; align-content: center;">
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 6v6l4 2"/>
+            </svg>
+          </div>
+          <h3 class="card-title">Individuelle Provisionsstruktur</h3>
+          <p class="body-text">
+            Maßgeschneiderte Vergütungsmodelle,
+            die zu Ihrem Business-Modell passen.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10"/>
+              <polyline points="12 6 12 12 16 14"/>
+              <path d="M22 2L12 12"/>
+            </svg>
+          </div>
+          <h3 class="card-title">Lifetime-Zuordnung</h3>
+          <p class="body-text">
+            Einmal geworbene Kunden bleiben
+            dauerhaft Ihrem Account zugeordnet.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+          </div>
+          <h3 class="card-title">Laufende Beteiligung</h3>
+          <p class="body-text">
+            Verdienen Sie kontinuierlich an allen
+            Transaktionen Ihrer vermittelten Kunden.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+          <h3 class="card-title">Dedizierter Partner Manager</h3>
+          <p class="body-text">
+            Persönlicher Ansprechpartner für
+            alle Ihre Fragen und Anliegen.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 3v18h18"/>
+              <path d="M18 17V9"/>
+              <path d="M13 17V5"/>
+              <path d="M8 17v-3"/>
+            </svg>
+          </div>
+          <h3 class="card-title">Transparentes Reporting</h3>
+          <p class="body-text">
+            Echtzeit-Dashboard mit allen relevanten
+            KPIs und Abrechnungsdetails.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <h3 class="card-title">Priorisierter Support</h3>
+          <p class="body-text">
+            Schnelle Hilfe für Sie und Ihre
+            Kunden über dedizierte Kanäle.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================
+       SLIDE 7: CO-MARKETING
+  ======================================== -->
+  <section class="slide" id="slide-7">
+    <div class="glow-orb glow-orb-blue" style="width: 320px; height: 320px; top: 15%; left: -80px;"></div>
+    <div class="glow-orb glow-orb-cyan" style="width: 280px; height: 280px; bottom: 10%; right: 10%;"></div>
+
+    <div class="slide-content">
+      <div class="badge mb-32">Co-Marketing</div>
+
+      <h2 class="headline-lg mb-16">
+        Co-Marketing <span class="text-gradient">Optionen</span>
+      </h2>
+      <p class="subheadline mb-48" style="max-width: 600px;">
+        Gemeinsam mehr erreichen durch strategische Marketing-Kooperationen.
+      </p>
+
+      <div class="grid-3 gap-24" style="flex: 1; align-content: center;">
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+          </div>
+          <h3 class="card-title">Content-Kollaborationen</h3>
+          <p class="body-text">
+            Gemeinsame Blogbeiträge, Gastbeiträge,
+            Whitepaper und Fallstudien.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="18" cy="5" r="3"/>
+              <circle cx="6" cy="12" r="3"/>
+              <circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+          </div>
+          <h3 class="card-title">Cross-Promotion</h3>
+          <p class="body-text">
+            Gegenseitige Erwähnung in Newslettern,
+            Social Media und Webinaren.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M3 9h18"/>
+              <path d="M9 21V9"/>
+            </svg>
+          </div>
+          <h3 class="card-title">Gemeinsame Landingpage</h3>
+          <p class="body-text">
+            Co-gebrandete Landingpages für
+            spezifische Kampagnen und Aktionen.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <h3 class="card-title">Event-Präsenz</h3>
+          <p class="body-text">
+            Gemeinsame Auftritte bei Konferenzen,
+            Messen und virtuellen Events.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+          </div>
+          <h3 class="card-title">Case Studies</h3>
+          <p class="body-text">
+            Erfolgsgeschichten gemeinsamer Kunden
+            als Marketing-Material.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================
+       SLIDE 8: OPERATIVES FRAMEWORK
+  ======================================== -->
+  <section class="slide" id="slide-8">
+    <div class="glow-orb glow-orb-purple" style="width: 350px; height: 350px; top: 20%; right: -100px;"></div>
+    <div class="glow-orb glow-orb-cyan" style="width: 250px; height: 250px; bottom: 15%; left: 5%;"></div>
+
+    <div class="slide-content">
+      <div class="badge mb-32">Operatives Framework</div>
+
+      <h2 class="headline-lg mb-16" style="text-align: center;">
+        So arbeiten wir <span class="text-gradient">zusammen</span>
+      </h2>
+      <p class="subheadline mb-48" style="text-align: center; max-width: 600px; margin: 0 auto 48px;">
+        Strukturierte Prozesse für eine erfolgreiche Partnerschaft.
+      </p>
+
+      <div class="grid-3 gap-32" style="flex: 1; align-content: center;">
+        <div class="card card-highlight" style="text-align: center;">
+          <div class="card-icon" style="margin: 0 auto 20px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="8.5" cy="7" r="4"/>
+              <line x1="20" y1="8" x2="20" y2="14"/>
+              <line x1="23" y1="11" x2="17" y2="11"/>
+            </svg>
+          </div>
+          <h3 class="card-title">Lead-Management</h3>
+          <p class="body-text mb-16">
+            Klare Prozesse für Lead-Übergabe, Tracking und Attribution.
+          </p>
+          <ul class="feature-list" style="text-align: left;">
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Dedizierte Tracking-Links</span>
+            </li>
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>CRM-Integration möglich</span>
+            </li>
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Transparente Attribution</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="card card-highlight" style="text-align: center;">
+          <div class="card-icon" style="margin: 0 auto 20px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </div>
+          <h3 class="card-title">Regelmäßige Abstimmung</h3>
+          <p class="body-text mb-16">
+            Strukturierte Kommunikation für kontinuierliche Optimierung.
+          </p>
+          <ul class="feature-list" style="text-align: left;">
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Monatliche Review-Calls</span>
+            </li>
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Quartalsweise Strategie-Sessions</span>
+            </li>
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Slack/Teams-Kanal</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="card card-highlight" style="text-align: center;">
+          <div class="card-icon" style="margin: 0 auto 20px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+              <line x1="12" y1="22.08" x2="12" y2="12"/>
+            </svg>
+          </div>
+          <h3 class="card-title">Marketing-Ressourcen</h3>
+          <p class="body-text mb-16">
+            Professionelle Materialien für Ihre Vermarktung.
+          </p>
+          <ul class="feature-list" style="text-align: left;">
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Branded Assets & Templates</span>
+            </li>
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Sales-Enablement-Material</span>
+            </li>
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Produkt-Schulungen</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================
+       SLIDE 9: PRODUKT-ÖKOSYSTEM
+  ======================================== -->
+  <section class="slide" id="slide-9">
+    <div class="glow-orb glow-orb-blue" style="width: 380px; height: 380px; top: -80px; left: 30%;"></div>
+    <div class="glow-orb glow-orb-purple" style="width: 250px; height: 250px; bottom: 10%; right: 15%;"></div>
+
+    <div class="slide-content">
+      <div class="badge mb-32">Produkt-Ökosystem</div>
+
+      <h2 class="headline-lg mb-16" style="text-align: center;">
+        Unsere <span class="text-gradient">Produkte</span>
+      </h2>
+      <p class="subheadline mb-48" style="text-align: center; max-width: 600px; margin: 0 auto 48px;">
+        Passende Lösungen für jede Unternehmensgröße.
+      </p>
+
+      <div class="grid-3 gap-32" style="flex: 1; align-content: center;">
+        <div class="card" style="display: flex; flex-direction: column;">
+          <h3 class="card-title" style="font-size: 28px; margin-bottom: 8px;">CopeCart</h3>
+          <p class="body-text mb-24" style="font-size: 14px;">Für Einsteiger & Fortgeschrittene</p>
+
+          <ul class="feature-list mb-24" style="flex: 1;">
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Merchant of Record Service</span>
+            </li>
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>9+ Zahlungsmethoden</span>
+            </li>
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Automatisches Mahnwesen</span>
+            </li>
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Affiliate-System inkl.</span>
+            </li>
+          </ul>
+
+          <div class="pricing-highlight">
+            <div class="price">4,9% + 1€</div>
+            <div class="price-desc">pro Transaktion</div>
+          </div>
+        </div>
+
+        <div class="card card-highlight" style="display: flex; flex-direction: column; transform: scale(1.05);">
+          <div class="badge badge-highlight" style="margin-bottom: 16px; align-self: flex-start;">Beliebt</div>
+          <h3 class="card-title" style="font-size: 28px; margin-bottom: 8px;">CopeCart Pro</h3>
+          <p class="body-text mb-24" style="font-size: 14px;">Für etablierte Unternehmer</p>
+
+          <ul class="feature-list mb-24" style="flex: 1;">
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Alle CopeCart Features</span>
+            </li>
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Niedrigere Transaktionsgebühr</span>
+            </li>
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Priority Support</span>
+            </li>
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Erweiterte Analytics</span>
+            </li>
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Dedizierter Account Manager</span>
+            </li>
+          </ul>
+
+          <div class="pricing-highlight">
+            <div class="price">3,9% + 1€</div>
+            <div class="price-desc">pro Transaktion</div>
+          </div>
+        </div>
+
+        <div class="card" style="display: flex; flex-direction: column;">
+          <h3 class="card-title" style="font-size: 28px; margin-bottom: 8px;">CopeTicket</h3>
+          <p class="body-text mb-24" style="font-size: 14px;">Für Event-Veranstalter</p>
+
+          <ul class="feature-list mb-24" style="flex: 1;">
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Ticket-Management</span>
+            </li>
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Check-in System</span>
+            </li>
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Teilnehmer-Verwaltung</span>
+            </li>
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Eigene Event-Seiten</span>
+            </li>
+          </ul>
+
+          <div class="pricing-highlight">
+            <div class="price">Individuell</div>
+            <div class="price-desc">auf Anfrage</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================
+       SLIDE 10: SCALING AWARDS
+  ======================================== -->
+  <section class="slide" id="slide-10">
+    <div class="glow-orb glow-orb-cyan" style="width: 500px; height: 500px; top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+
+    <div class="slide-content">
+      <div class="badge mb-32">Awards</div>
+
+      <h2 class="headline-lg mb-16" style="text-align: center;">
+        Scaling <span class="text-gradient">Awards</span> Program
+      </h2>
+      <p class="subheadline mb-48" style="text-align: center; max-width: 600px; margin: 0 auto 48px;">
+        Gemeinsam feiern wir Ihre Meilensteine.
+        Exklusive Auszeichnungen für jeden Erfolg.
+      </p>
+
+      <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+        <div class="awards-row mb-32">
+          <div class="award-badge">
+            <div class="award-amount">10K</div>
+            <div class="award-label">Starter</div>
+          </div>
+          <div class="award-connector"></div>
+          <div class="award-badge">
+            <div class="award-amount">50K</div>
+            <div class="award-label">Bronze</div>
+          </div>
+          <div class="award-connector"></div>
+          <div class="award-badge">
+            <div class="award-amount">100K</div>
+            <div class="award-label">Silber</div>
+          </div>
+          <div class="award-connector"></div>
+          <div class="award-badge">
+            <div class="award-amount">250K</div>
+            <div class="award-label">Gold</div>
+          </div>
+        </div>
+
+        <div class="awards-row">
+          <div class="award-badge" style="background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(123, 147, 255, 0.1)); border-color: rgba(0, 212, 255, 0.4);">
+            <div class="award-amount">500K</div>
+            <div class="award-label">Platin</div>
+          </div>
+          <div class="award-connector"></div>
+          <div class="award-badge" style="background: linear-gradient(135deg, rgba(0, 212, 255, 0.25), rgba(123, 147, 255, 0.15)); border-color: rgba(0, 212, 255, 0.5);">
+            <div class="award-amount">1M</div>
+            <div class="award-label">Diamond</div>
+          </div>
+          <div class="award-connector"></div>
+          <div class="award-badge" style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 140, 0, 0.1)); border-color: rgba(255, 215, 0, 0.5);">
+            <div class="award-amount">100M</div>
+            <div class="award-label">Legend</div>
+          </div>
+        </div>
+      </div>
+
+      <p class="body-text" style="text-align: center; margin-top: 48px;">
+        Jeder Meilenstein wird mit exklusiven Awards, Prämien und Anerkennungen gefeiert.
+      </p>
+    </div>
+  </section>
+
+  <!-- ========================================
+       SLIDE 11: NÄCHSTE SCHRITTE
+  ======================================== -->
+  <section class="slide" id="slide-11">
+    <div class="glow-orb glow-orb-purple" style="width: 300px; height: 300px; top: 10%; left: -80px;"></div>
+    <div class="glow-orb glow-orb-blue" style="width: 280px; height: 280px; bottom: 20%; right: -50px;"></div>
+
+    <div class="slide-content">
+      <div class="badge mb-32">Prozess</div>
+
+      <h2 class="headline-lg mb-16" style="text-align: center;">
+        Nächste <span class="text-gradient">Schritte</span>
+      </h2>
+      <p class="subheadline mb-48" style="text-align: center; max-width: 600px; margin: 0 auto 48px;">
+        Von der ersten Kontaktaufnahme zur erfolgreichen Partnerschaft.
+      </p>
+
+      <div class="timeline" style="flex: 1; align-items: flex-start; padding-top: 40px;">
+        <div class="timeline-step">
+          <div class="timeline-number">1</div>
+          <h4 class="timeline-title">Strategy Call</h4>
+          <p class="timeline-desc">
+            Kennenlernen, Ziele definieren und Potenziale identifizieren.
+          </p>
+        </div>
+
+        <div class="timeline-step">
+          <div class="timeline-number">2</div>
+          <h4 class="timeline-title">Partnership Proposal</h4>
+          <p class="timeline-desc">
+            Individuelles Angebot mit Konditionen und Leistungen.
+          </p>
+        </div>
+
+        <div class="timeline-step">
+          <div class="timeline-number">3</div>
+          <h4 class="timeline-title">Alignment & Kickoff</h4>
+          <p class="timeline-desc">
+            Vertragsabschluss, Onboarding und Setup der Infrastruktur.
+          </p>
+        </div>
+
+        <div class="timeline-step">
+          <div class="timeline-number">4</div>
+          <h4 class="timeline-title">Ongoing Partnership</h4>
+          <p class="timeline-desc">
+            Kontinuierliche Optimierung und gemeinsames Wachstum.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================
+       SLIDE 12: WARUM JETZT
+  ======================================== -->
+  <section class="slide" id="slide-12">
+    <div class="glow-orb glow-orb-cyan" style="width: 400px; height: 400px; top: 20%; right: -100px;"></div>
+    <div class="glow-orb glow-orb-purple" style="width: 300px; height: 300px; bottom: 10%; left: 10%;"></div>
+
+    <div class="slide-content">
+      <div class="badge mb-32">Timing</div>
+
+      <div class="grid-2" style="flex: 1; align-items: center;">
+        <div>
+          <h2 class="headline-lg mb-24">
+            Warum <span class="text-gradient">jetzt?</span>
+          </h2>
+          <p class="body-text mb-32">
+            Der perfekte Zeitpunkt für eine Partnerschaft.
+            Profitieren Sie von exklusiven Vorteilen als früher Partner.
+          </p>
+
+          <ul class="feature-list">
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Bevorzugte Konditionen für Early Partner</span>
+            </li>
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Direkter Zugang zu Product Roadmap</span>
+            </li>
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Co-Development von Partner-Features</span>
+            </li>
+            <li class="feature-item">
+              <span class="checkmark">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </span>
+              <span>Exklusive Co-Marketing-Möglichkeiten</span>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="card card-highlight" style="margin-bottom: 24px;">
+            <div class="badge badge-highlight" style="margin-bottom: 16px;">Coming Soon</div>
+            <h3 class="card-title" style="font-size: 32px;">Cope</h3>
+            <p class="body-text">
+              Unser neuestes Produkt steht vor dem Launch.
+              Als Partner erhalten Sie exklusiven Early Access
+              und können als Erste von den neuen Features profitieren.
+            </p>
+          </div>
+
+          <div class="card">
+            <p class="body-text" style="font-style: italic;">
+              „Frühe Partner gestalten die Zukunft mit.
+              Jetzt ist der ideale Zeitpunkt, Teil unserer
+              Wachstumsgeschichte zu werden."
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================
+       SLIDE 13: KONTAKT
+  ======================================== -->
+  <section class="slide" id="slide-13">
+    <div class="glow-orb glow-orb-blue" style="width: 500px; height: 500px; top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+
+    <div class="slide-content" style="justify-content: center; align-items: center; text-align: center;">
+      <!-- LOGO PLACEHOLDER: 300x80px -->
+      <div class="logo-placeholder mb-48">
+        Logo hier einfügen (300x80px)
+      </div>
+
+      <h2 class="headline-lg mb-24">
+        Lassen Sie uns <span class="text-gradient">sprechen</span>
+      </h2>
+
+      <p class="subheadline mb-48" style="max-width: 500px;">
+        Bereit für den nächsten Schritt?
+        Wir freuen uns auf das Gespräch mit Ihnen.
+      </p>
+
+      <div class="card" style="max-width: 500px; text-align: left; margin-bottom: 32px;">
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <div class="card-icon" style="margin: 0; width: 48px; height: 48px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 24px; height: 24px;">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </div>
+            <div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 2px;">E-Mail</div>
+              <div style="font-weight: 600;">partnerships@copecart.com</div>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <div class="card-icon" style="margin: 0; width: 48px; height: 48px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 24px; height: 24px;">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            </div>
+            <div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 2px;">Adresse</div>
+              <div style="font-weight: 600;">CopeCart GmbH<br>Berlin, Deutschland</div>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <div class="card-icon" style="margin: 0; width: 48px; height: 48px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 24px; height: 24px;">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="2" y1="12" x2="22" y2="12"/>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+              </svg>
+            </div>
+            <div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 2px;">Website</div>
+              <div style="font-weight: 600;">www.copecart.com</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="body-text" style="color: var(--text-muted);">
+        © 2026 CopeCart GmbH. Alle Rechte vorbehalten.
+      </p>
+    </div>
+  </section>
+
+  <!-- JavaScript for Navigation -->
+  <script>
+    function scrollToSlide(slideNumber) {
+      const slide = document.getElementById(`slide-${slideNumber}`);
+      if (slide) {
+        slide.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // Update active nav dot on scroll
+    const slides = document.querySelectorAll('.slide');
+    const navDots = document.querySelectorAll('.slide-nav-dot');
+
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.5
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const slideId = entry.target.id;
+          const slideNumber = parseInt(slideId.split('-')[1]);
+
+          navDots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === slideNumber - 1);
+          });
+        }
+      });
+    }, observerOptions);
+
+    slides.forEach(slide => observer.observe(slide));
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      const currentSlide = Array.from(slides).findIndex(slide => {
+        const rect = slide.getBoundingClientRect();
+        return rect.top >= -100 && rect.top <= 100;
+      });
+
+      if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+        e.preventDefault();
+        if (currentSlide < slides.length - 1) {
+          scrollToSlide(currentSlide + 2);
+        }
+      } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        if (currentSlide > 0) {
+          scrollToSlide(currentSlide);
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
