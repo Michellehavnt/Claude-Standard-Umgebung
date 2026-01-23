@@ -1,0 +1,2351 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CopeCart - Strategische Partnerschaft</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Background - Premium Dark Navy like reference */
+      --bg-primary: #0c1929;
+      --bg-secondary: #0f2035;
+      --bg-tertiary: #132844;
+      --bg-gradient: linear-gradient(165deg, #0f2035 0%, #0c1929 30%, #0a1420 60%, #0c1929 100%);
+
+      /* Primary Colors - All blue tones, no cyan */
+      --color-primary: #265CF6;
+      --color-primary-dark: #0A2E56;
+      --color-primary-light: #3b82f6;
+      --color-accent: #265CF6;
+      --color-accent-light: #60a5fa;
+
+      /* Flowing Lines Colors - All blue tones */
+      --line-blue: #265CF6;
+      --line-cyan: #3b82f6;
+      --line-gray: rgba(148, 163, 184, 0.3);
+
+      /* Surface Colors */
+      --color-surface: rgba(255, 255, 255, 0.03);
+      --color-surface-hover: rgba(255, 255, 255, 0.06);
+
+      /* Text Colors */
+      --color-white: #FFFFFF;
+      --color-white-muted: rgba(255, 255, 255, 0.7);
+      --color-white-subtle: rgba(255, 255, 255, 0.4);
+
+      /* Glassmorphism - More subtle like CopeCart */
+      --glass-bg: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+      --glass-bg-strong: linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-border-strong: rgba(255, 255, 255, 0.12);
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+      /* Shadows & Glows */
+      --shadow-card: 0 4px 30px rgba(0, 0, 0, 0.25);
+      --shadow-glow: 0 0 60px rgba(59, 130, 246, 0.15);
+      --shadow-button: 0 4px 20px rgba(59, 130, 246, 0.4);
+
+      /* Border Radius */
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-full: 50px;
+
+      /* Partner Logo Configuration */
+      --partner-logo-height: 50px;
+      --partner-logo-height-mobile: 38px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Host Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+      color: var(--color-white);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* ========================================
+       BACKGROUND DECORATIONS - Premium CopeCart Style
+       ======================================== */
+    .bg-decoration {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    /* Premium subtle noise texture overlay */
+    .bg-decoration::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      opacity: 0.02;
+      mix-blend-mode: overlay;
+    }
+
+    /* Subtle ambient glow - right side like reference */
+    .ambient-glow {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .ambient-glow-1 {
+      top: 10%;
+      right: 10%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(38, 92, 246, 0.06) 0%, transparent 60%);
+      filter: blur(100px);
+      animation: none;
+    }
+
+    .ambient-glow-2 {
+      bottom: 15%;
+      left: 5%;
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(38, 92, 246, 0.05) 0%, transparent 60%);
+      filter: blur(120px);
+      animation: none;
+    }
+
+    /* Third ambient glow for depth - removed */
+    .ambient-glow-3 {
+      display: none;
+    }
+
+    @keyframes ambientFloat1 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(-30px, 20px) scale(1.05); }
+    }
+
+    @keyframes ambientFloat2 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(40px, -30px) scale(1.08); }
+    }
+
+    @keyframes ambientFloat3 {
+      0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+      50% { transform: translate(-20px, 40px) scale(1.1); opacity: 1; }
+    }
+
+    /* Subtle Orb - background accent */
+    .orb {
+      position: absolute;
+      top: 20%;
+      right: 8%;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle at 30% 30%,
+        rgba(38, 92, 246, 0.4) 0%,
+        rgba(38, 92, 246, 0.2) 30%,
+        rgba(38, 92, 246, 0.05) 50%,
+        transparent 70%);
+      border-radius: 50%;
+      filter: blur(40px);
+      animation: none;
+    }
+
+    .orb::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px;
+      height: 40px;
+      background: radial-gradient(circle, rgba(38, 92, 246, 0.3) 0%, transparent 70%);
+      border-radius: 50%;
+      filter: blur(20px);
+    }
+
+    .orb::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      filter: blur(4px);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.4), 0 0 20px rgba(38, 92, 246, 0.3);
+    }
+
+    @keyframes orbPulse {
+      0%, 100% { opacity: 0.85; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.08); }
+    }
+
+    /* Dotted vertical line - like reference */
+    .dotted-line {
+      position: absolute;
+      top: 0;
+      right: 60px;
+      width: 1px;
+      height: 100%;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent 6px,
+        rgba(255, 255, 255, 0.12) 6px,
+        rgba(255, 255, 255, 0.12) 10px
+      );
+    }
+
+    /* Flowing Lines SVG - subtle, background-supporting */
+    .flowing-lines {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      opacity: 0.15;
+    }
+
+    /* Data points - REMOVED */
+    .data-point {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .dotted-line {
+        display: none;
+      }
+      .data-point {
+        display: none;
+      }
+      .orb {
+        width: 100px;
+        height: 100px;
+        right: 5%;
+        top: 15%;
+      }
+    }
+
+    /* ========================================
+       CONTAINER
+       ======================================== */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ========================================
+       NAVIGATION - CopeCart Style
+       ======================================== */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 16px 0;
+      background: rgba(12, 25, 41, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    nav .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .nav-logo-img {
+      height: 28px;
+      width: auto;
+    }
+
+    /* Pill Badge - like "#1 SOFTWARE FOR SELLING ONLINE" */
+    .nav-badge {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-pill {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-full);
+      padding: 10px 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--color-white);
+    }
+
+    .nav-pill span {
+      color: var(--color-primary-light);
+    }
+
+    .nav-cta {
+      background: var(--color-white);
+      color: var(--bg-primary);
+      padding: 12px 24px;
+      border-radius: var(--radius-full);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .nav-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+    }
+
+    /* ========================================
+       SECTIONS
+       ======================================== */
+    section {
+      padding: 100px 0;
+      position: relative;
+    }
+
+    /* ========================================
+       HERO SECTION - CopeCart Style
+       ======================================== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding-top: 100px;
+      padding-bottom: 60px;
+      position: relative;
+    }
+
+    .hero-content {
+      max-width: 800px;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Headline Style - Clean, uppercase, not italic */
+    .hero-headline {
+      font-size: 42px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: white;
+      line-height: 1.2;
+      margin-bottom: 50px;
+    }
+
+    .hero-headline .italic {
+      font-style: normal;
+      color: white;
+    }
+
+    .hero-headline .normal {
+      font-style: normal;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* ========================================
+       PARTNER LOCKUP - Premium CopeCart Style with Glow
+       ======================================== */
+    .partner-lockup {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      margin-bottom: 50px;
+      padding: 36px 48px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+      box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.25),
+        0 0 80px rgba(59, 130, 246, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    /* Subtle gradient border effect - blue tones only */
+    .partner-lockup::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: calc(var(--radius-xl) + 1px);
+      background: linear-gradient(135deg, rgba(38, 92, 246, 0.15) 0%, transparent 50%, rgba(59, 130, 246, 0.1) 100%);
+      z-index: -1;
+      opacity: 0.5;
+    }
+
+    /* Premium Logo Card with Glow Effects */
+    .logo-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 20px 28px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .logo-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius-lg);
+      background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .logo-card:hover {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.04) 100%);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+      box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.3),
+        0 0 40px rgba(59, 130, 246, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
+
+    .logo-card:hover::before {
+      opacity: 1;
+    }
+
+    /* Partner Icon (Christiani) with Glow */
+    .partner-icon {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+      box-shadow:
+        0 4px 15px rgba(231, 76, 60, 0.4),
+        0 0 30px rgba(231, 76, 60, 0.2);
+    }
+
+    .partner-icon::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(231, 76, 60, 0.3) 0%, transparent 60%);
+      z-index: -1;
+      filter: blur(8px);
+    }
+
+    .partner-icon span {
+      color: white;
+      font-weight: 700;
+      font-size: 22px;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .partner-text {
+      text-align: left;
+    }
+
+    .partner-name {
+      font-weight: 600;
+      font-size: 18px;
+      color: white;
+      letter-spacing: 0.5px;
+    }
+
+    .partner-subtitle {
+      font-size: 12px;
+      letter-spacing: 0.3px;
+      margin-top: 2px;
+    }
+
+    .partner-subtitle .highlight {
+      font-weight: 700;
+      color: #e74c3c;
+      text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+    }
+
+    .partner-subtitle .normal {
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Christiani Logo Card with Orange Glow */
+    .christiani-card {
+      padding: 20px 28px;
+    }
+
+    .christiani-card::before {
+      background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.2) 40%, transparent 70%);
+    }
+
+    .christiani-logo-img {
+      height: 44px;
+      width: auto;
+      filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.9))
+              drop-shadow(0 0 40px rgba(255, 255, 255, 0.7))
+              drop-shadow(0 0 60px rgba(255, 255, 255, 0.5))
+              drop-shadow(0 0 80px rgba(255, 255, 255, 0.3))
+              brightness(1.25);
+      transition: filter 0.3s ease;
+    }
+
+    .christiani-card:hover .christiani-logo-img {
+      filter: drop-shadow(0 0 25px rgba(255, 255, 255, 1))
+              drop-shadow(0 0 50px rgba(255, 255, 255, 0.8))
+              drop-shadow(0 0 75px rgba(255, 255, 255, 0.5))
+              drop-shadow(0 0 100px rgba(255, 255, 255, 0.3))
+              brightness(1.3);
+    }
+
+    .christiani-logo-img.compact {
+      height: 32px;
+    }
+
+    /* CopeCart Logo Card with Blue Glow */
+    .copecart-card {
+      padding: 20px 28px;
+    }
+
+    .copecart-card::before {
+      background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.4) 0%, rgba(59, 130, 246, 0.2) 40%, transparent 70%);
+    }
+
+    .copecart-logo-img {
+      height: 34px;
+      width: auto;
+      filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.6))
+              drop-shadow(0 0 40px rgba(59, 130, 246, 0.4))
+              drop-shadow(0 0 60px rgba(59, 130, 246, 0.25))
+              brightness(1.1);
+      transition: filter 0.3s ease;
+    }
+
+    .copecart-card:hover .copecart-logo-img {
+      filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.8))
+              drop-shadow(0 0 60px rgba(59, 130, 246, 0.5))
+              drop-shadow(0 0 90px rgba(59, 130, 246, 0.3))
+              brightness(1.15);
+    }
+
+    .copecart-logo-img.compact {
+      height: 26px;
+    }
+
+    /* Connector with subtle glow */
+    .partner-connector {
+      color: rgba(255, 255, 255, 0.3);
+      font-size: 36px;
+      font-weight: 200;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    }
+
+    /* Hero Text */
+    .hero .subtitle {
+      color: var(--color-primary-light);
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
+
+    .hero .description {
+      color: var(--color-white-muted);
+      font-size: 16px;
+      max-width: 560px;
+      line-height: 1.7;
+      font-weight: 400;
+    }
+
+    /* Scroll Indicator */
+    .scroll-indicator {
+      margin-top: 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--color-white-subtle);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .scroll-indicator svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .scroll-indicator span {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; transform: translateY(0); }
+      50% { opacity: 0.6; transform: translateY(4px); }
+    }
+
+    /* Partner Lockup Compact */
+    .partner-lockup.compact {
+      gap: 30px;
+      padding: 24px 36px;
+      margin-bottom: 0;
+      justify-content: center;
+    }
+
+    .partner-lockup.compact .logo-card {
+      padding: 14px 20px;
+    }
+
+    .partner-lockup.compact .partner-icon {
+      width: 40px;
+      height: 40px;
+    }
+
+    .partner-lockup.compact .partner-icon span {
+      font-size: 18px;
+    }
+
+    .partner-lockup.compact .partner-name {
+      font-size: 15px;
+    }
+
+    .partner-lockup.compact .partner-subtitle {
+      font-size: 10px;
+    }
+
+    .partner-lockup.compact .partner-connector {
+      font-size: 24px;
+    }
+
+    /* Responsive Hero */
+    @media (max-width: 768px) {
+      .hero {
+        text-align: center;
+        justify-content: center;
+      }
+
+      .hero-headline {
+        font-size: 36px;
+        margin-bottom: 36px;
+      }
+
+      .partner-lockup {
+        flex-direction: column;
+        gap: 20px;
+        padding: 24px 20px;
+        justify-content: center;
+      }
+
+      .logo-card {
+        padding: 16px 22px;
+        gap: 12px;
+      }
+
+      .partner-icon,
+      .copecart-icon {
+        width: 42px;
+        height: 42px;
+      }
+
+      .partner-name {
+        font-size: 15px;
+      }
+
+      .copecart-name {
+        font-size: 20px;
+      }
+
+      .partner-connector {
+        font-size: 24px;
+        transform: rotate(90deg);
+      }
+
+      .hero .subtitle {
+        font-size: 16px;
+      }
+
+      .hero .description {
+        font-size: 14px;
+      }
+
+      .scroll-indicator {
+        align-items: center;
+      }
+    }
+
+    /* ========================================
+       SECTION HEADERS - Clean CopeCart Style
+       ======================================== */
+    .section-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .section-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--color-primary-light);
+      background: rgba(59, 130, 246, 0.1);
+      padding: 8px 18px;
+      border-radius: var(--radius-full);
+      margin-bottom: 20px;
+      border: 1px solid rgba(59, 130, 246, 0.15);
+    }
+
+    .section-title {
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 14px;
+      line-height: 1.25;
+    }
+
+    .section-subtitle {
+      font-size: clamp(15px, 2vw, 17px);
+      color: var(--color-primary-light);
+      font-weight: 500;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .section-description {
+      font-size: 15px;
+      color: var(--color-white-muted);
+      max-width: 780px;
+      margin: 20px auto 0;
+      line-height: 1.8;
+    }
+
+    /* ========================================
+       BIG PICTURE SECTION - Split Layout
+       ======================================== */
+    .big-picture-section {
+      padding: 120px 0;
+    }
+
+    .big-picture-section .section-label {
+      display: block;
+      text-align: center;
+    }
+
+    .big-picture-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 80px;
+      align-items: center;
+      margin-top: 40px;
+    }
+
+    .big-picture-content {
+      text-align: left;
+    }
+
+    .big-picture-title {
+      font-size: clamp(32px, 4vw, 44px);
+      font-weight: 700;
+      color: white;
+      line-height: 1.15;
+      margin: 0 0 40px 0;
+    }
+
+    .big-picture-title .highlight {
+      color: var(--color-primary);
+    }
+
+    .big-picture-text {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .big-picture-text p {
+      color: rgba(255, 255, 255, 0.75);
+      font-size: 17px;
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    .big-picture-text p.emphasis {
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 500;
+    }
+
+    .big-picture-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .stat-card {
+      padding: 28px 32px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .stat-value {
+      font-size: 42px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 8px;
+    }
+
+    .stat-value.primary {
+      color: var(--color-primary);
+    }
+
+    .stat-label {
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 500;
+    }
+
+    @media (max-width: 968px) {
+      .big-picture-grid {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .big-picture-content {
+        text-align: center;
+      }
+
+      .big-picture-stats {
+        max-width: 400px;
+        margin: 0 auto;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .big-picture-section {
+        padding: 80px 0;
+      }
+
+      .stat-value {
+        font-size: 32px;
+      }
+
+      .stat-card {
+        padding: 20px 24px;
+      }
+    }
+
+    /* ========================================
+       CARDS - Clean Minimal Design
+       ======================================== */
+    .card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      transition: all 0.3s ease;
+      height: 100%;
+      position: relative;
+    }
+
+    .card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+      transform: translateY(-3px);
+    }
+
+    .card-icon {
+      width: 46px;
+      height: 46px;
+      background: rgba(59, 130, 246, 0.1);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+    }
+
+    .card-icon svg {
+      width: 22px;
+      height: 22px;
+      stroke: var(--color-primary-light);
+    }
+
+    .card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 13px;
+      color: var(--color-white-muted);
+      line-height: 1.7;
+    }
+
+    /* ========================================
+       GRIDS
+       ======================================== */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .grid-2x3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    @media (max-width: 1024px) {
+      .grid-3, .grid-4, .grid-2x3 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .grid-3, .grid-4, .grid-2x3 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ========================================
+       METRICS - Clean Style
+       ======================================== */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .metric {
+      text-align: center;
+      padding: 32px 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-md);
+      transition: all 0.3s ease;
+    }
+
+    .metric:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .metric-value {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 600;
+      color: var(--color-primary-light);
+      margin-bottom: 6px;
+    }
+
+    .metric-label {
+      font-size: 13px;
+      color: var(--color-white-muted);
+      line-height: 1.4;
+    }
+
+    @media (max-width: 768px) {
+      .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* ========================================
+       TRUST BADGES - Premium Frame for Screenshot
+       ======================================== */
+    .trust-badges-container {
+      display: flex;
+      justify-content: center;
+      padding: 8px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow:
+        0 4px 30px rgba(0, 0, 0, 0.2),
+        0 1px 3px rgba(255, 255, 255, 0.05) inset;
+      backdrop-filter: blur(10px);
+    }
+
+    .trust-badges-image {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      border-radius: calc(var(--radius-xl) - 4px);
+      display: block;
+    }
+
+    @media (max-width: 640px) {
+      .trust-badges-container {
+        padding: 6px;
+      }
+
+      .trust-badge {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    /* ========================================
+       FIT SECTION - Clean Style
+       ======================================== */
+    .fit-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin: 36px 0;
+    }
+
+    .fit-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-md);
+      padding: 28px;
+    }
+
+    .fit-card h4 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .fit-card h4 .icon {
+      width: 32px;
+      height: 32px;
+      background: rgba(59, 130, 246, 0.1);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .fit-card h4 .icon.accent {
+      background: rgba(34, 211, 238, 0.1);
+    }
+
+    .fit-card ul {
+      list-style: none;
+    }
+
+    .fit-card li {
+      font-size: 13px;
+      color: var(--color-white-muted);
+      padding: 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .fit-card li::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--color-primary-light);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .fit-card.secondary li::before {
+      background: var(--color-accent);
+    }
+
+    .fit-highlight {
+      text-align: center;
+      margin: 36px 0;
+      padding: 36px;
+      background: rgba(59, 130, 246, 0.05);
+      border: 1px solid rgba(59, 130, 246, 0.15);
+      border-radius: var(--radius-md);
+    }
+
+    .fit-highlight h3 {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--color-primary-light);
+      margin-bottom: 14px;
+    }
+
+    .fit-highlight p {
+      font-size: 15px;
+      color: var(--color-white-muted);
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 768px) {
+      .fit-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ========================================
+       BENEFITS LIST - Clean Style
+       ======================================== */
+    .benefits-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .benefit-item {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 28px;
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-md);
+      transition: all 0.3s ease;
+    }
+
+    .benefit-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .benefit-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-white);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .benefit-title .num {
+      width: 28px;
+      height: 28px;
+      background: var(--color-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .benefit-description {
+      font-size: 13px;
+      color: var(--color-white-muted);
+      line-height: 1.7;
+      display: flex;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .benefit-item {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+    }
+
+    /* ========================================
+       PRODUCTS - Clean Style
+       ======================================== */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .product-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-md);
+      padding: 32px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .product-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .product-card.featured {
+      border-color: rgba(59, 130, 246, 0.3);
+      background: rgba(59, 130, 246, 0.05);
+    }
+
+    .product-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 6px;
+    }
+
+    .product-price {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--color-primary-light);
+      margin-bottom: 16px;
+    }
+
+    .product-description {
+      font-size: 13px;
+      color: var(--color-white-muted);
+      line-height: 1.7;
+    }
+
+    @media (max-width: 768px) {
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ========================================
+       TIMELINE - Clean Style
+       ======================================== */
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      position: relative;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: 50px;
+      right: 50px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+    }
+
+    .timeline-item {
+      text-align: center;
+      position: relative;
+    }
+
+    .timeline-number {
+      width: 56px;
+      height: 56px;
+      background: var(--color-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 600;
+      color: white;
+      margin: 0 auto 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .timeline-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 10px;
+    }
+
+    .timeline-description {
+      font-size: 12px;
+      color: var(--color-white-muted);
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .timeline {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .timeline::before {
+        top: 0;
+        bottom: 0;
+        left: 27px;
+        right: auto;
+        width: 1px;
+        height: auto;
+      }
+      .timeline-item {
+        text-align: left;
+        padding-left: 80px;
+      }
+      .timeline-number {
+        position: absolute;
+        left: 0;
+        top: 0;
+        margin: 0;
+        width: 48px;
+        height: 48px;
+        font-size: 18px;
+      }
+    }
+
+    /* ========================================
+       AWARDS - Premium Frame for Screenshot
+       ======================================== */
+    .awards-container {
+      display: flex;
+      justify-content: center;
+      padding: 8px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow:
+        0 4px 30px rgba(0, 0, 0, 0.2),
+        0 1px 3px rgba(255, 255, 255, 0.05) inset;
+      backdrop-filter: blur(10px);
+      margin-top: 32px;
+    }
+
+    .awards-image {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      border-radius: calc(var(--radius-xl) - 4px);
+      display: block;
+    }
+
+    /* ========================================
+       WHY NOW - Clean Style
+       ======================================== */
+    .why-now-intro {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-md);
+      padding: 32px;
+      margin-bottom: 32px;
+    }
+
+    .why-now-intro p {
+      font-size: 15px;
+      color: var(--color-white-muted);
+      line-height: 1.8;
+      margin-bottom: 14px;
+    }
+
+    .why-now-intro p:last-child {
+      margin-bottom: 0;
+    }
+
+    .why-now-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 20px;
+    }
+
+    .closing-note {
+      text-align: center;
+      margin-top: 32px;
+      padding: 28px;
+      background: rgba(59, 130, 246, 0.05);
+      border: 1px solid rgba(59, 130, 246, 0.15);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      color: var(--color-white-muted);
+      font-style: italic;
+    }
+
+    /* ========================================
+       CONTACT - Clean Style
+       ======================================== */
+    .contact-section {
+      position: relative;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      max-width: 640px;
+      margin: 0 auto 40px;
+    }
+
+    .contact-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-md);
+      padding: 32px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .contact-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .contact-avatar {
+      width: 64px;
+      height: 64px;
+      background: var(--color-primary);
+      border-radius: 50%;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 600;
+      color: white;
+    }
+
+    .contact-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 4px;
+    }
+
+    .contact-role {
+      font-size: 13px;
+      color: var(--color-primary-light);
+      margin-bottom: 14px;
+    }
+
+    .contact-email {
+      font-size: 13px;
+      color: var(--color-white-muted);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .contact-email:hover {
+      color: var(--color-primary-light);
+    }
+
+    .company-info {
+      text-align: center;
+      color: var(--color-white-muted);
+      font-size: 13px;
+      line-height: 1.9;
+    }
+
+    .company-info .company-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 6px;
+    }
+
+    .company-info .website {
+      display: inline-block;
+      margin-top: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-primary-light);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .company-info .website:hover {
+      color: var(--color-accent);
+    }
+
+    @media (max-width: 640px) {
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ========================================
+       FOOTER - Clean Style
+       ======================================== */
+    footer {
+      padding: 32px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--color-white);
+      margin-bottom: 8px;
+    }
+
+    .footer-text {
+      font-size: 12px;
+      color: var(--color-white-subtle);
+    }
+
+    /* ========================================
+       DIVIDER - Subtle
+       ======================================== */
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+      margin: 0 auto;
+      max-width: 700px;
+    }
+
+    /* ========================================
+       UTILITIES
+       ======================================== */
+    .text-center {
+      text-align: center;
+    }
+
+    .mt-20 {
+      margin-top: 20px;
+    }
+
+    .mb-40 {
+      margin-bottom: 40px;
+    }
+
+    /* ========================================
+       RESPONSIVE
+       ======================================== */
+    @media (max-width: 768px) {
+      section {
+        padding: 80px 0;
+      }
+
+      .container {
+        padding: 0 20px;
+      }
+
+      nav {
+        padding: 14px 0;
+      }
+
+      .nav-logo-text {
+        font-size: 18px;
+      }
+
+      .nav-cta {
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+
+      .card {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Decorations - Premium CopeCart Style -->
+  <div class="bg-decoration">
+    <div class="ambient-glow ambient-glow-1"></div>
+    <div class="ambient-glow ambient-glow-2"></div>
+    <div class="ambient-glow ambient-glow-3"></div>
+    <div class="orb"></div>
+    <div class="dotted-line"></div>
+
+    <!-- Data Points like CopeCart reference -->
+    <div class="data-point data-point-1">+13%</div>
+    <div class="data-point data-point-2">+22%</div>
+    <div class="data-point data-point-3">+5%</div>
+
+    <!-- Flowing Lines SVG - Premium CopeCart Style -->
+    <svg class="flowing-lines" viewBox="0 0 1440 800" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <!-- Blue Line Gradient -->
+        <linearGradient id="blueLineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#3b82f6" stop-opacity="0"/>
+          <stop offset="20%" stop-color="#3b82f6" stop-opacity="0.8"/>
+          <stop offset="50%" stop-color="#60a5fa" stop-opacity="1"/>
+          <stop offset="80%" stop-color="#3b82f6" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
+        </linearGradient>
+        <!-- Secondary Blue Line Gradient -->
+        <linearGradient id="cyanLineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#265CF6" stop-opacity="0"/>
+          <stop offset="30%" stop-color="#265CF6" stop-opacity="0.5"/>
+          <stop offset="60%" stop-color="#3b82f6" stop-opacity="0.6"/>
+          <stop offset="100%" stop-color="#265CF6" stop-opacity="0"/>
+        </linearGradient>
+        <!-- Gray/White Line Gradient -->
+        <linearGradient id="grayLineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="rgba(148,163,184,0)" stop-opacity="0"/>
+          <stop offset="30%" stop-color="rgba(148,163,184,0.3)" stop-opacity="1"/>
+          <stop offset="70%" stop-color="rgba(148,163,184,0.2)" stop-opacity="1"/>
+          <stop offset="100%" stop-color="rgba(148,163,184,0)" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Main Blue Wave - Prominent -->
+      <path d="M-50,450
+               C150,400 300,350 450,380
+               C600,410 750,320 900,350
+               C1050,380 1200,280 1350,320
+               C1500,360 1600,300 1750,280"
+            stroke="url(#blueLineGradient)"
+            stroke-width="2.5"
+            fill="none"
+            stroke-linecap="round"/>
+
+      <!-- Secondary Cyan Wave -->
+      <path d="M-100,520
+               C100,480 250,420 400,460
+               C550,500 700,400 850,440
+               C1000,480 1150,380 1300,420
+               C1450,460 1550,400 1700,380"
+            stroke="url(#cyanLineGradient)"
+            stroke-width="2"
+            fill="none"
+            stroke-linecap="round"/>
+
+      <!-- Subtle Gray Wave - Background -->
+      <path d="M-80,580
+               C120,540 280,500 440,530
+               C600,560 760,480 920,510
+               C1080,540 1240,460 1400,490
+               C1560,520 1650,470 1800,450"
+            stroke="url(#grayLineGradient)"
+            stroke-width="1.5"
+            fill="none"
+            stroke-linecap="round"/>
+
+      <!-- Extra thin accent line -->
+      <path d="M0,620
+               C180,590 360,550 540,580
+               C720,610 900,530 1080,560
+               C1260,590 1440,510 1620,540"
+            stroke="rgba(59,130,246,0.2)"
+            stroke-width="1"
+            fill="none"
+            stroke-linecap="round"/>
+    </svg>
+
+  </div>
+
+  <!-- Navigation - CopeCart Style -->
+  <nav>
+    <div class="container">
+      <a href="#" class="nav-logo">
+        <img src="assets/copecart-logo-white.png" alt="CopeCart" class="nav-logo-img">
+      </a>
+      <div class="nav-badge">
+        <div class="nav-pill"><span>#1 SOFTWARE</span> FOR SELLING ONLINE</div>
+        <a href="#contact" class="nav-cta">Kontakt</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section - CopeCart Style -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero-content">
+        <!-- Main Headline - Clean uppercase style -->
+        <h1 class="hero-headline">
+          Strategische Partnerschaft
+        </h1>
+
+        <!-- Partner Logo Lockup -->
+        <div class="partner-lockup">
+          <!-- Partner Logo Card (Christiani) -->
+          <div class="logo-card christiani-card">
+            <img src="assets/christiani-logo.png" alt="Christiani Storymarketing" class="christiani-logo-img">
+          </div>
+
+          <!-- Connector -->
+          <span class="partner-connector">&times;</span>
+
+          <!-- CopeCart Logo Card -->
+          <div class="logo-card copecart-card">
+            <img src="assets/copecart-logo-white.png" alt="CopeCart" class="copecart-logo-img">
+          </div>
+        </div>
+
+        <!-- Subtitle under logos -->
+        <p class="subtitle">Mit echtem Commitment von beiden Seiten.</p>
+
+        <!-- Body Text -->
+        <p class="description">Eure Audience braucht unsere Infrastruktur. Unsere Vendoren brauchen eure Expertise. Eine Partnerschaft, von der beide Seiten profitieren.</p>
+
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 5v14M5 12l7 7 7-7"/>
+          </svg>
+          <span>Scroll</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Big Picture - Split Layout with Stats -->
+  <section id="big-picture" class="big-picture-section">
+    <div class="container">
+      <!-- Section Label -->
+      <span class="section-label" style="margin-bottom: 40px;">Big Picture</span>
+
+      <!-- Main Content Grid -->
+      <div class="big-picture-grid">
+        <!-- Left: Text Content -->
+        <div class="big-picture-content">
+          <h2 class="big-picture-title">
+            Die Business-Infrastruktur für über
+            <span class="highlight">530.000</span>
+            Online-Unternehmer.
+          </h2>
+
+          <div class="big-picture-text">
+            <p>
+              CopeCart ist die Business-Infrastruktur für Online-Unternehmer.
+              Zahlungen, Steuern, Inkasso, Auslieferung - komplett automatisiert
+              in einer Plattform. Über 530.000 Vendoren in DACH, Spanien und USA
+              bauen ihr digitales Business auf unserer Infrastruktur.
+            </p>
+
+            <p>
+              Wir arbeiten mit ausgewählten strategischen Partnern zusammen,
+              deren Audience und Expertise sich mit unserer Mission deckt:
+              Online-Unternehmern die Infrastruktur zu geben, die sie brauchen,
+              um zu wachsen.
+            </p>
+
+            <p class="emphasis">
+              Eine strategische Zusammenarbeit auf Augenhöhe - mit individuellen
+              Konditionen, gemeinsamen Initiativen und echtem Commitment von
+              beiden Seiten.
+            </p>
+          </div>
+        </div>
+
+        <!-- Right: Stats Cards -->
+        <div class="big-picture-stats">
+          <!-- Stat Card 1 -->
+          <div class="stat-card">
+            <div class="stat-value primary">530.000+</div>
+            <div class="stat-label">Coaches & Creator vertrauen CopeCart</div>
+          </div>
+
+          <!-- Stat Card 2 -->
+          <div class="stat-card">
+            <div class="stat-value">3 Märkte</div>
+            <div class="stat-label">DACH, Spanien und USA</div>
+          </div>
+
+          <!-- Stat Card 3 -->
+          <div class="stat-card">
+            <div class="stat-value">1 Plattform</div>
+            <div class="stat-label">Zahlungen, Steuern, Inkasso, Auslieferung</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Warum CopeCart -->
+  <section id="why-copecart">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Warum CopeCart</span>
+        <h2 class="section-title">Rechtssicherheit, Automatisierung und nachweisbare Ergebnisse.</h2>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <h3>Merchant of Record Status</h3>
+          <p>Als einer der wenigen Anbieter im DACH-Markt übernehmen wir die vollständige rechtliche und steuerliche Verantwortung für unsere Vendoren. Compliance in allen EU-Ländern, Großbritannien (optional auch in den USA & UAE) - ohne Zusatzaufwand für den Verkäufer.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2"/>
+              <path d="M8 21h8M12 17v4"/>
+            </svg>
+          </div>
+          <h3>Komplette Infrastruktur</h3>
+          <p>Zahlungsabwicklung, automatische Steuerabrechnung, professionelles Inkasso, Member-Bereiche, Ticket-System, Provision-Management - eine Plattform für das gesamte digitale Business.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            </svg>
+          </div>
+          <h3>Nachweisbarer Track Record</h3>
+          <p>469% durchschnittliches Umsatzwachstum unserer Top-Vendoren über 3 Jahre. 6 Stunden Zeitersparnis pro Woche durch automatisierte Prozesse.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fakten & Kennzahlen -->
+  <section id="metrics">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Fakten & Kennzahlen</span>
+        <h2 class="section-title">Vertrauen durch Ergebnisse.</h2>
+      </div>
+
+      <!-- Trust Badges Row - Screenshot mit Premium-Rahmen -->
+      <div class="trust-badges-container">
+        <img src="assets/trust-badges.png" alt="Trust Badges: Trustpilot 4.5, 530.000+ Verkäufer, Scaling Awards, OMR Reviews 4.6" class="trust-badges-image">
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Der strategische Fit -->
+  <section id="strategic-fit">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Der strategische Fit</span>
+        <h2 class="section-title">Gemeinsam die gesamte Wertschöpfungskette abdecken.</h2>
+        <p class="section-subtitle mt-20">Unsere Vendoren sind Coaches, Creator, Kursanbieter und digitale Unternehmer - von Einsteigern bis zu 7-stelligen Businesses.</p>
+      </div>
+
+      <div class="fit-container">
+        <div class="fit-card">
+          <h4>
+            <span class="icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#265CF6" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            </span>
+            Wir lösen ihre Infrastruktur-Probleme:
+          </h4>
+          <ul>
+            <li>Zahlungen</li>
+            <li>Steuern</li>
+            <li>Inkasso</li>
+            <li>Auslieferung</li>
+          </ul>
+        </div>
+        <div class="fit-card secondary">
+          <h4>
+            <span class="icon accent">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="15" y1="9" x2="9" y2="15"/>
+                <line x1="9" y1="9" x2="15" y2="15"/>
+              </svg>
+            </span>
+            Was wir nicht lösen:
+          </h4>
+          <ul>
+            <li>Branding</li>
+            <li>Marketing</li>
+            <li>Funnels</li>
+            <li>Content</li>
+            <li>Community-Aufbau</li>
+            <li>Business-Strategie</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="fit-highlight">
+        <h3>Genau hier kommt Christiani Storymarketing ins Spiel.</h3>
+        <p>Christiani Storymarketing macht Kunden sales-ready. CopeCart gibt ihnen die Infrastruktur zum Verkaufen. Gemeinsam decken wir die gesamte Wertschöpfungskette ab.</p>
+        <!-- Compact Partner Lockup -->
+        <div class="partner-lockup compact" style="margin-top: 32px;">
+          <div class="logo-card christiani-card">
+            <img src="assets/christiani-logo.png" alt="Christiani Storymarketing" class="christiani-logo-img compact">
+          </div>
+          <span class="partner-connector">&times;</span>
+          <div class="logo-card copecart-card">
+            <img src="assets/copecart-logo-white.png" alt="CopeCart" class="copecart-logo-img compact">
+          </div>
+        </div>
+      </div>
+
+      <p class="section-description text-center">Überschneidungen in der Zielgruppe. Unterschiedliche Probleme. Null Konkurrenz.</p>
+    </div>
+  </section>
+
+  <!-- Warum Partner bei uns bleiben -->
+  <section id="partner-benefits">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Warum Partner bei uns bleiben</span>
+        <h2 class="section-title">Faire Konditionen, echte Partnerschaft, langfristiger Erfolg.</h2>
+      </div>
+
+      <div class="benefits-list">
+        <div class="benefit-item">
+          <div class="benefit-title">
+            <span class="num">1</span>
+            Individuelle Provisionsstruktur
+          </div>
+          <div class="benefit-description">Keine Standard-Konditionen. Wir entwickeln gemeinsam ein Modell, das zum Volumen und zur Art der Zusammenarbeit passt.</div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-title">
+            <span class="num">2</span>
+            Lifetime-Zuordnung
+          </div>
+          <div class="benefit-description">Jeder Vendor, den ihr zu CopeCart bringt, wird euch dauerhaft zugeordnet. Nicht für 12 Monate. Für immer.</div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-title">
+            <span class="num">3</span>
+            Dedizierter Partner Manager
+          </div>
+          <div class="benefit-description">Ein fester Ansprechpartner, der eure Zielgruppe versteht und die Partnerschaft aktiv entwickelt.</div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-title">
+            <span class="num">4</span>
+            Transparentes Reporting
+          </div>
+          <div class="benefit-description">Eigenes Dashboard mit Echtzeit-Daten zu Registrierungen, Aktivierungen und Provisionen.</div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-title">
+            <span class="num">5</span>
+            Priorisierter Support
+          </div>
+          <div class="benefit-description">Eure vermittelten Kontakte erhalten bevorzugte Betreuung durch unser Customer Success Team.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Unser Beitrag zur Partnerschaft -->
+  <section id="our-contribution">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Unser Beitrag zur Partnerschaft</span>
+        <h2 class="section-title">Was wir einbringen - eine Partnerschaft auf Augenhöhe.</h2>
+      </div>
+
+      <div class="grid-2x3">
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M23 7l-7 5 7 5V7z"/>
+              <rect x="1" y="5" width="15" height="14" rx="2"/>
+            </svg>
+          </div>
+          <h3>Content-Kollaborationen</h3>
+          <p>Gemeinsame Webinare, Video-Produktionen, Podcast-Auftritte, Interviews - professionell produziert, strategisch vermarktet.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <circle cx="18" cy="5" r="3"/>
+              <circle cx="6" cy="12" r="3"/>
+              <circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+          </div>
+          <h3>Cross-Promotion</h3>
+          <p>Newsletter-Features, Social-Media-Kampagnen und Co-Branding-Initiativen mit kombinierten Reichweiten.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+            </svg>
+          </div>
+          <h3>Gemeinsame Landingpage</h3>
+          <p>Eine dedizierte Seite, die die Partnerschaft präsentiert und den Mehrwert für beide Audiences kommuniziert.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <h3>Event-Präsenz</h3>
+          <p>Gegenseitige Sichtbarkeit bei Veranstaltungen, Masterminds und Community-Events.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <line x1="19" y1="8" x2="19" y2="14"/>
+              <line x1="22" y1="11" x2="16" y2="11"/>
+            </svg>
+          </div>
+          <h3>Netzwerk-Zugang</h3>
+          <p>Vorstellung bei ausgewählten Vendoren in DACH und USA - für Kooperationen und direkten Zugang zu deren Kundenkreis.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <polyline points="16 11 18 13 22 9"/>
+            </svg>
+          </div>
+          <h3>Qualifizierte Lead-Übergabe</h3>
+          <p>Strukturierter Prozess mit Kontext zu jedem Lead - Deal Stage, Verkaufsbereitschaft, Hintergrund. Persönliche Intro-Mail mit Empfehlung.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Euer Beitrag zur Partnerschaft -->
+  <section id="your-contribution">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Euer Beitrag zur Partnerschaft</span>
+        <h2 class="section-title">Was wir von euch erwarten - aktive Zusammenarbeit für gemeinsamen Erfolg.</h2>
+      </div>
+
+      <div class="grid-2x3">
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <h3>Aktive Empfehlung</h3>
+          <p>CopeCart als bevorzugte Verkaufsplattform für Kunden positionieren. Persönliche Intros, wenn ein Kunde "sales-ready" ist.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+          </div>
+          <h3>Integration in Programme</h3>
+          <p>CopeCart als empfohlenes Tool in Kursmaterialien, Ressourcen und Tech-Stack-Empfehlungen.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </div>
+          <h3>E-Mail-Kampagnen</h3>
+          <p>Dedizierte Mailings und Newsletter-Features. Automatisierte Sequenzen für Kunden im Verkaufsprozess.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          </div>
+          <h3>Content & Sichtbarkeit</h3>
+          <p>Erwähnung in Podcasts, Videos, Social Media. Gemeinsame Webinare zum Thema "Vom Storytelling zum Verkauf".</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <polyline points="16 11 18 13 22 9"/>
+            </svg>
+          </div>
+          <h3>Qualifizierte Lead-Übergabe</h3>
+          <p>Strukturierter Prozess mit Kontext zu jedem Lead - Produkt, Verkaufsbereitschaft, Hintergrund.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <h3>Community-Zugang</h3>
+          <p>Möglichkeit für CopeCart, sich bei Events, Masterminds oder in der Community vorzustellen.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Strukturierte Zusammenarbeit -->
+  <section id="collaboration">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Strukturierte Zusammenarbeit</span>
+        <h2 class="section-title">Klare Prozesse für messbare Ergebnisse.</h2>
+      </div>
+
+      <div class="grid-4">
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </div>
+          <h3>Lead-Management</h3>
+          <p>Gemeinsamer Kalender-Zugang für qualifizierte Leads. Strukturiertes Tracking von der Empfehlung bis zur Aktivierung.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <h3>Regelmäßige Abstimmung</h3>
+          <p>Quartalsweise Strategy-Calls zur Optimierung. Review der Performance-Daten und Wachstumspotentiale.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M12 20h9"/>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+            </svg>
+          </div>
+          <h3>Team-Enablement</h3>
+          <p>Gegenseitige Schulungen für Sales- und Support-Teams. Produkte und Mehrwert verstehen und kommunizieren.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+              <line x1="12" y1="22.08" x2="12" y2="12"/>
+            </svg>
+          </div>
+          <h3>Marketing-Ressourcen</h3>
+          <p>Zugang zu professionellen Materialien, Messaging-Guidelines und Brand Assets.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CopeCart im Überblick -->
+  <section id="products">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">CopeCart im Überblick</span>
+        <h2 class="section-title">Drei Produkte, eine Plattform - für jedes Business das richtige Modell.</h2>
+      </div>
+
+      <div class="products-grid">
+        <div class="product-card featured">
+          <div class="product-name">CopeCart</div>
+          <div class="product-price">4,9% + 1€</div>
+          <p class="product-description">Payment-Processing mit Merchant-of-Record-Status. CopeCart steht auf der Rechnung und kümmert sich um die rechtliche Verantwortung inkl. Inkasso/Forderungsmanagement.</p>
+        </div>
+        <div class="product-card">
+          <div class="product-name">CopeCart Pro</div>
+          <div class="product-price">3,9% + 1€</div>
+          <p class="product-description">Der Vendor verkauft im eigenen Namen und steht selbst auf der Rechnung. Das Forderungsmanagement/Inkasso ist nicht inkludiert. Dafür günstiger.</p>
+        </div>
+        <div class="product-card">
+          <div class="product-name">CopeTicket</div>
+          <div class="product-price">Inklusive</div>
+          <p class="product-description">Event-Ticketing mit Check-in, Teilnehmermanagement und allen Zahlungsoptionen. Als CopeCart-Vendor bereits inklusive.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Scaling Awards Program -->
+  <section id="awards">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Scaling Awards Program</span>
+        <h2 class="section-title">Credentials, die eure Expertise im Markt dokumentieren.</h2>
+        <p class="section-subtitle mt-20">Partner mit nachweisbaren Ergebnissen erhalten unsere Scaling Awards - gestaffelt nach empfohlenem Umsatzvolumen.</p>
+      </div>
+
+      <div class="awards-container">
+        <img src="assets/Awards.png" alt="CopeCart Scaling Awards - Bronze, Silber, Gold" class="awards-image">
+      </div>
+    </div>
+  </section>
+
+  <!-- Nächste Schritte -->
+  <section id="next-steps">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Nächste Schritte</span>
+        <h2 class="section-title">Von der Idee zur aktiven Partnerschaft in vier Schritten.</h2>
+      </div>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-number">1</div>
+          <div class="timeline-title">Strategy Call</div>
+          <div class="timeline-description">Kennenlernen des Teams, Abstimmung zu konkreten Zielen und Erwartungen.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-number">2</div>
+          <div class="timeline-title">Partnership Proposal</div>
+          <div class="timeline-description">Basierend auf dem Gespräch entwickeln wir ein finales Kooperationskonzept mit konkreten Konditionen.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-number">3</div>
+          <div class="timeline-title">Alignment & Kickoff</div>
+          <div class="timeline-description">Finalisierung der Vereinbarung, Setup der technischen Infrastruktur und gemeinsamer Launch-Plan.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-number">4</div>
+          <div class="timeline-title">Ongoing Partnership</div>
+          <div class="timeline-description">Regelmäßige Abstimmung, Performance-Optimierung und Ausbau der Zusammenarbeit.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Warum jetzt? -->
+  <section id="why-now">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Warum jetzt?</span>
+        <h2 class="section-title">Der perfekte Zeitpunkt für Launch-Partner.</h2>
+      </div>
+
+      <div class="why-now-intro">
+        <p>Wir stehen vor dem Launch von Cope - der nächsten Generation unserer Plattform. CopeCart, CopeTicket und CopeMember werden zu einem einheitlichen Ökosystem. Ein Launch, der Aufmerksamkeit im Markt generieren wird.</p>
+      </div>
+
+      <div class="why-now-label">Was das für frühe Partner bedeutet:</div>
+
+      <div class="grid-4">
+        <div class="card">
+          <h3>Maximale Sichtbarkeit</h3>
+          <p>Eure Marke profitiert vom Launch-Buzz.</p>
+        </div>
+        <div class="card">
+          <h3>Mitgestaltung</h3>
+          <p>Die Partnerschaft von Anfang an formen - bevor die Strukturen stehen.</p>
+        </div>
+        <div class="card">
+          <h3>Integrationsmöglichkeiten</h3>
+          <p>Option, Teil des neuen Ökosystems zu werden.</p>
+        </div>
+        <div class="card">
+          <h3>Bevorzugte Konditionen</h3>
+          <p>Exklusive Vorteile für Launch-Partner.</p>
+        </div>
+      </div>
+
+      <div class="closing-note">
+        Wir arbeiten mit einer begrenzten Anzahl strategischer Partner zusammen.
+      </div>
+    </div>
+  </section>
+
+  <!-- Kontakt -->
+  <section class="contact-section" id="contact">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Eure Ansprechpartner</span>
+        <h2 class="section-title">Lasst uns gemeinsam starten.</h2>
+      </div>
+
+      <div class="contact-grid">
+        <div class="contact-card">
+          <div class="contact-avatar">KT</div>
+          <div class="contact-name">Kai Thümmler</div>
+          <div class="contact-role">Head of Marketing</div>
+          <a href="mailto:kai.thuemmler@copecart.com" class="contact-email">kai.thuemmler@copecart.com</a>
+        </div>
+        <div class="contact-card">
+          <div class="contact-avatar">MH</div>
+          <div class="contact-name">Michelle Habenicht</div>
+          <div class="contact-role">Growth Marketing Manager</div>
+          <a href="mailto:michelle.habenicht@copecart.com" class="contact-email">michelle.habenicht@copecart.com</a>
+        </div>
+      </div>
+
+      <div class="company-info">
+        <div class="company-name">CopeCart GmbH</div>
+        <div>Rosenstraße 2</div>
+        <div>10178 Berlin</div>
+        <div>Germany</div>
+        <a href="https://www.copecart.com" target="_blank" class="website">www.copecart.com</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-logo">copecart</div>
+      <div class="footer-text">#1 Software for Selling Online</div>
+    </div>
+  </footer>
+
+</body>
+</html>
