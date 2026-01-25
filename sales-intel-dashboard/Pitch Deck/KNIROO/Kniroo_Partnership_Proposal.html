@@ -1,0 +1,2689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kniroo - The Operational Partner You've Been Trying to Hire</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Background - Premium Dark */
+      --bg-primary: #1a1612;
+      --bg-secondary: #231d18;
+      --bg-tertiary: #2d251e;
+      --bg-gradient: linear-gradient(165deg, #231d18 0%, #1a1612 30%, #151210 60%, #1a1612 100%);
+
+      /* Primary Brand Colors - Kniroo */
+      --color-primary: #6c4537;
+      --color-primary-dark: #5a3a2e;
+      --color-primary-light: #f59b56;
+      --color-accent: #6f8d87;
+      --color-accent-light: #8aa8a1;
+      --color-orange: #f59b56;
+      --color-green: #6f8d87;
+      --color-brown: #6c4537;
+
+      /* Flowing Lines Colors */
+      --line-orange: #f59b56;
+      --line-green: #6f8d87;
+      --line-brown: #6c4537;
+      --line-gray: rgba(148, 163, 184, 0.3);
+
+      /* Surface Colors */
+      --color-surface: rgba(255, 255, 255, 0.03);
+      --color-surface-hover: rgba(255, 255, 255, 0.06);
+
+      /* Text Colors */
+      --color-white: #FFFFFF;
+      --color-white-muted: rgba(255, 255, 255, 0.7);
+      --color-white-subtle: rgba(255, 255, 255, 0.4);
+
+      /* Glassmorphism */
+      --glass-bg: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+      --glass-bg-strong: linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-border-strong: rgba(255, 255, 255, 0.12);
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+      /* Shadows & Glows */
+      --shadow-card: 0 4px 30px rgba(0, 0, 0, 0.25);
+      --shadow-glow: 0 0 60px rgba(245, 155, 86, 0.15);
+      --shadow-button: 0 4px 20px rgba(245, 155, 86, 0.4);
+
+      /* Border Radius */
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-full: 50px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Host Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+      color: var(--color-white);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* ========================================
+       BACKGROUND DECORATIONS
+       ======================================== */
+    .bg-decoration {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg-decoration::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      opacity: 0.02;
+      mix-blend-mode: overlay;
+    }
+
+    .ambient-glow {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .ambient-glow-1 {
+      top: 10%;
+      right: 10%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(245, 155, 86, 0.08) 0%, transparent 60%);
+      filter: blur(100px);
+    }
+
+    .ambient-glow-2 {
+      bottom: 15%;
+      left: 5%;
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(111, 141, 135, 0.08) 0%, transparent 60%);
+      filter: blur(120px);
+    }
+
+    .ambient-glow-3 {
+      top: 50%;
+      left: 50%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(108, 69, 55, 0.06) 0%, transparent 60%);
+      filter: blur(100px);
+      transform: translate(-50%, -50%);
+    }
+
+    .orb {
+      position: absolute;
+      top: 20%;
+      right: 8%;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle at 30% 30%,
+        rgba(245, 155, 86, 0.4) 0%,
+        rgba(245, 155, 86, 0.2) 30%,
+        rgba(245, 155, 86, 0.05) 50%,
+        transparent 70%);
+      border-radius: 50%;
+      filter: blur(40px);
+    }
+
+    .orb::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px;
+      height: 40px;
+      background: radial-gradient(circle, rgba(245, 155, 86, 0.3) 0%, transparent 70%);
+      border-radius: 50%;
+      filter: blur(20px);
+    }
+
+    .orb::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      filter: blur(4px);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.4), 0 0 20px rgba(245, 155, 86, 0.3);
+    }
+
+    .dotted-line {
+      position: absolute;
+      top: 0;
+      right: 60px;
+      width: 1px;
+      height: 100%;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent 6px,
+        rgba(255, 255, 255, 0.12) 6px,
+        rgba(255, 255, 255, 0.12) 10px
+      );
+    }
+
+    .flowing-lines {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      opacity: 0.15;
+    }
+
+    @media (max-width: 768px) {
+      .dotted-line {
+        display: none;
+      }
+      .orb {
+        width: 100px;
+        height: 100px;
+        right: 5%;
+        top: 15%;
+      }
+    }
+
+    /* ========================================
+       CONTAINER
+       ======================================== */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ========================================
+       NAVIGATION
+       ======================================== */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 16px 0;
+      background: rgba(26, 22, 18, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    nav .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      position: relative;
+    }
+
+    /* Glass Container for Nav Logo */
+    .nav-logo-glass {
+      position: relative;
+      padding: 8px 16px;
+      background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.12) 0%,
+        rgba(255, 255, 255, 0.05) 50%,
+        rgba(245, 155, 86, 0.08) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow:
+        0 4px 24px rgba(0, 0, 0, 0.3),
+        0 0 40px rgba(245, 155, 86, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transition: all 0.4s ease;
+    }
+
+    .nav-logo-glass::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 20%;
+      right: 20%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    }
+
+    .nav-logo:hover .nav-logo-glass {
+      background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.15) 0%,
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(245, 155, 86, 0.12) 100%);
+      box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 0 60px rgba(245, 155, 86, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    .nav-logo-img {
+      height: 36px;
+      width: auto;
+      position: relative;
+      z-index: 1;
+      display: block;
+    }
+
+    .nav-badge {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-pill {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-full);
+      padding: 10px 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--color-white);
+    }
+
+    .nav-pill span {
+      color: var(--color-orange);
+    }
+
+    .nav-cta {
+      background: var(--color-orange);
+      color: var(--bg-primary);
+      padding: 12px 24px;
+      border-radius: var(--radius-full);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .nav-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(245, 155, 86, 0.3);
+    }
+
+    /* ========================================
+       SECTIONS
+       ======================================== */
+    section {
+      padding: 100px 0;
+      position: relative;
+    }
+
+    /* ========================================
+       SLIDE 1: HERO / COVER SECTION
+       ======================================== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding-top: 100px;
+      padding-bottom: 60px;
+      position: relative;
+    }
+
+    .hero-content {
+      max-width: 900px;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Glass Container for Hero Logo */
+    .hero-logo-glass {
+      position: relative;
+      padding: 32px 48px;
+      margin-bottom: 40px;
+      background: linear-gradient(145deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.04) 40%,
+        rgba(245, 155, 86, 0.06) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 24px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow:
+        0 8px 60px rgba(0, 0, 0, 0.4),
+        0 0 80px rgba(245, 155, 86, 0.12),
+        0 0 120px rgba(245, 155, 86, 0.06),
+        inset 0 2px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+      animation: heroGlassGlow 5s ease-in-out infinite;
+    }
+
+    .hero-logo-glass::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 15%;
+      right: 15%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+      border-radius: 50%;
+    }
+
+    .hero-logo-glass::after {
+      content: '';
+      position: absolute;
+      top: 10%;
+      left: 10%;
+      right: 10%;
+      bottom: 10%;
+      border-radius: 20px;
+      background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    @keyframes heroGlassGlow {
+      0%, 100% {
+        box-shadow:
+          0 8px 60px rgba(0, 0, 0, 0.4),
+          0 0 80px rgba(245, 155, 86, 0.12),
+          0 0 120px rgba(245, 155, 86, 0.06),
+          inset 0 2px 0 rgba(255, 255, 255, 0.08),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+      }
+      50% {
+        box-shadow:
+          0 12px 80px rgba(0, 0, 0, 0.5),
+          0 0 100px rgba(245, 155, 86, 0.18),
+          0 0 160px rgba(245, 155, 86, 0.1),
+          inset 0 2px 0 rgba(255, 255, 255, 0.12),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.12);
+      }
+    }
+
+    .hero-logo {
+      height: 80px;
+      width: auto;
+      position: relative;
+      display: block;
+    }
+
+    .hero-tagline {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--color-orange);
+      margin-bottom: 20px;
+    }
+
+    .hero-headline {
+      font-size: 48px;
+      font-weight: 600;
+      color: white;
+      line-height: 1.2;
+      margin-bottom: 30px;
+    }
+
+    .hero-headline .highlight {
+      color: var(--color-orange);
+    }
+
+    .hero-description {
+      font-size: 18px;
+      color: var(--color-white-muted);
+      max-width: 700px;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .hero-motto {
+      font-size: 14px;
+      font-style: italic;
+      color: var(--color-accent);
+      margin-top: 30px;
+    }
+
+    .scroll-indicator {
+      margin-top: 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--color-white-subtle);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .scroll-indicator svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .scroll-indicator span {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; transform: translateY(0); }
+      50% { opacity: 0.6; transform: translateY(4px); }
+    }
+
+    @media (max-width: 768px) {
+      .hero-headline {
+        font-size: 32px;
+      }
+      .hero-description {
+        font-size: 16px;
+      }
+    }
+
+    /* ========================================
+       SECTION HEADERS
+       ======================================== */
+    .section-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .section-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--color-orange);
+      background: rgba(245, 155, 86, 0.1);
+      padding: 8px 18px;
+      border-radius: var(--radius-full);
+      margin-bottom: 20px;
+      border: 1px solid rgba(245, 155, 86, 0.15);
+    }
+
+    .section-title {
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 14px;
+      line-height: 1.25;
+    }
+
+    .section-subtitle {
+      font-size: clamp(15px, 2vw, 17px);
+      color: var(--color-orange);
+      font-weight: 500;
+      max-width: 680px;
+      margin: 0 auto;
+      font-style: italic;
+    }
+
+    .section-description {
+      font-size: 16px;
+      color: var(--color-white-muted);
+      max-width: 800px;
+      margin: 20px auto 0;
+      line-height: 1.8;
+    }
+
+    /* ========================================
+       SLIDE 2: THE CHALLENGE
+       ======================================== */
+    .challenge-section {
+      padding: 120px 0;
+    }
+
+    .challenge-intro {
+      text-align: center;
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-lg);
+      margin-bottom: 48px;
+    }
+
+    .challenge-intro p {
+      font-size: 17px;
+      color: var(--color-white-muted);
+      line-height: 1.8;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .challenge-intro p + p {
+      margin-top: 16px;
+    }
+
+    .pain-points-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .pain-points-grid .pain-point-card:nth-child(4),
+    .pain-points-grid .pain-point-card:nth-child(5) {
+      grid-column: span 1;
+    }
+
+    /* Center the last row with 2 items */
+    .pain-points-row-bottom {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      max-width: 800px;
+      margin: 24px auto 0;
+    }
+
+    .pain-point-card {
+      padding: 32px 28px;
+      background: linear-gradient(145deg, rgba(245, 155, 86, 0.06) 0%, rgba(245, 155, 86, 0.02) 100%);
+      border: 1px solid rgba(245, 155, 86, 0.12);
+      border-radius: var(--radius-lg);
+      text-align: left;
+      transition: all 0.3s ease;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .pain-point-card:hover {
+      transform: translateY(-3px);
+      background: linear-gradient(145deg, rgba(245, 155, 86, 0.1) 0%, rgba(245, 155, 86, 0.04) 100%);
+      box-shadow: 0 8px 32px rgba(245, 155, 86, 0.15);
+    }
+
+    .pain-point-number {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      background: var(--color-orange);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--bg-primary);
+    }
+
+    .pain-point-content {
+      flex: 1;
+    }
+
+    .pain-point-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .pain-point-description {
+      font-size: 14px;
+      color: var(--color-white-muted);
+      line-height: 1.6;
+    }
+
+    @media (max-width: 1024px) {
+      .pain-points-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .pain-points-row-bottom {
+        grid-template-columns: 1fr;
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .pain-points-grid {
+        grid-template-columns: 1fr;
+      }
+      .pain-point-card {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+      }
+    }
+
+    /* ========================================
+       SLIDE 3: THE SOLUTION
+       ======================================== */
+    .solution-section {
+      padding: 120px 0;
+    }
+
+    .solution-intro {
+      text-align: center;
+      padding: 40px;
+      background: linear-gradient(145deg, rgba(111, 141, 135, 0.08) 0%, rgba(111, 141, 135, 0.02) 100%);
+      border: 1px solid rgba(111, 141, 135, 0.15);
+      border-radius: var(--radius-lg);
+      margin-bottom: 48px;
+    }
+
+    .solution-intro h3 {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--color-accent);
+      margin-bottom: 16px;
+    }
+
+    .solution-intro p {
+      font-size: 17px;
+      color: var(--color-white-muted);
+      line-height: 1.8;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .pillar-card {
+      padding: 32px 24px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-lg);
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .pillar-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateY(-3px);
+    }
+
+    .pillar-icon {
+      width: 56px;
+      height: 56px;
+      background: rgba(111, 141, 135, 0.15);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    .pillar-icon svg {
+      width: 28px;
+      height: 28px;
+      stroke: var(--color-accent);
+    }
+
+    .pillar-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 12px;
+    }
+
+    .pillar-description {
+      font-size: 14px;
+      color: var(--color-white-muted);
+      line-height: 1.6;
+    }
+
+    @media (max-width: 1024px) {
+      .pillars-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .pillars-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ========================================
+       SLIDE 4: 90-DAY METHODOLOGY
+       ======================================== */
+    .methodology-section {
+      padding: 120px 0;
+    }
+
+    .methodology-timeline {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      position: relative;
+    }
+
+    .methodology-timeline::before {
+      content: '';
+      position: absolute;
+      top: 50px;
+      left: 80px;
+      right: 80px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--color-orange), var(--color-accent), var(--color-brown));
+    }
+
+    .methodology-phase {
+      text-align: center;
+      position: relative;
+    }
+
+    .methodology-badge {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, var(--color-orange) 0%, var(--color-brown) 100%);
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 0 40px rgba(245, 155, 86, 0.3);
+    }
+
+    .methodology-badge .month {
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.8);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .methodology-badge .number {
+      font-size: 32px;
+      font-weight: 700;
+      color: white;
+      line-height: 1;
+    }
+
+    .methodology-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 8px;
+    }
+
+    .methodology-subtitle {
+      font-size: 14px;
+      color: var(--color-orange);
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    .methodology-content {
+      padding: 28px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-lg);
+      text-align: left;
+    }
+
+    .methodology-content ul {
+      list-style: none;
+      margin-bottom: 20px;
+    }
+
+    .methodology-content li {
+      font-size: 14px;
+      color: var(--color-white-muted);
+      padding: 8px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .methodology-content li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 6px;
+      background: var(--color-orange);
+      border-radius: 50%;
+    }
+
+    .methodology-output {
+      padding: 12px 16px;
+      background: rgba(245, 155, 86, 0.1);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      color: var(--color-orange);
+      font-weight: 600;
+    }
+
+    @media (max-width: 968px) {
+      .methodology-timeline {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .methodology-timeline::before {
+        display: none;
+      }
+    }
+
+    /* ========================================
+       SLIDE 5: STATUS QUO ASSESSMENT
+       ======================================== */
+    .assessment-section {
+      padding: 120px 0;
+    }
+
+    .assessment-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .assessment-card {
+      padding: 32px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-lg);
+      transition: all 0.3s ease;
+    }
+
+    .assessment-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateY(-3px);
+    }
+
+    .assessment-card.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .assessment-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(245, 155, 86, 0.15);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .assessment-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--color-orange);
+    }
+
+    .assessment-icon.green {
+      background: rgba(111, 141, 135, 0.15);
+    }
+
+    .assessment-icon.green svg {
+      stroke: var(--color-accent);
+    }
+
+    .assessment-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 12px;
+    }
+
+    .assessment-description {
+      font-size: 14px;
+      color: var(--color-white-muted);
+      line-height: 1.7;
+    }
+
+    @media (max-width: 768px) {
+      .assessment-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ========================================
+       SLIDE 6: KPI IMPLEMENTATION
+       ======================================== */
+    .kpi-section {
+      padding: 120px 0;
+    }
+
+    .kpi-process {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 60px;
+    }
+
+    .kpi-process-card {
+      padding: 28px;
+      background: linear-gradient(145deg, rgba(111, 141, 135, 0.08) 0%, rgba(111, 141, 135, 0.02) 100%);
+      border: 1px solid rgba(111, 141, 135, 0.15);
+      border-radius: var(--radius-lg);
+      text-align: center;
+    }
+
+    .kpi-process-number {
+      width: 40px;
+      height: 40px;
+      background: var(--color-accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--bg-primary);
+      margin: 0 auto 16px;
+    }
+
+    .kpi-process-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 10px;
+    }
+
+    .kpi-process-description {
+      font-size: 14px;
+      color: var(--color-white-muted);
+      line-height: 1.6;
+    }
+
+    .kpi-departments {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .kpi-dept-card {
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-lg);
+    }
+
+    .kpi-dept-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-orange);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .kpi-dept-list {
+      font-size: 13px;
+      color: var(--color-white-muted);
+      line-height: 1.8;
+    }
+
+    @media (max-width: 968px) {
+      .kpi-process {
+        grid-template-columns: 1fr;
+      }
+      .kpi-departments {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .kpi-departments {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ========================================
+       SLIDE 7: HOW WE WORK WITH YOU
+       ======================================== */
+    .work-section {
+      padding: 120px 0;
+    }
+
+    .work-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .work-card {
+      padding: 32px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-lg);
+      transition: all 0.3s ease;
+    }
+
+    .work-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateY(-3px);
+    }
+
+    .work-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(245, 155, 86, 0.15);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .work-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--color-orange);
+    }
+
+    .work-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 12px;
+    }
+
+    .work-description {
+      font-size: 14px;
+      color: var(--color-white-muted);
+      line-height: 1.7;
+    }
+
+    .cadence-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .cadence-card {
+      padding: 28px;
+      background: linear-gradient(145deg, rgba(108, 69, 55, 0.08) 0%, rgba(108, 69, 55, 0.02) 100%);
+      border: 1px solid rgba(108, 69, 55, 0.15);
+      border-radius: var(--radius-lg);
+      text-align: center;
+    }
+
+    .cadence-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 12px;
+    }
+
+    .cadence-description {
+      font-size: 14px;
+      color: var(--color-white-muted);
+      line-height: 1.6;
+    }
+
+    @media (max-width: 968px) {
+      .work-grid {
+        grid-template-columns: 1fr;
+      }
+      .cadence-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ========================================
+       SLIDE 8: YOUR OUTCOMES
+       ======================================== */
+    .outcomes-section {
+      padding: 120px 0;
+    }
+
+    .outcomes-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .outcome-card {
+      padding: 32px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-lg);
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .outcome-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateY(-3px);
+    }
+
+    .outcome-icon {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, rgba(245, 155, 86, 0.2) 0%, rgba(111, 141, 135, 0.2) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    .outcome-icon svg {
+      width: 28px;
+      height: 28px;
+      stroke: var(--color-orange);
+    }
+
+    .outcome-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 12px;
+    }
+
+    .outcome-description {
+      font-size: 14px;
+      color: var(--color-white-muted);
+      line-height: 1.6;
+    }
+
+    @media (max-width: 968px) {
+      .outcomes-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .outcomes-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ========================================
+       SLIDE 9: WHAT WE NEED FROM YOU
+       ======================================== */
+    .prerequisites-section {
+      padding: 120px 0;
+    }
+
+    .prerequisites-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .prerequisites-row-bottom {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      max-width: 800px;
+      margin: 0 auto 40px;
+    }
+
+    .prerequisite-card {
+      padding: 28px 24px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-lg);
+      text-align: left;
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      transition: all 0.3s ease;
+    }
+
+    .prerequisite-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(111, 141, 135, 0.15);
+    }
+
+    .prerequisite-number {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      background: var(--color-accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--bg-primary);
+    }
+
+    .prerequisite-content {
+      flex: 1;
+    }
+
+    .prerequisite-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 8px;
+    }
+
+    .prerequisite-description {
+      font-size: 14px;
+      color: var(--color-white-muted);
+      line-height: 1.6;
+    }
+
+    .critical-note {
+      padding: 24px 32px;
+      background: linear-gradient(145deg, rgba(245, 155, 86, 0.1) 0%, rgba(245, 155, 86, 0.03) 100%);
+      border: 1px solid rgba(245, 155, 86, 0.2);
+      border-radius: var(--radius-lg);
+      text-align: center;
+    }
+
+    .critical-note strong {
+      color: var(--color-orange);
+      font-weight: 600;
+    }
+
+    .critical-note p {
+      font-size: 15px;
+      color: var(--color-white-muted);
+      line-height: 1.7;
+    }
+
+    @media (max-width: 1024px) {
+      .prerequisites-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .prerequisites-row-bottom {
+        grid-template-columns: 1fr;
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .prerequisites-grid {
+        grid-template-columns: 1fr;
+      }
+      .prerequisite-card {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+      }
+    }
+
+    /* ========================================
+       SLIDE 10: INVESTMENT / PRICING
+       ======================================== */
+    .pricing-section {
+      padding: 120px 0;
+    }
+
+    .pricing-card {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 48px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+      border: 1px solid rgba(245, 155, 86, 0.2);
+      border-radius: var(--radius-xl);
+      text-align: center;
+      box-shadow: 0 0 60px rgba(245, 155, 86, 0.1);
+    }
+
+    .pricing-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-orange);
+      margin-bottom: 16px;
+    }
+
+    .pricing-value {
+      font-size: 64px;
+      font-weight: 700;
+      color: var(--color-white);
+      margin-bottom: 8px;
+    }
+
+    .pricing-value span {
+      font-size: 24px;
+      font-weight: 400;
+      color: var(--color-white-muted);
+    }
+
+    .pricing-period {
+      font-size: 16px;
+      color: var(--color-white-muted);
+      margin-bottom: 12px;
+    }
+
+    .pricing-terms {
+      font-size: 14px;
+      color: var(--color-white-subtle);
+      margin-bottom: 32px;
+    }
+
+    .pricing-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      margin: 24px 0;
+    }
+
+    .pricing-includes {
+      text-align: left;
+    }
+
+    .pricing-includes h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .pricing-includes ul {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .pricing-includes li {
+      font-size: 14px;
+      color: var(--color-white-muted);
+      padding-left: 24px;
+      position: relative;
+    }
+
+    .pricing-includes li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--color-accent);
+      font-weight: 600;
+    }
+
+    .pricing-note {
+      margin-top: 32px;
+      padding: 16px;
+      background: rgba(111, 141, 135, 0.1);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      color: var(--color-white-muted);
+      font-style: italic;
+    }
+
+    @media (max-width: 640px) {
+      .pricing-includes ul {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ========================================
+       SLIDE 11: WHY KNIROO - COMPARISON
+       ======================================== */
+    .comparison-section {
+      padding: 120px 0;
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .comparison-card {
+      padding: 32px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-lg);
+    }
+
+    .comparison-card.featured {
+      background: linear-gradient(145deg, rgba(245, 155, 86, 0.08) 0%, rgba(245, 155, 86, 0.02) 100%);
+      border-color: rgba(245, 155, 86, 0.2);
+      box-shadow: 0 0 40px rgba(245, 155, 86, 0.1);
+    }
+
+    .comparison-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .comparison-card.featured .comparison-title {
+      color: var(--color-orange);
+    }
+
+    .comparison-card ul {
+      list-style: none;
+    }
+
+    .comparison-card li {
+      font-size: 14px;
+      color: var(--color-white-muted);
+      padding: 10px 0;
+      padding-left: 24px;
+      position: relative;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .comparison-card li:last-child {
+      border-bottom: none;
+    }
+
+    .comparison-card li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: var(--color-white-subtle);
+    }
+
+    .comparison-card.featured li::before {
+      content: '✓';
+      color: var(--color-accent);
+      font-weight: 600;
+    }
+
+    .no-nonsense {
+      padding: 24px 32px;
+      background: rgba(108, 69, 55, 0.1);
+      border: 1px solid rgba(108, 69, 55, 0.2);
+      border-radius: var(--radius-lg);
+      text-align: center;
+    }
+
+    .no-nonsense strong {
+      color: var(--color-orange);
+      font-weight: 600;
+    }
+
+    .no-nonsense p {
+      font-size: 15px;
+      color: var(--color-white-muted);
+      line-height: 1.7;
+    }
+
+    @media (max-width: 968px) {
+      .comparison-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ========================================
+       SLIDE 12: NEXT STEPS
+       ======================================== */
+    .next-steps-section {
+      padding: 120px 0;
+    }
+
+    .next-steps-timeline {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      position: relative;
+      margin-bottom: 60px;
+    }
+
+    .next-steps-timeline::before {
+      content: '';
+      position: absolute;
+      top: 40px;
+      left: 80px;
+      right: 80px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--color-orange), var(--color-accent), var(--color-brown));
+    }
+
+    .next-step-item {
+      text-align: center;
+      position: relative;
+    }
+
+    .next-step-number {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--color-orange) 0%, var(--color-brown) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 700;
+      color: white;
+      margin: 0 auto 24px;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 0 30px rgba(245, 155, 86, 0.3);
+    }
+
+    .next-step-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 12px;
+    }
+
+    .next-step-description {
+      font-size: 14px;
+      color: var(--color-white-muted);
+      line-height: 1.7;
+      padding: 0 20px;
+    }
+
+    @media (max-width: 968px) {
+      .next-steps-timeline {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .next-steps-timeline::before {
+        display: none;
+      }
+    }
+
+    /* ========================================
+       SLIDE 13: CLOSING / CTA
+       ======================================== */
+    .closing-section {
+      padding: 120px 0;
+      text-align: center;
+    }
+
+    /* Glass Container for Closing Logo */
+    .closing-logo-glass {
+      position: relative;
+      display: inline-block;
+      padding: 40px 60px;
+      margin-bottom: 40px;
+      background: linear-gradient(145deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.04) 40%,
+        rgba(245, 155, 86, 0.06) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 28px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow:
+        0 8px 60px rgba(0, 0, 0, 0.4),
+        0 0 100px rgba(245, 155, 86, 0.15),
+        0 0 150px rgba(245, 155, 86, 0.08),
+        inset 0 2px 0 rgba(255, 255, 255, 0.1),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+      animation: closingGlassGlow 6s ease-in-out infinite;
+    }
+
+    .closing-logo-glass::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 15%;
+      right: 15%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+      border-radius: 50%;
+    }
+
+    .closing-logo-glass::after {
+      content: '';
+      position: absolute;
+      top: 8%;
+      left: 8%;
+      right: 8%;
+      bottom: 8%;
+      border-radius: 24px;
+      background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    @keyframes closingGlassGlow {
+      0%, 100% {
+        box-shadow:
+          0 8px 60px rgba(0, 0, 0, 0.4),
+          0 0 100px rgba(245, 155, 86, 0.15),
+          0 0 150px rgba(245, 155, 86, 0.08),
+          inset 0 2px 0 rgba(255, 255, 255, 0.1),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+      }
+      50% {
+        box-shadow:
+          0 12px 80px rgba(0, 0, 0, 0.5),
+          0 0 120px rgba(245, 155, 86, 0.2),
+          0 0 180px rgba(245, 155, 86, 0.12),
+          inset 0 2px 0 rgba(255, 255, 255, 0.15),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.12);
+      }
+    }
+
+    .closing-logo {
+      height: 100px;
+      width: auto;
+      display: block;
+    }
+
+    .closing-headline {
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+
+    .closing-cta {
+      margin: 40px 0;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--color-orange) 0%, var(--color-brown) 100%);
+      color: white;
+      padding: 18px 48px;
+      border-radius: var(--radius-full);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 18px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 30px rgba(245, 155, 86, 0.4);
+    }
+
+    .cta-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 40px rgba(245, 155, 86, 0.5);
+    }
+
+    .contact-info {
+      margin-top: 60px;
+    }
+
+    .contact-info p {
+      font-size: 16px;
+      color: var(--color-white-muted);
+      margin-bottom: 8px;
+    }
+
+    .contact-info a {
+      color: var(--color-orange);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .contact-info a:hover {
+      color: var(--color-accent);
+    }
+
+    .closing-motto {
+      margin-top: 40px;
+      font-size: 14px;
+      font-style: italic;
+      color: var(--color-accent);
+    }
+
+    /* ========================================
+       DIVIDER
+       ======================================== */
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+      margin: 0 auto;
+      max-width: 700px;
+    }
+
+    /* ========================================
+       FOOTER
+       ======================================== */
+    footer {
+      padding: 32px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      text-align: center;
+    }
+
+    /* Glass Container for Footer Logo */
+    .footer-logo-glass {
+      position: relative;
+      display: inline-block;
+      padding: 12px 24px;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.08) 0%,
+        rgba(255, 255, 255, 0.03) 50%,
+        rgba(245, 155, 86, 0.05) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow:
+        0 4px 30px rgba(0, 0, 0, 0.3),
+        0 0 40px rgba(245, 155, 86, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transition: all 0.4s ease;
+    }
+
+    .footer-logo-glass::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 20%;
+      right: 20%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    }
+
+    .footer-logo-glass:hover {
+      background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.12) 0%,
+        rgba(255, 255, 255, 0.05) 50%,
+        rgba(245, 155, 86, 0.08) 100%);
+      box-shadow:
+        0 6px 40px rgba(0, 0, 0, 0.35),
+        0 0 60px rgba(245, 155, 86, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
+
+    .footer-logo {
+      height: 32px;
+      width: auto;
+      display: block;
+    }
+
+    .footer-text {
+      font-size: 12px;
+      color: var(--color-white-subtle);
+    }
+
+    /* ========================================
+       UTILITIES
+       ======================================== */
+    .text-center {
+      text-align: center;
+    }
+
+    .mt-20 {
+      margin-top: 20px;
+    }
+
+    .mb-40 {
+      margin-bottom: 40px;
+    }
+
+    /* ========================================
+       RESPONSIVE
+       ======================================== */
+    @media (max-width: 768px) {
+      section {
+        padding: 80px 0;
+      }
+
+      .container {
+        padding: 0 20px;
+      }
+
+      nav {
+        padding: 14px 0;
+      }
+
+      .nav-pill {
+        display: none;
+      }
+
+      .nav-cta {
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Decorations -->
+  <div class="bg-decoration">
+    <div class="ambient-glow ambient-glow-1"></div>
+    <div class="ambient-glow ambient-glow-2"></div>
+    <div class="ambient-glow ambient-glow-3"></div>
+    <div class="orb"></div>
+    <div class="dotted-line"></div>
+
+    <!-- Flowing Lines SVG -->
+    <svg class="flowing-lines" viewBox="0 0 1440 800" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="orangeLineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#f59b56" stop-opacity="0"/>
+          <stop offset="20%" stop-color="#f59b56" stop-opacity="0.8"/>
+          <stop offset="50%" stop-color="#f59b56" stop-opacity="1"/>
+          <stop offset="80%" stop-color="#f59b56" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="#f59b56" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="greenLineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#6f8d87" stop-opacity="0"/>
+          <stop offset="30%" stop-color="#6f8d87" stop-opacity="0.5"/>
+          <stop offset="60%" stop-color="#6f8d87" stop-opacity="0.6"/>
+          <stop offset="100%" stop-color="#6f8d87" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="brownLineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#6c4537" stop-opacity="0"/>
+          <stop offset="30%" stop-color="#6c4537" stop-opacity="0.4"/>
+          <stop offset="70%" stop-color="#6c4537" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#6c4537" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+
+      <path d="M-50,450
+               C150,400 300,350 450,380
+               C600,410 750,320 900,350
+               C1050,380 1200,280 1350,320
+               C1500,360 1600,300 1750,280"
+            stroke="url(#orangeLineGradient)"
+            stroke-width="2.5"
+            fill="none"
+            stroke-linecap="round"/>
+
+      <path d="M-100,520
+               C100,480 250,420 400,460
+               C550,500 700,400 850,440
+               C1000,480 1150,380 1300,420
+               C1450,460 1550,400 1700,380"
+            stroke="url(#greenLineGradient)"
+            stroke-width="2"
+            fill="none"
+            stroke-linecap="round"/>
+
+      <path d="M-80,580
+               C120,540 280,500 440,530
+               C600,560 760,480 920,510
+               C1080,540 1240,460 1400,490
+               C1560,520 1650,470 1800,450"
+            stroke="url(#brownLineGradient)"
+            stroke-width="1.5"
+            fill="none"
+            stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <a href="#" class="nav-logo">
+        <div class="nav-logo-glass">
+          <img src="Kniroo Logo V1.png" alt="Kniroo" class="nav-logo-img">
+        </div>
+      </a>
+      <div class="nav-badge">
+        <div class="nav-pill"><span>OPERATIONAL</span> EXCELLENCE</div>
+        <a href="https://www.kniroo.com/demo" class="nav-cta" target="_blank">Book a Call</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========================================
+       SLIDE 1: COVER / HERO
+       ======================================== -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-logo-glass">
+          <img src="Kniroo Logo V1.png" alt="Kniroo" class="hero-logo">
+        </div>
+
+        <p class="hero-tagline">Kniroo Consulting</p>
+
+        <h1 class="hero-headline">
+          The Operational Partner<br>
+          <span class="highlight">You've Been Trying to Hire</span>
+        </h1>
+
+        <p class="hero-description">
+          Hands-on operational excellence for high-growth startups & scale-ups with 20-200 employees. From diagnosis to infrastructure in 90 days.
+        </p>
+
+        <p class="hero-motto">Operational Excellence Through Commitment & Passion</p>
+
+        <div class="scroll-indicator">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 5v14M5 12l7 7 7-7"/>
+          </svg>
+          <span>Scroll</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================
+       SLIDE 2: THE CHALLENGE
+       ======================================== -->
+  <section id="challenge" class="challenge-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">The Challenge</span>
+        <h2 class="section-title">Why 90% of Founders Are Trapped in Their Own Companies</h2>
+      </div>
+
+      <div class="challenge-intro">
+        <p>High-growth startups and scale-ups (20-200 employees) face increasing operational complexity that prevents sustainable scaling.</p>
+        <p>Internal resources are stretched thin, lacking time or expertise to optimize operations. The result? Founders work outside their zone of genius—and eventually burn out or lose their passion.</p>
+      </div>
+
+      <div class="section-header" style="margin-bottom: 32px;">
+        <h3 class="section-title" style="font-size: 24px;">The Pain Points</h3>
+      </div>
+
+      <div class="pain-points-grid">
+        <div class="pain-point-card">
+          <div class="pain-point-number">1</div>
+          <div class="pain-point-content">
+            <div class="pain-point-title">Revenue Grows, Profits Stagnate</div>
+            <div class="pain-point-description">Lack of efficient processes and structures hinders profitability</div>
+          </div>
+        </div>
+        <div class="pain-point-card">
+          <div class="pain-point-number">2</div>
+          <div class="pain-point-content">
+            <div class="pain-point-title">Tasks Fall Through the Cracks</div>
+            <div class="pain-point-description">No clear accountability—nothing runs without founder involvement</div>
+          </div>
+        </div>
+        <div class="pain-point-card">
+          <div class="pain-point-number">3</div>
+          <div class="pain-point-content">
+            <div class="pain-point-title">Quality & Service Inconsistency</div>
+            <div class="pain-point-description">Customer satisfaction drops as delivery becomes unpredictable</div>
+          </div>
+        </div>
+      </div>
+      <div class="pain-points-row-bottom">
+        <div class="pain-point-card">
+          <div class="pain-point-number">4</div>
+          <div class="pain-point-content">
+            <div class="pain-point-title">Onboarding Costs Time & Talent</div>
+            <div class="pain-point-description">New hires take too long to ramp up—many leave within months</div>
+          </div>
+        </div>
+        <div class="pain-point-card">
+          <div class="pain-point-number">5</div>
+          <div class="pain-point-content">
+            <div class="pain-point-title">Tools Without Strategy</div>
+            <div class="pain-point-description">Expensive software investments lack the organizational glue to work</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ========================================
+       SLIDE 3: THE KNIROO SOLUTION
+       ======================================== -->
+  <section id="solution" class="solution-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">The Kniroo Solution</span>
+        <h2 class="section-title">Not Consultants. Operational Partners.</h2>
+      </div>
+
+      <div class="solution-intro">
+        <p>We operate as a high-impact, hands-on extension of your leadership team. We bridge the gap between strategic vision and operational reality by diving into the engine room of your business.</p>
+      </div>
+
+      <div class="section-header" style="margin-bottom: 32px;">
+        <h3 class="section-title" style="font-size: 24px;">Four Pillars</h3>
+      </div>
+
+      <div class="pillars-grid">
+        <div class="pillar-card">
+          <div class="pillar-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <div class="pillar-title">1:1 Hands-On Partnership</div>
+          <div class="pillar-description">We work directly with you and your leadership team, providing expert operational guidance.</div>
+        </div>
+        <div class="pillar-card">
+          <div class="pillar-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 6v6l4 2"/>
+            </svg>
+          </div>
+          <div class="pillar-title">Focus on Impact</div>
+          <div class="pillar-description">We don't just identify problems. We implement solutions that drive tangible results.</div>
+        </div>
+        <div class="pillar-card">
+          <div class="pillar-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+            </svg>
+          </div>
+          <div class="pillar-title">Actual Execution</div>
+          <div class="pillar-description">We don't just give blueprints. We grab a shovel and start digging alongside you.</div>
+        </div>
+        <div class="pillar-card">
+          <div class="pillar-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            </svg>
+          </div>
+          <div class="pillar-title">Long-Term Vision</div>
+          <div class="pillar-description">We build lasting relationships, helping your company scale efficiently and sustainably.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ========================================
+       SLIDE 4: OUR 90-DAY METHODOLOGY
+       ======================================== -->
+  <section id="methodology" class="methodology-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Our 90-Day Methodology</span>
+        <h2 class="section-title">From Diagnosis to Infrastructure in Three Phases</h2>
+      </div>
+
+      <div class="methodology-timeline">
+        <!-- Month 1 -->
+        <div class="methodology-phase">
+          <div class="methodology-badge">
+            <span class="month">Month</span>
+            <span class="number">1</span>
+          </div>
+          <div class="methodology-title">Assessment</div>
+          <div class="methodology-subtitle">Deep Dive Analysis</div>
+          <div class="methodology-content">
+            <ul>
+              <li>Organizational structure & workflows</li>
+              <li>KPI audit & gap analysis</li>
+              <li>Tool consolidation opportunities</li>
+              <li>Cost analysis & efficiency review</li>
+              <li>Risk assessment & mitigation</li>
+            </ul>
+            <div class="methodology-output">Output: Prioritized Action Plan</div>
+          </div>
+        </div>
+
+        <!-- Month 2 -->
+        <div class="methodology-phase">
+          <div class="methodology-badge">
+            <span class="month">Month</span>
+            <span class="number">2</span>
+          </div>
+          <div class="methodology-title">Implementation</div>
+          <div class="methodology-subtitle">Hands-On Execution</div>
+          <div class="methodology-content">
+            <ul>
+              <li>Optimized org structures</li>
+              <li>KPI definition & tracking setup</li>
+              <li>Workflow streamlining</li>
+              <li>Cost reduction initiatives</li>
+              <li>Quick wins delivery</li>
+            </ul>
+            <div class="methodology-output">Output: Working Systems</div>
+          </div>
+        </div>
+
+        <!-- Month 3 -->
+        <div class="methodology-phase">
+          <div class="methodology-badge">
+            <span class="month">Month</span>
+            <span class="number">3</span>
+          </div>
+          <div class="methodology-title">Optimization</div>
+          <div class="methodology-subtitle">Refinement & Handoff</div>
+          <div class="methodology-content">
+            <ul>
+              <li>Performance evaluation</li>
+              <li>Solution refinement</li>
+              <li>Process documentation</li>
+              <li>Team training & knowledge transfer</li>
+              <li>Sustainability planning</li>
+            </ul>
+            <div class="methodology-output">Output: Self-Sustaining Operations</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ========================================
+       SLIDE 5: STATUS QUO ASSESSMENT
+       ======================================== -->
+  <section id="assessment" class="assessment-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Status Quo Assessment</span>
+        <h2 class="section-title">We Analyze the Engine Room, Not Just the Dashboard</h2>
+      </div>
+
+      <div class="assessment-grid">
+        <div class="assessment-card">
+          <div class="assessment-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+          <div class="assessment-title">Customer Success</div>
+          <div class="assessment-description">Evaluate customer journey, response times, and churn triggers. Identify where human capital is wasted on repetitive tasks.</div>
+        </div>
+
+        <div class="assessment-card">
+          <div class="assessment-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <line x1="12" y1="1" x2="12" y2="23"/>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+          </div>
+          <div class="assessment-title">Cost Controlling</div>
+          <div class="assessment-description">Rigorous review of tool stack, vendor contracts, and internal spend. Identify redundancies and leaner processes.</div>
+        </div>
+
+        <div class="assessment-card">
+          <div class="assessment-icon green">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+              <line x1="8" y1="21" x2="16" y2="21"/>
+              <line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+          </div>
+          <div class="assessment-title">Operations</div>
+          <div class="assessment-description">Analyze information flow, org charts, accountability loops, and management reporting effectiveness.</div>
+        </div>
+
+        <div class="assessment-card">
+          <div class="assessment-icon green">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+          </div>
+          <div class="assessment-title">Gap Analysis</div>
+          <div class="assessment-description">We identify immediate operational threats and "bottleneck" employees or processes preventing your company from scaling from 20 to 200+ employees.</div>
+        </div>
+
+        <div class="assessment-card full-width">
+          <div class="assessment-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <line x1="3" y1="9" x2="21" y2="9"/>
+              <line x1="9" y1="21" x2="9" y2="9"/>
+            </svg>
+          </div>
+          <div class="assessment-title">Data Access</div>
+          <div class="assessment-description">We request admin access to CRM, support tools, ERP, and analytics platforms for effective audit and implementation.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ========================================
+       SLIDE 6: KPI IMPLEMENTATION
+       ======================================== -->
+  <section id="kpi" class="kpi-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">KPI Implementation</span>
+        <h2 class="section-title">Data Is Only Valuable If It's Actionable</h2>
+      </div>
+
+      <div class="kpi-process">
+        <div class="kpi-process-card">
+          <div class="kpi-process-number">1</div>
+          <div class="kpi-process-title">Framework Design</div>
+          <div class="kpi-process-description">Move beyond vanity metrics to implement core KPIs across CS, Support, and Operations.</div>
+        </div>
+        <div class="kpi-process-card">
+          <div class="kpi-process-number">2</div>
+          <div class="kpi-process-title">Reporting Infrastructure</div>
+          <div class="kpi-process-description">Set up dashboards and reporting rhythms so every employee knows exactly what they're measured against.</div>
+        </div>
+        <div class="kpi-process-card">
+          <div class="kpi-process-number">3</div>
+          <div class="kpi-process-title">Continuous Iteration</div>
+          <div class="kpi-process-description">We don't "set and forget." Metrics adjust as your business model evolves.</div>
+        </div>
+      </div>
+
+      <div class="section-header" style="margin-top: 48px; margin-bottom: 32px;">
+        <h3 class="section-title" style="font-size: 22px;">Department-Specific KPIs We Implement</h3>
+      </div>
+
+      <div class="kpi-departments">
+        <div class="kpi-dept-card">
+          <div class="kpi-dept-title">HR</div>
+          <div class="kpi-dept-list">Time to Fill • Turnover Rate • Employee Satisfaction Score</div>
+        </div>
+        <div class="kpi-dept-card">
+          <div class="kpi-dept-title">Sales</div>
+          <div class="kpi-dept-list">MRR Growth • Customer Acquisition Cost • Lead Conversion Rate</div>
+        </div>
+        <div class="kpi-dept-card">
+          <div class="kpi-dept-title">Customer Service</div>
+          <div class="kpi-dept-list">CSAT Score • First Response Time • Resolution Time</div>
+        </div>
+        <div class="kpi-dept-card">
+          <div class="kpi-dept-title">Marketing</div>
+          <div class="kpi-dept-list">Website Traffic • MQLs • Conversion Rate</div>
+        </div>
+        <div class="kpi-dept-card">
+          <div class="kpi-dept-title">Finance</div>
+          <div class="kpi-dept-list">Operating Margin • Net Profit Margin • ROE • DSO</div>
+        </div>
+        <div class="kpi-dept-card">
+          <div class="kpi-dept-title">Media Buying</div>
+          <div class="kpi-dept-list">ROAS • Cost per Acquisition • Click-Through Rate</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ========================================
+       SLIDE 7: HOW WE WORK WITH YOU
+       ======================================== -->
+  <section id="work" class="work-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">How We Work With You</span>
+        <h2 class="section-title">Real-Time Integration, Not Arms-Length Consulting</h2>
+      </div>
+
+      <div class="work-grid">
+        <div class="work-card">
+          <div class="work-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          </div>
+          <div class="work-title">Direct Channel Access</div>
+          <div class="work-description">We join your internal communication channels—Slack, Microsoft Teams, or Google Chat. Immediate feedback, quick decisions, frictionless collaboration.</div>
+        </div>
+
+        <div class="work-card">
+          <div class="work-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <div class="work-title">Ad-Hoc Support</div>
+          <div class="work-description">Need a quick second opinion on an operational hire or tool procurement? We're one message away—treating your business with the same urgency as our own.</div>
+        </div>
+      </div>
+
+      <div class="section-header" style="margin-top: 48px; margin-bottom: 32px;">
+        <h3 class="section-title" style="font-size: 22px;">Meeting Cadence</h3>
+      </div>
+
+      <div class="cadence-grid">
+        <div class="cadence-card">
+          <div class="cadence-title">2h Weekly Executive Session</div>
+          <div class="cadence-description">Review progress, unblock hurdles, align on deliverables. Consistent rhythm ensures momentum never stalls.</div>
+        </div>
+        <div class="cadence-card">
+          <div class="cadence-title">24/7 On-Demand Availability</div>
+          <div class="cadence-description">Board preparation, urgent crisis, strategic decisions—we provide flexibility to join calls when you need us.</div>
+        </div>
+        <div class="cadence-card">
+          <div class="cadence-title">Personalized Reporting</div>
+          <div class="cadence-description">Clear, concise reports on progress and key metrics. No fluff, no vanity dashboards—just the numbers that matter.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ========================================
+       SLIDE 8: YOUR OUTCOMES
+       ======================================== -->
+  <section id="outcomes" class="outcomes-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Your Outcomes</span>
+        <h2 class="section-title">What Changes When Operations Run Without You</h2>
+      </div>
+
+      <div class="outcomes-grid">
+        <div class="outcome-card">
+          <div class="outcome-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+          </div>
+          <div class="outcome-title">Increased Efficiency</div>
+          <div class="outcome-description">Streamlined operations and improved productivity. Your team works smarter, not harder.</div>
+        </div>
+
+        <div class="outcome-card">
+          <div class="outcome-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <line x1="12" y1="1" x2="12" y2="23"/>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+          </div>
+          <div class="outcome-title">Reduced Costs</div>
+          <div class="outcome-description">Identification and elimination of redundancies and inefficiencies. Better burn rate without sacrificing quality.</div>
+        </div>
+
+        <div class="outcome-card">
+          <div class="outcome-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+            </svg>
+          </div>
+          <div class="outcome-title">Enhanced Scalability</div>
+          <div class="outcome-description">A solid operational foundation for sustainable growth. Systems that work at 50 employees—and at 200.</div>
+        </div>
+
+        <div class="outcome-card">
+          <div class="outcome-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <div class="outcome-title">Mitigated Risks</div>
+          <div class="outcome-description">Proactive identification and management of potential threats. No more surprises that derail your quarter.</div>
+        </div>
+
+        <div class="outcome-card">
+          <div class="outcome-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+              <line x1="9" y1="9" x2="9.01" y2="9"/>
+              <line x1="15" y1="9" x2="15.01" y2="9"/>
+            </svg>
+          </div>
+          <div class="outcome-title">Your Zone of Genius</div>
+          <div class="outcome-description">Focus again on what you love and what made you successful. We handle the operational heavy lifting.</div>
+        </div>
+
+        <div class="outcome-card">
+          <div class="outcome-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <div class="outcome-title">Peace of Mind</div>
+          <div class="outcome-description">Know your operations are in the hands of experienced professionals. Finally, peaceful nights.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ========================================
+       SLIDE 9: WHAT WE NEED FROM YOU
+       ======================================== -->
+  <section id="prerequisites" class="prerequisites-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">What We Need From You</span>
+        <h2 class="section-title">Prerequisites for Speed and Success</h2>
+      </div>
+
+      <div class="prerequisites-grid">
+        <div class="prerequisite-card">
+          <div class="prerequisite-number">1</div>
+          <div class="prerequisite-content">
+            <div class="prerequisite-title">Deep-Dive Knowledge Transfer</div>
+            <div class="prerequisite-description">Access to product owners and key stakeholders for comprehensive understanding of your product's technical nuances and customer pain points.</div>
+          </div>
+        </div>
+
+        <div class="prerequisite-card">
+          <div class="prerequisite-number">2</div>
+          <div class="prerequisite-content">
+            <div class="prerequisite-title">System & Data Access</div>
+            <div class="prerequisite-description">"Admin" or "Super-User" access to your current tech stack—CRM, Support Tools, ERP, and Analytics platforms.</div>
+          </div>
+        </div>
+
+        <div class="prerequisite-card">
+          <div class="prerequisite-number">3</div>
+          <div class="prerequisite-content">
+            <div class="prerequisite-title">Technical & Dev Resources</div>
+            <div class="prerequisite-description">Prioritized "fast-track" for operational tickets related to system adjustments or deep integrations.</div>
+          </div>
+        </div>
+      </div>
+      <div class="prerequisites-row-bottom">
+        <div class="prerequisite-card">
+          <div class="prerequisite-number">4</div>
+          <div class="prerequisite-content">
+            <div class="prerequisite-title">Decisive Feedback Loops</div>
+            <div class="prerequisite-description">High-growth environments require fast decision-making. Timely feedback from leadership keeps implementation on schedule.</div>
+          </div>
+        </div>
+
+        <div class="prerequisite-card">
+          <div class="prerequisite-number">5</div>
+          <div class="prerequisite-content">
+            <div class="prerequisite-title">Open-Book Policy</div>
+            <div class="prerequisite-description">An honest look at current contracts, payroll structures (as relevant), and overheads to effectively optimize cost controlling and operations.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="critical-note">
+        <p><strong>Critical:</strong> Particularly during the initial 4–6 week onboarding phase, high transparency and collaboration are essential for implementation speed.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ========================================
+       SLIDE 10: INVESTMENT
+       ======================================== -->
+  <section id="pricing" class="pricing-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Investment</span>
+        <h2 class="section-title">Transparent Pricing, No Surprises</h2>
+      </div>
+
+      <div class="pricing-card">
+        <div class="pricing-label">Monthly Investment</div>
+        <div class="pricing-value">€10,000<span> net</span></div>
+        <div class="pricing-period">per month</div>
+        <div class="pricing-terms">Minimum commitment: 3 months<br>Auto-renews monthly unless canceled 3 weeks in advance</div>
+
+        <div class="pricing-divider"></div>
+
+        <div class="pricing-includes">
+          <h4>What's Included</h4>
+          <ul>
+            <li>Dedicated 2-hour weekly executive sessions</li>
+            <li>Direct access via Slack/Teams integration</li>
+            <li>On-demand availability for urgent matters</li>
+            <li>Comprehensive status quo assessment</li>
+            <li>Hands-on KPI implementation</li>
+            <li>Personalized progress reporting</li>
+            <li>Process documentation & team training</li>
+          </ul>
+        </div>
+
+        <div class="pricing-note">
+          No hidden fees. No hourly billing. One predictable monthly investment.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ========================================
+       SLIDE 11: WHY KNIROO
+       ======================================== -->
+  <section id="comparison" class="comparison-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Why Kniroo?</span>
+        <h2 class="section-title">The Alternative to Hiring a COO or Engaging Traditional Consultants</h2>
+      </div>
+
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <div class="comparison-title">Hire a COO</div>
+          <ul>
+            <li>€150K-300K+ annual salary</li>
+            <li>6-12 month hiring process</li>
+            <li>Equity expectations</li>
+            <li>Risk of wrong cultural fit</li>
+            <li>Fixed overhead regardless of needs</li>
+          </ul>
+        </div>
+
+        <div class="comparison-card">
+          <div class="comparison-title">Traditional Consultants</div>
+          <ul>
+            <li>€200-500/hour billing</li>
+            <li>Strategy decks, no execution</li>
+            <li>Arms-length engagement</li>
+            <li>Junior staff doing the work</li>
+            <li>Generic frameworks, not tailored</li>
+          </ul>
+        </div>
+
+        <div class="comparison-card featured">
+          <div class="comparison-title">Kniroo</div>
+          <ul>
+            <li>€10K/month predictable investment</li>
+            <li>Start immediately, results in weeks</li>
+            <li>Embedded partnership, not outsiders</li>
+            <li>Hands-on execution, not just slides</li>
+            <li>Flexible commitment, scale as needed</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="no-nonsense">
+        <p><strong>No nonsense:</strong> We don't give emotional support or thoughts. We invest ourselves, dive deep, and get into the trenches with you.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ========================================
+       SLIDE 12: NEXT STEPS
+       ======================================== -->
+  <section id="next-steps" class="next-steps-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Next Steps</span>
+        <h2 class="section-title">Your Path to Operational Freedom</h2>
+      </div>
+
+      <div class="next-steps-timeline">
+        <div class="next-step-item">
+          <div class="next-step-number">1</div>
+          <div class="next-step-title">Discovery Call</div>
+          <div class="next-step-description">90-minute expert conversation to analyze your situation and develop first concrete recommendations. No commitment, no cost.</div>
+        </div>
+
+        <div class="next-step-item">
+          <div class="next-step-number">2</div>
+          <div class="next-step-title">Tailored Roadmap</div>
+          <div class="next-step-description">We create your custom 90-day action plan with clear milestones, quick wins, and measurable outcomes. You decide if we're the right fit.</div>
+        </div>
+
+        <div class="next-step-item">
+          <div class="next-step-number">3</div>
+          <div class="next-step-title">Kickoff & Execution</div>
+          <div class="next-step-description">We embed with your team, join your channels, and start delivering results. First improvements visible within 4 weeks.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ========================================
+       SLIDE 13: CLOSING
+       ======================================== -->
+  <section id="contact" class="closing-section">
+    <div class="container">
+      <div class="closing-logo-glass">
+        <img src="Kniroo Logo V1.png" alt="Kniroo" class="closing-logo">
+      </div>
+
+      <h2 class="closing-headline">You're One Meeting Away From Starting<br>Your Company's Next Chapter</h2>
+
+      <p class="section-description" style="margin-top: 0;">
+        Ready to get your time back? Schedule your free 90-minute discovery call. We'll analyze your operational challenges and show you exactly where the quick wins are hiding.
+      </p>
+
+      <div class="closing-cta">
+        <a href="https://www.kniroo.com/demo" class="cta-button" target="_blank">Book Your Discovery Call</a>
+      </div>
+
+      <div class="contact-info">
+        <p><strong>Let's Talk</strong></p>
+        <p>Website: <a href="https://kniroo.com" target="_blank">kniroo.com</a></p>
+        <p>Email: <a href="mailto:andreas.kraus@kniroo.com">andreas.kraus@kniroo.com</a></p>
+      </div>
+
+      <p class="closing-motto">Operational Excellence Through Commitment & Passion</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-logo-glass">
+        <img src="Kniroo Logo V1.png" alt="Kniroo" class="footer-logo">
+      </div>
+      <div class="footer-text">Operational Excellence Through Commitment & Passion</div>
+    </div>
+  </footer>
+
+</body>
+</html>
