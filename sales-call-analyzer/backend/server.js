@@ -64,6 +64,23 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Database debug endpoint
+app.get('/api/debug/db', async (req, res) => {
+  try {
+    const dbAdapter = require('./services/dbAdapter');
+    const transcriptDb = require('./services/transcriptDb');
+    const count = await transcriptDb.getTranscriptCount();
+    res.json({
+      databaseType: dbAdapter.isUsingPostgres() ? 'PostgreSQL' : 'SQLite',
+      hasDbUrl: !!process.env.DATABASE_URL,
+      transcriptCount: count,
+      nodeEnv: process.env.NODE_ENV
+    });
+  } catch (error) {
+    res.json({ error: error.message, stack: error.stack });
+  }
+});
+
 // Admin page redirect
 app.get('/', (req, res) => {
   res.redirect('/admin');
