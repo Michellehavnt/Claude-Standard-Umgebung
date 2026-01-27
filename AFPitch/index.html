@@ -248,52 +248,16 @@
       text-decoration: none;
     }
 
-    /* Glass Container for Nav Logo */
-    .nav-logo-glass {
-      position: relative;
-      padding: 8px 16px;
-      background: linear-gradient(135deg,
-        rgba(255, 255, 255, 0.55) 0%,
-        rgba(255, 255, 255, 0.45) 50%,
-        rgba(255, 255, 255, 0.5) 100%);
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      border-radius: 12px;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow:
-        0 4px 24px rgba(0, 0, 0, 0.2),
-        0 0 40px rgba(255, 255, 255, 0.3),
-        0 0 80px rgba(255, 255, 255, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.7);
-      transition: all 0.4s ease;
-    }
-
-    .nav-logo-glass::before {
-      content: '';
-      position: absolute;
-      top: -1px;
-      left: 20%;
-      right: 20%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.95), transparent);
-    }
-
-    .nav-logo:hover .nav-logo-glass {
-      background: linear-gradient(135deg,
-        rgba(255, 255, 255, 0.65) 0%,
-        rgba(255, 255, 255, 0.55) 50%,
-        rgba(255, 255, 255, 0.6) 100%);
-      box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.25),
-        0 0 50px rgba(255, 255, 255, 0.4),
-        0 0 100px rgba(255, 255, 255, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.85);
-    }
-
     .nav-logo-img {
       height: 32px;
       width: auto;
       display: block;
+      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+      transition: filter 0.3s ease;
+    }
+
+    .nav-logo:hover .nav-logo-img {
+      filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.4));
     }
 
     .nav-badge {
@@ -367,74 +331,13 @@
       align-items: center;
     }
 
-    /* Glass Container for Hero Logo */
-    .hero-logo-glass {
-      position: relative;
-      padding: 32px 48px;
-      margin-bottom: 40px;
-      background: linear-gradient(145deg,
-        rgba(255, 255, 255, 0.6) 0%,
-        rgba(255, 255, 255, 0.5) 40%,
-        rgba(255, 255, 255, 0.55) 100%);
-      border: 1px solid rgba(255, 255, 255, 0.7);
-      border-radius: 24px;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow:
-        0 8px 60px rgba(0, 0, 0, 0.25),
-        0 0 80px rgba(255, 255, 255, 0.35),
-        0 0 140px rgba(255, 255, 255, 0.2),
-        inset 0 2px 0 rgba(255, 255, 255, 0.8),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.05);
-      animation: heroGlassGlow 5s ease-in-out infinite;
-    }
-
-    .hero-logo-glass::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 15%;
-      right: 15%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 1), transparent);
-      border-radius: 50%;
-    }
-
-    .hero-logo-glass::after {
-      content: '';
-      position: absolute;
-      top: 10%;
-      left: 10%;
-      right: 10%;
-      bottom: 10%;
-      border-radius: 20px;
-      background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    @keyframes heroGlassGlow {
-      0%, 100% {
-        box-shadow:
-          0 8px 60px rgba(0, 0, 0, 0.25),
-          0 0 80px rgba(255, 255, 255, 0.35),
-          0 0 140px rgba(255, 255, 255, 0.2),
-          inset 0 2px 0 rgba(255, 255, 255, 0.8),
-          inset 0 -1px 0 rgba(0, 0, 0, 0.05);
-      }
-      50% {
-        box-shadow:
-          0 12px 80px rgba(0, 0, 0, 0.3),
-          0 0 100px rgba(255, 255, 255, 0.45),
-          0 0 180px rgba(255, 255, 255, 0.25),
-          inset 0 2px 0 rgba(255, 255, 255, 0.9),
-          inset 0 -1px 0 rgba(0, 0, 0, 0.08);
-      }
-    }
-
     .hero-logo {
       height: 80px;
       width: auto;
       display: block;
+      margin-bottom: 40px;
+      filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.25))
+              drop-shadow(0 0 30px rgba(6, 114, 128, 0.15));
     }
 
     .hero-headline {
@@ -1829,54 +1732,16 @@
       text-align: center;
     }
 
-    /* Glass Container for Footer Logo */
-    .footer-logo-glass {
-      position: relative;
-      display: inline-block;
-      padding: 12px 24px;
-      margin-bottom: 12px;
-      background: linear-gradient(135deg,
-        rgba(255, 255, 255, 0.5) 0%,
-        rgba(255, 255, 255, 0.4) 50%,
-        rgba(255, 255, 255, 0.45) 100%);
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      border-radius: 14px;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      box-shadow:
-        0 4px 30px rgba(0, 0, 0, 0.2),
-        0 0 40px rgba(255, 255, 255, 0.25),
-        0 0 70px rgba(255, 255, 255, 0.12),
-        inset 0 1px 0 rgba(255, 255, 255, 0.7);
-      transition: all 0.4s ease;
-    }
-
-    .footer-logo-glass::before {
-      content: '';
-      position: absolute;
-      top: -1px;
-      left: 20%;
-      right: 20%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
-    }
-
-    .footer-logo-glass:hover {
-      background: linear-gradient(135deg,
-        rgba(255, 255, 255, 0.6) 0%,
-        rgba(255, 255, 255, 0.5) 50%,
-        rgba(255, 255, 255, 0.55) 100%);
-      box-shadow:
-        0 6px 40px rgba(0, 0, 0, 0.25),
-        0 0 50px rgba(255, 255, 255, 0.35),
-        0 0 90px rgba(255, 255, 255, 0.18),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
-    }
-
     .footer-logo {
       height: 28px;
       width: auto;
-      display: block;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
+      transition: filter 0.3s ease;
+    }
+
+    .footer-logo:hover {
+      filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.3));
     }
 
     .footer-text {
@@ -2003,9 +1868,7 @@
   <nav>
     <div class="container">
       <a href="#" class="nav-logo">
-        <div class="nav-logo-glass">
-          <img src="logo.png" alt="AffiliateFinder.ai" class="nav-logo-img">
-        </div>
+        <img src="logo.png" alt="AffiliateFinder.ai" class="nav-logo-img">
       </a>
       <div class="nav-badge">
         <div class="nav-pill"><span>600,000+</span> AFFILIATE PUBLISHERS</div>
@@ -2020,9 +1883,7 @@
   <section class="hero" id="hero">
     <div class="container">
       <div class="hero-content">
-        <div class="hero-logo-glass">
-          <img src="logo.png" alt="AffiliateFinder.ai" class="hero-logo">
-        </div>
+        <img src="logo.png" alt="AffiliateFinder.ai" class="hero-logo">
 
         <h1 class="hero-headline">
           Reach 600,000+ Affiliate Publishers<br>
@@ -2412,7 +2273,6 @@
       </div>
 
       <div class="company-info" style="margin-top: 40px;">
-        <div class="company-name">AffiliateFinder.ai</div>
         <a href="https://www.affiliatefinder.ai" target="_blank" class="website">www.affiliatefinder.ai</a>
       </div>
     </div>
@@ -2421,9 +2281,7 @@
   <!-- Footer -->
   <footer>
     <div class="container">
-      <div class="footer-logo-glass">
-        <img src="logo.png" alt="AffiliateFinder.ai" class="footer-logo">
-      </div>
+      <img src="logo.png" alt="AffiliateFinder.ai" class="footer-logo">
       <div class="footer-text">Find affiliates. Grow revenue.</div>
     </div>
   </footer>
