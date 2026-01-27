@@ -109,11 +109,11 @@ async function initDatabase() {
   `);
 
   // Create indexes for better query performance
-  db.run(`CREATE INDEX IF NOT EXISTS idx_calls_date ON analyzed_calls(date)`);
-  db.run(`CREATE INDEX IF NOT EXISTS idx_calls_sales_rep ON analyzed_calls(sales_rep)`);
-  db.run(`CREATE INDEX IF NOT EXISTS idx_pain_points_call ON pain_points(call_id)`);
-  db.run(`CREATE INDEX IF NOT EXISTS idx_language_call ON customer_language(call_id)`);
-  db.run(`CREATE INDEX IF NOT EXISTS idx_dfy_call ON dfy_mentions(call_id)`);
+  db.run('CREATE INDEX IF NOT EXISTS idx_calls_date ON analyzed_calls(date)');
+  db.run('CREATE INDEX IF NOT EXISTS idx_calls_sales_rep ON analyzed_calls(sales_rep)');
+  db.run('CREATE INDEX IF NOT EXISTS idx_pain_points_call ON pain_points(call_id)');
+  db.run('CREATE INDEX IF NOT EXISTS idx_language_call ON customer_language(call_id)');
+  db.run('CREATE INDEX IF NOT EXISTS idx_dfy_call ON dfy_mentions(call_id)');
 
   saveDatabase();
   console.log('Database initialized successfully');

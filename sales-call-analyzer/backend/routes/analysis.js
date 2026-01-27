@@ -461,7 +461,7 @@ function generateMarkdownReport(calls, stats, dfyReport, filters) {
       md += `- **${pp.category}** (${pp.count} mentions)\n`;
     }
   } else {
-    md += `_No pain points recorded_\n`;
+    md += '_No pain points recorded_\n';
   }
 
   md += `\n## DFY Analysis
@@ -482,10 +482,10 @@ function generateMarkdownReport(calls, stats, dfyReport, filters) {
       md += `- ${emoji} **${c.classification}**: ${c.count}\n`;
     }
   } else {
-    md += `_No DFY mentions recorded_\n`;
+    md += '_No DFY mentions recorded_\n';
   }
 
-  md += `\n---\n\n## Call Details\n\n`;
+  md += '\n---\n\n## Call Details\n\n';
 
   for (const call of calls) {
     const analysis = call.analysis || {};
@@ -511,14 +511,14 @@ function generateMarkdownReport(calls, stats, dfyReport, filters) {
       ];
 
       if (allPains.length > 0) {
-        md += `**Pain Points:**\n`;
+        md += '**Pain Points:**\n';
         for (const pp of allPains.slice(0, 3)) {
           md += `> "${pp.quote}"\n> _Category: ${pp.category} | Intensity: ${pp.intensity}_\n\n`;
         }
       }
     }
 
-    md += `---\n\n`;
+    md += '---\n\n';
   }
 
   return md;

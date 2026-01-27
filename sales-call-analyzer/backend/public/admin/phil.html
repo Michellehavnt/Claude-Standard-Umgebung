@@ -377,6 +377,7 @@
       flex-shrink: 0;
     }
   </style>
+  <script src="/admin/js/view-mode.js"></script>
 </head>
 <body>
   <header class="ds-header">
@@ -391,8 +392,18 @@
         <a href="/admin/phil.html" class="active">DFY</a>
         <a href="/admin/founder.html">Closing Rate</a>
       </nav>
+
+      <!-- View Mode Indicator (shown when in user view) -->
+      <div class="view-mode-indicator" id="viewModeIndicator" data-tooltip="You are viewing as a regular user">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+        <span>User view</span>
+      </div>
+
       <div class="ds-header-user">
-        <button class="ds-user-button" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+        <button class="ds-user-button" id="user-menu-button" aria-expanded="false" aria-haspopup="true" data-tooltip="Open user menu" data-tooltip-position="left">
           <div class="ds-user-avatar" id="user-avatar">--</div>
           <div class="ds-user-info">
             <span class="ds-user-name" id="user-display-name">Loading...</span>
@@ -423,6 +434,16 @@
               </svg>
               Settings
             </a>
+            <a href="/admin/changelog.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              Changelog
+            </a>
           </div>
 
           <div class="ds-dropdown-divider ds-admin-only" style="display: none;"></div>
@@ -449,10 +470,22 @@
             </a>
           </div>
 
+          <!-- View Mode Toggle (admin only) -->
+          <div class="ds-dropdown-divider ds-admin-only" id="viewModeSection" style="display: none;"></div>
+          <div class="ds-dropdown-section ds-admin-only" id="viewModeToggleContainer" style="display: none;">
+            <button class="view-mode-toggle" id="viewModeToggle" onclick="ViewMode.toggleViewMode()" data-tooltip="Preview app as a regular user">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <span class="view-mode-label">User view</span>
+            </button>
+          </div>
+
           <div class="ds-dropdown-divider"></div>
 
           <div class="ds-dropdown-section">
-            <button class="ds-dropdown-item danger" id="logout-button">
+            <button class="ds-dropdown-item danger" id="logout-button" data-tooltip="End session via POST /api/auth/logout">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                 <polyline points="16 17 21 12 16 7"></polyline>
@@ -468,8 +501,8 @@
 
   <main class="ds-main">
     <div class="ds-page-header">
-      <h1 class="ds-page-title">Phil's DFY Sales Quality</h1>
-      <p class="ds-page-subtitle">Done-For-You qualification tracking and analysis</p>
+      <h1 class="ds-page-title">DFY vs. software pitch</h1>
+      <p class="ds-page-subtitle">As valuation is based on AI, it should be viewed critically.</p>
     </div>
 
     <!-- KPI Strip -->
@@ -497,6 +530,16 @@
       <div class="kpi-card">
         <div class="kpi-value" id="kpi-software-close">-</div>
         <div class="kpi-label">Software Close</div>
+      </div>
+      <div class="kpi-card" style="display: flex; align-items: center; justify-content: center;">
+        <button class="ds-btn ds-btn-secondary" id="btn-refresh" onclick="refreshData()" data-tooltip="Reload analyzed calls from the database">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+            <path d="M23 4v6h-6"></path>
+            <path d="M1 20v-6h6"></path>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+          <span id="refresh-text">Refresh</span>
+        </button>
       </div>
     </div>
 
@@ -543,8 +586,8 @@
           </select>
         </div>
         <div class="ds-filter-actions">
-          <button class="ds-btn ds-btn-primary" onclick="applyFilters()">Apply</button>
-          <button class="ds-btn ds-btn-secondary" onclick="clearFilters()">Clear</button>
+          <button class="ds-btn ds-btn-primary" onclick="applyFilters()" data-tooltip="Filter DFY quality data by date and criteria">Apply</button>
+          <button class="ds-btn ds-btn-secondary" onclick="clearFilters()" data-tooltip="Reset all filter selections">Clear</button>
         </div>
       </div>
     </div>
@@ -771,6 +814,11 @@
 
         if (user.role === 'admin') {
           document.querySelectorAll('.ds-admin-only').forEach(el => el.style.display = '');
+        }
+
+        // Initialize view mode (must be after admin-only elements are shown)
+        if (window.ViewMode) {
+          ViewMode.initViewMode(user.role);
         }
       } catch (err) {
         console.error('Failed to load user info:', err);
@@ -1019,7 +1067,7 @@
       return `
         <tr onclick="viewCallDetail('${call.id}')" style="cursor: pointer;">
           <td class="call-title">
-            <a href="/admin/call.html?id=${call.id}&highlight=dfy" class="ds-link">
+            <a href="/admin/call.html?id=${call.id}&from=dfy&highlight=dfy" class="ds-link">
               ${escapeHtml(truncate(call.callTitle, 30))}
             </a>
           </td>
@@ -1069,7 +1117,7 @@
 
     // Navigate to call detail
     function viewCallDetail(callId) {
-      window.location.href = `/admin/call.html?id=${callId}&highlight=dfy`;
+      window.location.href = `/admin/call.html?id=${callId}&from=dfy&highlight=dfy`;
     }
 
     // Apply filters
@@ -1116,6 +1164,39 @@
       loadData();
     }
 
+    // Refresh data from the database (no sync)
+    async function refreshData() {
+      const btn = document.getElementById('btn-refresh');
+      const text = document.getElementById('refresh-text');
+
+      btn.disabled = true;
+      text.textContent = 'Loading...';
+
+      // Show loading state in calls table
+      document.getElementById('calls-table').innerHTML = `
+        <div class="loading">
+          <div class="loading-spinner"></div>
+          Loading...
+        </div>
+      `;
+
+      try {
+        await loadData();
+        text.textContent = 'Done!';
+        setTimeout(() => {
+          text.textContent = 'Refresh';
+        }, 1500);
+      } catch (error) {
+        console.error('Error refreshing data:', error);
+        text.textContent = 'Error';
+        setTimeout(() => {
+          text.textContent = 'Refresh';
+        }, 2000);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
     // Utility functions
     function escapeHtml(text) {
       if (!text) return '';
@@ -1145,5 +1226,6 @@
       return str.charAt(0).toUpperCase() + str.slice(1);
     }
   </script>
+  <script src="js/analysis-status.js"></script>
 </body>
 </html>

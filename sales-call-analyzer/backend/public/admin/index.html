@@ -263,10 +263,47 @@
       align-items: center;
       justify-content: space-between;
       gap: var(--space-4);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .bulk-action-bar.active {
       display: flex;
+    }
+
+    /* Sticky bulk action bar */
+    .bulk-action-bar.sticky {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      border-radius: 0;
+      margin-bottom: 0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      animation: slideInFromTop 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Animation when bar becomes sticky */
+    @keyframes slideInFromTop {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* Placeholder to prevent content jump when bar becomes fixed */
+    .bulk-action-bar-placeholder {
+      display: none;
+      height: 52px;
+      margin-bottom: var(--space-4);
+    }
+
+    .bulk-action-bar-placeholder.active {
+      display: block;
     }
 
     .bulk-action-bar .selected-count {
@@ -386,6 +423,7 @@
       gap: var(--space-3);
     }
   </style>
+  <script src="/admin/js/view-mode.js"></script>
 </head>
 <body>
   <!-- Header -->
@@ -402,9 +440,18 @@
         <a href="/admin/founder.html">Closing Rate</a>
       </nav>
 
+      <!-- View Mode Indicator (shown when in user view) -->
+      <div class="view-mode-indicator" id="viewModeIndicator" data-tooltip="You are viewing as a regular user">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+        <span>User view</span>
+      </div>
+
       <!-- User Menu -->
       <div class="ds-header-user">
-        <button class="ds-user-button" id="userMenuBtn" aria-expanded="false" aria-haspopup="true">
+        <button class="ds-user-button" id="userMenuBtn" aria-expanded="false" aria-haspopup="true" data-tooltip="Open user menu" data-tooltip-position="left">
           <div class="ds-user-avatar" id="userAvatar">-</div>
           <div class="ds-user-info">
             <span class="ds-user-name" id="userDisplayName">Loading...</span>
@@ -436,6 +483,16 @@
               </svg>
               Settings
             </a>
+            <a href="/admin/changelog.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              Changelog
+            </a>
           </div>
 
           <div class="ds-dropdown-divider ds-admin-only" style="display: none;"></div>
@@ -462,10 +519,22 @@
             </a>
           </div>
 
+          <!-- View Mode Toggle (admin only) -->
+          <div class="ds-dropdown-divider ds-admin-only" id="viewModeSection" style="display: none;"></div>
+          <div class="ds-dropdown-section ds-admin-only" id="viewModeToggleContainer" style="display: none;">
+            <button class="view-mode-toggle" id="viewModeToggle" onclick="ViewMode.toggleViewMode()" data-tooltip="Preview app as a regular user">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <span class="view-mode-label">User view</span>
+            </button>
+          </div>
+
           <div class="ds-dropdown-divider"></div>
 
           <div class="ds-dropdown-section">
-            <button class="ds-dropdown-item danger" id="logoutBtn">
+            <button class="ds-dropdown-item danger" id="logoutBtn" data-tooltip="End session via POST /api/auth/logout">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                 <polyline points="16 17 21 12 16 7"></polyline>
@@ -510,11 +579,11 @@
         <div class="ds-filter-group">
           <label class="ds-filter-label">Date Range</label>
           <select class="ds-input" id="sync-date-preset" onchange="handleSyncDatePresetChange()">
-            <option value="all">All time</option>
+            <option value="all" selected>All time</option>
             <option value="this_week">This week</option>
             <option value="last_week">Last week</option>
             <option value="last_month">Last month</option>
-            <option value="last_3_months" selected>Last 3 months</option>
+            <option value="last_3_months">Last 3 months</option>
             <option value="last_6_months">Last 6 months</option>
             <option value="custom">Custom range</option>
           </select>
@@ -529,10 +598,10 @@
         </div>
         <div class="ds-filter-group">
           <label class="ds-filter-label">Sales Rep</label>
-          <select class="ds-input" id="sync-rep-filter">
+          <select class="ds-input" id="sync-rep-filter" onchange="handleRepFilterChange()">
+            <option value="all" selected>All reps</option>
             <option value="Phil">Phil only</option>
             <option value="Jamie">Jamie only</option>
-            <option value="all">All reps</option>
           </select>
         </div>
         <div class="ds-filter-actions">
@@ -552,6 +621,7 @@
     </div>
 
     <!-- Bulk Action Bar -->
+    <div class="bulk-action-bar-placeholder" id="bulkActionBarPlaceholder"></div>
     <div class="bulk-action-bar" id="bulkActionBar">
       <span class="selected-count"><span id="selectedCount">0</span> calls selected</span>
       <div class="bulk-actions">
@@ -565,7 +635,7 @@
     <div class="bulk-progress" id="bulkProgress">
       <div class="bulk-progress-header">
         <span class="bulk-progress-title">Analyzing calls...</span>
-        <button class="ds-btn ds-btn-secondary" style="padding: 4px 8px; font-size: var(--text-xs);" onclick="cancelBulkAnalysis()">Cancel</button>
+        <button class="ds-btn ds-btn-secondary" style="padding: 4px 8px; font-size: var(--text-xs);" onclick="cancelBulkAnalysis()" data-tooltip="Stop bulk analysis in progress">Cancel</button>
       </div>
       <div class="bulk-progress-bar">
         <div class="bulk-progress-fill" id="bulkProgressFill" style="width: 0%"></div>
@@ -605,10 +675,10 @@
           Showing 1-20 of 79 calls
         </div>
         <div class="pagination-buttons" style="display: flex; gap: var(--space-2);">
-          <button class="ds-btn ds-btn-secondary" id="prevPageBtn" onclick="prevPage()" disabled style="padding: 6px 12px;">
+          <button class="ds-btn ds-btn-secondary" id="prevPageBtn" onclick="prevPage()" disabled style="padding: 6px 12px;" data-tooltip="Go to previous page of calls">
             ← Previous
           </button>
-          <button class="ds-btn ds-btn-secondary" id="nextPageBtn" onclick="nextPage()" style="padding: 6px 12px;">
+          <button class="ds-btn ds-btn-secondary" id="nextPageBtn" onclick="nextPage()" style="padding: 6px 12px;" data-tooltip="Go to next page of calls">
             Next →
           </button>
         </div>
@@ -623,8 +693,8 @@
           Are you sure you want to permanently delete <strong id="deleteCount">0</strong> calls? This action cannot be undone.
         </div>
         <div class="modal-actions">
-          <button class="ds-btn ds-btn-secondary" onclick="hideDeleteModal()">Cancel</button>
-          <button class="ds-btn ds-btn-danger" onclick="confirmDelete()">Delete</button>
+          <button class="ds-btn ds-btn-secondary" onclick="hideDeleteModal()" data-tooltip="Close modal without deleting">Cancel</button>
+          <button class="ds-btn ds-btn-danger" onclick="confirmDelete()" data-tooltip="Permanently delete calls via DELETE /api/calls">Delete</button>
         </div>
       </div>
     </div>
@@ -654,10 +724,10 @@
     // Applied filters = what's currently active (used for data fetching)
     // Draft filters = what user is editing in the UI (not yet applied)
     let appliedFilters = {
-      datePreset: 'last_3_months',
+      datePreset: 'all',
       startDate: null,
       endDate: null,
-      repFilter: 'Phil'
+      repFilter: 'all'
     };
 
     // ========================================
@@ -680,14 +750,14 @@
     function updateURLWithFilters(filters) {
       const params = new URLSearchParams();
 
-      if (filters.datePreset && filters.datePreset !== 'last_3_months') {
+      if (filters.datePreset && filters.datePreset !== 'all') {
         params.set('preset', filters.datePreset);
       }
       if (filters.datePreset === 'custom') {
         if (filters.startDate) params.set('start', filters.startDate);
         if (filters.endDate) params.set('end', filters.endDate);
       }
-      if (filters.repFilter && filters.repFilter !== 'Phil') {
+      if (filters.repFilter && filters.repFilter !== 'all') {
         params.set('rep', filters.repFilter);
       }
 
@@ -733,8 +803,8 @@
 
       if (urlFilters) {
         // Restore from URL
-        appliedFilters.datePreset = urlFilters.datePreset || 'last_3_months';
-        appliedFilters.repFilter = urlFilters.repFilter || 'Phil';
+        appliedFilters.datePreset = urlFilters.datePreset || 'all';
+        appliedFilters.repFilter = urlFilters.repFilter || 'all';
 
         if (urlFilters.datePreset === 'custom') {
           appliedFilters.startDate = urlFilters.startDate || null;
@@ -748,8 +818,8 @@
         // Sync UI with restored filters
         syncUIWithFilters(appliedFilters);
       } else {
-        // Use defaults
-        const range = getSyncDatePresetRange('last_3_months');
+        // Use defaults (All time, All reps - shows all calls)
+        const range = getSyncDatePresetRange('all');
         appliedFilters.startDate = range.startDate;
         appliedFilters.endDate = range.endDate;
       }
@@ -831,6 +901,11 @@
           document.querySelectorAll('.ds-admin-only').forEach(el => {
             el.style.display = '';
           });
+        }
+
+        // Initialize view mode (must be after admin-only elements are shown)
+        if (window.ViewMode) {
+          ViewMode.initViewMode(currentUser.role);
         }
       } catch (error) {
         console.error('Error loading user:', error);
@@ -953,7 +1028,7 @@
       }
     }
 
-    // Handle date preset change
+    // Handle date preset change - auto-apply filters when preset changes
     function handleSyncDatePresetChange() {
       const preset = document.getElementById('sync-date-preset').value;
       const startGroup = document.getElementById('sync-start-group');
@@ -971,6 +1046,18 @@
         const range = getSyncDatePresetRange(preset);
         document.getElementById('sync-start-date').value = range.startDate || '';
         document.getElementById('sync-end-date').value = range.endDate || '';
+
+        // Auto-apply filter when preset changes (except on initial load)
+        if (document.readyState === 'complete') {
+          applyFilters();
+        }
+      }
+    }
+
+    // Handle rep filter change - auto-apply
+    function handleRepFilterChange() {
+      if (document.readyState === 'complete') {
+        applyFilters();
       }
     }
 
@@ -1141,6 +1228,14 @@
           params.append('rep', appliedFilters.repFilter);
         }
 
+        console.log('[Calls] Loading with filters:', {
+          preset: appliedFilters.datePreset,
+          startDate: appliedFilters.startDate,
+          endDate: appliedFilters.endDate,
+          rep: appliedFilters.repFilter,
+          url: `${API_BASE}/admin/calls?${params.toString()}`
+        });
+
         const response = await fetch(`${API_BASE}/admin/calls?${params.toString()}`);
         const data = await response.json();
 
@@ -1234,7 +1329,7 @@
         container.innerHTML = `
           <div class="ds-empty">
             <div class="ds-empty-text">No calls synced yet</div>
-            <button class="ds-btn ds-btn-primary ds-mt-4" onclick="triggerSync()">Sync Now</button>
+            <button class="ds-btn ds-btn-primary ds-mt-4" onclick="triggerSync()" data-tooltip="Import calls from Fireflies via POST /api/sync">Sync Now</button>
           </div>
         `;
         return;
@@ -1324,14 +1419,52 @@
 
     function updateBulkActionBar() {
       const bar = document.getElementById('bulkActionBar');
+      const placeholder = document.getElementById('bulkActionBarPlaceholder');
       const count = document.getElementById('selectedCount');
       count.textContent = selectedCallIds.size;
       if (selectedCallIds.size > 0) {
         bar.classList.add('active');
+        placeholder.classList.add('active');
+        // Check if we need sticky state
+        handleBulkBarSticky();
       } else {
         bar.classList.remove('active');
+        bar.classList.remove('sticky');
+        placeholder.classList.remove('active');
       }
     }
+
+    // Handle sticky behavior for bulk action bar
+    let bulkBarOriginalTop = null;
+
+    function handleBulkBarSticky() {
+      const bar = document.getElementById('bulkActionBar');
+      const placeholder = document.getElementById('bulkActionBarPlaceholder');
+
+      if (!bar.classList.contains('active')) return;
+
+      // Get the placeholder position (original position of the bar)
+      const placeholderRect = placeholder.getBoundingClientRect();
+
+      // If the placeholder is above the viewport, make the bar sticky
+      if (placeholderRect.top < 0) {
+        if (!bar.classList.contains('sticky')) {
+          bar.classList.add('sticky');
+        }
+      } else {
+        bar.classList.remove('sticky');
+      }
+    }
+
+    // Listen for scroll events with throttling for performance
+    let scrollTimeout;
+    window.addEventListener('scroll', () => {
+      if (scrollTimeout) return;
+      scrollTimeout = setTimeout(() => {
+        handleBulkBarSticky();
+        scrollTimeout = null;
+      }, 10);
+    }, { passive: true });
 
     function clearSelection() {
       selectedCallIds.clear();
@@ -1574,9 +1707,24 @@
     }
 
     async function triggerSync() {
-      const startDate = document.getElementById('sync-start-date').value;
-      const endDate = document.getElementById('sync-end-date').value;
+      const preset = document.getElementById('sync-date-preset').value;
+      let startDate = document.getElementById('sync-start-date').value;
+      let endDate = document.getElementById('sync-end-date').value;
       const repFilter = document.getElementById('sync-rep-filter').value;
+
+      // For "All time", use a wide date range (last 5 years to today)
+      if (preset === 'all') {
+        const today = new Date();
+        const fiveYearsAgo = new Date();
+        fiveYearsAgo.setFullYear(fiveYearsAgo.getFullYear() - 5);
+        startDate = fiveYearsAgo.toISOString().split('T')[0];
+        endDate = today.toISOString().split('T')[0];
+      } else if (!startDate || !endDate) {
+        // For other presets, get dates from the range function
+        const range = getSyncDatePresetRange(preset);
+        startDate = range.startDate;
+        endDate = range.endDate;
+      }
 
       if (!startDate || !endDate) {
         showSyncStatus('Please select both start and end dates', 'error');
@@ -1593,7 +1741,8 @@
       btn.innerHTML = '<span class="ds-spinner ds-spinner-sm"></span> Syncing...';
 
       const repLabel = repFilter === 'all' ? 'all reps' : `${repFilter} only`;
-      showSyncStatus(`Syncing calls from ${startDate} to ${endDate} (${repLabel})...`, 'active');
+      const dateLabel = preset === 'all' ? 'all time' : `${startDate} to ${endDate}`;
+      showSyncStatus(`Syncing calls (${dateLabel}, ${repLabel})...`, 'active');
 
       try {
         const response = await fetch(`${API_BASE}/sync/date-range`, {

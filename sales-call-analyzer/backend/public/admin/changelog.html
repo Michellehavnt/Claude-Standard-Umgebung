@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Changelog - Sales Call Analyzer</title>
+  <link rel="stylesheet" href="design-system.css">
+  <style>
+    /* Changelog-specific styles */
+    .changelog-filters {
+      display: flex;
+      gap: var(--space-3);
+      align-items: center;
+      margin-bottom: var(--space-5);
+      flex-wrap: wrap;
+    }
+
+    .changelog-search {
+      flex: 1;
+      min-width: 200px;
+      max-width: 400px;
+    }
+
+    .changelog-search input {
+      width: 100%;
+      padding: 10px 14px 10px 38px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      background: var(--color-surface);
+      color: var(--color-text-primary);
+    }
+
+    .changelog-search input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(7, 59, 85, 0.1);
+    }
+
+    .changelog-search {
+      position: relative;
+    }
+
+    .changelog-search svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      color: var(--color-text-muted);
+    }
+
+    .changelog-tag-filter {
+      display: flex;
+      gap: var(--space-2);
+    }
+
+    .tag-btn {
+      padding: 6px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      color: var(--color-text-secondary);
+    }
+
+    .tag-btn:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .tag-btn.active {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: white;
+    }
+
+    /* Changelog entries */
+    .changelog-entries {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .changelog-entry {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      transition: box-shadow 0.15s;
+    }
+
+    .changelog-entry:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .changelog-entry.draft {
+      border-style: dashed;
+      border-color: var(--color-warning);
+      background: rgba(245, 158, 11, 0.03);
+    }
+
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: var(--space-3);
+      gap: var(--space-3);
+    }
+
+    .entry-title-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+
+    .entry-title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin: 0;
+    }
+
+    .entry-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: var(--text-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .entry-tag.new {
+      background: var(--color-success-bg);
+      color: var(--color-success);
+    }
+
+    .entry-tag.improvement {
+      background: rgba(59, 130, 246, 0.1);
+      color: #3b82f6;
+    }
+
+    .entry-tag.fix {
+      background: rgba(245, 158, 11, 0.1);
+      color: #d97706;
+    }
+
+    .entry-tag.draft-tag {
+      background: rgba(107, 114, 128, 0.1);
+      color: #6b7280;
+    }
+
+    .entry-date {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
+    .entry-new-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      background: linear-gradient(135deg, #f59e0b, #f97316);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .entry-summary {
+      color: var(--color-text-secondary);
+      font-size: var(--text-sm);
+      line-height: 1.6;
+      white-space: pre-line;
+    }
+
+    .entry-summary ul {
+      margin: 0;
+      padding-left: var(--space-4);
+    }
+
+    .entry-summary li {
+      margin-bottom: var(--space-1);
+    }
+
+    .entry-details {
+      margin-top: var(--space-3);
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--color-border-light);
+      color: var(--color-text-muted);
+      font-size: var(--text-sm);
+    }
+
+    .entry-actions {
+      display: flex;
+      gap: var(--space-2);
+      margin-top: var(--space-4);
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--color-border-light);
+    }
+
+    /* Empty state */
+    .changelog-empty {
+      text-align: center;
+      padding: var(--space-10);
+      color: var(--color-text-muted);
+    }
+
+    .changelog-empty svg {
+      width: 48px;
+      height: 48px;
+      margin-bottom: var(--space-4);
+      opacity: 0.5;
+    }
+
+    .changelog-empty h3 {
+      font-size: var(--text-lg);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-2);
+    }
+
+    /* Admin form */
+    .admin-section {
+      margin-bottom: var(--space-6);
+      padding: var(--space-5);
+      background: var(--color-surface-alt);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+    }
+
+    .admin-section-title {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-4);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .admin-section-title svg {
+      width: 20px;
+      height: 20px;
+      color: var(--color-primary);
+    }
+
+    .form-row {
+      display: flex;
+      gap: var(--space-4);
+      margin-bottom: var(--space-4);
+    }
+
+    .form-group {
+      flex: 1;
+    }
+
+    .form-group.full-width {
+      flex: 100%;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--color-text-primary);
+      margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      background: var(--color-surface);
+      color: var(--color-text-primary);
+    }
+
+    .form-group textarea {
+      min-height: 120px;
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(7, 59, 85, 0.1);
+    }
+
+    .form-group .hint {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      margin-top: 4px;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--color-border);
+      transition: 0.3s;
+      border-radius: 24px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+
+    .toggle-switch input:checked + .toggle-slider {
+      background-color: var(--color-success);
+    }
+
+    .toggle-switch input:checked + .toggle-slider:before {
+      transform: translateX(20px);
+    }
+
+    .toggle-label {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+    }
+
+    .form-actions {
+      display: flex;
+      gap: var(--space-3);
+      margin-top: var(--space-5);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.visible {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      max-width: 600px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      margin-bottom: var(--space-4);
+    }
+
+    @media (max-width: 768px) {
+      .form-row {
+        flex-direction: column;
+      }
+
+      .changelog-filters {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .changelog-search {
+        max-width: none;
+      }
+
+      .entry-header {
+        flex-direction: column;
+      }
+    }
+  </style>
+  <script src="/admin/js/view-mode.js"></script>
+</head>
+<body>
+  <header class="ds-header">
+    <div class="ds-header-inner">
+      <a href="/admin/" class="ds-header-logo">
+        <img src="/admin/logo.svg" alt="AffiliateFinder">
+      </a>
+      <div class="ds-header-divider"></div>
+      <nav class="ds-header-nav">
+        <a href="/admin/">Calls</a>
+        <a href="/admin/copy.html">Copy</a>
+        <a href="/admin/phil.html">DFY</a>
+        <a href="/admin/founder.html">Closing Rate</a>
+      </nav>
+
+      <!-- View Mode Indicator (shown when in user view) -->
+      <div class="view-mode-indicator" id="viewModeIndicator" data-tooltip="You are viewing as a regular user">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+        <span>User view</span>
+      </div>
+
+      <div class="ds-header-user">
+        <button class="ds-user-button" id="user-menu-button" aria-expanded="false" aria-haspopup="true" data-tooltip="Open user menu" data-tooltip-position="left">
+          <div class="ds-user-avatar" id="user-avatar">--</div>
+          <div class="ds-user-info">
+            <span class="ds-user-name" id="user-display-name">Loading...</span>
+            <span class="ds-user-role" id="user-display-role">-</span>
+          </div>
+          <svg class="ds-user-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="ds-user-dropdown" id="user-dropdown">
+          <div class="ds-dropdown-header">
+            <div class="ds-dropdown-email" id="user-email">-</div>
+            <span class="ds-dropdown-role user" id="user-role-badge">User</span>
+          </div>
+
+          <div class="ds-dropdown-section">
+            <a href="/admin/account.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              Account
+            </a>
+            <a href="/admin/settings.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              Settings
+            </a>
+            <a href="/admin/changelog.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              Changelog
+            </a>
+          </div>
+
+          <div class="ds-dropdown-divider ds-admin-only" style="display: none;"></div>
+
+          <div class="ds-dropdown-section ds-admin-only" style="display: none;">
+            <div class="ds-dropdown-label">Admin</div>
+            <a href="/admin/access-requests.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="8.5" cy="7" r="4"></circle>
+                <line x1="20" y1="8" x2="20" y2="14"></line>
+                <line x1="23" y1="11" x2="17" y2="11"></line>
+              </svg>
+              Access Requests
+            </a>
+            <a href="/admin/users.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              User Management
+            </a>
+          </div>
+
+          <!-- View Mode Toggle (admin only) -->
+          <div class="ds-dropdown-divider ds-admin-only" id="viewModeSection" style="display: none;"></div>
+          <div class="ds-dropdown-section ds-admin-only" id="viewModeToggleContainer" style="display: none;">
+            <button class="view-mode-toggle" id="viewModeToggle" onclick="ViewMode.toggleViewMode()" data-tooltip="Preview app as a regular user">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <span class="view-mode-label">User view</span>
+            </button>
+          </div>
+
+          <div class="ds-dropdown-divider"></div>
+
+          <div class="ds-dropdown-section">
+            <button class="ds-dropdown-item danger" id="logout-button" data-tooltip="End session via POST /api/auth/logout">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="ds-main">
+    <div class="ds-page-header">
+      <h1 class="ds-page-title">Changelog</h1>
+      <p class="ds-page-subtitle">Product updates and improvements</p>
+    </div>
+
+    <!-- Admin: New Entry Section (admin only) -->
+    <div class="admin-section ds-admin-only" id="admin-new-entry" style="display: none;">
+      <div class="admin-section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Create New Entry
+      </div>
+      <form id="new-entry-form">
+        <div class="form-row">
+          <div class="form-group" style="flex: 2;">
+            <label for="entry-title">Title *</label>
+            <input type="text" id="entry-title" placeholder="e.g., New Dashboard Analytics" required>
+          </div>
+          <div class="form-group" style="flex: 1;">
+            <label for="entry-tag">Tag</label>
+            <select id="entry-tag">
+              <option value="">No tag</option>
+              <option value="new">New</option>
+              <option value="improvement">Improvement</option>
+              <option value="fix">Fix</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="entry-summary">Summary * (2-5 bullet points)</label>
+            <textarea id="entry-summary" placeholder="- Added new feature X&#10;- Improved performance of Y&#10;- Fixed issue with Z" required></textarea>
+            <p class="hint">Use bullet points starting with "- " for best formatting</p>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="entry-details">Additional Details (optional)</label>
+            <textarea id="entry-details" placeholder="Any additional context or technical details..." style="min-height: 80px;"></textarea>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group" style="flex: 1;">
+            <label for="entry-new-until">Show as "New" until (optional)</label>
+            <input type="date" id="entry-new-until">
+            <p class="hint">Entry will display a "New" badge until this date</p>
+          </div>
+          <div class="form-group" style="flex: 1;">
+            <label>Publish Status</label>
+            <div class="toggle-row" style="margin-top: 8px;">
+              <label class="toggle-switch">
+                <input type="checkbox" id="entry-published">
+                <span class="toggle-slider"></span>
+              </label>
+              <span class="toggle-label" id="publish-status-label">Draft</span>
+            </div>
+            <p class="hint">Only published entries are visible to all users</p>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="ds-btn ds-btn-primary" data-tooltip="Save this changelog entry">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+              <polyline points="17 21 17 13 7 13 7 21"></polyline>
+              <polyline points="7 3 7 8 15 8"></polyline>
+            </svg>
+            Save Entry
+          </button>
+          <button type="button" class="ds-btn ds-btn-ghost" onclick="clearForm()" data-tooltip="Clear all form fields">
+            Clear
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Filters -->
+    <div class="changelog-filters">
+      <div class="changelog-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="search-input" placeholder="Search changelog..." oninput="filterEntries()">
+      </div>
+      <div class="changelog-tag-filter">
+        <button class="tag-btn active" data-tag="all" onclick="setTagFilter('all')">All</button>
+        <button class="tag-btn" data-tag="new" onclick="setTagFilter('new')">New</button>
+        <button class="tag-btn" data-tag="improvement" onclick="setTagFilter('improvement')">Improvement</button>
+        <button class="tag-btn" data-tag="fix" onclick="setTagFilter('fix')">Fix</button>
+      </div>
+    </div>
+
+    <!-- Entries List -->
+    <div class="changelog-entries" id="changelog-entries">
+      <!-- Entries will be loaded here -->
+    </div>
+
+    <!-- Empty State -->
+    <div class="changelog-empty" id="changelog-empty" style="display: none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+        <polyline points="14 2 14 8 20 8"></polyline>
+        <line x1="16" y1="13" x2="8" y2="13"></line>
+        <line x1="16" y1="17" x2="8" y2="17"></line>
+      </svg>
+      <h3>No changelog entries yet</h3>
+      <p>Check back later for product updates.</p>
+    </div>
+  </main>
+
+  <!-- Edit Modal -->
+  <div class="modal-overlay" id="edit-modal">
+    <div class="modal">
+      <h2 class="modal-title">Edit Entry</h2>
+      <form id="edit-entry-form">
+        <input type="hidden" id="edit-entry-id">
+        <div class="form-row">
+          <div class="form-group" style="flex: 2;">
+            <label for="edit-title">Title *</label>
+            <input type="text" id="edit-title" required>
+          </div>
+          <div class="form-group" style="flex: 1;">
+            <label for="edit-tag">Tag</label>
+            <select id="edit-tag">
+              <option value="">No tag</option>
+              <option value="new">New</option>
+              <option value="improvement">Improvement</option>
+              <option value="fix">Fix</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="edit-summary">Summary *</label>
+            <textarea id="edit-summary" required></textarea>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="edit-details">Additional Details</label>
+            <textarea id="edit-details" style="min-height: 80px;"></textarea>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group" style="flex: 1;">
+            <label for="edit-new-until">Show as "New" until</label>
+            <input type="date" id="edit-new-until">
+          </div>
+          <div class="form-group" style="flex: 1;">
+            <label>Publish Status</label>
+            <div class="toggle-row" style="margin-top: 8px;">
+              <label class="toggle-switch">
+                <input type="checkbox" id="edit-published">
+                <span class="toggle-slider"></span>
+              </label>
+              <span class="toggle-label" id="edit-publish-status-label">Draft</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="ds-btn ds-btn-primary">Save Changes</button>
+          <button type="button" class="ds-btn ds-btn-ghost" onclick="closeEditModal()">Cancel</button>
+          <button type="button" class="ds-btn ds-btn-danger" onclick="deleteEntry()" style="margin-left: auto;">Delete</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = '/api';
+    let currentUser = null;
+    let allEntries = [];
+    let currentTagFilter = 'all';
+    let isAdmin = false;
+
+    // Initialize page
+    async function init() {
+      await checkAuth();
+      await loadEntries();
+      setupEventListeners();
+    }
+
+    // Check authentication
+    async function checkAuth() {
+      try {
+        const response = await fetch(`${API_BASE}/auth/me`, { credentials: 'include' });
+        if (!response.ok) {
+          window.location.href = '/admin/login.html';
+          return;
+        }
+        const data = await response.json();
+        currentUser = data.user;
+        isAdmin = currentUser.role === 'admin';
+        updateUserDisplay();
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        window.location.href = '/admin/login.html';
+      }
+    }
+
+    // Update user display in header
+    function updateUserDisplay() {
+      const initials = currentUser.name
+        .split(' ')
+        .map(n => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2);
+
+      document.getElementById('user-avatar').textContent = initials;
+      document.getElementById('user-display-name').textContent = currentUser.name;
+      document.getElementById('user-display-role').textContent = currentUser.role === 'admin' ? 'Admin' : 'User';
+      document.getElementById('user-email').textContent = currentUser.email;
+
+      const roleBadge = document.getElementById('user-role-badge');
+      roleBadge.textContent = currentUser.role === 'admin' ? 'Admin' : 'User';
+      roleBadge.className = 'ds-dropdown-role ' + (currentUser.role === 'admin' ? 'admin' : 'user');
+
+      // Show admin sections
+      if (isAdmin) {
+        document.querySelectorAll('.ds-admin-only').forEach(el => {
+          el.style.display = '';
+        });
+      }
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // User dropdown
+      const button = document.getElementById('user-menu-button');
+      const dropdown = document.getElementById('user-dropdown');
+
+      button.addEventListener('click', () => {
+        const isOpen = dropdown.classList.toggle('open');
+        button.setAttribute('aria-expanded', isOpen);
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!button.contains(e.target) && !dropdown.contains(e.target)) {
+          dropdown.classList.remove('open');
+          button.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      // Logout
+      document.getElementById('logout-button').addEventListener('click', async () => {
+        try {
+          await fetch(`${API_BASE}/auth/logout`, {
+            method: 'POST',
+            credentials: 'include'
+          });
+          window.location.href = '/admin/login.html';
+        } catch (error) {
+          console.error('Logout failed:', error);
+        }
+      });
+
+      // New entry form
+      document.getElementById('new-entry-form').addEventListener('submit', handleNewEntry);
+
+      // Edit form
+      document.getElementById('edit-entry-form').addEventListener('submit', handleEditEntry);
+
+      // Publish toggle labels
+      document.getElementById('entry-published').addEventListener('change', (e) => {
+        document.getElementById('publish-status-label').textContent = e.target.checked ? 'Published' : 'Draft';
+      });
+
+      document.getElementById('edit-published').addEventListener('change', (e) => {
+        document.getElementById('edit-publish-status-label').textContent = e.target.checked ? 'Published' : 'Draft';
+      });
+
+      // Close modal on overlay click
+      document.getElementById('edit-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'edit-modal') {
+          closeEditModal();
+        }
+      });
+    }
+
+    // Load changelog entries
+    async function loadEntries() {
+      try {
+        // Admin sees all entries, regular users see only published
+        const endpoint = isAdmin ? `${API_BASE}/changelog/all` : `${API_BASE}/changelog`;
+        const response = await fetch(endpoint, { credentials: 'include' });
+        const data = await response.json();
+
+        if (data.success) {
+          allEntries = data.data;
+          renderEntries();
+        }
+      } catch (error) {
+        console.error('Failed to load entries:', error);
+      }
+    }
+
+    // Render entries
+    function renderEntries() {
+      const container = document.getElementById('changelog-entries');
+      const emptyState = document.getElementById('changelog-empty');
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+
+      // Filter entries
+      let filtered = allEntries.filter(entry => {
+        // Tag filter
+        if (currentTagFilter !== 'all' && entry.tag !== currentTagFilter) {
+          return false;
+        }
+        // Search filter
+        if (searchTerm) {
+          const searchable = `${entry.title} ${entry.summary} ${entry.details || ''}`.toLowerCase();
+          if (!searchable.includes(searchTerm)) {
+            return false;
+          }
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+      container.innerHTML = filtered.map(entry => renderEntry(entry)).join('');
+    }
+
+    // Render single entry
+    function renderEntry(entry) {
+      const date = new Date(entry.created_at).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+
+      const isNew = entry.show_as_new_until && new Date(entry.show_as_new_until) > new Date();
+      const isDraft = !entry.is_published;
+
+      const tagHtml = entry.tag ? `<span class="entry-tag ${entry.tag}">${entry.tag}</span>` : '';
+      const draftHtml = isDraft ? `<span class="entry-tag draft-tag">Draft</span>` : '';
+      const newBadgeHtml = isNew && !isDraft ? `<span class="entry-new-badge">New</span>` : '';
+
+      // Format summary as bullet list if it contains bullet points
+      let summaryHtml = entry.summary;
+      if (entry.summary.includes('- ')) {
+        const bullets = entry.summary.split('\n')
+          .filter(line => line.trim().startsWith('- '))
+          .map(line => `<li>${escapeHtml(line.trim().substring(2))}</li>`)
+          .join('');
+        if (bullets) {
+          summaryHtml = `<ul>${bullets}</ul>`;
+        }
+      } else {
+        summaryHtml = escapeHtml(entry.summary);
+      }
+
+      const detailsHtml = entry.details ? `<div class="entry-details">${escapeHtml(entry.details)}</div>` : '';
+
+      const adminActionsHtml = isAdmin ? `
+        <div class="entry-actions">
+          <button class="ds-btn ds-btn-sm ds-btn-ghost" onclick="openEditModal('${entry.id}')" data-tooltip="Edit this entry">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            Edit
+          </button>
+          ${isDraft ? `
+            <button class="ds-btn ds-btn-sm ds-btn-primary" onclick="publishEntry('${entry.id}')" data-tooltip="Make visible to all users">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Publish
+            </button>
+          ` : `
+            <button class="ds-btn ds-btn-sm ds-btn-ghost" onclick="unpublishEntry('${entry.id}')" data-tooltip="Hide from regular users">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+              </svg>
+              Unpublish
+            </button>
+          `}
+        </div>
+      ` : '';
+
+      return `
+        <div class="changelog-entry ${isDraft ? 'draft' : ''}">
+          <div class="entry-header">
+            <div class="entry-title-row">
+              <h3 class="entry-title">${escapeHtml(entry.title)}</h3>
+              ${tagHtml}
+              ${draftHtml}
+              ${newBadgeHtml}
+            </div>
+            <span class="entry-date">${date}</span>
+          </div>
+          <div class="entry-summary">${summaryHtml}</div>
+          ${detailsHtml}
+          ${adminActionsHtml}
+        </div>
+      `;
+    }
+
+    // Escape HTML to prevent XSS
+    function escapeHtml(str) {
+      if (!str) return '';
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // Set tag filter
+    function setTagFilter(tag) {
+      currentTagFilter = tag;
+      document.querySelectorAll('.tag-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tag === tag);
+      });
+      renderEntries();
+    }
+
+    // Filter entries (called on search input)
+    function filterEntries() {
+      renderEntries();
+    }
+
+    // Clear form
+    function clearForm() {
+      document.getElementById('new-entry-form').reset();
+      document.getElementById('publish-status-label').textContent = 'Draft';
+    }
+
+    // Handle new entry submission
+    async function handleNewEntry(e) {
+      e.preventDefault();
+
+      const entry = {
+        title: document.getElementById('entry-title').value.trim(),
+        summary: document.getElementById('entry-summary').value.trim(),
+        details: document.getElementById('entry-details').value.trim() || null,
+        tag: document.getElementById('entry-tag').value || null,
+        is_published: document.getElementById('entry-published').checked,
+        show_as_new_until: document.getElementById('entry-new-until').value || null
+      };
+
+      try {
+        const response = await fetch(`${API_BASE}/changelog`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(entry)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          clearForm();
+          await loadEntries();
+        } else {
+          alert('Error: ' + data.error);
+        }
+      } catch (error) {
+        console.error('Failed to create entry:', error);
+        alert('Failed to create entry');
+      }
+    }
+
+    // Open edit modal
+    function openEditModal(id) {
+      const entry = allEntries.find(e => e.id === id);
+      if (!entry) return;
+
+      document.getElementById('edit-entry-id').value = entry.id;
+      document.getElementById('edit-title').value = entry.title;
+      document.getElementById('edit-summary').value = entry.summary;
+      document.getElementById('edit-details').value = entry.details || '';
+      document.getElementById('edit-tag').value = entry.tag || '';
+      document.getElementById('edit-new-until').value = entry.show_as_new_until || '';
+      document.getElementById('edit-published').checked = !!entry.is_published;
+      document.getElementById('edit-publish-status-label').textContent = entry.is_published ? 'Published' : 'Draft';
+
+      document.getElementById('edit-modal').classList.add('visible');
+    }
+
+    // Close edit modal
+    function closeEditModal() {
+      document.getElementById('edit-modal').classList.remove('visible');
+    }
+
+    // Handle edit entry submission
+    async function handleEditEntry(e) {
+      e.preventDefault();
+
+      const id = document.getElementById('edit-entry-id').value;
+      const updates = {
+        title: document.getElementById('edit-title').value.trim(),
+        summary: document.getElementById('edit-summary').value.trim(),
+        details: document.getElementById('edit-details').value.trim() || null,
+        tag: document.getElementById('edit-tag').value || null,
+        is_published: document.getElementById('edit-published').checked,
+        show_as_new_until: document.getElementById('edit-new-until').value || null
+      };
+
+      try {
+        const response = await fetch(`${API_BASE}/changelog/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(updates)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          closeEditModal();
+          await loadEntries();
+        } else {
+          alert('Error: ' + data.error);
+        }
+      } catch (error) {
+        console.error('Failed to update entry:', error);
+        alert('Failed to update entry');
+      }
+    }
+
+    // Delete entry
+    async function deleteEntry() {
+      const id = document.getElementById('edit-entry-id').value;
+      if (!confirm('Are you sure you want to delete this entry? This cannot be undone.')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/changelog/${id}`, {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          closeEditModal();
+          await loadEntries();
+        } else {
+          alert('Error: ' + data.error);
+        }
+      } catch (error) {
+        console.error('Failed to delete entry:', error);
+        alert('Failed to delete entry');
+      }
+    }
+
+    // Publish entry
+    async function publishEntry(id) {
+      try {
+        const response = await fetch(`${API_BASE}/changelog/${id}/publish`, {
+          method: 'POST',
+          credentials: 'include'
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          await loadEntries();
+        } else {
+          alert('Error: ' + data.error);
+        }
+      } catch (error) {
+        console.error('Failed to publish entry:', error);
+        alert('Failed to publish entry');
+      }
+    }
+
+    // Unpublish entry
+    async function unpublishEntry(id) {
+      try {
+        const response = await fetch(`${API_BASE}/changelog/${id}/unpublish`, {
+          method: 'POST',
+          credentials: 'include'
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          await loadEntries();
+        } else {
+          alert('Error: ' + data.error);
+        }
+      } catch (error) {
+        console.error('Failed to unpublish entry:', error);
+        alert('Failed to unpublish entry');
+      }
+    }
+
+    // Initialize on page load
+    init();
+  </script>
+</body>
+</html>

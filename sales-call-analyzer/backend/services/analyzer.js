@@ -2,53 +2,173 @@ const { detectDFY } = require('../utils/dfyDetector');
 const { extractPainPoints } = require('../utils/painPointExtractor');
 
 /**
- * Non-sales call patterns to filter out
+ * Classification values for call categorization
  */
-const NON_SALES_CALL_PATTERNS = [
-  /catch\s*up/i,
-  /weekly\s*(call|meeting|sync)/i,
-  /team\s*(meeting|call|sync)/i,
-  /stand\s*-?\s*up/i,
-  /1\s*:\s*1/i,
-  /one\s*on\s*one/i,
-  /internal\s*(call|meeting)/i,
-  /sync\s*(call|meeting)/i,
-  /check\s*-?\s*in/i,
-  /planning\s*(call|meeting|session)/i,
-  /retrospective/i,
-  /sprint\s*(review|planning)/i,
-  /status\s*update/i,
-  /debrief/i,
-  /training\s*(session|call)/i,
-  /onboarding\s*(call|session)/i,
-  /^meeting$/i,
-  /all\s*hands/i
+const CLASSIFICATION = {
+  SALES: 'SALES',
+  NOT_SALES: 'NOT_SALES',
+  REVIEW_NEEDED: 'REVIEW_NEEDED'
+};
+
+/**
+ * NOT_SALES denylist patterns (hard rules - always win)
+ * These patterns ALWAYS classify as NOT_SALES, regardless of other signals
+ */
+const NOT_SALES_DENYLIST = [
+  /catch\s*-?\s*up/i,                    // "catchup", "catch up", "catch-up"
+  /weekly\s*(call|meeting|sync)?/i,      // "weekly call", "weekly meeting", "weekly"
+  /team\s*(meeting|call|sync)/i,         // "team meeting", "team call"
+  /stand\s*-?\s*up/i,                    // "standup", "stand up", "stand-up"
+  /1\s*:\s*1/i,                          // "1:1"
+  /one\s*on\s*one/i,                     // "one on one"
+  /internal\s*(call|meeting)?/i,         // "internal call", "internal meeting", "internal"
+  /sync\s*(call|meeting)/i,              // "sync call", "sync meeting"
+  /check\s*-?\s*in/i,                    // "checkin", "check in", "check-in"
+  /planning\s*(call|meeting|session)/i,  // "planning call", "planning meeting"
+  /retrospective/i,                       // "retrospective"
+  /sprint\s*(review|planning)/i,         // "sprint review", "sprint planning"
+  /status\s*update/i,                    // "status update"
+  /debrief/i,                            // "debrief"
+  /training\s*(session|call)/i,          // "training session", "training call"
+  /onboarding\s*(call|session)/i,        // "onboarding call", "onboarding session"
+  /^meeting$/i,                          // Just "Meeting"
+  /all\s*hands/i,                        // "all hands"
+  /dev\s*(call|meeting)?$/i,             // "dev call", "dev meeting", "dev"
+  /affiliatefinder/i                     // Internal AffiliateFinder calls
 ];
 
 /**
- * Check if a call is a sales call (not internal/catchup)
+ * Name-and-Name pattern for two-person meeting titles
+ * Pattern: "FirstName LastName and FirstName LastName"
+ * Each name part starts with capital letter, allows periods (e.g., "Jamie I.F.")
  */
-function isSalesCall(title, participants) {
+const NAME_AND_NAME_PATTERN = /^([A-Z][a-zA-Z.]+(?:\s+[A-Z][a-zA-Z.]+)*)\s+and\s+([A-Z][a-zA-Z.]+(?:\s+[A-Z][a-zA-Z.]+)*)$/i;
+
+/**
+ * Check if title matches the NOT_SALES denylist
+ * @param {string} title - Call title
+ * @returns {boolean} - True if matches denylist
+ */
+function matchesDenylist(title) {
   if (!title) return false;
+  return NOT_SALES_DENYLIST.some(pattern => pattern.test(title));
+}
 
-  // Check if title matches any non-sales patterns
-  for (const pattern of NON_SALES_CALL_PATTERNS) {
-    if (pattern.test(title)) {
-      return false;
+/**
+ * Check if title matches the Name-and-Name pattern
+ * @param {string} title - Call title
+ * @returns {boolean} - True if matches Name-and-Name pattern
+ */
+function matchesNameAndNamePattern(title) {
+  if (!title) return false;
+  return NAME_AND_NAME_PATTERN.test(title.trim());
+}
+
+/**
+ * Calculate sales score based on keywords (for non-pattern matches)
+ * @param {string} title - Call title
+ * @returns {number} - Score 0-100
+ */
+function calculateSalesScore(title) {
+  if (!title) return 0;
+
+  const lowerTitle = title.toLowerCase();
+  let score = 30; // Base score
+
+  // Strong positive signals (high-confidence sales keywords)
+  const strongSalesKeywords = ['discovery', 'demo', 'sales call', 'prospect'];
+  for (const keyword of strongSalesKeywords) {
+    if (lowerTitle.includes(keyword)) {
+      score += 45; // Strong boost for definite sales keywords
     }
   }
 
-  // Must have "and" in title (prospect and sales rep pattern)
-  if (!title.toLowerCase().includes(' and ')) {
-    // Could still be a sales call if it has a prospect-like name
-    // but likely not if it's just a generic title
-    const genericTitles = ['meeting', 'call', 'discussion', 'chat'];
-    if (genericTitles.some(g => title.toLowerCase() === g)) {
-      return false;
+  // Moderate positive signals
+  const moderateSalesKeywords = ['intro', 'introduction', 'sales'];
+  for (const keyword of moderateSalesKeywords) {
+    if (lowerTitle.includes(keyword)) {
+      score += 25;
     }
   }
 
-  return true;
+  // Presence of "and" suggests person-to-person meeting
+  if (lowerTitle.includes(' and ')) {
+    score += 15;
+  }
+
+  // Negative signals (generic titles that are just the word)
+  const genericTitles = ['meeting', 'call', 'discussion', 'chat'];
+  if (genericTitles.some(g => lowerTitle === g)) {
+    score -= 30;
+  }
+
+  return Math.max(0, Math.min(100, score));
+}
+
+/**
+ * Classify a call based on title patterns
+ * Priority order: 1. NOT_SALES denylist, 2. Name-and-Name, 3. Sales scoring, 4. REVIEW_NEEDED
+ *
+ * @param {string} title - Call title
+ * @returns {Object} - { classification: string, confidence: number, reason: string }
+ */
+function classifyCall(title) {
+  if (!title) {
+    return {
+      classification: CLASSIFICATION.REVIEW_NEEDED,
+      confidence: 0,
+      reason: 'no_title'
+    };
+  }
+
+  const trimmedTitle = title.trim();
+
+  // 1. NOT_SALES denylist (highest priority - always wins)
+  if (matchesDenylist(trimmedTitle)) {
+    return {
+      classification: CLASSIFICATION.NOT_SALES,
+      confidence: 95,
+      reason: 'denylist_match'
+    };
+  }
+
+  // 2. Name-and-Name pattern (high confidence SALES)
+  if (matchesNameAndNamePattern(trimmedTitle)) {
+    return {
+      classification: CLASSIFICATION.SALES,
+      confidence: 90,
+      reason: 'name_and_name_pattern'
+    };
+  }
+
+  // 3. Other sales heuristics
+  const salesScore = calculateSalesScore(trimmedTitle);
+  if (salesScore >= 70) {
+    return {
+      classification: CLASSIFICATION.SALES,
+      confidence: salesScore,
+      reason: 'sales_keywords'
+    };
+  }
+
+  // 4. REVIEW_NEEDED fallback
+  return {
+    classification: CLASSIFICATION.REVIEW_NEEDED,
+    confidence: 50,
+    reason: 'no_confident_match'
+  };
+}
+
+/**
+ * Check if a call is a sales call (not internal/catchup)
+ * Wrapper for backward compatibility - uses classifyCall internally
+ * @param {string} title - Call title
+ * @param {Array} _participants - Optional participants array (unused, kept for compatibility)
+ * @returns {boolean} - True if classified as SALES
+ */
+function isSalesCall(title, _participants) {
+  const result = classifyCall(title);
+  return result.classification === CLASSIFICATION.SALES;
 }
 
 /**
@@ -518,5 +638,13 @@ module.exports = {
   isProspectSpeaker,
   analyzeTranscript,
   formatTimestamp,
-  isSalesCall
+  isSalesCall,
+  // New call classification exports
+  classifyCall,
+  matchesDenylist,
+  matchesNameAndNamePattern,
+  calculateSalesScore,
+  CLASSIFICATION,
+  NOT_SALES_DENYLIST,
+  NAME_AND_NAME_PATTERN
 };
