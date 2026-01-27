@@ -1,0 +1,2275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - Sales Call Analyzer</title>
+  <link rel="stylesheet" href="design-system.css">
+  <style>
+    /* Page-specific styles */
+    .integration-card {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      margin-bottom: var(--space-4);
+    }
+
+    .integration-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .integration-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-4);
+    }
+
+    .integration-title {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .integration-title h3 {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .integration-title p {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+    }
+
+    .integration-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: white;
+    }
+
+    .fireflies-icon {
+      background: #ff6b35;
+    }
+
+    .stripe-icon {
+      background: #635bff;
+    }
+
+    .openai-icon {
+      background: #10a37f;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: var(--text-xs);
+      font-weight: 500;
+    }
+
+    .status-connected {
+      background: var(--color-success-bg);
+      color: var(--color-success);
+    }
+
+    .status-disconnected {
+      background: var(--color-error-bg);
+      color: var(--color-error);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .status-connected .status-dot {
+      background: var(--color-success);
+    }
+
+    .status-disconnected .status-dot {
+      background: var(--color-error);
+    }
+
+    .form-group {
+      margin-bottom: var(--space-4);
+    }
+
+    .form-group label {
+      display: block;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--color-text-primary);
+      margin-bottom: 6px;
+    }
+
+    .form-group .hint {
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+      margin-top: 4px;
+    }
+
+    .form-group .hint a {
+      color: var(--color-primary);
+    }
+
+    .input-group {
+      display: flex;
+      gap: var(--space-2);
+    }
+
+    input[type="password"],
+    input[type="text"] {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      font-family: monospace;
+      background: var(--color-surface);
+      color: var(--color-text-primary);
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(7, 59, 85, 0.1);
+    }
+
+    input:disabled {
+      background: var(--color-bg);
+      color: var(--color-text-secondary);
+    }
+
+    .masked-key {
+      font-family: monospace;
+      color: var(--color-text-secondary);
+      padding: 10px 14px;
+      background: var(--color-bg);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+    }
+
+    select {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      background: var(--color-surface);
+      color: var(--color-text-primary);
+      cursor: pointer;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(7, 59, 85, 0.1);
+    }
+
+    .button-group {
+      display: flex;
+      gap: var(--space-2);
+      margin-top: var(--space-4);
+    }
+
+    .test-result {
+      margin-top: var(--space-3);
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+    }
+
+    .test-result.success {
+      background: var(--color-success-bg);
+      color: var(--color-success);
+    }
+
+    .test-result.error {
+      background: var(--color-error-bg);
+      color: var(--color-error);
+    }
+
+    .security-notice {
+      background: #fef3c7;
+      border: 1px solid #f59e0b;
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-4);
+      margin-bottom: var(--space-5);
+      font-size: var(--text-sm);
+      color: #92400e;
+    }
+
+    .security-notice strong {
+      font-weight: 600;
+    }
+
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: var(--space-3);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .radio-option:hover {
+      border-color: var(--color-primary);
+      background: var(--color-bg);
+    }
+
+    .radio-option.selected {
+      border-color: var(--color-primary);
+      background: rgba(7, 59, 85, 0.05);
+    }
+
+    .radio-option input[type="radio"] {
+      margin-top: 2px;
+    }
+
+    .radio-option .radio-content {
+      flex: 1;
+    }
+
+    .radio-option .radio-label {
+      font-weight: 500;
+      font-size: var(--text-sm);
+      color: var(--color-text-primary);
+    }
+
+    .radio-option .radio-description {
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+      margin-top: 2px;
+    }
+
+    .config-section {
+      border-top: 1px solid var(--color-border);
+      margin-top: var(--space-4);
+      padding-top: var(--space-4);
+    }
+
+    .config-section-title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-3);
+    }
+
+    .model-description {
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+      margin-top: 4px;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--color-border);
+      border-top-color: currentColor;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: var(--space-2);
+      vertical-align: middle;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Read-only mode for non-admins */
+    .read-only-notice {
+      background: rgba(59, 130, 246, 0.08);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-4);
+      margin-bottom: var(--space-5);
+      color: var(--color-text-secondary);
+      font-size: var(--text-sm);
+      display: none;
+    }
+
+    .read-only-notice.show {
+      display: block;
+    }
+
+    .read-only-value {
+      font-size: var(--text-sm);
+      color: var(--color-text-primary);
+      padding: var(--space-2) 0;
+    }
+
+    .read-only-label {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-1);
+    }
+
+    /* Admin-only elements hidden in read-only mode */
+    body.read-only-mode .admin-only {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <header class="ds-header">
+    <div class="ds-header-inner">
+      <a href="/admin/" class="ds-header-logo">
+        <img src="/admin/logo.svg" alt="AffiliateFinder">
+      </a>
+      <div class="ds-header-divider"></div>
+      <nav class="ds-header-nav">
+        <a href="/admin/">Calls</a>
+        <a href="/admin/copy.html">Copy</a>
+        <a href="/admin/phil.html">DFY</a>
+        <a href="/admin/founder.html">Closing Rate</a>
+        <a href="/admin/settings.html" class="active">Settings</a>
+      </nav>
+      <div class="ds-header-user">
+        <button class="ds-user-button" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+          <div class="ds-user-avatar" id="user-avatar">--</div>
+          <div class="ds-user-info">
+            <span class="ds-user-name" id="user-display-name">Loading...</span>
+            <span class="ds-user-role" id="user-display-role">-</span>
+          </div>
+          <svg class="ds-user-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="ds-user-dropdown" id="user-dropdown">
+          <div class="ds-dropdown-header">
+            <div class="ds-dropdown-email" id="user-email">-</div>
+            <span class="ds-dropdown-role user" id="user-role-badge">User</span>
+          </div>
+
+          <div class="ds-dropdown-section">
+            <a href="/admin/account.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              Account
+            </a>
+            <a href="/admin/settings.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              Settings
+            </a>
+          </div>
+
+          <div class="ds-dropdown-divider ds-admin-only" style="display: none;"></div>
+
+          <div class="ds-dropdown-section ds-admin-only" style="display: none;">
+            <div class="ds-dropdown-label">Admin</div>
+            <a href="/admin/access-requests.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="8.5" cy="7" r="4"></circle>
+                <line x1="20" y1="8" x2="20" y2="14"></line>
+                <line x1="23" y1="11" x2="17" y2="11"></line>
+              </svg>
+              Access Requests
+            </a>
+            <a href="/admin/users.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              User Management
+            </a>
+          </div>
+
+          <div class="ds-dropdown-divider"></div>
+
+          <div class="ds-dropdown-section">
+            <button class="ds-dropdown-item danger" id="logout-button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="ds-main">
+    <div class="ds-page-header">
+      <h1 class="ds-page-title">Settings</h1>
+      <p class="ds-page-subtitle">API Integrations</p>
+    </div>
+
+    <!-- Security Notice (admin-only) -->
+    <div class="security-notice admin-only">
+      <strong>Security Notice:</strong> API keys are stored locally on the server and are never exposed through the browser.
+      Only masked versions of keys are shown in the UI.
+    </div>
+
+    <!-- Read-Only Notice (non-admin) -->
+    <div id="readOnlyNotice" class="read-only-notice">
+      <strong>View Only:</strong> You can view settings but only administrators can modify them.
+    </div>
+
+    <!-- Global Alert -->
+    <div id="globalAlert" class="ds-alert hidden"></div>
+
+    <!-- Integrations Section -->
+    <div class="ds-card">
+      <div class="ds-card-header">
+        <h2 class="ds-card-title">API Integrations</h2>
+      </div>
+      <div class="ds-card-body">
+
+        <!-- Fireflies Integration -->
+        <div class="integration-card" id="firefliesCard">
+          <div class="integration-header">
+            <div class="integration-title">
+              <img src="/admin/icons/Fireflies.jpeg" alt="Fireflies" style="width: 40px; height: 40px; border-radius: var(--radius-md); object-fit: contain;">
+              <div>
+                <h3>Fireflies.ai</h3>
+                <p>Import call transcripts from Fireflies</p>
+              </div>
+            </div>
+            <span class="status-badge status-disconnected" id="firefliesStatus">
+              <span class="status-dot"></span>
+              <span id="firefliesStatusText">Not configured</span>
+            </span>
+          </div>
+
+          <!-- Current Key Display (when configured) -->
+          <div id="firefliesCurrentKey" class="hidden">
+            <div class="form-group">
+              <label>Current API Key</label>
+              <div class="masked-key" id="firefliesMaskedKey">****</div>
+            </div>
+            <div class="button-group">
+              <button class="ds-btn ds-btn-secondary" onclick="testFireflies()" data-tooltip="Verify API key works">
+                <span id="firefliesTestSpinner" class="spinner hidden"></span>
+                Test Connection
+              </button>
+              <button class="ds-btn ds-btn-secondary admin-only" onclick="showFirefliesEdit()" data-tooltip="Change API key">Update Key</button>
+              <button class="ds-btn ds-btn-danger admin-only" onclick="deleteFirefliesKey()" data-tooltip="Remove integration">Remove</button>
+            </div>
+            <div id="firefliesTestResult" class="test-result hidden"></div>
+          </div>
+
+          <!-- Key Input Form (when not configured or editing) -->
+          <div id="firefliesForm" class="admin-only">
+            <div class="form-group">
+              <label for="firefliesApiKey">API Key</label>
+              <div class="input-group">
+                <input type="password" id="firefliesApiKey" placeholder="Enter your Fireflies API key">
+              </div>
+              <p class="hint">Get your API key from <a href="https://app.fireflies.ai/integrations" target="_blank">Fireflies Integrations</a></p>
+            </div>
+            <div class="button-group">
+              <button class="ds-btn ds-btn-primary" onclick="saveFirefliesKey()" data-tooltip="Save and validate API key">
+                <span id="firefliesSaveSpinner" class="spinner hidden"></span>
+                Save & Validate
+              </button>
+              <button class="ds-btn ds-btn-secondary hidden" id="firefliesCancelBtn" onclick="cancelFirefliesEdit()" data-tooltip="Discard changes">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stripe Integration -->
+        <div class="integration-card" id="stripeCard">
+          <div class="integration-header">
+            <div class="integration-title">
+              <img src="/admin/icons/Stripe.png" alt="Stripe" style="width: 40px; height: 40px; border-radius: var(--radius-md); object-fit: contain;">
+              <div>
+                <h3>Stripe</h3>
+                <p>Enrich calls with customer payment data</p>
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <span class="status-badge" id="stripeModeIndicator" style="display: none; background: #e0e7ff; color: #4338ca;">
+                <span id="stripeModeText">test</span>
+              </span>
+              <span class="status-badge status-disconnected" id="stripeStatus">
+                <span class="status-dot"></span>
+                <span id="stripeStatusText">Not configured</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Current Key Display (when configured) -->
+          <div id="stripeCurrentKey" class="hidden">
+            <div class="form-group">
+              <label>Current API Key</label>
+              <div class="masked-key" id="stripeMaskedKey">****</div>
+            </div>
+
+            <!-- Test Email Input -->
+            <div class="form-group">
+              <label for="stripeTestEmail">Test Email (optional)</label>
+              <div class="input-group">
+                <input type="email" id="stripeTestEmail" placeholder="customer@example.com">
+              </div>
+              <p class="hint">Enter an email to verify customer lookup works correctly</p>
+            </div>
+
+            <div class="button-group">
+              <button class="ds-btn ds-btn-secondary" onclick="testStripe()" data-tooltip="Verify API key works">
+                <span id="stripeTestSpinner" class="spinner hidden"></span>
+                Test Connection
+              </button>
+              <button class="ds-btn ds-btn-secondary admin-only" onclick="showStripeEdit()" data-tooltip="Change API key">Update Key</button>
+              <button class="ds-btn ds-btn-danger admin-only" onclick="deleteStripeKey()" data-tooltip="Remove integration">Remove</button>
+            </div>
+            <div id="stripeTestResult" class="test-result hidden"></div>
+          </div>
+
+          <!-- Key Input Form (when not configured or editing) -->
+          <div id="stripeForm" class="admin-only">
+            <div class="form-group">
+              <label for="stripeApiKey">Secret Key</label>
+              <div class="input-group">
+                <input type="password" id="stripeApiKey" placeholder="sk_live_...">
+              </div>
+              <p class="hint">Get your live secret key from <a href="https://dashboard.stripe.com/apikeys" target="_blank">Stripe Dashboard</a></p>
+            </div>
+            <div class="button-group">
+              <button class="ds-btn ds-btn-primary" onclick="saveStripeKey()" data-tooltip="Save and validate API key">
+                <span id="stripeSaveSpinner" class="spinner hidden"></span>
+                Save & Validate
+              </button>
+              <button class="ds-btn ds-btn-secondary hidden" id="stripeCancelBtn" onclick="cancelStripeEdit()" data-tooltip="Discard changes">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- OpenAI Integration -->
+        <div class="integration-card" id="openaiCard">
+          <div class="integration-header">
+            <div class="integration-title">
+              <img src="/admin/icons/gpt.png" alt="OpenAI" style="width: 40px; height: 40px; border-radius: var(--radius-md); object-fit: contain;">
+              <div>
+                <h3>OpenAI</h3>
+                <p>Power call analysis with GPT models</p>
+              </div>
+            </div>
+            <span class="status-badge status-disconnected" id="openaiStatus">
+              <span class="status-dot"></span>
+              <span id="openaiStatusText">Not configured</span>
+            </span>
+          </div>
+
+          <!-- Current Key Display (when configured) -->
+          <div id="openaiCurrentKey" class="hidden">
+            <div class="form-group">
+              <label>Current API Key</label>
+              <div class="masked-key" id="openaiMaskedKey">****</div>
+            </div>
+            <div class="button-group">
+              <button class="ds-btn ds-btn-secondary" onclick="testOpenAI()">
+                <span id="openaiTestSpinner" class="spinner hidden"></span>
+                Test Connection
+              </button>
+              <button class="ds-btn ds-btn-primary admin-only" onclick="testOpenAIWithModel()">
+                <span id="openaiModelTestSpinner" class="spinner hidden"></span>
+                Test with Selected Model
+              </button>
+              <button class="ds-btn ds-btn-secondary admin-only" onclick="showOpenAIEdit()">Update Key</button>
+              <button class="ds-btn ds-btn-danger admin-only" onclick="deleteOpenAIKey()">Remove</button>
+            </div>
+            <div id="openaiTestResult" class="test-result hidden"></div>
+
+            <!-- Model Configuration (shown when API key is configured) -->
+            <div class="config-section admin-only">
+              <div class="config-section-title">Model Configuration</div>
+
+              <div class="form-group">
+                <label for="openaiModel">Model</label>
+                <select id="openaiModel" onchange="updateModelDescription()">
+                  <!-- Options populated by JavaScript -->
+                </select>
+                <p class="model-description" id="modelDescription"></p>
+              </div>
+
+              <div class="form-group">
+                <label>Apply Mode</label>
+                <div class="radio-group">
+                  <label class="radio-option" id="applyModeFutureOption">
+                    <input type="radio" name="applyMode" value="future_only" checked>
+                    <div class="radio-content">
+                      <div class="radio-label">Future calls only</div>
+                      <div class="radio-description">New model settings apply only to newly analyzed calls</div>
+                    </div>
+                  </label>
+                  <label class="radio-option" id="applyModeLastDayOption">
+                    <input type="radio" name="applyMode" value="rerun_last_day">
+                    <div class="radio-content">
+                      <div class="radio-label">Re-analyze last 24 hours</div>
+                      <div class="radio-description">Re-run analysis on calls from the last day</div>
+                    </div>
+                  </label>
+                  <label class="radio-option" id="applyModeLastWeekOption">
+                    <input type="radio" name="applyMode" value="rerun_last_week">
+                    <div class="radio-content">
+                      <div class="radio-label">Re-analyze last 7 days</div>
+                      <div class="radio-description">Re-run analysis on calls from the last week</div>
+                    </div>
+                  </label>
+                  <label class="radio-option" id="applyModeRerunOption">
+                    <input type="radio" name="applyMode" value="rerun_all">
+                    <div class="radio-content">
+                      <div class="radio-label">Re-analyze all calls</div>
+                      <div class="radio-description">Re-run analysis on all existing calls (may take time)</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div class="button-group">
+                <button class="ds-btn ds-btn-primary" onclick="saveOpenAIConfig()">
+                  <span id="openaiConfigSpinner" class="spinner hidden"></span>
+                  Save Configuration
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Key Input Form (when not configured or editing) -->
+          <div id="openaiForm" class="admin-only">
+            <div class="form-group">
+              <label for="openaiApiKey">API Key</label>
+              <div class="input-group">
+                <input type="password" id="openaiApiKey" placeholder="sk-...">
+              </div>
+              <p class="hint">Get your API key from <a href="https://platform.openai.com/api-keys" target="_blank">OpenAI Platform</a></p>
+            </div>
+
+            <div class="form-group">
+              <label for="openaiModelNew">Model</label>
+              <select id="openaiModelNew" onchange="updateModelDescriptionNew()">
+                <option value="gpt-5-nano" selected>GPT-5 Nano</option>
+                <option value="gpt-5-mini">GPT-5 Mini</option>
+                <option value="gpt-4o">GPT-4o</option>
+                <option value="gpt-4o-mini">GPT-4o Mini</option>
+                <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+              </select>
+              <p class="model-description" id="modelDescriptionNew">Ultra-fast, lowest cost, ideal for simple tasks</p>
+            </div>
+
+            <div class="button-group">
+              <button class="ds-btn ds-btn-primary" onclick="saveOpenAIKey()">
+                <span id="openaiSaveSpinner" class="spinner hidden"></span>
+                Save & Validate
+              </button>
+              <button class="ds-btn ds-btn-secondary hidden" id="openaiCancelBtn" onclick="cancelOpenAIEdit()">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slack Integration -->
+        <div class="integration-card" id="slackCard">
+          <div class="integration-header">
+            <div class="integration-title">
+              <img src="/admin/icons/slack.png" alt="Slack" style="width: 40px; height: 40px; border-radius: var(--radius-md); object-fit: contain;">
+              <div>
+                <h3>Slack</h3>
+                <p>Ingest lifecycle events from Slack notifications</p>
+              </div>
+            </div>
+            <span class="status-badge status-disconnected" id="slackStatus">
+              <span class="status-dot"></span>
+              <span id="slackStatusText">Not configured</span>
+            </span>
+          </div>
+
+          <!-- Current Config Display (when configured) -->
+          <div id="slackCurrentKey" class="hidden">
+            <div class="form-group">
+              <label>Bot Token</label>
+              <div class="masked-key" id="slackMaskedKey">****</div>
+            </div>
+            <div class="form-group">
+              <label>Configured Channels</label>
+              <div id="slackChannelDisplay" style="font-size: var(--text-sm); color: var(--color-text-secondary);">
+                <div>Signup: <code>C09246QR2AX</code></div>
+                <div>Payment: <code>C0987US3LSJ</code></div>
+              </div>
+            </div>
+            <div class="button-group">
+              <button class="ds-btn ds-btn-secondary" onclick="testSlack()">
+                <span id="slackTestSpinner" class="spinner hidden"></span>
+                Test Connection
+              </button>
+              <button class="ds-btn ds-btn-primary admin-only" onclick="syncSlackEvents()">
+                <span id="slackSyncSpinner" class="spinner hidden"></span>
+                Run Import Now
+              </button>
+              <button class="ds-btn ds-btn-secondary admin-only" onclick="showSlackEdit()">Update Token</button>
+              <button class="ds-btn ds-btn-danger admin-only" onclick="deleteSlackConfig()">Remove</button>
+            </div>
+            <div id="slackTestResult" class="test-result hidden"></div>
+            <div id="slackSyncResult" class="test-result hidden"></div>
+          </div>
+
+          <!-- Config Input Form (when not configured or editing) -->
+          <div id="slackForm" class="admin-only">
+            <div class="form-group">
+              <label for="slackBotToken">Bot Token</label>
+              <div class="input-group">
+                <input type="password" id="slackBotToken" placeholder="xoxb-...">
+              </div>
+              <p class="hint">Get your bot token from <a href="https://api.slack.com/apps" target="_blank">Slack App Settings</a> > OAuth & Permissions</p>
+            </div>
+            <div class="form-group">
+              <label>Pre-configured Channels</label>
+              <div style="font-size: var(--text-sm); color: var(--color-text-secondary); padding: 10px 14px; background: var(--color-bg); border-radius: var(--radius-md);">
+                <div>Signup Channel: <code>C09246QR2AX</code></div>
+                <div>Payment Channel: <code>C0987US3LSJ</code></div>
+              </div>
+              <p class="hint">Channels are pre-configured. Just add your bot token to connect.</p>
+            </div>
+            <div class="button-group">
+              <button class="ds-btn ds-btn-primary" onclick="saveSlackConfig()">
+                <span id="slackSaveSpinner" class="spinner hidden"></span>
+                Save & Validate
+              </button>
+              <button class="ds-btn ds-btn-secondary hidden" id="slackCancelBtn" onclick="cancelSlackEdit()">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calendly Integration -->
+        <div class="integration-card" id="calendlyCard">
+          <div class="integration-header">
+            <div class="integration-title">
+              <img src="/admin/icons/calendly.png" alt="Calendly" style="width: 40px; height: 40px; border-radius: var(--radius-md); object-fit: contain;">
+              <div>
+                <h3>Calendly</h3>
+                <p>Enrich transcripts with meeting booking details</p>
+              </div>
+            </div>
+            <span class="status-badge status-disconnected" id="calendlyStatus">
+              <span class="status-dot"></span>
+              <span id="calendlyStatusText">Not configured</span>
+            </span>
+          </div>
+
+          <!-- Current Config Display (when configured) -->
+          <div id="calendlyCurrentKey" class="hidden">
+            <div class="form-group">
+              <label>API Key</label>
+              <div class="masked-key" id="calendlyMaskedKey">****</div>
+            </div>
+            <div class="form-group">
+              <label>Connected Account</label>
+              <div id="calendlyUserInfo" style="font-size: var(--text-sm); color: var(--color-text-secondary);">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+            <div class="button-group">
+              <button class="ds-btn ds-btn-secondary" onclick="testCalendly()">
+                <span id="calendlyTestSpinner" class="spinner hidden"></span>
+                Test Connection
+              </button>
+              <button class="ds-btn ds-btn-secondary admin-only" onclick="showCalendlyEdit()">Update Key</button>
+              <button class="ds-btn ds-btn-danger admin-only" onclick="deleteCalendlyConfig()">Remove</button>
+            </div>
+            <div id="calendlyTestResult" class="test-result hidden"></div>
+          </div>
+
+          <!-- Config Input Form (when not configured or editing) -->
+          <div id="calendlyForm" class="admin-only">
+            <div class="form-group">
+              <label for="calendlyApiKey">Personal Access Token</label>
+              <div class="input-group">
+                <input type="password" id="calendlyApiKey" placeholder="eyJraWQi...">
+              </div>
+              <p class="hint">Get your API token from <a href="https://calendly.com/integrations/api_webhooks" target="_blank">Calendly Integrations</a> > API & Webhooks</p>
+            </div>
+            <div class="button-group">
+              <button class="ds-btn ds-btn-primary" onclick="saveCalendlyConfig()">
+                <span id="calendlySaveSpinner" class="spinner hidden"></span>
+                Save & Validate
+              </button>
+              <button class="ds-btn ds-btn-secondary hidden" id="calendlyCancelBtn" onclick="cancelCalendlyEdit()">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Token Usage Section -->
+    <div class="ds-card" style="margin-top: var(--space-5);">
+      <div class="ds-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 class="ds-card-title">Token Usage & Costs</h2>
+        <div style="display: flex; align-items: center; gap: var(--space-3);">
+          <span id="lastUpdatedText" style="font-size: var(--text-xs); color: var(--color-text-muted);"></span>
+          <button class="ds-btn ds-btn-secondary" onclick="refreshTokenUsage()" style="padding: 6px 12px; font-size: var(--text-xs);">
+            <span id="refreshSpinner" class="spinner hidden" style="width: 12px; height: 12px; margin-right: 4px;"></span>
+            Refresh
+          </button>
+        </div>
+      </div>
+      <div class="ds-card-body">
+        <div id="tokenUsageContent">
+          <div id="tokenUsageLoading" style="text-align: center; padding: var(--space-5); color: var(--color-text-secondary);">
+            Loading usage data...
+          </div>
+
+          <!-- Usage Stats (shown when data loaded) -->
+          <div id="tokenUsageStats" class="hidden">
+            <!-- Summary Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-5);">
+              <div style="background: var(--color-bg); padding: var(--space-4); border-radius: var(--radius-md); text-align: center;">
+                <div style="font-size: var(--text-2xl); font-weight: 600; color: var(--color-primary);" id="totalCallsAnalyzed">0</div>
+                <div style="font-size: var(--text-xs); color: var(--color-text-secondary);">Calls Analyzed</div>
+              </div>
+              <div style="background: var(--color-bg); padding: var(--space-4); border-radius: var(--radius-md); text-align: center;">
+                <div style="font-size: var(--text-2xl); font-weight: 600; color: var(--color-primary);" id="totalTokensUsed">0</div>
+                <div style="font-size: var(--text-xs); color: var(--color-text-secondary);">Total Tokens</div>
+              </div>
+              <div style="background: var(--color-bg); padding: var(--space-4); border-radius: var(--radius-md); text-align: center;">
+                <div style="font-size: var(--text-2xl); font-weight: 600; color: #10a37f;" id="totalCostDisplay">$0.00</div>
+                <div style="font-size: var(--text-xs); color: var(--color-text-secondary);">Total Cost</div>
+              </div>
+              <div style="background: var(--color-bg); padding: var(--space-4); border-radius: var(--radius-md); text-align: center;">
+                <div style="font-size: var(--text-2xl); font-weight: 600; color: var(--color-text-primary);" id="avgCostPerCall">$0.00</div>
+                <div style="font-size: var(--text-xs); color: var(--color-text-secondary);">Avg Cost/Call</div>
+              </div>
+            </div>
+
+            <!-- Usage by Model -->
+            <div style="margin-bottom: var(--space-5);">
+              <h4 style="font-size: var(--text-sm); font-weight: 600; margin-bottom: var(--space-3);">Usage by Model</h4>
+              <div id="usageByModel" style="background: var(--color-bg); border-radius: var(--radius-md); overflow: hidden;">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+
+            <!-- Recent Analyses -->
+            <div>
+              <h4 style="font-size: var(--text-sm); font-weight: 600; margin-bottom: var(--space-3);">Recent LLM Analyses</h4>
+              <div id="recentAnalyses" style="max-height: 300px; overflow-y: auto;">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- No Data Message (shown when no LLM analyses exist) -->
+          <div id="tokenUsageNoData" class="hidden" style="text-align: center; padding: var(--space-5); color: var(--color-text-secondary);">
+            <div style="font-size: var(--text-lg); margin-bottom: var(--space-2);">No LLM Analyses Yet</div>
+            <p style="font-size: var(--text-sm);">Token usage tracking starts when you analyze calls with LLM enabled.</p>
+            <p style="font-size: var(--text-xs); margin-top: var(--space-2);">Configure your OpenAI API key above to enable LLM-powered analysis.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const API_BASE = '/api/settings';
+    let isAdmin = false;
+
+    // =====================
+    // User Menu
+    // =====================
+    async function initUserMenu() {
+      try {
+        const response = await fetch('/api/auth/me', { credentials: 'include' });
+        if (!response.ok) {
+          window.location.href = '/admin/login.html';
+          return;
+        }
+        const data = await response.json();
+        const user = data.user;
+
+        // Update avatar with initials
+        const avatar = document.getElementById('user-avatar');
+        if (avatar) {
+          const initials = (user.name || user.email || '?')
+            .split(/[\s@]+/)
+            .map(part => part[0])
+            .join('')
+            .substring(0, 2)
+            .toUpperCase();
+          avatar.textContent = initials;
+        }
+
+        // Update user display name in header button
+        const displayName = document.getElementById('user-display-name');
+        if (displayName) {
+          displayName.textContent = user.name || user.email.split('@')[0];
+        }
+
+        // Update user display role in header button
+        const displayRole = document.getElementById('user-display-role');
+        if (displayRole) {
+          displayRole.textContent = user.role === 'admin' ? 'Admin' : 'User';
+        }
+
+        // Update email in dropdown
+        const emailEl = document.getElementById('user-email');
+        if (emailEl) emailEl.textContent = user.email;
+
+        // Update role badge in dropdown
+        const roleBadge = document.getElementById('user-role-badge');
+        if (roleBadge) {
+          roleBadge.textContent = user.role === 'admin' ? 'Admin' : 'User';
+          roleBadge.className = 'ds-dropdown-role ' + (user.role === 'admin' ? 'admin' : 'user');
+        }
+
+        isAdmin = user.role === 'admin';
+
+        if (isAdmin) {
+          document.querySelectorAll('.ds-admin-only').forEach(el => el.style.display = '');
+        } else {
+          // Enable read-only mode for non-admins
+          document.body.classList.add('read-only-mode');
+          document.getElementById('readOnlyNotice').classList.add('show');
+        }
+      } catch (err) {
+        console.error('Failed to load user info:', err);
+      }
+    }
+
+    function setupUserMenu() {
+      const button = document.getElementById('user-menu-button');
+      const dropdown = document.getElementById('user-dropdown');
+      const logoutBtn = document.getElementById('logout-button');
+
+      if (button && dropdown) {
+        button.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isOpen = dropdown.classList.contains('open');
+          dropdown.classList.toggle('open', !isOpen);
+          button.setAttribute('aria-expanded', !isOpen);
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('.ds-header-user')) {
+            dropdown.classList.remove('open');
+            button.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+          try {
+            await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+          } catch (err) {
+            console.error('Logout error:', err);
+          }
+          window.location.href = '/admin/login.html';
+        });
+      }
+    }
+
+    // =====================
+    // UI State Management
+    // =====================
+
+    function showAlert(message, type) {
+      const alert = document.getElementById('globalAlert');
+      alert.className = `ds-alert ds-alert-${type}`;
+      alert.textContent = message;
+      alert.classList.remove('hidden');
+
+      // Scroll to alert so user can see it
+      alert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      if (type === 'success') {
+        setTimeout(() => alert.classList.add('hidden'), 5000);
+      }
+    }
+
+    function hideAlert() {
+      document.getElementById('globalAlert').classList.add('hidden');
+    }
+
+    function updateFirefliesUI(configured, maskedKey) {
+      const statusBadge = document.getElementById('firefliesStatus');
+      const statusText = document.getElementById('firefliesStatusText');
+      const currentKeyDiv = document.getElementById('firefliesCurrentKey');
+      const formDiv = document.getElementById('firefliesForm');
+      const maskedKeyDiv = document.getElementById('firefliesMaskedKey');
+
+      if (configured) {
+        statusBadge.className = 'status-badge status-connected';
+        statusText.textContent = 'Connected';
+        currentKeyDiv.classList.remove('hidden');
+        formDiv.classList.add('hidden');
+        maskedKeyDiv.textContent = maskedKey || '****';
+      } else {
+        statusBadge.className = 'status-badge status-disconnected';
+        statusText.textContent = 'Not configured';
+        currentKeyDiv.classList.add('hidden');
+        formDiv.classList.remove('hidden');
+      }
+    }
+
+    function updateStripeUI(configured, maskedKey, mode) {
+      const statusBadge = document.getElementById('stripeStatus');
+      const statusText = document.getElementById('stripeStatusText');
+      const currentKeyDiv = document.getElementById('stripeCurrentKey');
+      const formDiv = document.getElementById('stripeForm');
+      const maskedKeyDiv = document.getElementById('stripeMaskedKey');
+      const modeIndicator = document.getElementById('stripeModeIndicator');
+      const modeText = document.getElementById('stripeModeText');
+
+      if (configured) {
+        statusBadge.className = 'status-badge status-connected';
+        statusText.textContent = 'Connected';
+        currentKeyDiv.classList.remove('hidden');
+        formDiv.classList.add('hidden');
+        maskedKeyDiv.textContent = maskedKey || '****';
+
+        // Show mode indicator
+        if (mode === 'test') {
+          modeIndicator.style.display = 'inline-flex';
+          modeIndicator.style.background = '#fef3c7';
+          modeIndicator.style.color = '#92400e';
+          modeText.textContent = 'TEST';
+        } else if (mode === 'live') {
+          modeIndicator.style.display = 'inline-flex';
+          modeIndicator.style.background = '#d1fae5';
+          modeIndicator.style.color = '#065f46';
+          modeText.textContent = 'LIVE';
+        } else {
+          modeIndicator.style.display = 'none';
+        }
+      } else {
+        statusBadge.className = 'status-badge status-disconnected';
+        statusText.textContent = 'Not configured';
+        currentKeyDiv.classList.add('hidden');
+        formDiv.classList.remove('hidden');
+        modeIndicator.style.display = 'none';
+      }
+    }
+
+    // =====================
+    // Load Integration Status
+    // =====================
+
+    async function loadIntegrationStatus() {
+      try {
+        const response = await fetch(`${API_BASE}/integrations`);
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to load integration status');
+        }
+
+        // Update Fireflies UI
+        updateFirefliesUI(
+          data.data.fireflies.configured,
+          data.data.fireflies.maskedKey
+        );
+
+        // Update Stripe UI - detect mode from masked key
+        let stripeMode = null;
+        if (data.data.stripe.maskedKey && data.data.stripe.maskedKey.startsWith('sk_t')) {
+          stripeMode = 'test';
+        } else if (data.data.stripe.maskedKey && data.data.stripe.maskedKey.startsWith('sk_l')) {
+          stripeMode = 'live';
+        }
+        updateStripeUI(
+          data.data.stripe.configured,
+          data.data.stripe.maskedKey,
+          stripeMode
+        );
+
+      } catch (error) {
+        console.error('Error loading integration status:', error);
+        showAlert('Error loading integration status: ' + error.message, 'error');
+      }
+    }
+
+    // =====================
+    // Fireflies Functions
+    // =====================
+
+    function showFirefliesEdit() {
+      document.getElementById('firefliesCurrentKey').classList.add('hidden');
+      document.getElementById('firefliesForm').classList.remove('hidden');
+      document.getElementById('firefliesCancelBtn').classList.remove('hidden');
+      document.getElementById('firefliesApiKey').value = '';
+      document.getElementById('firefliesApiKey').focus();
+    }
+
+    function cancelFirefliesEdit() {
+      document.getElementById('firefliesCancelBtn').classList.add('hidden');
+      loadIntegrationStatus();
+    }
+
+    async function saveFirefliesKey() {
+      const apiKey = document.getElementById('firefliesApiKey').value.trim();
+
+      if (!apiKey) {
+        showAlert('Please enter an API key', 'error');
+        return;
+      }
+
+      const spinner = document.getElementById('firefliesSaveSpinner');
+      spinner.classList.remove('hidden');
+
+      try {
+        const response = await fetch(`${API_BASE}/integrations/fireflies`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ apiKey })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to save API key');
+        }
+
+        showAlert('Fireflies API key saved successfully!', 'success');
+        document.getElementById('firefliesApiKey').value = '';
+        document.getElementById('firefliesCancelBtn').classList.add('hidden');
+        loadIntegrationStatus();
+
+      } catch (error) {
+        showAlert('Error: ' + error.message, 'error');
+      } finally {
+        spinner.classList.add('hidden');
+      }
+    }
+
+    async function testFireflies() {
+      const spinner = document.getElementById('firefliesTestSpinner');
+      const resultDiv = document.getElementById('firefliesTestResult');
+
+      spinner.classList.remove('hidden');
+      resultDiv.classList.add('hidden');
+
+      try {
+        const response = await fetch(`${API_BASE}/integrations/fireflies/test`, {
+          method: 'POST'
+        });
+
+        const data = await response.json();
+
+        if (data.connected) {
+          resultDiv.className = 'test-result success';
+          resultDiv.textContent = `Connection successful! Connected as: ${data.email}`;
+        } else {
+          resultDiv.className = 'test-result error';
+          resultDiv.textContent = `Connection failed: ${data.error}`;
+        }
+        resultDiv.classList.remove('hidden');
+
+      } catch (error) {
+        resultDiv.className = 'test-result error';
+        resultDiv.textContent = `Error: ${error.message}`;
+        resultDiv.classList.remove('hidden');
+      } finally {
+        spinner.classList.add('hidden');
+      }
+    }
+
+    async function deleteFirefliesKey() {
+      if (!confirm('Are you sure you want to remove the Fireflies API key?')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/integrations/fireflies`, {
+          method: 'DELETE'
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to delete API key');
+        }
+
+        showAlert('Fireflies API key removed', 'success');
+        loadIntegrationStatus();
+
+      } catch (error) {
+        showAlert('Error: ' + error.message, 'error');
+      }
+    }
+
+    // =====================
+    // Stripe Functions
+    // =====================
+
+    function showStripeEdit() {
+      document.getElementById('stripeCurrentKey').classList.add('hidden');
+      document.getElementById('stripeForm').classList.remove('hidden');
+      document.getElementById('stripeCancelBtn').classList.remove('hidden');
+      document.getElementById('stripeApiKey').value = '';
+      document.getElementById('stripeApiKey').focus();
+    }
+
+    function cancelStripeEdit() {
+      document.getElementById('stripeCancelBtn').classList.add('hidden');
+      loadIntegrationStatus();
+    }
+
+    async function saveStripeKey() {
+      const apiKey = document.getElementById('stripeApiKey').value.trim();
+
+      if (!apiKey) {
+        showAlert('Please enter an API key', 'error');
+        return;
+      }
+
+      const spinner = document.getElementById('stripeSaveSpinner');
+      spinner.classList.remove('hidden');
+
+      try {
+        const response = await fetch(`${API_BASE}/integrations/stripe`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ apiKey })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to save API key');
+        }
+
+        showAlert('Stripe API key saved successfully!', 'success');
+        document.getElementById('stripeApiKey').value = '';
+        document.getElementById('stripeCancelBtn').classList.add('hidden');
+        loadIntegrationStatus();
+
+      } catch (error) {
+        showAlert('Error: ' + error.message, 'error');
+      } finally {
+        spinner.classList.add('hidden');
+      }
+    }
+
+    async function testStripe() {
+      const spinner = document.getElementById('stripeTestSpinner');
+      const resultDiv = document.getElementById('stripeTestResult');
+      const testEmailInput = document.getElementById('stripeTestEmail');
+      const testEmail = testEmailInput?.value?.trim() || null;
+
+      spinner.classList.remove('hidden');
+      resultDiv.classList.add('hidden');
+
+      try {
+        const requestBody = testEmail ? { testEmail } : {};
+        const response = await fetch(`${API_BASE}/integrations/stripe/test`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody)
+        });
+
+        const data = await response.json();
+
+        if (data.connected) {
+          let message = 'Connection successful! Stripe API key is valid.';
+
+          // Add mode info
+          if (data.mode === 'live') {
+            message += ' (Live mode)';
+          } else if (data.mode === 'test') {
+            message += ' (Test mode)';
+          }
+
+          // Add test email results
+          if (data.testEmail) {
+            if (data.testEmail.found) {
+              message += `\n\nTest email "${data.testEmail.searched}" found:`;
+              message += `\n• Customer: ${data.testEmail.customerName || 'N/A'}`;
+              message += `\n• ID: ${data.testEmail.customerId}`;
+            } else {
+              message += `\n\nTest email "${data.testEmail.searched}" not found in Stripe.`;
+              if (data.testEmail.error) {
+                message += ` (${data.testEmail.error})`;
+              }
+            }
+          }
+
+          resultDiv.className = 'test-result success';
+          resultDiv.style.whiteSpace = 'pre-line';
+          resultDiv.textContent = message;
+
+          // Update mode indicator
+          const modeIndicator = document.getElementById('stripeModeIndicator');
+          const modeText = document.getElementById('stripeModeText');
+          if (data.mode === 'test') {
+            modeIndicator.style.display = 'inline-flex';
+            modeIndicator.style.background = '#fef3c7';
+            modeIndicator.style.color = '#92400e';
+            modeText.textContent = 'TEST';
+          } else if (data.mode === 'live') {
+            modeIndicator.style.display = 'inline-flex';
+            modeIndicator.style.background = '#d1fae5';
+            modeIndicator.style.color = '#065f46';
+            modeText.textContent = 'LIVE';
+          }
+        } else {
+          resultDiv.className = 'test-result error';
+          resultDiv.textContent = `Connection failed: ${data.error}`;
+        }
+        resultDiv.classList.remove('hidden');
+
+      } catch (error) {
+        resultDiv.className = 'test-result error';
+        resultDiv.textContent = `Error: ${error.message}`;
+        resultDiv.classList.remove('hidden');
+      } finally {
+        spinner.classList.add('hidden');
+      }
+    }
+
+    async function deleteStripeKey() {
+      if (!confirm('Are you sure you want to remove the Stripe API key?')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/integrations/stripe`, {
+          method: 'DELETE'
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to delete API key');
+        }
+
+        showAlert('Stripe API key removed', 'success');
+        loadIntegrationStatus();
+
+      } catch (error) {
+        showAlert('Error: ' + error.message, 'error');
+      }
+    }
+
+    // =====================
+    // OpenAI Functions
+    // =====================
+
+    let openaiModels = [];
+
+    // Default models for the new API key form
+    const defaultModels = [
+      { id: 'gpt-5-mini', name: 'GPT-5 Mini', description: 'Advanced reasoning with balanced speed and cost' },
+      { id: 'gpt-5-nano', name: 'GPT-5 Nano', description: 'Ultra-fast, lowest cost, ideal for simple tasks' },
+      { id: 'gpt-4o', name: 'GPT-4o', description: 'Most capable model, best for complex analysis' },
+      { id: 'gpt-4o-mini', name: 'GPT-4o Mini', description: 'Fast and cost-effective' },
+      { id: 'gpt-4-turbo', name: 'GPT-4 Turbo', description: 'High performance with large context' },
+      { id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo', description: 'Fastest, most economical' }
+    ];
+
+    function updateModelDescriptionNew() {
+      const modelSelect = document.getElementById('openaiModelNew');
+      const descriptionEl = document.getElementById('modelDescriptionNew');
+      const selectedModel = defaultModels.find(m => m.id === modelSelect.value);
+      descriptionEl.textContent = selectedModel ? selectedModel.description : '';
+    }
+
+    function updateOpenAIUI(configured, maskedKey, model, applyMode, availableModels) {
+      const statusBadge = document.getElementById('openaiStatus');
+      const statusText = document.getElementById('openaiStatusText');
+      const currentKeyDiv = document.getElementById('openaiCurrentKey');
+      const formDiv = document.getElementById('openaiForm');
+      const maskedKeyDiv = document.getElementById('openaiMaskedKey');
+
+      if (configured) {
+        statusBadge.className = 'status-badge status-connected';
+        statusText.textContent = 'Connected';
+        currentKeyDiv.classList.remove('hidden');
+        formDiv.classList.add('hidden');
+        maskedKeyDiv.textContent = maskedKey || '****';
+
+        // Populate model dropdown
+        openaiModels = availableModels || [];
+        const modelSelect = document.getElementById('openaiModel');
+        modelSelect.innerHTML = '';
+        openaiModels.forEach(m => {
+          const option = document.createElement('option');
+          option.value = m.id;
+          option.textContent = m.name;
+          if (m.id === model) {
+            option.selected = true;
+          }
+          modelSelect.appendChild(option);
+        });
+
+        // Update model description
+        updateModelDescription();
+
+        // Set apply mode radio - support all four modes
+        const validModes = ['future_only', 'rerun_last_day', 'rerun_last_week', 'rerun_all'];
+        const modeToSet = validModes.includes(applyMode) ? applyMode : 'future_only';
+        const targetRadio = document.querySelector(`input[name="applyMode"][value="${modeToSet}"]`);
+        if (targetRadio) {
+          targetRadio.checked = true;
+        }
+        updateRadioStyles();
+      } else {
+        statusBadge.className = 'status-badge status-disconnected';
+        statusText.textContent = 'Not configured';
+        currentKeyDiv.classList.add('hidden');
+        formDiv.classList.remove('hidden');
+      }
+    }
+
+    function updateModelDescription() {
+      const modelSelect = document.getElementById('openaiModel');
+      const descriptionEl = document.getElementById('modelDescription');
+      const selectedModel = openaiModels.find(m => m.id === modelSelect.value);
+      descriptionEl.textContent = selectedModel ? selectedModel.description : '';
+    }
+
+    function updateRadioStyles() {
+      const options = [
+        { id: 'applyModeFutureOption', value: 'future_only' },
+        { id: 'applyModeLastDayOption', value: 'rerun_last_day' },
+        { id: 'applyModeLastWeekOption', value: 'rerun_last_week' },
+        { id: 'applyModeRerunOption', value: 'rerun_all' }
+      ];
+
+      options.forEach(opt => {
+        const option = document.getElementById(opt.id);
+        const radio = document.querySelector(`input[name="applyMode"][value="${opt.value}"]`);
+        if (option && radio) {
+          option.classList.toggle('selected', radio.checked);
+        }
+      });
+    }
+
+    // Add event listeners for radio buttons
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('input[name="applyMode"]').forEach(radio => {
+        radio.addEventListener('change', updateRadioStyles);
+      });
+    });
+
+    function showOpenAIEdit() {
+      document.getElementById('openaiCurrentKey').classList.add('hidden');
+      document.getElementById('openaiForm').classList.remove('hidden');
+      document.getElementById('openaiCancelBtn').classList.remove('hidden');
+      document.getElementById('openaiApiKey').value = '';
+      document.getElementById('openaiApiKey').focus();
+    }
+
+    function cancelOpenAIEdit() {
+      document.getElementById('openaiCancelBtn').classList.add('hidden');
+      loadOpenAIConfig();
+    }
+
+    async function loadOpenAIConfig() {
+      try {
+        const response = await fetch(`${API_BASE}/integrations/openai`);
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to load OpenAI config');
+        }
+
+        updateOpenAIUI(
+          data.data.configured,
+          data.data.maskedKey,
+          data.data.model,
+          data.data.applyMode,
+          data.data.availableModels
+        );
+      } catch (error) {
+        console.error('Error loading OpenAI config:', error);
+      }
+    }
+
+    async function saveOpenAIKey(skipValidation = false) {
+      const apiKey = document.getElementById('openaiApiKey').value.trim();
+      const selectedModel = document.getElementById('openaiModelNew').value;
+
+      if (!apiKey) {
+        showAlert('Please enter an API key', 'error');
+        return;
+      }
+
+      // Basic format validation
+      if (!apiKey.startsWith('sk-')) {
+        showAlert('Invalid API key format. OpenAI keys should start with "sk-"', 'error');
+        return;
+      }
+
+      const spinner = document.getElementById('openaiSaveSpinner');
+      const saveBtn = spinner.parentElement;
+      saveBtn.disabled = true;
+      spinner.classList.remove('hidden');
+
+      try {
+        // First save the API key
+        const response = await fetch(`${API_BASE}/integrations/openai`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ apiKey, skipValidation })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+          // Provide more helpful error messages
+          let errorMsg = data.error || 'Failed to save API key';
+
+          // Check for validation errors and offer skip option
+          if (!skipValidation && (
+            errorMsg.includes('Invalid API key') ||
+            errorMsg.includes('Network error') ||
+            errorMsg.includes('Connection error') ||
+            errorMsg.includes('Rate limited')
+          )) {
+            const shouldSkip = confirm(
+              errorMsg + '\n\n' +
+              'Would you like to save the API key anyway without validation?\n' +
+              '(You can test the connection later)'
+            );
+            if (shouldSkip) {
+              spinner.classList.add('hidden');
+              saveBtn.disabled = false;
+              return saveOpenAIKey(true); // Retry with skipValidation
+            }
+          }
+          throw new Error(errorMsg);
+        }
+
+        // Now save the model configuration with default apply mode
+        const configResponse = await fetch(`${API_BASE}/integrations/openai/config`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model: selectedModel, applyMode: 'future_only' })
+        });
+
+        const configData = await configResponse.json();
+        if (!configData.success) {
+          console.warn('Warning: Model config save failed:', configData.error);
+        }
+
+        const message = skipValidation
+          ? 'OpenAI API key saved (validation was skipped - please test the connection)'
+          : 'OpenAI API key saved and validated successfully!';
+        showAlert(message, 'success');
+        document.getElementById('openaiApiKey').value = '';
+        document.getElementById('openaiCancelBtn').classList.add('hidden');
+        loadOpenAIConfig();
+        loadIntegrationStatus();
+
+      } catch (error) {
+        console.error('Error saving OpenAI key:', error);
+        showAlert(error.message, 'error');
+      } finally {
+        spinner.classList.add('hidden');
+        saveBtn.disabled = false;
+      }
+    }
+
+    async function testOpenAI() {
+      const spinner = document.getElementById('openaiTestSpinner');
+      const resultDiv = document.getElementById('openaiTestResult');
+
+      spinner.classList.remove('hidden');
+      resultDiv.classList.add('hidden');
+
+      try {
+        const response = await fetch(`${API_BASE}/integrations/openai/test`, {
+          method: 'POST'
+        });
+
+        const data = await response.json();
+
+        if (data.connected) {
+          resultDiv.className = 'test-result success';
+          resultDiv.textContent = 'Connection successful! OpenAI API key is valid.';
+        } else {
+          resultDiv.className = 'test-result error';
+          resultDiv.textContent = `Connection failed: ${data.error}`;
+        }
+        resultDiv.classList.remove('hidden');
+
+      } catch (error) {
+        resultDiv.className = 'test-result error';
+        resultDiv.textContent = `Error: ${error.message}`;
+        resultDiv.classList.remove('hidden');
+      } finally {
+        spinner.classList.add('hidden');
+      }
+    }
+
+    async function testOpenAIWithModel() {
+      const spinner = document.getElementById('openaiModelTestSpinner');
+      const resultDiv = document.getElementById('openaiTestResult');
+      const selectedModel = document.getElementById('openaiModel').value;
+
+      spinner.classList.remove('hidden');
+      resultDiv.classList.add('hidden');
+
+      try {
+        const response = await fetch(`${API_BASE}/integrations/openai/test`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ testModel: selectedModel })
+        });
+
+        const data = await response.json();
+
+        if (data.success && data.modelTest?.success) {
+          let message = `Model test successful!\n`;
+          message += `Model: ${data.model}\n`;
+          if (data.modelTest.latencyMs) {
+            message += `Latency: ${data.modelTest.latencyMs}ms\n`;
+          }
+          if (data.modelTest.tokensUsed !== undefined) {
+            message += `Tokens used: ${data.modelTest.tokensUsed}`;
+          }
+          resultDiv.className = 'test-result success';
+          resultDiv.style.whiteSpace = 'pre-line';
+          resultDiv.textContent = message;
+        } else {
+          resultDiv.className = 'test-result error';
+          let errorMsg = data.error || 'Model test failed';
+          if (data.connected) {
+            errorMsg = `API key valid, but model "${data.model}" failed:\n${errorMsg}`;
+          }
+          resultDiv.style.whiteSpace = 'pre-line';
+          resultDiv.textContent = errorMsg;
+        }
+        resultDiv.classList.remove('hidden');
+
+      } catch (error) {
+        resultDiv.className = 'test-result error';
+        resultDiv.textContent = `Error: ${error.message}`;
+        resultDiv.classList.remove('hidden');
+      } finally {
+        spinner.classList.add('hidden');
+      }
+    }
+
+    async function deleteOpenAIKey() {
+      if (!confirm('Are you sure you want to remove the OpenAI API key?')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/integrations/openai`, {
+          method: 'DELETE'
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to delete API key');
+        }
+
+        showAlert('OpenAI API key removed', 'success');
+        loadOpenAIConfig();
+        loadIntegrationStatus();
+
+      } catch (error) {
+        showAlert('Error: ' + error.message, 'error');
+      }
+    }
+
+    async function saveOpenAIConfig() {
+      const model = document.getElementById('openaiModel').value;
+      const applyMode = document.querySelector('input[name="applyMode"]:checked').value;
+
+      const spinner = document.getElementById('openaiConfigSpinner');
+      spinner.classList.remove('hidden');
+
+      try {
+        const response = await fetch(`${API_BASE}/integrations/openai/config`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model, applyMode })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to save configuration');
+        }
+
+        showAlert('OpenAI configuration saved successfully!', 'success');
+
+      } catch (error) {
+        showAlert('Error: ' + error.message, 'error');
+      } finally {
+        spinner.classList.add('hidden');
+      }
+    }
+
+    // =====================
+    // Token Usage Functions
+    // =====================
+
+    async function loadTokenUsage(forceRefresh = false) {
+      const loadingDiv = document.getElementById('tokenUsageLoading');
+      const statsDiv = document.getElementById('tokenUsageStats');
+      const noDataDiv = document.getElementById('tokenUsageNoData');
+      const lastUpdatedText = document.getElementById('lastUpdatedText');
+
+      try {
+        // Build URL with forceRefresh parameter if needed
+        let url = `${API_BASE}/usage`;
+        if (forceRefresh) {
+          url += '?forceRefresh=true';
+        }
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to load token usage');
+        }
+
+        const stats = data.data;
+        loadingDiv.classList.add('hidden');
+
+        // Update last updated timestamp
+        if (stats.lastUpdated) {
+          const updatedDate = new Date(stats.lastUpdated);
+          lastUpdatedText.textContent = `Last updated: ${updatedDate.toLocaleString()}`;
+        }
+
+        if (stats.totalCalls === 0) {
+          noDataDiv.classList.remove('hidden');
+          statsDiv.classList.add('hidden');
+          return;
+        }
+
+        // Populate summary cards
+        document.getElementById('totalCallsAnalyzed').textContent = stats.totalCalls.toLocaleString();
+        document.getElementById('totalTokensUsed').textContent = formatTokenCount(stats.totalTokens);
+        document.getElementById('totalCostDisplay').textContent = '$' + stats.totalCostDollars.toFixed(2);
+        // avgCostPerCall is in cents, convert to dollars
+        document.getElementById('avgCostPerCall').textContent = '$' + (stats.avgCostPerCall / 100).toFixed(4);
+
+        // Populate usage by model - sort by calls descending
+        const modelContainer = document.getElementById('usageByModel');
+        const modelEntries = Object.entries(stats.byModel).sort((a, b) => b[1].calls - a[1].calls);
+        if (modelEntries.length > 0) {
+          let modelHtml = '<table style="width: 100%; font-size: var(--text-sm);">';
+          modelHtml += '<thead><tr style="background: var(--color-surface);"><th style="padding: 10px; text-align: left;">Model</th><th style="padding: 10px; text-align: right;">Calls</th><th style="padding: 10px; text-align: right;">Tokens</th><th style="padding: 10px; text-align: right;">Cost</th></tr></thead>';
+          modelHtml += '<tbody>';
+          for (const [model, usage] of modelEntries) {
+            // Format model name for display
+            const displayModel = formatModelName(model);
+            modelHtml += `<tr style="border-top: 1px solid var(--color-border);">`;
+            modelHtml += `<td style="padding: 10px; font-family: monospace; font-size: var(--text-xs);">${displayModel}</td>`;
+            modelHtml += `<td style="padding: 10px; text-align: right;">${usage.calls.toLocaleString()}</td>`;
+            modelHtml += `<td style="padding: 10px; text-align: right;">${formatTokenCount(usage.totalTokens)}</td>`;
+            modelHtml += `<td style="padding: 10px; text-align: right;">$${(usage.costCents / 100).toFixed(4)}</td>`;
+            modelHtml += `</tr>`;
+          }
+          modelHtml += '</tbody></table>';
+          modelContainer.innerHTML = modelHtml;
+        } else {
+          modelContainer.innerHTML = '<div style="padding: var(--space-3); color: var(--color-text-secondary);">No model data</div>';
+        }
+
+        // Populate recent analyses
+        const recentContainer = document.getElementById('recentAnalyses');
+        if (stats.recentAnalyses && stats.recentAnalyses.length > 0) {
+          let recentHtml = '<table style="width: 100%; font-size: var(--text-sm);">';
+          recentHtml += '<thead><tr style="background: var(--color-bg);"><th style="padding: 8px; text-align: left;">Call</th><th style="padding: 8px; text-align: left;">Model</th><th style="padding: 8px; text-align: right;">Tokens</th><th style="padding: 8px; text-align: right;">Cost</th><th style="padding: 8px; text-align: right;">Date</th></tr></thead>';
+          recentHtml += '<tbody>';
+          for (const analysis of stats.recentAnalyses) {
+            const date = analysis.analyzedAt ? new Date(analysis.analyzedAt).toLocaleDateString() : 'Unknown';
+            const title = analysis.callTitle || 'Unknown Call';
+            const truncatedTitle = title.length > 30 ? title.substring(0, 30) + '...' : title;
+            // Format model name for display
+            const displayModel = formatModelName(analysis.model);
+            recentHtml += `<tr style="border-top: 1px solid var(--color-border);">`;
+            recentHtml += `<td style="padding: 8px;" title="${escapeHtml(title)}">${escapeHtml(truncatedTitle)}</td>`;
+            recentHtml += `<td style="padding: 8px; font-family: monospace; font-size: var(--text-xs);">${displayModel}</td>`;
+            recentHtml += `<td style="padding: 8px; text-align: right;">${(analysis.totalTokens || 0).toLocaleString()}</td>`;
+            recentHtml += `<td style="padding: 8px; text-align: right;">$${((analysis.costCents || 0) / 100).toFixed(4)}</td>`;
+            recentHtml += `<td style="padding: 8px; text-align: right;">${date}</td>`;
+            recentHtml += `</tr>`;
+          }
+          recentHtml += '</tbody></table>';
+          recentContainer.innerHTML = recentHtml;
+        } else {
+          recentContainer.innerHTML = '<div style="padding: var(--space-3); color: var(--color-text-secondary);">No recent analyses</div>';
+        }
+
+        statsDiv.classList.remove('hidden');
+        noDataDiv.classList.add('hidden');
+
+      } catch (error) {
+        console.error('Error loading token usage:', error);
+        loadingDiv.innerHTML = `<span style="color: var(--color-error);">Error loading usage data: ${error.message}</span>`;
+      }
+    }
+
+    async function refreshTokenUsage() {
+      const spinner = document.getElementById('refreshSpinner');
+      spinner.classList.remove('hidden');
+
+      try {
+        await loadTokenUsage(true); // Force refresh
+      } finally {
+        spinner.classList.add('hidden');
+      }
+    }
+
+    function formatTokenCount(count) {
+      if (count >= 1000000) {
+        return (count / 1000000).toFixed(2) + 'M';
+      } else if (count >= 1000) {
+        return (count / 1000).toFixed(1) + 'K';
+      }
+      return count.toLocaleString();
+    }
+
+    function formatModelName(model) {
+      if (!model) return 'unknown';
+      // Display model names as-is (already normalized by backend)
+      return model;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // =====================
+    // Slack Functions
+    // =====================
+
+    function updateSlackUI(configured, maskedKey, channelId) {
+      const statusBadge = document.getElementById('slackStatus');
+      const statusText = document.getElementById('slackStatusText');
+      const currentKeyDiv = document.getElementById('slackCurrentKey');
+      const formDiv = document.getElementById('slackForm');
+      const maskedKeyDiv = document.getElementById('slackMaskedKey');
+      const channelDisplay = document.getElementById('slackChannelDisplay');
+
+      if (configured) {
+        statusBadge.className = 'status-badge status-connected';
+        statusText.textContent = 'Connected';
+        currentKeyDiv.classList.remove('hidden');
+        formDiv.classList.add('hidden');
+        maskedKeyDiv.textContent = maskedKey || '****';
+        channelDisplay.textContent = channelId || 'Not set';
+      } else {
+        statusBadge.className = 'status-badge status-disconnected';
+        statusText.textContent = 'Not configured';
+        currentKeyDiv.classList.add('hidden');
+        formDiv.classList.remove('hidden');
+      }
+    }
+
+    function showSlackEdit() {
+      document.getElementById('slackCurrentKey').classList.add('hidden');
+      document.getElementById('slackForm').classList.remove('hidden');
+      document.getElementById('slackCancelBtn').classList.remove('hidden');
+      document.getElementById('slackBotToken').value = '';
+      document.getElementById('slackChannelId').value = '';
+      document.getElementById('slackBotToken').focus();
+    }
+
+    function cancelSlackEdit() {
+      document.getElementById('slackCancelBtn').classList.add('hidden');
+      loadSlackConfig();
+    }
+
+    async function loadSlackConfig() {
+      try {
+        const response = await fetch(`${API_BASE}/integrations/slack`);
+        const data = await response.json();
+
+        if (!data.success) {
+          updateSlackUI(false);
+          return;
+        }
+
+        updateSlackUI(
+          data.data.configured,
+          data.data.maskedToken,
+          data.data.channelId
+        );
+      } catch (error) {
+        console.error('Error loading Slack config:', error);
+        updateSlackUI(false);
+      }
+    }
+
+    async function saveSlackConfig() {
+      const botToken = document.getElementById('slackBotToken').value.trim();
+
+      if (!botToken) {
+        showAlert('Please enter a bot token', 'error');
+        return;
+      }
+
+      // Basic format validation
+      if (!botToken.startsWith('xoxb-')) {
+        showAlert('Invalid bot token format. Slack bot tokens should start with "xoxb-"', 'error');
+        return;
+      }
+
+      const spinner = document.getElementById('slackSaveSpinner');
+      spinner.classList.remove('hidden');
+
+      try {
+        const response = await fetch(`${API_BASE}/integrations/slack`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ botToken })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to save Slack configuration');
+        }
+
+        showAlert('Slack configuration saved successfully!', 'success');
+        document.getElementById('slackBotToken').value = '';
+        document.getElementById('slackCancelBtn').classList.add('hidden');
+        loadSlackConfig();
+
+      } catch (error) {
+        showAlert('Error: ' + error.message, 'error');
+      } finally {
+        spinner.classList.add('hidden');
+      }
+    }
+
+    async function testSlack() {
+      const spinner = document.getElementById('slackTestSpinner');
+      const resultDiv = document.getElementById('slackTestResult');
+
+      spinner.classList.remove('hidden');
+      resultDiv.classList.add('hidden');
+
+      try {
+        const response = await fetch(`${API_BASE}/integrations/slack/test`, {
+          method: 'POST'
+        });
+
+        const data = await response.json();
+
+        if (data.connected) {
+          let message = 'Connection successful!';
+          if (data.teamName) {
+            message += ` Workspace: ${data.teamName}`;
+          }
+          if (data.channels) {
+            message += '\n\nChannels:';
+            if (data.channels.signup) {
+              message += `\n• Signup: ${data.channels.signup.accessible ? '✓' : '✗'} ${data.channels.signup.name || data.channels.signup.id}`;
+            }
+            if (data.channels.payment) {
+              message += `\n• Payment: ${data.channels.payment.accessible ? '✓' : '✗'} ${data.channels.payment.name || data.channels.payment.id}`;
+            }
+          }
+          resultDiv.className = 'test-result success';
+          resultDiv.style.whiteSpace = 'pre-line';
+          resultDiv.textContent = message;
+        } else {
+          resultDiv.className = 'test-result error';
+          resultDiv.textContent = `Connection failed: ${data.error}`;
+        }
+        resultDiv.classList.remove('hidden');
+
+      } catch (error) {
+        resultDiv.className = 'test-result error';
+        resultDiv.textContent = `Error: ${error.message}`;
+        resultDiv.classList.remove('hidden');
+      } finally {
+        spinner.classList.add('hidden');
+      }
+    }
+
+    async function syncSlackEvents() {
+      const spinner = document.getElementById('slackSyncSpinner');
+      const resultDiv = document.getElementById('slackSyncResult');
+
+      spinner.classList.remove('hidden');
+      resultDiv.classList.add('hidden');
+
+      try {
+        const response = await fetch(`${API_BASE}/integrations/slack/sync`, {
+          method: 'POST'
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          let message = `Import complete! ${data.imported || 0} new events imported.`;
+          if (data.skipped > 0) {
+            message += ` ${data.skipped} duplicates skipped.`;
+          }
+          if (data.errors > 0) {
+            message += ` ${data.errors} errors.`;
+          }
+          resultDiv.className = 'test-result success';
+          resultDiv.textContent = message;
+        } else {
+          resultDiv.className = 'test-result error';
+          resultDiv.textContent = `Import failed: ${data.error}`;
+        }
+        resultDiv.classList.remove('hidden');
+
+      } catch (error) {
+        resultDiv.className = 'test-result error';
+        resultDiv.textContent = `Error: ${error.message}`;
+        resultDiv.classList.remove('hidden');
+      } finally {
+        spinner.classList.add('hidden');
+      }
+    }
+
+    async function deleteSlackConfig() {
+      if (!confirm('Are you sure you want to remove the Slack configuration?')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/integrations/slack`, {
+          method: 'DELETE'
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to remove Slack configuration');
+        }
+
+        showAlert('Slack configuration removed', 'success');
+        loadSlackConfig();
+
+      } catch (error) {
+        showAlert('Error: ' + error.message, 'error');
+      }
+    }
+
+    // =====================
+    // Calendly Integration
+    // =====================
+
+    function updateCalendlyUI(configured, maskedKey = null, userInfo = null) {
+      const statusBadge = document.getElementById('calendlyStatus');
+      const statusText = document.getElementById('calendlyStatusText');
+      const currentKeyDiv = document.getElementById('calendlyCurrentKey');
+      const formDiv = document.getElementById('calendlyForm');
+      const maskedKeyDiv = document.getElementById('calendlyMaskedKey');
+      const userInfoDiv = document.getElementById('calendlyUserInfo');
+
+      if (configured) {
+        statusBadge.className = 'status-badge status-connected';
+        statusText.textContent = 'Connected';
+        currentKeyDiv.classList.remove('hidden');
+        formDiv.classList.add('hidden');
+
+        if (maskedKey) {
+          maskedKeyDiv.textContent = maskedKey;
+        }
+
+        if (userInfo) {
+          userInfoDiv.innerHTML = `
+            <div><strong>${userInfo.name || 'Unknown'}</strong></div>
+            <div>${userInfo.email || ''}</div>
+            ${userInfo.timezone ? `<div style="font-size: var(--text-xs);">Timezone: ${userInfo.timezone}</div>` : ''}
+          `;
+        }
+      } else {
+        statusBadge.className = 'status-badge status-disconnected';
+        statusText.textContent = 'Not configured';
+        currentKeyDiv.classList.add('hidden');
+        formDiv.classList.remove('hidden');
+      }
+    }
+
+    function showCalendlyEdit() {
+      document.getElementById('calendlyCurrentKey').classList.add('hidden');
+      document.getElementById('calendlyForm').classList.remove('hidden');
+      document.getElementById('calendlyCancelBtn').classList.remove('hidden');
+    }
+
+    function cancelCalendlyEdit() {
+      document.getElementById('calendlyCancelBtn').classList.add('hidden');
+      loadCalendlyConfig();
+    }
+
+    async function loadCalendlyConfig() {
+      try {
+        const response = await fetch(`${API_BASE}/integrations/calendly`);
+        const data = await response.json();
+
+        if (!data.success) {
+          updateCalendlyUI(false);
+          return;
+        }
+
+        // If configured, also test to get user info
+        if (data.data.configured) {
+          const testResponse = await fetch(`${API_BASE}/integrations/calendly/test`, {
+            method: 'POST'
+          });
+          const testData = await testResponse.json();
+
+          updateCalendlyUI(
+            data.data.configured,
+            data.data.maskedKey,
+            testData.data?.user
+          );
+        } else {
+          updateCalendlyUI(false);
+        }
+      } catch (error) {
+        console.error('Error loading Calendly config:', error);
+        updateCalendlyUI(false);
+      }
+    }
+
+    async function saveCalendlyConfig() {
+      const apiKey = document.getElementById('calendlyApiKey').value.trim();
+
+      if (!apiKey) {
+        showAlert('Please enter an API key', 'error');
+        return;
+      }
+
+      const spinner = document.getElementById('calendlySaveSpinner');
+      spinner.classList.remove('hidden');
+
+      try {
+        const response = await fetch(`${API_BASE}/integrations/calendly`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ apiKey })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to save Calendly configuration');
+        }
+
+        showAlert('Calendly configuration saved successfully!', 'success');
+        document.getElementById('calendlyApiKey').value = '';
+        document.getElementById('calendlyCancelBtn').classList.add('hidden');
+        loadCalendlyConfig();
+
+      } catch (error) {
+        showAlert('Error: ' + error.message, 'error');
+      } finally {
+        spinner.classList.add('hidden');
+      }
+    }
+
+    async function testCalendly() {
+      const spinner = document.getElementById('calendlyTestSpinner');
+      const resultDiv = document.getElementById('calendlyTestResult');
+
+      spinner.classList.remove('hidden');
+      resultDiv.classList.add('hidden');
+
+      try {
+        const response = await fetch(`${API_BASE}/integrations/calendly/test`, {
+          method: 'POST'
+        });
+
+        const data = await response.json();
+
+        if (data.data?.valid) {
+          let message = 'Connection successful!';
+          if (data.data.user?.name) {
+            message += ` Connected as: ${data.data.user.name}`;
+          }
+          if (data.data.user?.email) {
+            message += ` (${data.data.user.email})`;
+          }
+          resultDiv.className = 'test-result success';
+          resultDiv.textContent = message;
+        } else {
+          resultDiv.className = 'test-result error';
+          resultDiv.textContent = `Connection failed: ${data.data?.error || data.error || 'Unknown error'}`;
+        }
+        resultDiv.classList.remove('hidden');
+
+      } catch (error) {
+        resultDiv.className = 'test-result error';
+        resultDiv.textContent = `Error: ${error.message}`;
+        resultDiv.classList.remove('hidden');
+      } finally {
+        spinner.classList.add('hidden');
+      }
+    }
+
+    async function deleteCalendlyConfig() {
+      if (!confirm('Are you sure you want to remove the Calendly configuration?')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/integrations/calendly`, {
+          method: 'DELETE'
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to remove Calendly configuration');
+        }
+
+        showAlert('Calendly configuration removed', 'success');
+        loadCalendlyConfig();
+
+      } catch (error) {
+        showAlert('Error: ' + error.message, 'error');
+      }
+    }
+
+    // =====================
+    // Initialize
+    // =====================
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initUserMenu();
+      setupUserMenu();
+      loadIntegrationStatus();
+      loadOpenAIConfig();
+      loadSlackConfig();
+      loadCalendlyConfig();
+      loadTokenUsage();
+    });
+  </script>
+</body>
+</html>

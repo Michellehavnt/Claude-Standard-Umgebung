@@ -1,0 +1,1860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Sales Call Analyzer</title>
+  <link rel="stylesheet" href="design-system.css">
+  <style>
+    /* Page-specific styles */
+
+    /* Filter row layout */
+    .ds-filters-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+      align-items: flex-end;
+    }
+
+    .ds-filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      min-width: 150px;
+    }
+
+    .ds-filter-label {
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .ds-filter-actions {
+      display: flex;
+      gap: var(--space-2);
+      align-items: center;
+    }
+
+    .ds-filter-export {
+      margin-left: auto;
+    }
+
+    @media (max-width: 768px) {
+      .ds-filters-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .ds-filter-group {
+        width: 100%;
+      }
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: var(--space-4);
+      margin-top: var(--space-6);
+      margin-bottom: var(--space-6);
+    }
+
+    .insights-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: var(--space-5);
+    }
+
+    .insight-card {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      overflow: hidden;
+    }
+
+    .insight-header {
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .insight-header h3 {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .insight-count {
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+      background: var(--color-bg);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .insight-list {
+      padding: var(--space-4) var(--space-5);
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .insight-item {
+      padding: var(--space-3) 0;
+      border-bottom: 1px solid var(--color-border-light);
+    }
+
+    .insight-item:last-child {
+      border-bottom: none;
+    }
+
+    .insight-rank {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(7, 59, 85, 0.1);
+      color: var(--color-primary);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      margin-right: var(--space-3);
+    }
+
+    .insight-rank.top-3 {
+      background: var(--color-primary);
+      color: white;
+    }
+
+    .insight-title {
+      font-weight: 500;
+      color: var(--color-text-primary);
+      margin-bottom: 4px;
+    }
+
+    .insight-meta {
+      display: flex;
+      gap: var(--space-4);
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+    }
+
+    .insight-quote {
+      margin-top: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      background: var(--color-bg);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      font-style: italic;
+      border-left: 3px solid var(--color-accent);
+    }
+
+    /* Stripe metrics section */
+    .stripe-metrics-section {
+      background: rgba(99, 91, 255, 0.05);
+      border: 1px solid rgba(99, 91, 255, 0.2);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      margin-bottom: var(--space-6);
+    }
+
+    .stripe-metrics-section.hidden {
+      display: none;
+    }
+
+    .stripe-metrics-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-4);
+    }
+
+    .stripe-metrics-header h3 {
+      color: #635bff;
+      font-size: var(--text-lg);
+      font-weight: 600;
+    }
+
+    .stripe-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: var(--space-4);
+    }
+
+    .stripe-stat-card {
+      background: rgba(99, 91, 255, 0.08);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      text-align: center;
+      border: 1px solid rgba(99, 91, 255, 0.15);
+    }
+
+    .stripe-stat-card.highlight {
+      background: rgba(99, 91, 255, 0.12);
+      border-color: rgba(99, 91, 255, 0.3);
+    }
+
+    .stripe-stat-value {
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      color: #635bff;
+    }
+
+    .stripe-stat-value.positive {
+      color: var(--color-success);
+    }
+
+    .stripe-stat-value.negative {
+      color: var(--color-error);
+    }
+
+    .stripe-stat-value.neutral {
+      color: var(--color-text-secondary);
+    }
+
+    .stripe-stat-label {
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      margin-top: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    .stripe-status-breakdown {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-top: var(--space-4);
+      padding-top: var(--space-4);
+      border-top: 1px solid rgba(99, 91, 255, 0.15);
+    }
+
+    .stripe-status-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: var(--text-xs);
+      background: var(--color-bg);
+    }
+
+    .stripe-status-badge .count {
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .stripe-status-badge.active {
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      color: var(--color-success);
+    }
+
+    .stripe-status-badge.trialing {
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      color: #3b82f6;
+    }
+
+    .stripe-status-badge.past_due {
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #f59e0b;
+    }
+
+    .stripe-status-badge.canceled {
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: var(--color-error);
+    }
+
+    .stripe-status-badge.never_subscribed {
+      border: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+    }
+
+    .stripe-status-badge.unmatched {
+      border: 1px solid var(--color-border-light);
+      color: var(--color-text-tertiary);
+    }
+
+    .stripe-mrr {
+      margin-top: var(--space-4);
+      padding: var(--space-3);
+      background: rgba(34, 197, 94, 0.08);
+      border-radius: var(--radius-md);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .stripe-mrr-label {
+      color: var(--color-text-secondary);
+      font-size: var(--text-sm);
+    }
+
+    .stripe-mrr-value {
+      color: var(--color-success);
+      font-size: var(--text-xl);
+      font-weight: 600;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      font-size: var(--text-xs);
+      font-weight: 500;
+    }
+
+    .badge-high {
+      background: var(--color-error-bg);
+      color: var(--color-error);
+    }
+
+    .badge-medium {
+      background: rgba(245, 158, 11, 0.1);
+      color: #f59e0b;
+    }
+
+    .badge-low {
+      background: var(--color-success-bg);
+      color: var(--color-success);
+    }
+
+    /* Loading state */
+    .loading {
+      text-align: center;
+      padding: var(--space-8);
+      color: var(--color-text-secondary);
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--color-border);
+      border-top-color: var(--color-primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto var(--space-4);
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: var(--space-8);
+      color: var(--color-text-secondary);
+    }
+
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: var(--space-4);
+      opacity: 0.5;
+    }
+
+    /* Snapshot Modal styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      max-width: 900px;
+      width: 95%;
+      max-height: 85vh;
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+      transform: scale(0.9);
+      transition: transform 0.3s;
+    }
+
+    .modal-overlay.active .modal {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      padding: var(--space-5);
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h2 {
+      color: var(--color-text-primary);
+      font-size: var(--text-xl);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--color-text-secondary);
+      font-size: 24px;
+      cursor: pointer;
+      padding: 5px;
+      transition: color 0.2s;
+    }
+
+    .modal-close:hover {
+      color: var(--color-text-primary);
+    }
+
+    .modal-body {
+      padding: var(--space-5);
+      max-height: calc(85vh - 140px);
+      overflow-y: auto;
+    }
+
+    .modal-footer {
+      padding: var(--space-4) var(--space-5);
+      background: var(--color-bg);
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      gap: var(--space-2);
+      justify-content: flex-end;
+    }
+
+    /* Clickable quote styles */
+    .clickable-quote {
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .clickable-quote:hover {
+      background: rgba(6, 114, 128, 0.1);
+      border-left-color: var(--color-primary);
+    }
+
+    .clickable-quote .quote-text {
+      display: block;
+    }
+
+    .clickable-quote .quote-source {
+      display: block;
+      margin-top: 6px;
+      font-size: var(--text-xs);
+      font-style: normal;
+      color: var(--color-accent);
+      opacity: 0.8;
+    }
+
+    .clickable-quote:hover .quote-source {
+      opacity: 1;
+    }
+
+    /* Quote drilldown modal */
+    .drilldown-meta {
+      display: flex;
+      gap: var(--space-5);
+      padding: var(--space-3) var(--space-4);
+      background: var(--color-bg);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-4);
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+    }
+
+    .drilldown-quote-preview {
+      padding: var(--space-3) var(--space-4);
+      background: rgba(6, 114, 128, 0.08);
+      border-radius: var(--radius-md);
+      border-left: 3px solid var(--color-accent);
+      margin-bottom: var(--space-4);
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+    }
+
+    .drilldown-transcript {
+      background: var(--color-bg);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      max-height: 400px;
+      overflow-y: auto;
+      font-size: var(--text-sm);
+      line-height: 1.6;
+      color: var(--color-text-primary);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .quote-highlight {
+      background: rgba(245, 158, 11, 0.3);
+      padding: 2px 4px;
+      border-radius: 3px;
+      animation: highlight-pulse 2s ease-in-out;
+    }
+
+    @keyframes highlight-pulse {
+      0%, 100% { background: rgba(245, 158, 11, 0.3); }
+      50% { background: rgba(245, 158, 11, 0.6); }
+    }
+
+    /* Source calls info */
+    .source-calls-info {
+      margin-top: 6px;
+      font-size: var(--text-xs);
+      color: var(--color-text-tertiary);
+      line-height: 1.4;
+    }
+
+    .source-call-link {
+      color: var(--color-accent);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .source-call-link:hover {
+      color: var(--color-primary);
+      text-decoration: underline;
+    }
+
+    .source-calls-more {
+      color: var(--color-text-tertiary);
+      font-style: italic;
+    }
+
+    /* Export button */
+    .btn-export {
+      background: rgba(7, 59, 85, 0.1);
+      color: var(--color-primary);
+      border: 1px solid rgba(7, 59, 85, 0.2);
+    }
+
+    .btn-export:hover {
+      background: rgba(7, 59, 85, 0.15);
+    }
+
+    .btn-export.copied {
+      background: var(--color-success-bg);
+      color: var(--color-success);
+      border-color: rgba(34, 197, 94, 0.3);
+    }
+
+    .btn-refresh {
+      background: linear-gradient(135deg, #059669 0%, #34d399 100%);
+      color: white;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-refresh:hover {
+      background: linear-gradient(135deg, #10b981 0%, #6ee7b7 100%);
+    }
+
+    .btn-refresh:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .refresh-spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .refresh-spinner.hidden {
+      display: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .insights-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stripe-metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="ds-header">
+    <div class="ds-header-inner">
+      <a href="/admin/" class="ds-header-logo">
+        <img src="/admin/logo.svg" alt="AffiliateFinder">
+      </a>
+      <div class="ds-header-divider"></div>
+      <nav class="ds-header-nav">
+        <a href="/admin/">Calls</a>
+        <a href="/admin/copy.html" class="active">Copy</a>
+        <a href="/admin/phil.html">DFY</a>
+        <a href="/admin/founder.html">Closing Rate</a>
+        <a href="/admin/settings.html">Settings</a>
+      </nav>
+      <div class="ds-header-user">
+        <button class="ds-user-button" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+          <div class="ds-user-avatar" id="user-avatar">--</div>
+          <div class="ds-user-info">
+            <span class="ds-user-name" id="user-display-name">Loading...</span>
+            <span class="ds-user-role" id="user-display-role">-</span>
+          </div>
+          <svg class="ds-user-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="ds-user-dropdown" id="user-dropdown">
+          <div class="ds-dropdown-header">
+            <div class="ds-dropdown-email" id="user-email">-</div>
+            <span class="ds-dropdown-role user" id="user-role-badge">User</span>
+          </div>
+
+          <div class="ds-dropdown-section">
+            <a href="/admin/account.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              Account
+            </a>
+            <a href="/admin/settings.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              Settings
+            </a>
+          </div>
+
+          <div class="ds-dropdown-divider ds-admin-only" style="display: none;"></div>
+
+          <div class="ds-dropdown-section ds-admin-only" style="display: none;">
+            <div class="ds-dropdown-label">Admin</div>
+            <a href="/admin/access-requests.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="8.5" cy="7" r="4"></circle>
+                <line x1="20" y1="8" x2="20" y2="14"></line>
+                <line x1="23" y1="11" x2="17" y2="11"></line>
+              </svg>
+              Access Requests
+            </a>
+            <a href="/admin/users.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              User Management
+            </a>
+          </div>
+
+          <div class="ds-dropdown-divider"></div>
+
+          <div class="ds-dropdown-section">
+            <button class="ds-dropdown-item danger" id="logout-button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="ds-main">
+    <div class="ds-page-header">
+      <h1 class="ds-page-title">Insights Dashboard</h1>
+      <p class="ds-page-subtitle">Aggregated analysis across all calls</p>
+    </div>
+
+    <!-- Filters -->
+    <div class="ds-filters">
+      <div class="ds-filters-row">
+        <div class="ds-filter-group">
+          <label class="ds-filter-label">Date Range</label>
+          <select class="ds-input" id="filter-date-preset" onchange="handleDatePresetChange()">
+            <option value="all">All time</option>
+            <option value="this_week">This week</option>
+            <option value="last_week">Last week</option>
+            <option value="last_month">Last month</option>
+            <option value="last_3_months">Last 3 months</option>
+            <option value="last_6_months">Last 6 months</option>
+            <option value="custom">Custom range</option>
+          </select>
+        </div>
+        <div class="ds-filter-group custom-date-field" id="custom-start-group" style="display: none;">
+          <label class="ds-filter-label">Start Date</label>
+          <input type="date" class="ds-input" id="filter-start-date">
+        </div>
+        <div class="ds-filter-group custom-date-field" id="custom-end-group" style="display: none;">
+          <label class="ds-filter-label">End Date</label>
+          <input type="date" class="ds-input" id="filter-end-date">
+        </div>
+        <div class="ds-filter-group">
+          <label class="ds-filter-label">Sales Rep</label>
+          <select class="ds-input" id="filter-rep">
+            <option value="">All Reps</option>
+          </select>
+        </div>
+        <div class="ds-filter-group">
+          <label class="ds-filter-label">Keyword Search</label>
+          <input type="text" class="ds-input" id="filter-keyword" placeholder="Search in transcripts...">
+        </div>
+        <div class="ds-filter-actions">
+          <button class="ds-btn ds-btn-primary" onclick="applyFilters()">Apply Filters</button>
+          <button class="ds-btn ds-btn-secondary" onclick="clearFilters()">Clear</button>
+          <button class="ds-btn btn-refresh" onclick="refreshAndAnalyze()" id="btn-refresh" title="Sync new calls and analyze pending">
+            <span id="refresh-spinner" class="refresh-spinner hidden"></span>
+            <span id="refresh-text">Refresh</span>
+          </button>
+        </div>
+        <div class="ds-filter-export">
+          <button class="ds-btn btn-export" onclick="exportToMarkdown()" id="btn-export">Export MD</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary Stats -->
+    <div class="stats-grid" id="summary-stats">
+      <div class="ds-stat-card">
+        <div class="ds-stat-value" id="stat-calls">-</div>
+        <div class="ds-stat-label">Analyzed Calls</div>
+      </div>
+      <div class="ds-stat-card">
+        <div class="ds-stat-value" id="stat-pains">-</div>
+        <div class="ds-stat-label">Unique Pains</div>
+      </div>
+      <div class="ds-stat-card">
+        <div class="ds-stat-value" id="stat-goals">-</div>
+        <div class="ds-stat-label">Unique Goals</div>
+      </div>
+      <div class="ds-stat-card">
+        <div class="ds-stat-value" id="stat-questions">-</div>
+        <div class="ds-stat-label">Questions</div>
+      </div>
+      <div class="ds-stat-card">
+        <div class="ds-stat-value" id="stat-reps">-</div>
+        <div class="ds-stat-label">Sales Reps</div>
+      </div>
+    </div>
+
+    <!-- Stripe Conversion Metrics -->
+    <div class="stripe-metrics-section hidden" id="stripe-metrics">
+      <div class="stripe-metrics-header">
+        <h3>Stripe Conversion Metrics</h3>
+      </div>
+      <div class="stripe-metrics-grid">
+        <div class="stripe-stat-card">
+          <div class="stripe-stat-value" id="stripe-matched">-</div>
+          <div class="stripe-stat-label">Matched Calls</div>
+        </div>
+        <div class="stripe-stat-card">
+          <div class="stripe-stat-value neutral" id="stripe-unmatched">-</div>
+          <div class="stripe-stat-label">Unmatched</div>
+        </div>
+        <div class="stripe-stat-card highlight">
+          <div class="stripe-stat-value positive" id="stripe-conversion">-</div>
+          <div class="stripe-stat-label">Conversion Rate</div>
+        </div>
+        <div class="stripe-stat-card highlight">
+          <div class="stripe-stat-value negative" id="stripe-churn">-</div>
+          <div class="stripe-stat-label">Churn Rate</div>
+        </div>
+        <div class="stripe-stat-card">
+          <div class="stripe-stat-value positive" id="stripe-signups">-</div>
+          <div class="stripe-stat-label">Signups</div>
+        </div>
+        <div class="stripe-stat-card">
+          <div class="stripe-stat-value negative" id="stripe-churned">-</div>
+          <div class="stripe-stat-label">Churned</div>
+        </div>
+      </div>
+      <div class="stripe-status-breakdown" id="stripe-status-breakdown">
+        <!-- Status badges will be rendered here -->
+      </div>
+      <div class="stripe-mrr" id="stripe-mrr" style="display: none;">
+        <span class="stripe-mrr-label">Total MRR from Matched Customers</span>
+        <span class="stripe-mrr-value" id="stripe-mrr-value">$0</span>
+      </div>
+    </div>
+
+    <!-- Insights Grid -->
+    <div class="insights-grid" id="insights-grid">
+      <!-- Top Pains -->
+      <div class="insight-card">
+        <div class="insight-header">
+          <h3>Top Pain Points</h3>
+          <span class="insight-count" id="pains-count">0 items</span>
+        </div>
+        <div class="insight-list" id="pains-list">
+          <div class="loading">
+            <div class="loading-spinner"></div>
+            Loading...
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Goals -->
+      <div class="insight-card">
+        <div class="insight-header">
+          <h3>Top Goals</h3>
+          <span class="insight-count" id="goals-count">0 items</span>
+        </div>
+        <div class="insight-list" id="goals-list">
+          <div class="loading">
+            <div class="loading-spinner"></div>
+            Loading...
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Questions -->
+      <div class="insight-card">
+        <div class="insight-header">
+          <h3>Common Questions</h3>
+          <span class="insight-count" id="questions-count">0 items</span>
+        </div>
+        <div class="insight-list" id="questions-list">
+          <div class="loading">
+            <div class="loading-spinner"></div>
+            Loading...
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Dislikes -->
+      <div class="insight-card">
+        <div class="insight-header">
+          <h3>Top Dislikes</h3>
+          <span class="insight-count" id="dislikes-count">0 items</span>
+        </div>
+        <div class="insight-list" id="dislikes-list">
+          <div class="loading">
+            <div class="loading-spinner"></div>
+            Loading...
+          </div>
+        </div>
+      </div>
+
+      <!-- Excitement Triggers -->
+      <div class="insight-card">
+        <div class="insight-header">
+          <h3>Excitement Triggers</h3>
+          <span class="insight-count" id="excitement-count">0 items</span>
+        </div>
+        <div class="insight-list" id="excitement-list">
+          <div class="loading">
+            <div class="loading-spinner"></div>
+            Loading...
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Quote Drilldown Modal -->
+  <div class="modal-overlay" id="quote-drilldown-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="quote-drilldown-title">Call Transcript</h2>
+        <button class="modal-close" onclick="closeQuoteDrilldownModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="quote-drilldown-body">
+        <div class="snapshot-loading">
+          <div class="snapshot-loading-spinner"></div>
+          <p>Loading transcript...</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="ds-btn ds-btn-primary" onclick="openFullCallDetail()">Open Full Call</button>
+        <button class="ds-btn ds-btn-secondary" onclick="closeQuoteDrilldownModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // User Menu
+    async function initUserMenu() {
+      try {
+        const response = await fetch('/api/auth/me', { credentials: 'include' });
+        if (!response.ok) {
+          window.location.href = '/admin/login.html';
+          return;
+        }
+        const data = await response.json();
+        const user = data.user;
+
+        // Update avatar with initials
+        const avatar = document.getElementById('user-avatar');
+        if (avatar) {
+          const initials = (user.name || user.email || '?')
+            .split(/[\s@]+/)
+            .map(part => part[0])
+            .join('')
+            .substring(0, 2)
+            .toUpperCase();
+          avatar.textContent = initials;
+        }
+
+        // Update user display name in header button
+        const displayName = document.getElementById('user-display-name');
+        if (displayName) {
+          displayName.textContent = user.name || user.email.split('@')[0];
+        }
+
+        // Update user display role in header button
+        const displayRole = document.getElementById('user-display-role');
+        if (displayRole) {
+          displayRole.textContent = user.role === 'admin' ? 'Admin' : 'User';
+        }
+
+        // Update email in dropdown
+        const emailEl = document.getElementById('user-email');
+        if (emailEl) emailEl.textContent = user.email;
+
+        // Update role badge in dropdown
+        const roleBadge = document.getElementById('user-role-badge');
+        if (roleBadge) {
+          roleBadge.textContent = user.role === 'admin' ? 'Admin' : 'User';
+          roleBadge.className = 'ds-dropdown-role ' + (user.role === 'admin' ? 'admin' : 'user');
+        }
+
+        if (user.role === 'admin') {
+          document.querySelectorAll('.ds-admin-only').forEach(el => el.style.display = '');
+        }
+      } catch (err) {
+        console.error('Failed to load user info:', err);
+      }
+    }
+
+    function setupUserMenu() {
+      const button = document.getElementById('user-menu-button');
+      const dropdown = document.getElementById('user-dropdown');
+      const logoutBtn = document.getElementById('logout-button');
+
+      if (button && dropdown) {
+        button.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isOpen = dropdown.classList.contains('open');
+          dropdown.classList.toggle('open', !isOpen);
+          button.setAttribute('aria-expanded', !isOpen);
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('.ds-header-user')) {
+            dropdown.classList.remove('open');
+            button.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+          try {
+            await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+          } catch (err) {
+            console.error('Logout error:', err);
+          }
+          window.location.href = '/admin/login.html';
+        });
+      }
+    }
+
+    // State
+    let currentFilters = {};
+    let currentDashboardData = null;
+
+    // Date preset computation utilities (uses browser timezone, week starts Monday)
+    function getDatePresetRange(preset) {
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+      switch (preset) {
+        case 'all':
+          return { startDate: null, endDate: null };
+
+        case 'this_week': {
+          // Week starts Monday (1), ends Sunday (0)
+          const dayOfWeek = today.getDay();
+          const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Sunday=6, Mon=0, Tue=1...
+          const monday = new Date(today);
+          monday.setDate(today.getDate() - daysFromMonday);
+          const sunday = new Date(monday);
+          sunday.setDate(monday.getDate() + 6);
+          return { startDate: formatDate(monday), endDate: formatDate(sunday) };
+        }
+
+        case 'last_week': {
+          const dayOfWeek = today.getDay();
+          const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+          const thisMonday = new Date(today);
+          thisMonday.setDate(today.getDate() - daysFromMonday);
+          const lastMonday = new Date(thisMonday);
+          lastMonday.setDate(thisMonday.getDate() - 7);
+          const lastSunday = new Date(lastMonday);
+          lastSunday.setDate(lastMonday.getDate() + 6);
+          return { startDate: formatDate(lastMonday), endDate: formatDate(lastSunday) };
+        }
+
+        case 'last_month': {
+          const firstOfThisMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+          const lastOfLastMonth = new Date(firstOfThisMonth);
+          lastOfLastMonth.setDate(lastOfLastMonth.getDate() - 1);
+          const firstOfLastMonth = new Date(lastOfLastMonth.getFullYear(), lastOfLastMonth.getMonth(), 1);
+          return { startDate: formatDate(firstOfLastMonth), endDate: formatDate(lastOfLastMonth) };
+        }
+
+        case 'last_3_months': {
+          const threeMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 3, today.getDate());
+          return { startDate: formatDate(threeMonthsAgo), endDate: formatDate(today) };
+        }
+
+        case 'last_6_months': {
+          const sixMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 6, today.getDate());
+          return { startDate: formatDate(sixMonthsAgo), endDate: formatDate(today) };
+        }
+
+        case 'custom':
+          // Return current values from inputs
+          return {
+            startDate: document.getElementById('filter-start-date').value || null,
+            endDate: document.getElementById('filter-end-date').value || null
+          };
+
+        default:
+          return { startDate: null, endDate: null };
+      }
+    }
+
+    function formatDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    function handleDatePresetChange() {
+      const preset = document.getElementById('filter-date-preset').value;
+      const startGroup = document.getElementById('custom-start-group');
+      const endGroup = document.getElementById('custom-end-group');
+
+      if (preset === 'custom') {
+        // Show custom date inputs
+        startGroup.style.display = '';
+        endGroup.style.display = '';
+      } else {
+        // Hide custom date inputs
+        startGroup.style.display = 'none';
+        endGroup.style.display = 'none';
+
+        // Pre-fill the hidden inputs with computed values for reference
+        const range = getDatePresetRange(preset);
+        document.getElementById('filter-start-date').value = range.startDate || '';
+        document.getElementById('filter-end-date').value = range.endDate || '';
+      }
+    }
+
+    // Load initial data
+    document.addEventListener('DOMContentLoaded', () => {
+      initUserMenu();
+      setupUserMenu();
+      loadFilterOptions();
+      loadDashboard();
+      loadStripeMetrics();
+    });
+
+    // Load filter options (reps, date range)
+    async function loadFilterOptions() {
+      try {
+        const response = await fetch('/api/dashboard/filters');
+        const data = await response.json();
+
+        if (data.success) {
+          // Populate rep dropdown (deduplicate case-insensitively)
+          const repSelect = document.getElementById('filter-rep');
+          const seenReps = new Map(); // lowercase -> original name
+          data.data.reps.forEach(rep => {
+            const lowerRep = rep.toLowerCase();
+            if (!seenReps.has(lowerRep)) {
+              seenReps.set(lowerRep, rep);
+            }
+          });
+          // Use the first occurrence of each unique rep name
+          seenReps.forEach((rep) => {
+            const option = document.createElement('option');
+            option.value = rep;
+            option.textContent = rep;
+            repSelect.appendChild(option);
+          });
+
+          // Set date range hints
+          if (data.data.dateRange.earliest) {
+            document.getElementById('filter-start-date').min = data.data.dateRange.earliest.split('T')[0];
+          }
+          if (data.data.dateRange.latest) {
+            document.getElementById('filter-end-date').max = data.data.dateRange.latest.split('T')[0];
+          }
+        }
+      } catch (error) {
+        console.error('Error loading filter options:', error);
+      }
+    }
+
+    // Load dashboard data
+    async function loadDashboard() {
+      try {
+        // Build query string from filters
+        const params = new URLSearchParams();
+        if (currentFilters.startDate) params.append('startDate', currentFilters.startDate);
+        if (currentFilters.endDate) params.append('endDate', currentFilters.endDate);
+        if (currentFilters.rep) params.append('rep', currentFilters.rep);
+        if (currentFilters.keyword) params.append('keyword', currentFilters.keyword);
+        params.append('limit', '10');
+
+        const response = await fetch(`/api/dashboard?${params}`);
+        const data = await response.json();
+
+        if (data.success) {
+          currentDashboardData = data.data;
+          renderDashboard(data.data);
+        } else {
+          console.error('Error loading dashboard:', data.error);
+        }
+      } catch (error) {
+        console.error('Error loading dashboard:', error);
+      }
+    }
+
+    // Render dashboard data
+    function renderDashboard(data) {
+      // Update summary stats
+      document.getElementById('stat-calls').textContent = data.summary.totalCalls;
+      document.getElementById('stat-pains').textContent = data.totalCounts.pains;
+      document.getElementById('stat-goals').textContent = data.totalCounts.goals;
+      document.getElementById('stat-questions').textContent = data.totalCounts.questions;
+      document.getElementById('stat-reps').textContent = data.summary.uniqueReps;
+
+      // Render each insight category
+      renderPains(data.topPains, data.totalCounts.pains);
+      renderGoals(data.topGoals, data.totalCounts.goals);
+      renderQuestions(data.topQuestions, data.totalCounts.questions);
+      renderDislikes(data.topDislikes, data.totalCounts.dislikes);
+      renderExcitement(data.topExcitement, data.totalCounts.excitement);
+    }
+
+    // Render pain points
+    function renderPains(pains, total) {
+      const container = document.getElementById('pains-list');
+      const countEl = document.getElementById('pains-count');
+      countEl.textContent = `${total} unique`;
+
+      if (!pains.length) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">-</div>No pain points found</div>';
+        return;
+      }
+
+      container.innerHTML = pains.map(pain => `
+        <div class="insight-item">
+          <span class="insight-rank ${pain.rank <= 3 ? 'top-3' : ''}">${pain.rank}</span>
+          <span class="insight-title">${escapeHtml(pain.category)}</span>
+          <div class="insight-meta">
+            <span>${pain.occurrences} mentions</span>
+            <span>${pain.calls} calls</span>
+            ${pain.intensity.High > 0 ? `<span class="badge badge-high">High: ${pain.intensity.High}</span>` : ''}
+          </div>
+          ${renderSourceCallsInfo(pain.sourceCalls)}
+          ${pain.sampleQuotes[0] ? renderClickableQuote(pain.sampleQuotes[0]) : ''}
+        </div>
+      `).join('');
+    }
+
+    // Render goals
+    function renderGoals(goals, total) {
+      const container = document.getElementById('goals-list');
+      const countEl = document.getElementById('goals-count');
+      countEl.textContent = `${total} unique`;
+
+      if (!goals.length) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">-</div>No goals found</div>';
+        return;
+      }
+
+      container.innerHTML = goals.map(goal => `
+        <div class="insight-item">
+          <span class="insight-rank ${goal.rank <= 3 ? 'top-3' : ''}">${goal.rank}</span>
+          <span class="insight-title">${escapeHtml(goal.goal)}</span>
+          <div class="insight-meta">
+            <span>${goal.occurrences} mentions</span>
+            <span>${goal.calls} calls</span>
+            ${goal.priority.high > 0 ? `<span class="badge badge-high">High priority: ${goal.priority.high}</span>` : ''}
+          </div>
+          ${renderSourceCallsInfo(goal.sourceCalls)}
+        </div>
+      `).join('');
+    }
+
+    // Render questions
+    function renderQuestions(questions, total) {
+      const container = document.getElementById('questions-list');
+      const countEl = document.getElementById('questions-count');
+      countEl.textContent = `${total} unique`;
+
+      if (!questions.length) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">-</div>No questions found</div>';
+        return;
+      }
+
+      container.innerHTML = questions.map(q => `
+        <div class="insight-item">
+          <span class="insight-rank ${q.rank <= 3 ? 'top-3' : ''}">${q.rank}</span>
+          <span class="insight-title">${escapeHtml(truncate(q.question, 100))}</span>
+          <div class="insight-meta">
+            <span>${q.occurrences} times</span>
+            <span>${q.calls} calls</span>
+          </div>
+          ${renderSourceCallsInfo(q.sourceCalls)}
+        </div>
+      `).join('');
+    }
+
+    // Render dislikes
+    function renderDislikes(dislikes, total) {
+      const container = document.getElementById('dislikes-list');
+      const countEl = document.getElementById('dislikes-count');
+      countEl.textContent = `${total} unique`;
+
+      if (!dislikes.length) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">-</div>No dislikes found</div>';
+        return;
+      }
+
+      container.innerHTML = dislikes.map(d => `
+        <div class="insight-item">
+          <span class="insight-rank ${d.rank <= 3 ? 'top-3' : ''}">${d.rank}</span>
+          <span class="insight-title">${escapeHtml(d.type)}</span>
+          <div class="insight-meta">
+            <span>${d.occurrences} mentions</span>
+            <span>${d.calls} calls</span>
+            <span>${d.resolved} resolved</span>
+          </div>
+          ${renderSourceCallsInfo(d.sourceCalls)}
+          ${d.sampleQuotes[0] ? renderClickableQuote(d.sampleQuotes[0]) : ''}
+        </div>
+      `).join('');
+    }
+
+    // Render excitement triggers
+    function renderExcitement(triggers, total) {
+      const container = document.getElementById('excitement-list');
+      const countEl = document.getElementById('excitement-count');
+      countEl.textContent = `${total} unique`;
+
+      if (!triggers.length) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">-</div>No excitement triggers found</div>';
+        return;
+      }
+
+      container.innerHTML = triggers.map(t => `
+        <div class="insight-item">
+          <span class="insight-rank ${t.rank <= 3 ? 'top-3' : ''}">${t.rank}</span>
+          <span class="insight-title">${escapeHtml(t.trigger)}</span>
+          <div class="insight-meta">
+            <span>${t.occurrences} times</span>
+            <span>${t.calls} calls</span>
+          </div>
+          ${renderSourceCallsInfo(t.sourceCalls)}
+          ${t.sampleQuotes[0] ? renderClickableQuote(t.sampleQuotes[0]) : ''}
+        </div>
+      `).join('');
+    }
+
+    // Apply filters
+    function applyFilters() {
+      const preset = document.getElementById('filter-date-preset').value;
+      const dateRange = getDatePresetRange(preset);
+
+      currentFilters = {
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate,
+        rep: document.getElementById('filter-rep').value || null,
+        keyword: document.getElementById('filter-keyword').value || null
+      };
+
+      // Show loading state
+      document.querySelectorAll('.insight-list').forEach(el => {
+        el.innerHTML = '<div class="loading"><div class="loading-spinner"></div>Loading...</div>';
+      });
+
+      loadDashboard();
+    }
+
+    // Clear filters
+    function clearFilters() {
+      document.getElementById('filter-date-preset').value = 'all';
+      document.getElementById('filter-start-date').value = '';
+      document.getElementById('filter-end-date').value = '';
+      document.getElementById('filter-rep').value = '';
+      document.getElementById('filter-keyword').value = '';
+
+      // Hide custom date fields
+      document.getElementById('custom-start-group').style.display = 'none';
+      document.getElementById('custom-end-group').style.display = 'none';
+
+      currentFilters = {};
+      loadDashboard();
+    }
+
+    // Refresh: Sync new calls and analyze pending, then reload dashboard
+    async function refreshAndAnalyze() {
+      const btn = document.getElementById('btn-refresh');
+      const spinner = document.getElementById('refresh-spinner');
+      const text = document.getElementById('refresh-text');
+
+      // Disable button and show spinner
+      btn.disabled = true;
+      spinner.classList.remove('hidden');
+      text.textContent = 'Syncing...';
+
+      try {
+        // Step 1: Sync new calls from Fireflies
+        const syncResponse = await fetch('/api/sync', { method: 'POST' });
+        const syncResult = await syncResponse.json();
+
+        if (syncResult.success) {
+          const newCalls = syncResult.data?.newCalls || 0;
+          text.textContent = newCalls > 0 ? `Analyzing ${newCalls}...` : 'Analyzing...';
+        }
+
+        // Step 2: Analyze pending calls
+        text.textContent = 'Analyzing...';
+        const analyzeResponse = await fetch('/api/analyze', { method: 'POST' });
+        const analyzeResult = await analyzeResponse.json();
+
+        // Step 3: Reload dashboard data
+        text.textContent = 'Loading...';
+
+        // Show loading state in insight lists
+        document.querySelectorAll('.insight-list').forEach(el => {
+          el.innerHTML = '<div class="loading"><div class="loading-spinner"></div>Loading...</div>';
+        });
+
+        await loadDashboard();
+        await loadStripeMetrics();
+
+        // Show success feedback
+        const syncedCount = syncResult.data?.newCalls || 0;
+        const analyzedCount = analyzeResult.analyzed || 0;
+
+        text.textContent = 'Done!';
+        setTimeout(() => {
+          text.textContent = 'Refresh';
+        }, 1500);
+
+        // Show a brief toast/notification if there were new items
+        if (syncedCount > 0 || analyzedCount > 0) {
+          console.log(`Refreshed: ${syncedCount} new calls synced, ${analyzedCount} calls analyzed`);
+        }
+
+      } catch (error) {
+        console.error('Error during refresh:', error);
+        text.textContent = 'Error';
+        setTimeout(() => {
+          text.textContent = 'Refresh';
+        }, 2000);
+      } finally {
+        // Re-enable button and hide spinner
+        btn.disabled = false;
+        spinner.classList.add('hidden');
+      }
+    }
+
+    // Utility functions
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function truncate(text, maxLength) {
+      if (!text) return '';
+      if (text.length <= maxLength) return text;
+      return text.substring(0, maxLength) + '...';
+    }
+
+    function formatShortDate(dateStr) {
+      if (!dateStr) return '';
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    // Render a clickable quote with source info
+    function renderClickableQuote(quote) {
+      if (!quote) return '';
+
+      // Handle both old string format and new object format
+      const quoteText = typeof quote === 'string' ? quote : quote.text;
+      const callId = typeof quote === 'object' ? quote.callId : null;
+      const callTitle = typeof quote === 'object' ? quote.callTitle : null;
+      const callDate = typeof quote === 'object' ? quote.callDate : null;
+
+      if (!callId) {
+        // Old format - just render non-clickable quote
+        return `<div class="insight-quote">"${escapeHtml(truncate(quoteText, 150))}"</div>`;
+      }
+
+      const sourceInfo = `${escapeHtml(truncate(callTitle || 'Unknown call', 30))} • ${formatShortDate(callDate)}`;
+
+      return `
+        <div class="insight-quote clickable-quote" onclick="openQuoteDrilldown(${callId}, '${escapeHtml(quoteText.replace(/'/g, "\\'").replace(/\n/g, ' '))}')">
+          <span class="quote-text">"${escapeHtml(truncate(quoteText, 150))}"</span>
+          <span class="quote-source">${sourceInfo}</span>
+        </div>
+      `;
+    }
+
+    // Render source calls info (shows first 2 calls if multiple)
+    function renderSourceCallsInfo(sourceCalls) {
+      if (!sourceCalls || sourceCalls.length === 0) return '';
+
+      const callsToShow = sourceCalls.slice(0, 2);
+      const remaining = sourceCalls.length - 2;
+
+      const callLinks = callsToShow.map(call => {
+        const title = truncate(call.title || 'Untitled', 25);
+        const date = formatShortDate(call.date);
+        const rep = call.rep ? ` • ${call.rep}` : '';
+        return `<a href="/admin/call.html?id=${call.id}" class="source-call-link" title="${escapeHtml(call.title || 'Untitled')}">${escapeHtml(title)} (${date}${rep})</a>`;
+      });
+
+      let html = `<div class="source-calls-info">${callLinks.join(', ')}`;
+      if (remaining > 0) {
+        html += `<span class="source-calls-more"> +${remaining} more</span>`;
+      }
+      html += '</div>';
+
+      return html;
+    }
+
+    // Quote Drilldown Modal functionality
+    let quoteDrilldownData = null;
+
+    async function openQuoteDrilldown(callId, quoteText) {
+      const modal = document.getElementById('quote-drilldown-modal');
+      const modalBody = document.getElementById('quote-drilldown-body');
+
+      // Show modal with loading state
+      modal.classList.add('active');
+      modalBody.innerHTML = `
+        <div class="snapshot-loading">
+          <div class="snapshot-loading-spinner"></div>
+          <p>Loading transcript...</p>
+        </div>
+      `;
+
+      try {
+        // Fetch call details
+        const response = await fetch(`/api/admin/calls/${callId}`);
+        const result = await response.json();
+
+        if (!result.success) {
+          throw new Error(result.error || 'Failed to load call');
+        }
+
+        quoteDrilldownData = result.data;
+        renderQuoteDrilldownModal(result.data, quoteText);
+
+      } catch (error) {
+        console.error('Error loading call for quote drilldown:', error);
+        modalBody.innerHTML = `
+          <div class="snapshot-error">
+            <div class="snapshot-error-icon">!</div>
+            <p>Failed to load transcript</p>
+            <p style="font-size: 14px; color: var(--color-text-secondary);">${escapeHtml(error.message)}</p>
+          </div>
+        `;
+      }
+    }
+
+    function renderQuoteDrilldownModal(callData, quoteText) {
+      const modalBody = document.getElementById('quote-drilldown-body');
+      const modalTitle = document.getElementById('quote-drilldown-title');
+
+      // Update modal title
+      modalTitle.textContent = callData.title || 'Call Transcript';
+
+      // Format metadata
+      const dateStr = callData.datetime ? new Date(callData.datetime).toLocaleDateString('en-US', {
+        weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'
+      }) : '-';
+      const durationStr = callData.duration ? formatDuration(callData.duration) : '-';
+      const repStr = callData.rep || '-';
+
+      // Highlight the quote in the transcript
+      const transcript = callData.transcript || 'No transcript available';
+      const highlightedTranscript = highlightQuoteInTranscript(transcript, quoteText);
+
+      modalBody.innerHTML = `
+        <div class="drilldown-meta">
+          <span><strong>Date:</strong> ${dateStr}</span>
+          <span><strong>Duration:</strong> ${durationStr}</span>
+          <span><strong>Rep:</strong> ${escapeHtml(repStr)}</span>
+        </div>
+        <div class="drilldown-quote-preview">
+          <strong>Searching for:</strong> "${escapeHtml(truncate(quoteText, 100))}"
+        </div>
+        <div class="drilldown-transcript" id="drilldown-transcript-content">
+          ${highlightedTranscript}
+        </div>
+      `;
+
+      // Scroll to highlighted text
+      setTimeout(() => {
+        const highlighted = document.querySelector('.quote-highlight');
+        if (highlighted) {
+          highlighted.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
+    }
+
+    function highlightQuoteInTranscript(transcript, quoteText) {
+      if (!transcript || !quoteText) return escapeHtml(transcript);
+
+      // Normalize both strings for matching
+      const normalizedQuote = normalizeText(quoteText);
+      const normalizedTranscript = normalizeText(transcript);
+
+      // Find the first occurrence
+      const matchIndex = normalizedTranscript.indexOf(normalizedQuote);
+
+      if (matchIndex === -1) {
+        // Try partial matching with first 50 chars of quote
+        const partialQuote = normalizeText(quoteText.substring(0, 50));
+        const partialIndex = normalizedTranscript.indexOf(partialQuote);
+
+        if (partialIndex === -1) {
+          // No match found, return plain transcript
+          return escapeHtml(transcript).replace(/\n/g, '<br>');
+        }
+
+        // Highlight partial match
+        const beforeMatch = transcript.substring(0, partialIndex);
+        const match = transcript.substring(partialIndex, partialIndex + quoteText.length);
+        const afterMatch = transcript.substring(partialIndex + quoteText.length);
+
+        return escapeHtml(beforeMatch).replace(/\n/g, '<br>') +
+          '<mark class="quote-highlight">' + escapeHtml(match).replace(/\n/g, '<br>') + '</mark>' +
+          escapeHtml(afterMatch).replace(/\n/g, '<br>');
+      }
+
+      // Highlight the match
+      const beforeMatch = transcript.substring(0, matchIndex);
+      const match = transcript.substring(matchIndex, matchIndex + quoteText.length);
+      const afterMatch = transcript.substring(matchIndex + quoteText.length);
+
+      return escapeHtml(beforeMatch).replace(/\n/g, '<br>') +
+        '<mark class="quote-highlight">' + escapeHtml(match).replace(/\n/g, '<br>') + '</mark>' +
+        escapeHtml(afterMatch).replace(/\n/g, '<br>');
+    }
+
+    function normalizeText(text) {
+      return text
+        .toLowerCase()
+        .replace(/['']/g, "'")
+        .replace(/[""]/g, '"')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function formatDuration(seconds) {
+      if (!seconds && seconds !== 0) return '-';
+      if (seconds === 0) return '0 mins';
+
+      // Convert to total minutes (rounded)
+      const totalMins = Math.round(seconds / 60);
+
+      if (totalMins === 0) return '< 1 min';
+      if (totalMins === 1) return '1 min';
+      return `${totalMins} mins`;
+    }
+
+    function closeQuoteDrilldownModal() {
+      document.getElementById('quote-drilldown-modal').classList.remove('active');
+      quoteDrilldownData = null;
+    }
+
+    function openFullCallDetail() {
+      if (quoteDrilldownData && quoteDrilldownData.id) {
+        window.open(`/admin/call.html?id=${quoteDrilldownData.id}`, '_blank');
+      }
+    }
+
+    // Export dashboard to Markdown (copies to clipboard)
+    async function exportToMarkdown() {
+      if (!currentDashboardData) {
+        alert('No dashboard data available. Please wait for the dashboard to load.');
+        return;
+      }
+
+      // Fetch all items (not just top 10) for export
+      const params = new URLSearchParams();
+      if (currentFilters.startDate) params.append('startDate', currentFilters.startDate);
+      if (currentFilters.endDate) params.append('endDate', currentFilters.endDate);
+      if (currentFilters.rep) params.append('rep', currentFilters.rep);
+      if (currentFilters.keyword) params.append('keyword', currentFilters.keyword);
+      params.append('limit', '1000'); // Get all items
+
+      try {
+        const response = await fetch(`/api/dashboard?${params}`);
+        const result = await response.json();
+
+        if (!result.success) {
+          throw new Error(result.error || 'Failed to fetch data');
+        }
+
+        const data = result.data;
+        const markdown = generateMarkdownExport(data);
+
+        await navigator.clipboard.writeText(markdown);
+
+        // Show feedback
+        const btn = document.getElementById('btn-export');
+        btn.classList.add('copied');
+        btn.textContent = 'Copied!';
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.textContent = 'Export MD';
+        }, 2000);
+
+      } catch (error) {
+        console.error('Error exporting to Markdown:', error);
+        alert('Failed to export. Please try again.');
+      }
+    }
+
+    function generateMarkdownExport(data) {
+      const lines = [];
+      const now = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+      // Header
+      lines.push('# Sales Call Insights Dashboard Export');
+      lines.push('');
+      lines.push(`**Generated:** ${now}`);
+
+      // Filter info
+      if (currentFilters.startDate || currentFilters.endDate || currentFilters.rep || currentFilters.keyword) {
+        lines.push('');
+        lines.push('**Filters Applied:**');
+        if (currentFilters.startDate) lines.push(`- Start Date: ${currentFilters.startDate}`);
+        if (currentFilters.endDate) lines.push(`- End Date: ${currentFilters.endDate}`);
+        if (currentFilters.rep) lines.push(`- Sales Rep: ${currentFilters.rep}`);
+        if (currentFilters.keyword) lines.push(`- Keyword: ${currentFilters.keyword}`);
+      }
+
+      // Summary
+      lines.push('');
+      lines.push('## Summary');
+      lines.push('');
+      lines.push(`- **Total Calls Analyzed:** ${data.summary.totalCalls}`);
+      lines.push(`- **Unique Sales Reps:** ${data.summary.uniqueReps}`);
+      lines.push(`- **Unique Pain Points:** ${data.totalCounts.pains}`);
+      lines.push(`- **Unique Goals:** ${data.totalCounts.goals}`);
+      lines.push(`- **Common Questions:** ${data.totalCounts.questions}`);
+
+      // Pain Points
+      if (data.topPains && data.topPains.length > 0) {
+        lines.push('');
+        lines.push('## Top Pain Points');
+        lines.push('');
+        data.topPains.forEach((pain, i) => {
+          lines.push(`### ${i + 1}. ${pain.category}`);
+          lines.push(`- **Mentions:** ${pain.occurrences} | **Calls:** ${pain.calls}`);
+          if (pain.intensity.High > 0) lines.push(`- **High Intensity:** ${pain.intensity.High}`);
+          if (pain.sampleQuotes && pain.sampleQuotes.length > 0) {
+            const quote = typeof pain.sampleQuotes[0] === 'string' ? pain.sampleQuotes[0] : pain.sampleQuotes[0].text;
+            if (quote) lines.push(`- *"${quote.substring(0, 200)}${quote.length > 200 ? '...' : ''}"*`);
+          }
+          lines.push('');
+        });
+      }
+
+      // Goals
+      if (data.topGoals && data.topGoals.length > 0) {
+        lines.push('## Top Goals');
+        lines.push('');
+        data.topGoals.forEach((goal, i) => {
+          lines.push(`### ${i + 1}. ${goal.goal}`);
+          lines.push(`- **Mentions:** ${goal.occurrences} | **Calls:** ${goal.calls}`);
+          if (goal.priority && goal.priority.high > 0) lines.push(`- **High Priority:** ${goal.priority.high}`);
+          lines.push('');
+        });
+      }
+
+      // Questions
+      if (data.topQuestions && data.topQuestions.length > 0) {
+        lines.push('## Common Questions');
+        lines.push('');
+        data.topQuestions.forEach((q, i) => {
+          lines.push(`${i + 1}. **${q.question}** (${q.occurrences} times, ${q.calls} calls)`);
+        });
+        lines.push('');
+      }
+
+      // Dislikes
+      if (data.topDislikes && data.topDislikes.length > 0) {
+        lines.push('## Top Dislikes/Objections');
+        lines.push('');
+        data.topDislikes.forEach((d, i) => {
+          lines.push(`### ${i + 1}. ${d.type}`);
+          lines.push(`- **Mentions:** ${d.occurrences} | **Calls:** ${d.calls} | **Resolved:** ${d.resolved}`);
+          if (d.sampleQuotes && d.sampleQuotes.length > 0) {
+            const quote = typeof d.sampleQuotes[0] === 'string' ? d.sampleQuotes[0] : d.sampleQuotes[0].text;
+            if (quote) lines.push(`- *"${quote.substring(0, 200)}${quote.length > 200 ? '...' : ''}"*`);
+          }
+          lines.push('');
+        });
+      }
+
+      // Excitement Triggers
+      if (data.topExcitement && data.topExcitement.length > 0) {
+        lines.push('## Excitement Triggers');
+        lines.push('');
+        data.topExcitement.forEach((t, i) => {
+          lines.push(`### ${i + 1}. ${t.trigger}`);
+          lines.push(`- **Mentions:** ${t.occurrences} | **Calls:** ${t.calls}`);
+          if (t.sampleQuotes && t.sampleQuotes.length > 0) {
+            const quote = typeof t.sampleQuotes[0] === 'string' ? t.sampleQuotes[0] : t.sampleQuotes[0].text;
+            if (quote) lines.push(`- *"${quote.substring(0, 200)}${quote.length > 200 ? '...' : ''}"*`);
+          }
+          lines.push('');
+        });
+      }
+
+      lines.push('---');
+      lines.push('*Exported from AffiliateFinder.ai Sales Call Analyzer*');
+
+      return lines.join('\n');
+    }
+
+    // Load Stripe conversion metrics
+    async function loadStripeMetrics() {
+      const metricsSection = document.getElementById('stripe-metrics');
+
+      try {
+        // First check if Stripe is configured
+        const statusResponse = await fetch('/api/stripe/status');
+        const statusResult = await statusResponse.json();
+
+        if (!statusResult.configured) {
+          metricsSection.classList.add('hidden');
+          return;
+        }
+
+        // Load the metrics
+        const response = await fetch('/api/stripe/metrics');
+        const result = await response.json();
+
+        if (!result.success) {
+          console.error('Error loading Stripe metrics:', result.error);
+          metricsSection.classList.add('hidden');
+          return;
+        }
+
+        // Show the section and render metrics
+        metricsSection.classList.remove('hidden');
+        renderStripeMetrics(result.data);
+
+      } catch (error) {
+        console.error('Error loading Stripe metrics:', error);
+        metricsSection.classList.add('hidden');
+      }
+    }
+
+    // Render Stripe metrics
+    function renderStripeMetrics(metrics) {
+      // Update main stats
+      document.getElementById('stripe-matched').textContent = metrics.matchedCalls || 0;
+      document.getElementById('stripe-unmatched').textContent = metrics.unmatchedCalls || 0;
+      document.getElementById('stripe-conversion').textContent =
+        (metrics.conversionRate || 0).toFixed(1) + '%';
+      document.getElementById('stripe-churn').textContent =
+        (metrics.churnRate || 0).toFixed(1) + '%';
+      document.getElementById('stripe-signups').textContent = metrics.signupCount || 0;
+      document.getElementById('stripe-churned').textContent = metrics.churnCount || 0;
+
+      // Render status breakdown
+      const breakdownContainer = document.getElementById('stripe-status-breakdown');
+      const statuses = [
+        { key: 'active', label: 'Active', value: metrics.active || 0 },
+        { key: 'trialing', label: 'Trialing', value: metrics.trialing || 0 },
+        { key: 'past_due', label: 'Past Due', value: metrics.pastDue || 0 },
+        { key: 'canceled', label: 'Canceled', value: metrics.canceled || 0 },
+        { key: 'never_subscribed', label: 'Never Subscribed', value: metrics.neverSubscribed || 0 },
+        { key: 'unmatched', label: 'Unmatched', value: metrics.unmatchedCalls || 0 }
+      ];
+
+      breakdownContainer.innerHTML = statuses
+        .filter(s => s.value > 0)
+        .map(s => `
+          <div class="stripe-status-badge ${s.key}">
+            <span class="count">${s.value}</span>
+            <span>${s.label}</span>
+          </div>
+        `).join('');
+
+      // Show MRR if available
+      const mrrContainer = document.getElementById('stripe-mrr');
+      const mrrValue = document.getElementById('stripe-mrr-value');
+
+      if (metrics.totalMRR && metrics.totalMRR > 0) {
+        mrrContainer.style.display = 'flex';
+        mrrValue.textContent = '$' + metrics.totalMRR.toLocaleString('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+      } else {
+        mrrContainer.style.display = 'none';
+      }
+    }
+
+    // Close modals on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeQuoteDrilldownModal();
+      }
+    });
+
+    // Close modals when clicking overlay background
+    document.getElementById('quote-drilldown-modal').addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal-overlay')) {
+        closeQuoteDrilldownModal();
+      }
+    });
+  </script>
+</body>
+</html>

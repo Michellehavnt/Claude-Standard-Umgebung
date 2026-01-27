@@ -1,0 +1,1154 @@
+# Sales Call Analyzer - Progress Tracker
+
+Last Updated: 2026-01-27
+
+## Current Status: UI Consistency & Bug Fixes Complete
+
+---
+
+## UI Consistency & Bug Fixes (2026-01-27)
+
+### BUG FIX 1: User Menu Dropdown Consistency Across All Pages - COMPLETE
+**Problem:** User menu button showed different content across pages. Calls page (index.html) showed "Michelle Admin" with chevron, but Settings, Users, Access Requests, Phil pages showed only initials "MI".
+
+**Root Cause:** Pages had inconsistent HTML structure. Index.html had the full ds-user-info section with ds-user-name and ds-user-role elements, while other pages were missing this structure.
+
+**Solution:** Updated HTML structure and JavaScript across all affected pages to match index.html.
+
+**Files Modified:**
+- `backend/public/admin/settings.html` - Added ds-user-info structure, updated initUserMenu()
+- `backend/public/admin/access-requests.html` - Added ds-user-info structure, updated initUserMenu()
+- `backend/public/admin/users.html` - Added ds-user-info structure, updated initUserMenu()
+- `backend/public/admin/phil.html` - Added ds-user-info structure, updated initUserMenu()
+- `backend/public/admin/copy.html` - Added ds-user-info structure, updated initUserMenu()
+- `backend/public/admin/founder.html` - Added ds-user-info structure, updated initUserMenu()
+- `backend/public/admin/account.html` - Added ds-user-info structure, updated initUserMenu()
+- `backend/public/admin/call.html` - Added ds-user-info structure, updated initUserMenu()
+- `backend/public/admin/dashboard.html` - Added ds-user-info structure, updated initUserMenu()
+
+**HTML Structure (standardized):**
+```html
+<button class="ds-user-button" id="user-menu-button">
+  <div class="ds-user-avatar" id="user-avatar">--</div>
+  <div class="ds-user-info">
+    <span class="ds-user-name" id="user-display-name">Loading...</span>
+    <span class="ds-user-role" id="user-display-role">-</span>
+  </div>
+  <svg class="ds-user-chevron">...</svg>
+</button>
+```
+
+**JavaScript Updates:**
+- `initUserMenu()` now populates user-display-name and user-display-role elements
+- Dropdown structure updated from ds-user-info to ds-dropdown-header for consistency
+
+---
+
+### BUG FIX 2: Calls Data Inconsistency - COMPLETE
+**Problem:** Calls page showed "6 TOTAL CALLS" in the stat card but "Showing all 0 calls" in the table - data mismatch between dashboard stats and filtered call list.
+
+**Root Cause:** `loadDashboard()` fetched unfiltered stats from `/api/admin/dashboard` (showing all 6 calls), while `loadCalls()` fetched filtered results from `/api/admin/calls` (showing 0 after filters applied). The TOTAL CALLS stat card never updated after filters were applied.
+
+**Solution:** Added a line to update the totalCalls display element after loadCalls() returns the filtered count.
+
+**File Modified:** `backend/public/admin/index.html`
+
+**Code Change:**
+```javascript
+// Update pagination state
+paginationState.totalCalls = data.data.pagination.total;
+paginationState.totalPages = isShowAll ? 1 : Math.ceil(data.data.pagination.total / limit);
+
+// Update the TOTAL CALLS stat card to show filtered count
+document.getElementById('totalCalls').textContent = paginationState.totalCalls;
+```
+
+---
+
+### BUG FIX 3: Tooltips Implementation - COMPLETE
+**Problem:** Tooltips were only partially implemented across admin pages - missing on most action buttons.
+
+**Solution:** Added comprehensive tooltip system using CSS [data-tooltip] attribute and applied tooltips to key action buttons across all pages.
+
+**Files Modified:**
+- `backend/public/admin/design-system.css` - Added complete tooltip CSS system
+- `backend/public/admin/index.html` - Added tooltips to filter buttons, bulk actions
+- `backend/public/admin/settings.html` - Added tooltips to integration buttons
+- `backend/public/admin/access-requests.html` - Added tooltips to Approve/Deny buttons
+- `backend/public/admin/users.html` - Added tooltips to Invite, Edit, Reset Password buttons
+
+**CSS Added to design-system.css:**
+```css
+/* Tooltips */
+[data-tooltip] {
+  position: relative;
+}
+[data-tooltip]::before,
+[data-tooltip]::after {
+  position: absolute;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity var(--transition-fast), visibility var(--transition-fast);
+  z-index: 1000;
+}
+[data-tooltip]::before {
+  content: attr(data-tooltip);
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 10px;
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+}
+/* Arrow pointer */
+[data-tooltip]::after {
+  content: '';
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: var(--color-primary);
+}
+/* Show on hover */
+[data-tooltip]:hover::before,
+[data-tooltip]:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+/* Position variants: bottom, left, right */
+```
+
+**Tooltip Examples Added:**
+- Apply Filters → "Filter calls by date and rep"
+- Sync Calls → "Import new calls from Fireflies"
+- Refresh → "Fetch calls since last sync"
+- Test Connection → "Test API connection"
+- Update Key → "Update API key"
+- Approve → "Approve access request"
+- Invite User → "Invite a new team member"
+
+---
+
+## QA Audit P0/P1 Implementation (2026-01-27)
+
+### FEATURE 1 (P0): Per-call LLM Model Attribution - COMPLETE
+Added Analysis Details panel to Call Detail page showing model, tokens, cost, and timestamp.
+
+**Files Modified:**
+- `backend/public/admin/call.html` - Added Analysis Details panel
+
+**UI Changes:**
+- New "Analysis Details" card after Analysis Status section
+- 4-metric grid: Model, Tokens Used, Cost, Analyzed At
+- Handles edge cases:
+  - LLM analysis with tokenUsage: Shows model name, token count, cost, timestamp
+  - Heuristic analysis: Shows "Heuristic", "N/A", "$0.00"
+  - Legacy/unknown: Shows "Unknown" with explanatory note
+- Premium styling with accent border, consistent with design system
+
+**CSS Added:**
+```css
+.analysis-info-panel { border-left: 3px solid var(--color-accent); }
+.analysis-info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+.analysis-info-item { background: var(--color-surface-alt); padding; border-radius; text-align: center; }
+.analysis-info-value.unknown { color: var(--color-text-muted); font-style: italic; }
+```
+
+**JavaScript Added:**
+- `renderAnalysisInfo(analysis)` - Populates panel with analysis metadata
+- Integration: Called from `renderAnalysis()`, hidden in `showAnalysisNeeded()`
+
+---
+
+### FEATURE 2 (P1): URL Filter Persistence for All 4 Pages - COMPLETE
+Added URL filter persistence using history.replaceState to preserve filter state across page refreshes and enable shareable filtered URLs.
+
+**Files Modified:**
+- `backend/public/admin/index.html` - Calls page
+- `backend/public/admin/copy.html` - Copy page
+- `backend/public/admin/phil.html` - DFY page
+- `backend/public/admin/founder.html` - Closing Rate page
+
+**URL Parameters:**
+- `preset` - Date preset (this_week, last_week, last_month, last_3_months, last_6_months, custom)
+- `start`, `end` - Custom date range (only when preset=custom)
+- `rep` - Rep filter (varies by page)
+- Page-specific: `keyword` (Copy), `quality`/`score` (DFY)
+
+**JavaScript Functions Added (per page):**
+- `getFiltersFromURL()` - Read filter state from URL params
+- `updateURLWithFilters()` - Update URL without page reload
+- `syncUIWithFilters()` - Sync UI controls with filter state
+- `initFiltersFromURL()` - Initialize from URL on page load
+- `popstate` event handler - Support browser back/forward
+
+**Behavior:**
+- Page load: Restores filters from URL if present, otherwise uses defaults
+- Apply Filters: Updates URL with current filter state
+- Clear Filters: Removes URL parameters
+- Browser navigation: Syncs filters when using back/forward buttons
+- Shareable: Copy URL to share exact filter state with others
+
+---
+
+### FEATURE 3 (P1): Wording + Metaphors Sections Fully Implemented - COMPLETE
+Implemented heuristic extraction of wording and metaphors from existing call analysis data.
+
+**Backend Files Modified:**
+- `backend/services/dashboardAggregationService.js` - Added wording and metaphor extraction functions
+- `backend/routes/dashboard.js` - Added /wording and /metaphors API endpoints
+
+**Frontend Files Modified:**
+- `backend/public/admin/copy.html` - Updated to display wording and metaphors data
+
+**Wording Extraction (3 categories):**
+1. **Industry Terms** - Domain-specific vocabulary (affiliate, commission, conversion, tracking, etc.)
+2. **Problem Language** - Colloquial expressions of frustration (nightmare, headache, drowning in, wasting time)
+3. **Power Words** - High-impact emotional vocabulary (transform, urgent, critical, save, profit)
+
+**Metaphors Extraction:**
+- Identifies phrases with comparison markers ("it's like", "feels like", "similar to", "as if")
+- Extracts context around metaphor markers
+- Groups similar metaphors with occurrence counts
+
+**New API Endpoints:**
+- `GET /api/dashboard/wording` - Returns industryTerms, problemLanguage, powerWords arrays
+- `GET /api/dashboard/metaphors` - Returns metaphors/analogies with excerpts and sources
+
+**UI Changes:**
+- Wording section now shows actual data with subtabs for each category
+- Each item shows: term/phrase, count, call count, sample quote, source link
+- Metaphors section shows extracted metaphors with type badges and source links
+- Items ranked by frequency, top 3 highlighted
+
+**Data Flow:**
+- Extracts from existing `analysis_json` quotes (pains, goals, questions, dislikes, excitement)
+- No re-analysis required - works with existing call analyses
+- Filters out sales rep quotes to show only prospect language
+
+---
+
+## QA Testing & Bug Fixes (2026-01-27)
+
+### Comprehensive End-to-End QA Testing
+
+Performed full manual QA testing of all application pages based on PRD documentation.
+
+**Pages Tested:**
+- ✓ Calls page (index.html) - Filters, search, table display, sync history
+- ✓ Call Detail page (call.html) - Transcript, analysis tabs, prospect profile
+- ✓ Copy page (copy.html) - Customer Language Intelligence, 8 sections, KPIs
+- ✓ Closing Rate page (founder.html) - Metrics, deduplication, manual adjustments
+- ✓ DFY Quality page (phil.html) - KPIs, quality funnel, scoring explanation
+- ✓ Settings page (settings.html) - API integrations, model config, token usage
+- ✓ Account page (account.html) - User info, password change
+- ✓ Users page (users.html) - User management, invite forms, modals
+- ✓ Access Requests page (access-requests.html) - Request filtering, approve/deny
+
+### Bugs Found & Fixed
+
+**BUG 1: Duplicate Logout Button Handler in users.html**
+- **File:** `backend/public/admin/users.html`
+- **Issue:** TypeError: Cannot read properties of null (reading 'addEventListener') at line 1162
+- **Cause:** Duplicate logout handler using wrong element ID (`logoutBtn` instead of `logout-button`)
+- **Fix:** Removed redundant logout handler code (lines 1161-1172)
+
+**BUG 2: Duplicate Logout Button Handler in access-requests.html**
+- **File:** `backend/public/admin/access-requests.html`
+- **Issue:** TypeError at line 792 - same issue as users.html
+- **Fix:** Removed redundant logout handler code (lines 791-802)
+
+**BUG 3: Invalid userName Element Reference in access-requests.html**
+- **File:** `backend/public/admin/access-requests.html`
+- **Issue:** TypeError: Cannot set properties of null (setting 'textContent') at line 782
+- **Cause:** `document.getElementById('userName')` referenced non-existent element
+- **Fix:** Removed redundant line - user display already handled by `initUserMenu()`
+
+**BUG 4: dateRange Type Error in copy.html**
+- **File:** `backend/public/admin/copy.html`
+- **Issue:** TypeError: data.data.dateRange.earliest.split is not a function
+- **Cause:** `dateRange.earliest` could be non-string type (null/number)
+- **Fix:** Added `typeof === 'string'` check before calling `.split()`
+
+### Regression Testing Results
+All pages re-tested after fixes - no JavaScript errors on any page.
+
+---
+
+## UI Fixes (2026-01-26)
+
+### FIX 1: Call Duration Display Format
+Changed call duration display from time format (0:30, 1:00:00) to human-readable text.
+
+**Changes:**
+- `backend/public/admin/index.html` - Updated formatDuration()
+- `backend/public/admin/call.html` - Updated formatDuration()
+- `backend/public/admin/dashboard.html` - Updated formatDuration()
+- `backend/__tests__/durationFormatting.test.js` - Updated tests for new format
+
+**New Format:**
+- "< 1 min" for very short calls (< 30 seconds)
+- "1 min" for exactly 1 minute
+- "30 mins", "60 mins", "90 mins" etc. for longer calls
+- Always shows total minutes (no hours)
+
+**Test Coverage:** 21 tests passing
+
+### FIX 2: Remove Sales Rep Mentions from Copy View
+Filtered out sales rep quotes from the Copy/Copywriting dashboard to show only customer language.
+
+**Changes:**
+- `backend/services/dashboardAggregationService.js` - Added rep quote filtering
+  - New `isRepQuote()` function detects rep pitching/selling language
+  - New `filterProspectInsights()` helper for filtering arrays
+  - Applied filtering to: aggregatePains, aggregateGoals, aggregateQuestions, aggregateDislikes, aggregateExcitement
+
+**Filtering Logic:**
+- Detects rep pitching phrases ("our solution", "we can help", "let me show you")
+- Detects rep discovery questions ("what are you currently using", "tell me about your")
+- Keeps legitimate prospect quotes and questions
+
+**Test Coverage:** 5 new tests + 21 existing = 26 total dashboard aggregation tests passing
+
+---
+
+## Internal Brain Premium Login UI (2026-01-26)
+
+### Changes Made
+Redesigned login page as "Internal Brain" with AffiliateFinder branding and premium executive styling.
+
+### UI Changes (backend/public/admin/login.html)
+- **Header**: AffiliateFinder logo (left) + "Internal Brain" title
+- **Colors**: Primary #073b55, Accent #067280, gradient background
+- **Styling**: Premium SaaS look with soft shadows, rounded cards, refined typography
+- **Footer**: "Powered by Michelle - Made for the best team in the word"
+- **Form**: Upgraded inputs with brand-colored focus states and CTA button
+
+### Authentication Changes
+- **Password-only**: Email + password authentication only (no magic links)
+- **Domain restriction**: @affiliatefinder.ai only
+- **Seeded users**: michelle@affiliatefinder.ai and jamie@affiliatefinder.ai
+- **Password**: Both users seeded with "secrettool12345" (bcrypt hashed)
+- **Seed function**: seedInternalUsers() in transcriptDb.js, called on server startup
+
+### Backend Changes (backend/services/transcriptDb.js)
+- Added seedInternalUsers() function
+- Seeds michelle and jamie as admin users on startup
+- Idempotent: skips if users already exist, updates password if not set
+
+### Test Coverage
+- 7 new tests in authService.test.js for internal users
+- Tests: michelle login, jamie login, incorrect password rejection, domain validation
+- All 91 auth tests passing
+
+---
+
+## Audit Results (2026-01-26)
+
+### Summary
+Full codebase audit completed. App is end-to-end functional with all core PRD features implemented.
+
+### Verified Working (with test/code evidence)
+- PRD Feature 1: Authentication - 20 routes, 174 tests (migrated to email+password)
+- PRD Feature 2: Fireflies Sync - 5 routes, 22+ tests, rep filter
+- PRD Feature 3: AI Call Analysis - 16 routes, 32 tests
+- PRD Feature 3B: Call Classification - 47 tests
+- PRD Feature 4-9: Dashboard & Insights - 7 routes, 34 tests
+- PRD Feature 10: DFY Pitch Detection - 5 routes, 58 tests
+- PRD Feature 11: Stripe Enrichment - 6 routes, 53 tests
+- PRD Feature 13: Full-text Search - 3 routes, 49 tests (FTS4)
+- PRD Feature 15: Admin Settings - 15+ routes, 66 tests
+
+### Partial Implementation
+- PRD Feature 14: Export - Closing Rate CSV export added (2026-01-26)
+
+### Completed This Session
+- PRD Feature 15: Token/Cost Tracking - COMPLETE
+- Phil DFY Quality Tab Redesign - COMPLETE
+- Decision Rationale & Evidence Drilldown - COMPLETE (NEW)
+- Closing Rate CSV Export - COMPLETE (NEW)
+- Email+Password Authentication Migration - COMPLETE
+- **User Menu & Role-Based Access Control - COMPLETE**
+- **Internal Brain Premium Login UI - COMPLETE (NEW)**
+
+### Additional Features (not in PRD)
+- Insight Snapshot Generator - 3 routes, 65 tests
+- Founder Closing Rate - 2 routes, 25+ tests
+- Bulk Actions - 4 routes, 21 tests
+- Rep Filter for Sync - tests included in sync service
+- Duration Auto-Format - 23 tests
+- Phil DFY Quality Tab - 3 new routes, 61+ tests
+- Decision Rationale & Evidence Drilldown - 24 new tests (NEW)
+- Closing Rate CSV Export - 43 unit tests + 4 integration tests (NEW)
+- Internal Brain Premium Login UI - 7 new tests (NEW)
+
+### User Priority Decision
+- Next task: Token/Cost Tracking (P1.1)
+- No deadline constraints
+- Polish as needed approach
+
+---
+
+## User Menu & Role-Based Access Control (2026-01-26)
+
+### Changes Made
+Added consistent user menu to all admin pages with role-based access control for Settings.
+
+### Frontend Changes
+- **All admin pages**: Added user menu dropdown in header (right side)
+  - Shows email with initials avatar
+  - Role badge (Admin/Rep)
+  - Dropdown menu: Account, Settings, Sign Out
+  - Admin-only items: Access Requests, Users
+- **account.html (NEW)**: Self-service Account page
+  - User information display (email, name, role, member since)
+  - Change Password form (current password + new password + confirm)
+  - Success/error feedback
+- **settings.html**: Updated for role-based access
+  - All users can VIEW settings (read-only for non-admins)
+  - Non-admins see read-only notice banner
+  - All edit/save/delete buttons hidden for non-admins via CSS
+  - Admin-only forms: API key management, OpenAI config, re-analysis, integrations
+
+### Backend Changes
+- **auth.js**: Added POST /api/auth/change-password endpoint
+  - Requires current password verification
+  - Password validation (min 12 characters)
+  - Session preserved after password change
+- **authService.js**: Added changePassword() function
+  - Verifies current password before allowing change
+  - Returns appropriate error codes (USER_NOT_FOUND, INVALID_PASSWORD)
+- **settings.js**: Added requireAuth, requireAdmin middleware to all write endpoints
+  - POST /integrations/fireflies, /stripe, /openai, /slack, /calendly
+  - PUT /integrations/openai/config
+  - DELETE /integrations/* (all integration delete endpoints)
+  - POST /reanalysis/trigger, /cancel, /resume/:id
+  - POST /integrations/slack/sync
+
+### Test Coverage
+- 4 new tests in authService.test.js for changePassword
+- 18 new tests in settingsRoutes.test.js for role-based permissions
+  - Tests for 403 Forbidden when non-admin attempts write operations
+  - Tests for admin access still working correctly
+
+### Role-Based Access Summary
+| Feature | Admin | Rep/User |
+|---------|-------|----------|
+| View Settings | Yes | Yes (read-only) |
+| Edit API Keys | Yes | No (403) |
+| Manage Integrations | Yes | No (403) |
+| Trigger Re-analysis | Yes | No (403) |
+| Access Requests Page | Yes | Hidden |
+| Users Page | Yes | Hidden |
+| Account Page | Yes | Yes |
+| Change Own Password | Yes | Yes |
+
+---
+
+## Authentication Migration (2026-01-26)
+
+### Changes Made
+Migrated from Magic Link authentication to Email+Password authentication.
+
+### Backend Changes
+- **authService.js**: Added password functions (validatePassword, hashPassword, verifyPassword, requestAccess, loginWithPassword, adminResetPassword)
+- **transcriptDb.js**: Added password_hash column to users and access_requests tables, added updateUserPassword function
+- **auth.js routes**: Added 3 new endpoints (POST /request-access, POST /login-password, POST /admin/reset-password)
+- **package.json**: Added bcrypt dependency
+
+### Frontend Changes
+- **login.html**: Complete redesign with tabbed Sign In / Request Access flow
+- **users.html**: Added Reset Password button and modal for admin password reset
+
+### Password Policy
+- Minimum 12 characters
+- Hashed with bcrypt (12 rounds)
+- Password set during access request, copied to user on admin approval
+- Admin-only password reset (no forgot password feature)
+- All sessions invalidated on password reset
+
+### Test Coverage
+- 29 new password authentication tests added to authService.test.js
+- Total auth tests: 174 (80 service + 76 routes + 18 middleware)
+
+### Migration Notes
+- Legacy magic link endpoints retained for backward compatibility (deprecated)
+- Existing users without password_hash will see "PASSWORD_NOT_SET" error
+- Admin can reset password for existing users via User Management page
+
+---
+
+## Summary
+
+**Fully Implemented & Tested:**
+- Feature 1: Fireflies Sync (PRD Feature 2)
+- Feature 2: Per-Call Analysis (PRD Feature 3)
+- Feature 3: Dashboard Aggregation (PRD Feature 4)
+- Feature 3B: Call Classification Heuristics (PRD Feature 3B)
+- Feature 4: DFY Pitch Detection (PRD Feature 10)
+- Feature 5: Stripe Enrichment (PRD Feature 11)
+- Feature 7: Secure API Key Management (PRD Feature 15 - partial)
+- Feature 8: OpenAI Model Configuration (PRD Feature 15 - LLM settings)
+- Feature 9: Controlled Re-analysis Pipeline (PRD Feature 15 - re-analysis)
+- PRD Feature 1: Authentication - COMPLETE
+- PRD Feature 13: Full-text Search - COMPLETE
+- NEW: Insight Snapshot Generator - COMPLETE
+- NEW: Founder Closing Rate - COMPLETE
+- NEW: Bulk Actions - COMPLETE
+- NEW: Rep Filter for Sync - COMPLETE
+- NEW: Duration Auto-Format - COMPLETE
+
+**Partial:**
+- Feature 14: CSV Export (Markdown only)
+
+**Test Status:** 789 total tests (789 passing, 0 failing)
+
+---
+
+## Completed Features
+
+### Feature 1: Fireflies Sync - COMPLETE
+- SQLite database schema for transcripts table
+- Sync log table for tracking sync operations
+- TranscriptDb service (CRUD operations)
+- SyncService (coordinates Fireflies → DB sync)
+- Sync routes (POST /api/sync, GET /api/sync/status, GET /api/sync/history)
+- Admin routes (GET /api/admin/dashboard, GET /api/admin/calls)
+- Admin HTML page with sync button and call list
+- Tests: syncService.test.js (13), transcriptDb.test.js (20), routes.test.js (18)
+
+### Feature 2: Per-Call Analysis - COMPLETE
+- Analysis service (callAnalysisService.js) with LLM integration
+- Analysis routes (POST /api/analysis/analyze/:id, GET /api/analysis/:id)
+- Call detail page (call.html) with transcript and insights tabs
+- Skip-if-already-analyzed logic with version tracking
+- Tests: callAnalysisService.test.js (22), callAnalysisRoutes.test.js (10)
+
+### Feature 3: Dashboard Aggregation - COMPLETE
+- Aggregation service (dashboardAggregationService.js)
+- Dashboard routes with filters (date range, rep, keyword)
+- Dashboard HTML page with ranked lists
+- Pain points, goals, questions, dislikes, excitement aggregation
+- Tests: dashboardAggregation.test.js (21), dashboardRoutes.test.js (13)
+
+### Feature 3B: Call Classification - COMPLETE
+- CLASSIFICATION enum (SALES, NOT_SALES, REVIEW_NEEDED)
+- NOT_SALES denylist with 20+ regex patterns
+- Name-and-Name pattern recognition
+- Priority order: Denylist → Name-and-Name → Sales Keywords → REVIEW_NEEDED
+- Tests: callClassifier.test.js (47)
+
+### Feature 4: DFY Pitch Detection - COMPLETE
+- DFY pitch service (dfyPitchService.js)
+- Trigger categories (PAIN, OBJECTION, TIME, BUDGET, RESOURCE, CAPABILITY)
+- Confidence scoring (0-100)
+- Phil's rep page (phil.html)
+- DFY tab in call detail page
+- Tests: dfyPitchService.test.js (45), dfyRoutes.test.js (13)
+
+### Feature 5: Stripe Enrichment - COMPLETE
+- Stripe enrichment service (stripeEnrichmentService.js)
+- Email-only matching (no guessing)
+- Subscription status tracking
+- Conversion metrics calculation
+- Stripe panel in call detail page
+- Tests: stripeEnrichmentService.test.js (37), stripeEnrichmentRoutes.test.js (16)
+
+### Feature 7: Secure API Key Management - COMPLETE
+- Secret manager service (secretManager.js)
+- Settings routes for integrations
+- Settings UI page (settings.html)
+- API keys never exposed via API responses
+- Tests: secretManager.test.js (12), settingsRoutes.test.js (18)
+
+### Feature 8: OpenAI Model Configuration - COMPLETE
+- Extended secretManager.js with OpenAI API key support
+- Added model configuration storage (model selection, apply mode)
+- Added OpenAI routes to settings.js (GET, POST, PUT, DELETE, test endpoints)
+- Extended settings.html UI with OpenAI integration card
+- Masked API key input with validation
+- Model selector dropdown (GPT-4o, GPT-4o Mini, GPT-4 Turbo, GPT-3.5 Turbo)
+- Apply mode selection (future calls only vs re-analyze all)
+- Does NOT trigger re-analysis (storage only)
+- Tests: 16 new tests in settingsRoutes.test.js
+
+### Feature 9: Controlled Re-analysis Pipeline - COMPLETE
+- Created reanalysisService.js with batch processing
+- Added reanalysis_jobs table for tracking jobs
+- Triggers re-analysis only when apply_mode == rerun_all
+- Processes ONLY SALES calls (skips internal meetings)
+- Uses currently selected OpenAI model
+- Batch processing with progress tracking
+- Resumable if interrupted (tracks last_processed_id)
+- Job statuses: pending, running, paused, completed, failed, cancelled
+- Added re-analysis routes to settings.js:
+  - GET /api/settings/reanalysis/status
+  - GET /api/settings/reanalysis/job/:id
+  - POST /api/settings/reanalysis/trigger
+  - POST /api/settings/reanalysis/cancel
+  - POST /api/settings/reanalysis/resume/:id
+- Tests: reanalysisService.test.js (18), reanalysisRoutes.test.js (20)
+
+### PRD Feature 1: Authentication with Access Request Workflow - COMPLETE
+- Users table, Magic links table, Sessions table, Access requests table
+- Auth service with magic link + access request workflow
+- Domain restriction: @affiliatefinder.ai only
+- Admin approval workflow (request -> approve/deny -> access)
+- Email service (Mailchimp Transactional / Mandrill)
+- Rate limiting middleware (login, verify, access requests, general)
+- Auth middleware (requireAuth, requireAdmin, optionalAuth)
+- Auth routes (login, status, magic-link, verify, logout, me, setup, invite, users, access-requests/*)
+- Login page UI with combined flow (public/admin/login.html)
+- Access requests admin page (public/admin/access-requests.html)
+- User management page UI (public/admin/users.html)
+- Magic link expiry: 60 minutes, Session duration: 30 days
+- Tests: authService.test.js (51), authMiddleware.test.js (18), authRoutes.test.js (76)
+
+### PRD Feature 13: Full-text Search - COMPLETE
+- Created FTS4 virtual table `transcripts_fts` with Porter stemmer tokenization
+- Implemented searchService.js with:
+  - `initSearchTable()` - initializes FTS4 table
+  - `rebuildSearchIndex()` - rebuilds index from transcripts
+  - `indexTranscript()` - indexes single transcript
+  - `removeFromIndex()` - removes from index
+  - `searchTranscripts()` - full-text search with filters (rep, date range)
+  - `sanitizeFtsQuery()` - sanitizes query for FTS4 special characters
+  - `highlightMatches()` - highlights search terms in results
+  - `getSearchSuggestions()` - returns autocomplete suggestions
+- Created search routes (search.js):
+  - GET /api/search - search transcripts with query, limit, offset, filters
+  - GET /api/search/suggestions - get autocomplete suggestions
+  - POST /api/search/reindex - rebuild search index
+- Added search bar UI to all admin pages
+- Tests: searchService.test.js (31), searchRoutes.test.js (18)
+
+### NEW: Insight Snapshot Generator - COMPLETE (2026-01-26)
+- **Service:** `backend/services/insightSnapshotService.js`
+  - `generateSnapshot(filters)` - Main entry point, requires startDate/endDate
+  - `calculateConversionDelta(itemKey, itemType, transcripts)` - Compares conversion WITH vs WITHOUT
+  - `classifyDFYPitch(pitch)` - Returns 'justified'|'avoidable'|'premature'
+  - `analyzeDFYPitches(transcripts)` - Phil's DFY pitch analysis with classification
+  - `identifyChurnSignals(transcripts)` - Finds patterns disproportionately in churned users
+  - `formatForNotion(snapshot)` - Returns Notion-flavored Markdown
+  - `formatForSlack(snapshot)` - Returns Slack Block Kit JSON
+  - `generateSummaryBullets()` - Auto-generates executive summary
+  - `generateRecommendations()` - Generates actionable recommendations
+- **Routes:** `backend/routes/snapshot.js`
+  - `GET /api/insights/snapshot` - Returns JSON snapshot
+  - `GET /api/insights/snapshot/notion` - Returns Markdown for Notion
+  - `GET /api/insights/snapshot/slack` - Returns Slack Block Kit blocks
+  - All require startDate and endDate query params (YYYY-MM-DD)
+  - Optional rep filter
+- **UI:** Dashboard button "📊 Snapshot" in filter actions
+  - Modal with 4 tabs: Summary, Details, Notion, Slack
+  - Summary tab: Executive summary bullets, conversion metrics, recommendations
+  - Details tab: Top pains, goals, questions, triggers, DFY analysis, churn signals
+  - Notion tab: Raw Markdown with copy button
+  - Slack tab: Raw JSON with copy button
+- **Tests:**
+  - insightSnapshotService.test.js: 47 tests (97.94% coverage)
+  - insightSnapshotRoutes.test.js: 18 tests (98.11% coverage)
+- **NOTE:** Server must be restarted after code changes to pick up new routes
+
+---
+
+## Not Started Features
+
+### PRD Feature 14: CSV Export
+- Export endpoint (/api/export)
+- Export modal UI
+- Calls export schema
+- Pain points export schema
+- Questions export schema
+- DFY mentions export schema
+
+---
+
+## Partially Implemented
+
+### PRD Feature 15: Admin Settings (Remaining)
+- NOT DONE: Token usage tracking
+- NOT DONE: Cost tracking display
+
+---
+
+## Test Summary
+
+| Test File | Tests | Status |
+|-----------|-------|--------|
+| syncService.test.js | 13 | PASS |
+| transcriptDb.test.js | 20 | PASS |
+| routes.test.js | 18 | PASS |
+| callAnalysisService.test.js | 22 | PASS |
+| callAnalysisRoutes.test.js | 10 | PASS |
+| dashboardAggregation.test.js | 21 | PASS |
+| dashboardRoutes.test.js | 13 | PASS |
+| dfyPitchService.test.js | 45 | PASS |
+| dfyQualificationService.test.js | 63 | PASS |
+| dfyRoutes.test.js | 14 | PASS |
+| dfyQualityRoutes.test.js | 22 | PASS |
+| stripeEnrichmentService.test.js | 37 | PASS |
+| stripeEnrichmentRoutes.test.js | 16 | PASS |
+| callClassifier.test.js | 47 | PASS |
+| secretManager.test.js | 12 | PASS |
+| settingsRoutes.test.js | 34 | PASS |
+| reanalysisService.test.js | 18 | PASS |
+| reanalysisRoutes.test.js | 20 | PASS |
+| transcriptDb.test.js (users) | 17 | PASS |
+| transcriptDb.test.js (magic links) | 17 | PASS |
+| transcriptDb.test.js (sessions) | 19 | PASS |
+| authService.test.js | 51 | PASS |
+| authMiddleware.test.js | 18 | PASS |
+| authRoutes.test.js | 76 | PASS |
+| searchService.test.js | 31 | PASS |
+| searchRoutes.test.js | 18 | PASS |
+| insightSnapshotService.test.js | 47 | PASS |
+| insightSnapshotRoutes.test.js | 18 | PASS |
+| founderSnapshotService.test.js | 25+ | PASS |
+| founderRoutes.test.js | 26 | PASS |
+| csvExportService.test.js | 43 | PASS |
+| bulkActions.test.js | 21 | PASS |
+| durationFormatting.test.js | 23 | PASS |
+| llmService.test.js | 25 | PASS |
+| llmAnalysisPrompts.test.js | 21 | PASS |
+| tokenUsage.test.js | 8 | PASS |
+
+**Total: 976+ tests (all tests passing)**
+
+---
+
+## Recent Changes
+
+### 2026-01-26: Closing Rate CSV Export - COMPLETE
+- **Added:** `services/csvExportService.js` - CSV generation utility
+  - `escapeCSVValue()` - Escapes commas, quotes, and newlines for CSV safety
+  - `generateCSV()` - Generic CSV generation from array of objects
+  - `generateClosingRateCSV()` - Specialized for Closing Rate table data
+  - `generateClosingRateFilename()` - Deterministic filename with date range
+  - UTF-8 encoded with BOM for Excel compatibility
+- **Updated:** `public/admin/founder.html` - Added Export CSV button
+  - Button in Analyzed Calls header with download icon
+  - Frontend CSV generation (no backend endpoint needed)
+  - Button disabled when no data to export
+  - Respects current filters (date range, rep)
+  - Filename includes date range: `closing-rate-calls-YYYY-MM-DD-to-YYYY-MM-DD.csv`
+- **CSV columns:** Rep, Call Title, Date, Prospect Email, Status
+- **Tests:**
+  - csvExportService.test.js: 43 unit tests
+  - founderRoutes.test.js: 4 new integration tests for CSV data structure
+- **Result:** All 47 new tests passing
+
+### 2026-01-26: Decision Rationale & Evidence Drilldown - COMPLETE
+- **Updated:** `services/dfyQualificationService.js`
+  - `generateDecisionRationale()` - Generates human-readable explanation for flag assignment
+  - `mapEvidenceToRules()` - Maps evidence objects to 10-rule breakdown array
+  - Updated `analyzeDFYQualification()` to include rationale and ruleBreakdown
+  - Deterministic logic: clean/risky/unclear based on score threshold and patterns
+- **Updated:** `public/admin/call.html` - Enhanced DFY Qualification panel:
+  - **Decision Summary section** (top): Flag badge (Clean/Risky/Unclear), Score (X/4), one-line explanation
+  - **Rule Breakdown panel** (middle): Scannable table with 10 rules
+    - Result column (Yes/No/Unknown with color coding)
+    - Importance label (Primary signal, Qualification criteria, etc.)
+    - Evidence quote with truncation (expandable)
+    - "View in transcript" action with fuzzy match fallback
+  - **Flag Logic section** (bottom): Human-readable definitions showing exact thresholds
+    - Clean: DFY not pitched OR (score >= 3 AND no risky patterns)
+    - Risky: DFY pitched AND (proposal without discovery OR score < 2)
+    - Unclear: DFY pitched AND score = 2 (insufficient qualification signals)
+  - **Re-analyze button**: Per-call "Re-analyze DFY Evidence" action
+- **Updated:** Transcript highlighting with fuzzy match fallback
+  - `scrollToTranscriptLine()` - Now accepts optional quoteText parameter
+  - `findFuzzyMatchLine()` - 60% word match threshold for fuzzy matching
+  - `scrollToTranscriptQuote()` - Wrapper function for quote-based scrolling
+  - Fuzzy match indicator: "[~]" shown when exact match not found
+- **Tests:**
+  - dfyQualificationService.test.js: 15 new tests (7 rationale, 4 evidence mapping, 4 integration)
+  - dfyQualityRoutes.test.js: 9 new tests (rationale API, ruleBreakdown, flags)
+- **Result:** 63 unit tests + 22 integration tests (all passing)
+
+### 2026-01-26: Phil DFY Quality Tab Redesign - COMPLETE
+- **Added:** `services/dfyQualificationService.js` - DFY qualification scoring service
+  - `analyzeDFYQualification()` - Extracts 15+ qualification metrics per call
+  - `calculateQualificationScore()` - Scores 0-4 based on: no_time, buyer_intent, budget_validated, next_step_quality
+  - `determineQualityFlag()` - Returns 'clean', 'risky', or 'unclear' based on criteria
+  - `aggregateDFYQualificationStats()` - Generates summary statistics
+  - `buildDFYFunnel()` - Builds conversion funnel data
+  - Evidence extraction with transcript quotes and line references
+- **Added:** New API endpoints in `routes/dfy.js`:
+  - `GET /api/dfy/quality` - List view with KPIs, funnel, and call list
+  - `GET /api/dfy/quality/call/:id` - Detailed qualification for a call
+  - `POST /api/dfy/quality/reanalyze/:id` - Re-analyze specific call
+- **Updated:** `services/callAnalysisService.js`
+  - Now integrates `addDFYQualificationToAnalysis()` during call analysis
+  - Stores dfyQualification in analysis_json alongside existing dfyPitches
+- **Updated:** `public/admin/phil.html` - Complete UI redesign:
+  - KPI strip: Calls Analyzed, DFY Pitched %, Properly Qualified %, Proposals, Discovery, Software Close %
+  - DFY Quality Funnel (left sidebar): DFY Mentioned -> Met Criteria -> Budget Confirmed -> Discovery -> Proposal
+  - Call List Table: Score pips, budget status, next step, software close, quality flag
+  - Filter controls: Date range, quality flag, min score
+  - Horizontal filter layout matching other pages
+- **Updated:** `public/admin/call.html` - DFY Qualification panel:
+  - Qualification score (0-4) with quality flag badge
+  - Checklist with evidence quotes: No Time, Buyer Intent, Budget, Discovery, Proposal
+  - "View in transcript" links that highlight relevant text
+  - Software discipline section showing pitch and close attempt status
+- **Tests:**
+  - dfyQualificationService.test.js: 48 tests
+  - dfyQualityRoutes.test.js: 13 tests
+- **Data Model:** Per-call extraction includes:
+  - dfy_pitched, dfy_offer_type (none|primary|upgrade|fallback)
+  - proposal_promised, discovery_booked_for_dfy
+  - software_pitched, software_close_attempted
+  - budget_asked, budget_provided, budget_fit_for_dfy (min $1,000/mo)
+  - criteria_no_time, criteria_buyer_intent, criteria_budget_validated
+  - dfy_qualification_score (0-4), dfy_quality_flag (clean|risky|unclear)
+  - evidence object with transcript quotes and line references
+- **Configuration:**
+  - Score threshold for "properly qualified": 3+ out of 4
+  - Proposal without discovery = always "risky"
+  - DFY budget minimum: $1,000/month
+  - Phil calls only (no rep switching)
+
+### 2026-01-26: Slack Lifecycle Events & UI Improvements - COMPLETE
+- **Added:** `services/slackIngestionService.js` - Ingests Slack lifecycle events for signup detection
+  - Parses Slack messages for user events (registered, trialing, active, canceled, etc.)
+  - Stores events in `slack_lifecycle_events` table
+  - `getLatestStatusForEmail()` - Returns latest status for a prospect email
+- **Updated:** `services/founderSnapshotService.js`
+  - Integrated Slack lifecycle events as fallback data source (Stripe priority, Slack fallback)
+  - Added support for "all" reps filter (Phil, Jamie, or All)
+  - Added `repName` to call details for display
+  - `getCombinedStatus()` - Merges Stripe and Slack data with priority
+- **Updated:** `routes/founder.js` - Rep metrics now support "all" reps
+- **Updated:** Date range filters across all pages (Dashboard style)
+  - Phil DFY page (`phil.html`) - Date preset dropdown added
+  - Calls page (`index.html`) - Unified date presets
+  - Closing Rate page (`founder.html`) - Unified date presets
+  - Presets: All time, This week, Last week, Last month, Last 3 months, Last 6 months, Custom range
+- **Updated:** Closing Rate page (`founder.html`)
+  - Added Rep column (first column) with color-coded badges
+  - Phil badge: Yellow (rgba(251, 191, 36, 0.15))
+  - Jamie badge: Pink (rgba(236, 72, 153, 0.15))
+  - `getRepClass()` and `getRepDisplayName()` helper functions
+- **Result:** Unified filter experience across all pages, multi-rep support with visual distinction
+
+### 2026-01-26: Token/Cost Tracking (P1.1) - COMPLETE
+- **Added:** `services/llmService.js` - OpenAI wrapper with token tracking
+  - `chatCompletion()` - Makes OpenAI API calls with token counting
+  - `calculateCost()` - Calculates cost per model (GPT-4o, GPT-4o-mini, GPT-4-turbo, GPT-3.5-turbo)
+  - `parseJsonResponse()` - Handles JSON extraction from LLM responses
+- **Added:** `services/llmAnalysisPrompts.js` - Prompt templates for LLM analysis
+  - `buildAnalysisPrompt()` - Full analysis prompt with structured JSON output
+  - `validateAnalysisResponse()` - Validates LLM response structure
+  - `transformToExistingFormat()` - Converts LLM output to existing format
+- **Updated:** `services/callAnalysisService.js` - Now supports both heuristic and LLM modes
+  - `getAnalysisMode()` - Determines whether to use LLM or heuristic
+  - `analyzeWithLLM()` - LLM-based analysis with token tracking
+  - `performHeuristicAnalysis()` - Original rule-based analysis
+  - Token usage stored in `analysis_json.tokenUsage`
+- **Updated:** `services/transcriptDb.js`
+  - `getTokenUsageStats()` - Aggregates token usage from all LLM analyses
+- **Added:** Token usage endpoints to `routes/settings.js`
+  - `GET /api/settings/usage` - Full usage stats with model breakdown
+  - `GET /api/settings/usage/summary` - Quick summary for dashboard
+- **Updated:** `public/admin/settings.html`
+  - Token usage card with summary stats
+  - Usage by model table
+  - Recent analyses list
+- **Tests:** 54 new tests (llmService: 25, llmAnalysisPrompts: 21, tokenUsage: 8)
+- **Result:** 789 tests pass (was 735)
+
+### 2026-01-26: Full Codebase Audit
+- **Performed:** Comprehensive feature audit against PRD
+- **Result:** All core features verified working (P0 complete)
+- **Identified gaps:** CSV export (Markdown only), Token/Cost tracking
+- **User decision:** Next priority is Token/Cost Tracking (P1.1)
+- **Updated:** prd.md (Implementation Status section), todo.md (Priority Plan), progress.txt
+- **Test count increased:** 620 to 735 tests
+
+### 2026-01-26: Bulk Actions, Rep Filter, Duration Format
+- **Added:** Bulk delete/analyze with throttling (routes/bulkActions.js)
+- **Added:** Rep filter for Fireflies sync (default: Phil only)
+- **Added:** Duration auto-format (MM:SS vs HH:MM:SS)
+- **Tests:** 66 new tests (21 bulk + 22 sync + 23 duration)
+
+### 2026-01-26: Insight Snapshot Generator (NEW FEATURE)
+- **Added:** insightSnapshotService.js with snapshot generation
+- **Added:** routes/snapshot.js with 3 endpoints (JSON, Notion, Slack)
+- **Added:** Snapshot button and modal to dashboard.html
+- **Features:**
+  - Executive summary with auto-generated bullets
+  - Conversion delta calculation (WITH vs WITHOUT items)
+  - DFY pitch classification (justified/avoidable/premature)
+  - Churn signal identification
+  - Actionable recommendations
+  - Notion Markdown export
+  - Slack Block Kit export
+- **Added:** 65 new tests (47 service + 18 routes)
+- **Result:** All 620 tests pass
+- **Coverage:** Service 97.94%, Routes 98.11%
+
+---
+
+## Files Structure
+
+### Backend Services
+- `services/transcriptDb.js` - Database operations (includes token usage stats)
+- `services/syncService.js` - Fireflies sync (with rep filter)
+- `services/callAnalysisService.js` - Call analysis (heuristic + LLM modes)
+- `services/analyzer.js` - Call classification (heuristics)
+- `services/llmService.js` - OpenAI API wrapper with token tracking
+- `services/llmAnalysisPrompts.js` - LLM prompt templates
+- `services/dashboardAggregationService.js` - Aggregation
+- `services/dfyPitchService.js` - DFY detection
+- `services/dfyQualificationService.js` - DFY qualification scoring (NEW)
+- `services/stripeEnrichmentService.js` - Stripe enrichment
+- `services/secretManager.js` - API key management
+- `services/reanalysisService.js` - Controlled re-analysis pipeline
+- `services/authService.js` - Authentication workflow
+- `services/searchService.js` - Full-text search
+- `services/insightSnapshotService.js` - Insight snapshot generation
+- `services/founderSnapshotService.js` - Founder closing rate metrics (Stripe + Slack combined)
+- `services/slackIngestionService.js` - Slack lifecycle event ingestion (NEW)
+
+### Backend Routes
+- `routes/sync.js` - Sync endpoints (with rep filter)
+- `routes/admin.js` - Admin endpoints
+- `routes/callAnalysis.js` - Analysis endpoints
+- `routes/dashboard.js` - Dashboard endpoints
+- `routes/dfy.js` - DFY endpoints
+- `routes/stripeEnrichment.js` - Stripe endpoints
+- `routes/bulkActions.js` - Bulk delete/analyze endpoints
+- `routes/settings.js` - Settings endpoints
+- `routes/auth.js` - Authentication endpoints
+- `routes/search.js` - Search endpoints
+- `routes/snapshot.js` - Insight snapshot endpoints (NEW)
+
+### Backend Middleware
+- `middleware/auth.js` - Authentication middleware
+
+### Frontend Pages
+- `public/admin/index.html` - Calls list (with date preset dropdown)
+- `public/admin/call.html` - Call detail
+- `public/admin/dashboard.html` - Insights dashboard (with Snapshot button)
+- `public/admin/phil.html` - Phil's DFY Quality page (REDESIGNED: KPIs, funnel, qualification table)
+- `public/admin/founder.html` - Founder Closing Rate page (Rep column with badges)
+- `public/admin/settings.html` - Settings page
+- `public/admin/login.html` - Login page
+- `public/admin/users.html` - User management page
+
+---
+
+## How to Run
+
+```bash
+# Start server
+cd backend && npm start
+
+# Run tests
+cd backend && npm test
+
+# Run linting
+cd backend && npm run lint
+```
+
+**Admin URL:** http://localhost:3001/admin
+**Copy URL:** http://localhost:3001/admin/copy.html
+**Settings URL:** http://localhost:3001/admin/settings.html
+
+---
+
+## Recent Changes
+
+### 2026-01-26: Enhanced Authentication with Access Request Workflow - COMPLETE
+- **Added:** Access request workflow with admin approval
+  - New `access_requests` table for storing pending/approved/denied requests
+  - `authenticateOrRequestAccess()` combined flow function
+  - `approveAccessRequest()` and `denyAccessRequest()` admin functions
+  - `getAccessStatus()` for checking email status
+  - Re-request allowed after denial (resets to pending)
+- **Added:** Domain restriction
+  - Only @affiliatefinder.ai emails accepted
+  - `isAllowedDomain()` validation function
+  - Admin emails configured via ADMIN_EMAILS env var
+- **Added:** Email service (emailService.js)
+  - Mailchimp Transactional (Mandrill) integration
+  - Magic link emails, access request notifications, approval/denial notifications
+  - Dev mode logs to console instead of sending
+- **Added:** Rate limiting middleware (rateLimit.js)
+  - Login: 5 requests per 15 min per email
+  - Token verification: 10 requests per 5 min per IP
+  - Access requests: 3 requests per hour per IP
+  - General API: 100 requests per minute per IP
+- **Updated:** Auth routes with new endpoints
+  - `POST /api/auth/login` - combined login/access request flow
+  - `GET /api/auth/status` - check access status for email
+  - `GET /api/auth/access-requests` - list requests (admin)
+  - `GET /api/auth/access-requests/:id` - get specific request (admin)
+  - `POST /api/auth/access-requests/:id/approve` - approve request (admin)
+  - `POST /api/auth/access-requests/:id/deny` - deny request (admin)
+  - `DELETE /api/auth/access-requests/:id` - delete request (admin)
+- **Updated:** Session and token durations
+  - Magic link expiry: 60 minutes (was 15)
+  - Session duration: 30 days (was 7)
+- **Updated:** Login page UI (login.html)
+  - Combined flow showing appropriate state (approved, pending, denied)
+  - Domain hint showing @affiliatefinder.ai required
+  - Name field for new access requests
+  - Pending status card when access request is pending
+- **Added:** Access requests admin page (access-requests.html)
+  - Tabs for pending/approved/denied/all
+  - Approve modal with name, role, notes inputs
+  - Deny modal with reason input
+  - Delete functionality for cleanup
+- **Tests:** 145 auth tests (51 unit + 76 integration + 18 middleware)
+  - Domain validation tests
+  - Combined flow tests (approved, pending, denied states)
+  - Access request approval/denial tests
+  - Full workflow integration tests
+- **Result:** All 145 auth tests passing
+
+### 2026-01-26: Copy - Customer Language Intelligence Page - COMPLETE
+- **Renamed:** Dashboard to "Copy" with subheader "Customer Language Intelligence across analyzed calls"
+- **Updated:** Navigation across all pages from "Dashboard" to "Copy"
+- **Implemented:** New 8-section layout:
+  1. Pain Points (Challenges & Frustrations)
+  2. Goals (Desired Outcomes & Wins)
+  3. Wording (subtabs: Industry Terms, Colloquial Problem Language, Power Words) - placeholder for future enrichment
+  4. Metaphors & Analogies - placeholder for future enrichment
+  5. Emotional Triggers (Emotion Map) - derived from dislikes.emotions
+  6. Customer Questions
+  7. Positive Reactions (all positive emotional responses)
+  8. Objections & Criticism (grouped with type badges: price, trust, complexity, time)
+- **UI Improvements:**
+  - Each item shows: ranked label, quote snippet, source call reference (title + date + rep), mentions count
+  - Top 3 items highlighted with primary color rank badges
+  - Collapsible sections with smooth transitions
+  - Compact KPI strip (reduced visual weight)
+  - Premium styling with brand colors (#073b55, #067280) as accents
+- **Context Drawer:**
+  - Right-side drawer showing full quote, source call metadata
+  - 10-line transcript context around the quote
+  - Fuzzy matching with "[~] closest match" indicator when exact match fails
+  - "Open in Transcript" button passes highlight parameter to call.html
+- **Transcript Highlighting:**
+  - call.html now reads `highlight` URL parameter and scrolls to/highlights the quote
+  - Fuzzy matching fallback for better reliability
+- **Label Normalization:**
+  - Client-side label improvement to reduce generic buckets
+  - Known generic labels rewritten (e.g., "Manual Time Sink" -> "Time Wasted on Manual Outreach")
+  - "Needs review" badge for truly generic labels that couldn't be improved
+  - Quote-based label extraction for fallback
+- **Export MD:** Button unchanged (same label, placement, behavior, styling)
+- **Tests:** 14 new tests in copyPage.test.js (all passing)
+  - Quote highlight matcher (exact + fuzzy)
+  - Context drawer rendering
+  - Section mapping and sorting (ranked)
+  - API endpoint integration tests
+
+---
+
+## Important Notes for Next Session
+
+1. **Server Restart Required:** After any code changes, restart the server with:
+   ```bash
+   cd backend && kill $(lsof -t -i:3001) 2>/dev/null; npm start
+   ```
+
+2. **Snapshot Feature Usage:**
+   - Go to Dashboard page
+   - Select Start Date and End Date in filters
+   - Click "📊 Snapshot" button
+   - Modal shows summary, details, and export options
+
+3. **Known Issues:** None currently
+
+4. **Token Usage:** Settings page now shows LLM token usage and costs
+
+5. **Next Recommended Task:** PRD Feature 14 (CSV Export)
+
+6. **Recent Additions:**
+   - Slack lifecycle events integrated into Founder Snapshot
+   - Combined data source: Stripe (priority) + Slack (fallback)
+   - Rep column in Closing Rate with color-coded badges (Phil=Yellow, Jamie=Pink)
+   - Unified date preset dropdowns across all pages
+
+7. **Phil DFY Quality Tab:**
+   - Go to Phil DFY page (/admin/phil.html)
+   - View KPI strip with: calls, DFY pitched %, qualified %, proposals, discovery, software close %
+   - View funnel showing qualification drop-off
+   - Click any call to see detailed qualification with evidence quotes
+   - Use "View in transcript" to highlight exact evidence in transcript
+
+8. **Decision Rationale Drilldown (NEW):**
+   - Click any call from Phil DFY page to see enhanced drilldown
+   - Decision Summary: Flag badge, score, one-line explanation
+   - Rule Breakdown: 10 rules with Yes/No/Unknown results, evidence quotes
+   - Flag Logic: Transparent definitions of clean/risky/unclear thresholds
+   - "View in transcript" uses fuzzy match fallback ([~] indicator)
+   - "Re-analyze DFY Evidence" button for per-call reanalysis
+
+---
+
+## DFY Detection Improvements (2026-01-26)
+
+### Problem Solved
+Fixed false positives in DFY pitch detection and budget_asked qualification.
+
+### Changes Made
+
+#### 1. Stricter DFY Pitch Detection (dfyPitchService.js, dfyDetector.js)
+**Problem:** "I own an agency" credibility intros were incorrectly flagged as DFY pitches.
+
+**Solution:**
+- Removed bare `'agency'` keyword from dfyKeywords (too generic)
+- Added offer-oriented agency phrases: `'agency service'`, `'agency package'`, `'our agency can'`, etc.
+- Added explicit DFY offer phrases: `'we can do this for you'`, `'we handle everything'`, etc.
+- New `isCredibilityIntroOnly()` function excludes:
+  - "I own an agency", "I have an agency", "I run an agency"
+  - "we also do services", "my agency background"
+  - UNLESS followed by offer transition phrases: "we can do this for you", "we offer a package where", etc.
+
+**Files Changed:**
+- `backend/utils/dfyDetector.js` - Updated dfyKeywords array
+- `backend/services/dfyPitchService.js` - Added isCredibilityIntroOnly(), isSalesRep(), isJamie()
+
+#### 2. DFY-Contextual Budget Ask (dfyQualificationService.js)
+**Problem:** General business budget questions marked as "budget_asked" when not about DFY/managed service.
+
+**Solution:**
+- New `DFY_BUDGET_CONTEXT_KEYWORDS` array for DFY-specific budget patterns
+- New `isBudgetAskDFYContextual()` function checks surrounding context
+- `budget_asked` only TRUE when budget question is in DFY context:
+  - Line mentions "done for you", "managed service", "agency", "proposal", etc.
+  - OR surrounding 3 lines before/after contain DFY context keywords
+
+**Files Changed:**
+- `backend/services/dfyQualificationService.js` - Added isBudgetAskDFYContextual(), DFY_BUDGET_CONTEXT_KEYWORDS
+
+#### 3. Evidence Validation (dfyQualificationService.js)
+**Problem:** Evidence quotes could be attached to rules they don't actually support.
+
+**Solution:**
+- New `validateEvidence()` function checks if quote contains expected keywords
+- `mapEvidenceToRules()` now includes `evidenceValid` and `evidenceValidationReason` for each rule
+- Each rule has associated keywords array for validation
+
+**Files Changed:**
+- `backend/services/dfyQualificationService.js` - Added validateEvidence(), updated mapEvidenceToRules()
+
+### Test Coverage
+- `backend/__tests__/dfyDetection.test.js` - 24 new tests covering:
+  - isCredibilityIntroOnly() - 6 tests
+  - detectDFYPitches() - 5 tests
+  - isBudgetAskDFYContextual() - 5 tests
+  - analyzeDFYQualification budget_asked - 2 tests
+  - Speaker detection (isPhil, isJamie, isSalesRep) - 6 tests
+
+**Result:** 71 tests passing (24 DFY + 26 dashboard + 21 duration)

@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management - Sales Call Analyzer</title>
+  <link rel="stylesheet" href="design-system.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      background: #073b55;
+      color: white;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 100%;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .header-logo img {
+      height: 36px;
+      width: auto;
+    }
+
+    .header-divider {
+      width: 1px;
+      height: 24px;
+      background: rgba(255, 255, 255, 0.2);
+      margin: 0 24px;
+    }
+
+    header h1 {
+      display: none;
+    }
+
+    nav {
+      display: flex;
+      gap: 4px;
+    }
+
+    nav a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      transition: all 0.15s ease;
+    }
+
+    nav a.active {
+      background: rgba(255,255,255,0.12);
+      color: white;
+    }
+
+    nav a:hover {
+      background: rgba(255,255,255,0.08);
+      color: white;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-info span {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .logout-btn {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    .section {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .section-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-header h2 {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .section-content {
+      padding: 20px;
+    }
+
+    .btn {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background: #1d4ed8;
+    }
+
+    .btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: #6b7280;
+    }
+
+    .btn-secondary:hover {
+      background: #4b5563;
+    }
+
+    .btn-danger {
+      background: #dc2626;
+    }
+
+    .btn-danger:hover {
+      background: #b91c1c;
+    }
+
+    .btn-success {
+      background: #16a34a;
+    }
+
+    .btn-success:hover {
+      background: #15803d;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+
+    /* User table styles */
+    .users-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .users-table th,
+    .users-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .users-table th {
+      background: #f9fafb;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #6b7280;
+    }
+
+    .users-table tr:hover {
+      background: #f9fafb;
+    }
+
+    .users-table .actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .role-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .role-admin {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .role-rep {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .status-active {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status-inactive {
+      background: #fef2f2;
+      color: #991b1b;
+    }
+
+    /* Modal styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 20px 25px rgba(0,0,0,0.15);
+    }
+
+    .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .modal-header h3 {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .modal-footer {
+      padding: 16px 20px;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .alert-success {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .alert-error {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .alert-info {
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #6b7280;
+    }
+
+    .empty-state h3 {
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: #374151;
+    }
+
+    /* Dev token display */
+    .dev-token {
+      background: #fef3c7;
+      border: 1px solid #fcd34d;
+      border-radius: 6px;
+      padding: 12px;
+      margin-top: 16px;
+    }
+
+    .dev-token p {
+      font-size: 12px;
+      color: #92400e;
+      margin-bottom: 8px;
+    }
+
+    .dev-token code {
+      display: block;
+      background: white;
+      padding: 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      word-break: break-all;
+      color: #1f2937;
+    }
+
+    .dev-token a {
+      display: block;
+      margin-top: 8px;
+      color: #2563eb;
+      font-size: 12px;
+    }
+
+    /* Checkbox toggle */
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+    }
+
+    .checkbox-group label {
+      font-size: 14px;
+      color: #374151;
+      margin-bottom: 0;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body>
+  <header class="ds-header">
+    <div class="ds-header-inner">
+      <a href="/admin/" class="ds-header-logo">
+        <img src="/admin/logo.svg" alt="AffiliateFinder">
+      </a>
+      <div class="ds-header-divider"></div>
+      <nav class="ds-header-nav">
+        <a href="/admin/">Calls</a>
+        <a href="/admin/copy.html">Copy</a>
+        <a href="/admin/phil.html">DFY</a>
+        <a href="/admin/founder.html">Closing Rate</a>
+        <a href="/admin/settings.html">Settings</a>
+      </nav>
+      <div class="ds-header-user">
+        <button class="ds-user-button" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+          <div class="ds-user-avatar" id="user-avatar">--</div>
+          <div class="ds-user-info">
+            <span class="ds-user-name" id="user-display-name">Loading...</span>
+            <span class="ds-user-role" id="user-display-role">-</span>
+          </div>
+          <svg class="ds-user-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="ds-user-dropdown" id="user-dropdown">
+          <div class="ds-dropdown-header">
+            <div class="ds-dropdown-email" id="user-email">-</div>
+            <span class="ds-dropdown-role user" id="user-role-badge">User</span>
+          </div>
+
+          <div class="ds-dropdown-section">
+            <a href="/admin/account.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              Account
+            </a>
+            <a href="/admin/settings.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              Settings
+            </a>
+          </div>
+
+          <div class="ds-dropdown-divider ds-admin-only" style="display: none;"></div>
+
+          <div class="ds-dropdown-section ds-admin-only" style="display: none;">
+            <div class="ds-dropdown-label">Admin</div>
+            <a href="/admin/access-requests.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="8.5" cy="7" r="4"></circle>
+                <line x1="20" y1="8" x2="20" y2="14"></line>
+                <line x1="23" y1="11" x2="17" y2="11"></line>
+              </svg>
+              Access Requests
+            </a>
+            <a href="/admin/users.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              User Management
+            </a>
+          </div>
+
+          <div class="ds-dropdown-divider"></div>
+
+          <div class="ds-dropdown-section">
+            <button class="ds-dropdown-item danger" id="logout-button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Alert messages -->
+    <div id="alertBox" class="alert hidden"></div>
+
+    <!-- Users section -->
+    <div class="section">
+      <div class="section-header">
+        <h2>Users</h2>
+        <button class="btn" id="inviteUserBtn" data-tooltip="Send invitation to new user">Invite User</button>
+      </div>
+      <div class="section-content">
+        <div class="checkbox-group">
+          <input type="checkbox" id="showInactive">
+          <label for="showInactive">Show inactive users</label>
+        </div>
+
+        <div id="loadingState" class="loading">Loading users...</div>
+
+        <div id="emptyState" class="empty-state hidden">
+          <h3>No users found</h3>
+          <p>Invite users to get started</p>
+        </div>
+
+        <table class="users-table" id="usersTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Last Login</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Invite User Modal -->
+  <div class="modal-overlay hidden" id="inviteModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Invite New User</h3>
+      </div>
+      <div class="modal-body">
+        <div id="inviteAlert" class="alert hidden"></div>
+        <form id="inviteForm">
+          <div class="form-group">
+            <label for="inviteEmail">Email Address</label>
+            <input type="email" id="inviteEmail" required placeholder="user@company.com">
+          </div>
+          <div class="form-group">
+            <label for="inviteName">Full Name</label>
+            <input type="text" id="inviteName" required placeholder="John Smith">
+          </div>
+          <div class="form-group">
+            <label for="inviteRole">Role</label>
+            <select id="inviteRole">
+              <option value="rep">Sales Rep</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+        </form>
+        <div id="inviteToken" class="dev-token hidden">
+          <p><strong>Development Mode:</strong> Invitation link (not sent via email)</p>
+          <code id="inviteTokenValue"></code>
+          <a href="#" id="inviteTokenLink" target="_blank">Open invitation link</a>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelInviteBtn">Cancel</button>
+        <button class="btn" id="submitInviteBtn">Send Invitation</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit User Modal -->
+  <div class="modal-overlay hidden" id="editModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Edit User</h3>
+      </div>
+      <div class="modal-body">
+        <div id="editAlert" class="alert hidden"></div>
+        <form id="editForm">
+          <input type="hidden" id="editUserId">
+          <div class="form-group">
+            <label for="editEmail">Email Address</label>
+            <input type="email" id="editEmail" disabled>
+          </div>
+          <div class="form-group">
+            <label for="editName">Full Name</label>
+            <input type="text" id="editName" required>
+          </div>
+          <div class="form-group">
+            <label for="editRole">Role</label>
+            <select id="editRole">
+              <option value="rep">Sales Rep</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelEditBtn">Cancel</button>
+        <button class="btn" id="submitEditBtn">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Deactivate Modal -->
+  <div class="modal-overlay hidden" id="deactivateModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Deactivate User</h3>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to deactivate <strong id="deactivateUserName"></strong>?</p>
+        <p style="margin-top: 12px; color: #6b7280; font-size: 14px;">
+          This will prevent them from logging in and invalidate all their active sessions.
+        </p>
+        <input type="hidden" id="deactivateUserId">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelDeactivateBtn">Cancel</button>
+        <button class="btn btn-danger" id="confirmDeactivateBtn">Deactivate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reset Password Modal -->
+  <div class="modal-overlay hidden" id="resetPasswordModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Reset User Password</h3>
+      </div>
+      <div class="modal-body">
+        <div id="resetPasswordAlert" class="alert hidden"></div>
+        <p style="margin-bottom: 16px;">Reset password for <strong id="resetPasswordUserName"></strong></p>
+        <p style="margin-bottom: 16px; color: #6b7280; font-size: 14px;">
+          This will invalidate all their active sessions and require them to login with the new password.
+        </p>
+        <input type="hidden" id="resetPasswordUserId">
+        <div class="form-group">
+          <label for="newPassword">New Password</label>
+          <input type="password" id="newPassword" required placeholder="Minimum 12 characters" minlength="12">
+          <p style="font-size: 12px; color: #6b7280; margin-top: 4px;">Minimum 12 characters required</p>
+        </div>
+        <div class="form-group">
+          <label for="confirmNewPassword">Confirm Password</label>
+          <input type="password" id="confirmNewPassword" required placeholder="Confirm password" minlength="12">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelResetPasswordBtn">Cancel</button>
+        <button class="btn btn-danger" id="confirmResetPasswordBtn">Reset Password</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // User Menu
+    async function initUserMenu() {
+      try {
+        const response = await fetch('/api/auth/me', { credentials: 'include' });
+        if (!response.ok) {
+          window.location.href = '/admin/login.html';
+          return;
+        }
+        const data = await response.json();
+        const user = data.user;
+
+        // Update avatar with initials
+        const avatar = document.getElementById('user-avatar');
+        if (avatar) {
+          const initials = (user.name || user.email || '?')
+            .split(/[\s@]+/)
+            .map(part => part[0])
+            .join('')
+            .substring(0, 2)
+            .toUpperCase();
+          avatar.textContent = initials;
+        }
+
+        // Update user display name in header button
+        const displayName = document.getElementById('user-display-name');
+        if (displayName) {
+          displayName.textContent = user.name || user.email.split('@')[0];
+        }
+
+        // Update user display role in header button
+        const displayRole = document.getElementById('user-display-role');
+        if (displayRole) {
+          displayRole.textContent = user.role === 'admin' ? 'Admin' : 'User';
+        }
+
+        // Update email in dropdown
+        const emailEl = document.getElementById('user-email');
+        if (emailEl) emailEl.textContent = user.email;
+
+        // Update role badge in dropdown
+        const roleBadge = document.getElementById('user-role-badge');
+        if (roleBadge) {
+          roleBadge.textContent = user.role === 'admin' ? 'Admin' : 'User';
+          roleBadge.className = 'ds-dropdown-role ' + (user.role === 'admin' ? 'admin' : 'user');
+        }
+
+        if (user.role === 'admin') {
+          document.querySelectorAll('.ds-admin-only').forEach(el => el.style.display = '');
+        }
+      } catch (err) {
+        console.error('Failed to load user info:', err);
+      }
+    }
+
+    function setupUserMenu() {
+      const button = document.getElementById('user-menu-button');
+      const dropdown = document.getElementById('user-dropdown');
+      const logoutBtn = document.getElementById('logout-button');
+
+      if (button && dropdown) {
+        button.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isOpen = dropdown.classList.contains('open');
+          dropdown.classList.toggle('open', !isOpen);
+          button.setAttribute('aria-expanded', !isOpen);
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('.ds-header-user')) {
+            dropdown.classList.remove('open');
+            button.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+          try {
+            await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+          } catch (err) {
+            console.error('Logout error:', err);
+          }
+          window.location.href = '/admin/login.html';
+        });
+      }
+    }
+
+    // State
+    let currentUser = null;
+    let users = [];
+
+    // DOM elements
+    const alertBox = document.getElementById('alertBox');
+    const loadingState = document.getElementById('loadingState');
+    const emptyState = document.getElementById('emptyState');
+    const usersTable = document.getElementById('usersTable');
+    const usersTableBody = document.getElementById('usersTableBody');
+    const showInactiveCheckbox = document.getElementById('showInactive');
+    const currentUserName = document.getElementById('currentUserName');
+
+    // Modals
+    const inviteModal = document.getElementById('inviteModal');
+    const editModal = document.getElementById('editModal');
+    const deactivateModal = document.getElementById('deactivateModal');
+    const resetPasswordModal = document.getElementById('resetPasswordModal');
+
+    // Show alert
+    function showAlert(message, type = 'info') {
+      alertBox.textContent = message;
+      alertBox.className = `alert alert-${type}`;
+      alertBox.classList.remove('hidden');
+      setTimeout(() => alertBox.classList.add('hidden'), 5000);
+    }
+
+    // Format date
+    function formatDate(dateStr) {
+      if (!dateStr) return 'Never';
+      const date = new Date(dateStr);
+      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // Check authentication
+    async function checkAuth() {
+      try {
+        const response = await fetch('/api/auth/me', { credentials: 'include' });
+        if (!response.ok) {
+          window.location.href = '/admin/login.html';
+          return false;
+        }
+        const data = await response.json();
+        currentUser = data.user;
+        currentUserName.textContent = currentUser.name;
+
+        // Check if admin
+        if (currentUser.role !== 'admin') {
+          showAlert('Access denied. Admin privileges required.', 'error');
+          setTimeout(() => window.location.href = '/admin/', 2000);
+          return false;
+        }
+
+        return true;
+      } catch (error) {
+        window.location.href = '/admin/login.html';
+        return false;
+      }
+    }
+
+    // Load users
+    async function loadUsers() {
+      loadingState.classList.remove('hidden');
+      usersTable.classList.add('hidden');
+      emptyState.classList.add('hidden');
+
+      try {
+        const includeInactive = showInactiveCheckbox.checked;
+        const response = await fetch(`/api/auth/users?includeInactive=${includeInactive}`, {
+          credentials: 'include'
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load users');
+        }
+
+        const data = await response.json();
+        users = data.users;
+
+        renderUsers();
+      } catch (error) {
+        console.error('Error loading users:', error);
+        showAlert('Failed to load users', 'error');
+      } finally {
+        loadingState.classList.add('hidden');
+      }
+    }
+
+    // Render users table
+    function renderUsers() {
+      if (users.length === 0) {
+        emptyState.classList.remove('hidden');
+        usersTable.classList.add('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      usersTable.classList.remove('hidden');
+
+      usersTableBody.innerHTML = users.map(user => `
+        <tr>
+          <td>${escapeHtml(user.name)}</td>
+          <td>${escapeHtml(user.email)}</td>
+          <td><span class="role-badge role-${user.role}">${user.role}</span></td>
+          <td><span class="status-badge status-${user.isActive ? 'active' : 'inactive'}">${user.isActive ? 'Active' : 'Inactive'}</span></td>
+          <td>${formatDate(user.lastLogin)}</td>
+          <td class="actions">
+            <button class="btn btn-sm btn-secondary" onclick="editUser('${user.id}')" data-tooltip="Edit user details">Edit</button>
+            ${user.isActive ? `
+              <button class="btn btn-sm" onclick="openResetPasswordModal('${user.id}', '${escapeHtml(user.name)}')" data-tooltip="Send password reset email">Reset Password</button>
+              ${user.id !== currentUser.id ? `
+                <button class="btn btn-sm btn-danger" onclick="confirmDeactivate('${user.id}', '${escapeHtml(user.name)}')" data-tooltip="Disable user access">Deactivate</button>
+              ` : ''}
+            ` : `
+              <button class="btn btn-sm btn-success" onclick="reactivateUser('${user.id}')" data-tooltip="Re-enable user access">Reactivate</button>
+            `}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Escape HTML
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // Open invite modal
+    document.getElementById('inviteUserBtn').addEventListener('click', () => {
+      document.getElementById('inviteForm').reset();
+      document.getElementById('inviteToken').classList.add('hidden');
+      document.getElementById('inviteAlert').classList.add('hidden');
+      inviteModal.classList.remove('hidden');
+    });
+
+    // Close invite modal
+    document.getElementById('cancelInviteBtn').addEventListener('click', () => {
+      inviteModal.classList.add('hidden');
+    });
+
+    // Submit invite
+    document.getElementById('submitInviteBtn').addEventListener('click', async () => {
+      const email = document.getElementById('inviteEmail').value;
+      const name = document.getElementById('inviteName').value;
+      const role = document.getElementById('inviteRole').value;
+      const submitBtn = document.getElementById('submitInviteBtn');
+      const inviteAlert = document.getElementById('inviteAlert');
+
+      if (!email || !name) {
+        inviteAlert.textContent = 'Please fill in all fields';
+        inviteAlert.className = 'alert alert-error';
+        inviteAlert.classList.remove('hidden');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+
+      try {
+        const response = await fetch('/api/auth/invite', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ email, name, role })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          inviteAlert.textContent = 'User invited successfully!';
+          inviteAlert.className = 'alert alert-success';
+          inviteAlert.classList.remove('hidden');
+
+          // Show token in dev mode
+          if (data.token) {
+            document.getElementById('inviteTokenValue').textContent = data.token;
+            document.getElementById('inviteTokenLink').href = `/admin/login.html?token=${data.token}`;
+            document.getElementById('inviteToken').classList.remove('hidden');
+          }
+
+          loadUsers();
+        } else {
+          inviteAlert.textContent = data.message || 'Failed to invite user';
+          inviteAlert.className = 'alert alert-error';
+          inviteAlert.classList.remove('hidden');
+        }
+      } catch (error) {
+        console.error('Error inviting user:', error);
+        inviteAlert.textContent = 'An error occurred';
+        inviteAlert.className = 'alert alert-error';
+        inviteAlert.classList.remove('hidden');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send Invitation';
+      }
+    });
+
+    // Edit user
+    function editUser(userId) {
+      const user = users.find(u => u.id === userId);
+      if (!user) return;
+
+      document.getElementById('editUserId').value = user.id;
+      document.getElementById('editEmail').value = user.email;
+      document.getElementById('editName').value = user.name;
+      document.getElementById('editRole').value = user.role;
+      document.getElementById('editAlert').classList.add('hidden');
+
+      // Disable role change for self
+      document.getElementById('editRole').disabled = (user.id === currentUser.id);
+
+      editModal.classList.remove('hidden');
+    }
+
+    // Close edit modal
+    document.getElementById('cancelEditBtn').addEventListener('click', () => {
+      editModal.classList.add('hidden');
+    });
+
+    // Submit edit
+    document.getElementById('submitEditBtn').addEventListener('click', async () => {
+      const userId = document.getElementById('editUserId').value;
+      const name = document.getElementById('editName').value;
+      const role = document.getElementById('editRole').value;
+      const submitBtn = document.getElementById('submitEditBtn');
+      const editAlert = document.getElementById('editAlert');
+
+      if (!name) {
+        editAlert.textContent = 'Name is required';
+        editAlert.className = 'alert alert-error';
+        editAlert.classList.remove('hidden');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Saving...';
+
+      try {
+        const response = await fetch(`/api/auth/users/${userId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ name, role })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          editModal.classList.add('hidden');
+          showAlert('User updated successfully', 'success');
+          loadUsers();
+        } else {
+          editAlert.textContent = data.message || 'Failed to update user';
+          editAlert.className = 'alert alert-error';
+          editAlert.classList.remove('hidden');
+        }
+      } catch (error) {
+        console.error('Error updating user:', error);
+        editAlert.textContent = 'An error occurred';
+        editAlert.className = 'alert alert-error';
+        editAlert.classList.remove('hidden');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Save Changes';
+      }
+    });
+
+    // Confirm deactivate
+    function confirmDeactivate(userId, userName) {
+      document.getElementById('deactivateUserId').value = userId;
+      document.getElementById('deactivateUserName').textContent = userName;
+      deactivateModal.classList.remove('hidden');
+    }
+
+    // Cancel deactivate
+    document.getElementById('cancelDeactivateBtn').addEventListener('click', () => {
+      deactivateModal.classList.add('hidden');
+    });
+
+    // Confirm deactivate
+    document.getElementById('confirmDeactivateBtn').addEventListener('click', async () => {
+      const userId = document.getElementById('deactivateUserId').value;
+      const confirmBtn = document.getElementById('confirmDeactivateBtn');
+
+      confirmBtn.disabled = true;
+      confirmBtn.textContent = 'Deactivating...';
+
+      try {
+        const response = await fetch(`/api/auth/users/${userId}`, {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          deactivateModal.classList.add('hidden');
+          showAlert('User deactivated successfully', 'success');
+          loadUsers();
+        } else {
+          showAlert(data.message || 'Failed to deactivate user', 'error');
+        }
+      } catch (error) {
+        console.error('Error deactivating user:', error);
+        showAlert('An error occurred', 'error');
+      } finally {
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = 'Deactivate';
+        deactivateModal.classList.add('hidden');
+      }
+    });
+
+    // Reactivate user
+    async function reactivateUser(userId) {
+      try {
+        const response = await fetch(`/api/auth/users/${userId}/reactivate`, {
+          method: 'POST',
+          credentials: 'include'
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showAlert('User reactivated successfully', 'success');
+          loadUsers();
+        } else {
+          showAlert(data.message || 'Failed to reactivate user', 'error');
+        }
+      } catch (error) {
+        console.error('Error reactivating user:', error);
+        showAlert('An error occurred', 'error');
+      }
+    }
+
+    // Resend invite
+    async function resendInvite(userId) {
+      try {
+        const response = await fetch(`/api/auth/users/${userId}/resend-invite`, {
+          method: 'POST',
+          credentials: 'include'
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          let message = 'Invitation resent successfully';
+          if (data.token) {
+            message += `. Token: ${data.token.substring(0, 8)}...`;
+          }
+          showAlert(message, 'success');
+        } else {
+          showAlert(data.message || 'Failed to resend invitation', 'error');
+        }
+      } catch (error) {
+        console.error('Error resending invite:', error);
+        showAlert('An error occurred', 'error');
+      }
+    }
+
+    // Open reset password modal
+    function openResetPasswordModal(userId, userName) {
+      document.getElementById('resetPasswordUserId').value = userId;
+      document.getElementById('resetPasswordUserName').textContent = userName;
+      document.getElementById('newPassword').value = '';
+      document.getElementById('confirmNewPassword').value = '';
+      document.getElementById('resetPasswordAlert').classList.add('hidden');
+      resetPasswordModal.classList.remove('hidden');
+    }
+
+    // Cancel reset password
+    document.getElementById('cancelResetPasswordBtn').addEventListener('click', () => {
+      resetPasswordModal.classList.add('hidden');
+    });
+
+    // Confirm reset password
+    document.getElementById('confirmResetPasswordBtn').addEventListener('click', async () => {
+      const userId = document.getElementById('resetPasswordUserId').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+      const confirmBtn = document.getElementById('confirmResetPasswordBtn');
+      const resetAlert = document.getElementById('resetPasswordAlert');
+
+      // Validate passwords
+      if (newPassword.length < 12) {
+        resetAlert.textContent = 'Password must be at least 12 characters';
+        resetAlert.className = 'alert alert-error';
+        resetAlert.classList.remove('hidden');
+        return;
+      }
+
+      if (newPassword !== confirmNewPassword) {
+        resetAlert.textContent = 'Passwords do not match';
+        resetAlert.className = 'alert alert-error';
+        resetAlert.classList.remove('hidden');
+        return;
+      }
+
+      confirmBtn.disabled = true;
+      confirmBtn.textContent = 'Resetting...';
+
+      try {
+        const response = await fetch('/api/auth/admin/reset-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ userId, newPassword })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          resetPasswordModal.classList.add('hidden');
+          showAlert('Password reset successfully. User will need to login with the new password.', 'success');
+        } else {
+          resetAlert.textContent = data.message || 'Failed to reset password';
+          resetAlert.className = 'alert alert-error';
+          resetAlert.classList.remove('hidden');
+        }
+      } catch (error) {
+        console.error('Error resetting password:', error);
+        resetAlert.textContent = 'An error occurred';
+        resetAlert.className = 'alert alert-error';
+        resetAlert.classList.remove('hidden');
+      } finally {
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = 'Reset Password';
+      }
+    });
+
+    // Show inactive toggle
+    showInactiveCheckbox.addEventListener('change', loadUsers);
+
+    // Close modals on overlay click
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          overlay.classList.add('hidden');
+        }
+      });
+    });
+
+    // Initialize
+    async function init() {
+      initUserMenu();
+      setupUserMenu();
+      const isAuth = await checkAuth();
+      if (isAuth) {
+        loadUsers();
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
