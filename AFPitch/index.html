@@ -1,0 +1,2432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AffiliateFinder.ai - Enterprise Pitch Deck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Background - Premium Dark Navy */
+      --bg-primary: #0c1929;
+      --bg-secondary: #0f2035;
+      --bg-tertiary: #132844;
+      --bg-gradient: linear-gradient(165deg, #0f2035 0%, #0c1929 30%, #0a1420 60%, #0c1929 100%);
+
+      /* Primary Brand Colors - Affiliate Finder */
+      --color-primary: #073b55;
+      --color-primary-dark: #052a3d;
+      --color-primary-light: #067280;
+      --color-accent: #067280;
+      --color-accent-light: #0a9aa8;
+
+      /* Flowing Lines Colors */
+      --line-blue: #073b55;
+      --line-cyan: #067280;
+      --line-gray: rgba(148, 163, 184, 0.3);
+
+      /* Surface Colors */
+      --color-surface: rgba(255, 255, 255, 0.03);
+      --color-surface-hover: rgba(255, 255, 255, 0.06);
+
+      /* Text Colors */
+      --color-white: #FFFFFF;
+      --color-white-muted: rgba(255, 255, 255, 0.7);
+      --color-white-subtle: rgba(255, 255, 255, 0.4);
+
+      /* Glassmorphism */
+      --glass-bg: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+      --glass-bg-strong: linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-border-strong: rgba(255, 255, 255, 0.12);
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+      /* Shadows & Glows */
+      --shadow-card: 0 4px 30px rgba(0, 0, 0, 0.25);
+      --shadow-glow: 0 0 60px rgba(6, 114, 128, 0.15);
+      --shadow-button: 0 4px 20px rgba(6, 114, 128, 0.4);
+
+      /* Border Radius */
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-full: 50px;
+
+      /* Partner Logo Configuration */
+      --partner-logo-height: 50px;
+      --partner-logo-height-mobile: 38px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Host Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+      color: var(--color-white);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* ========================================
+       BACKGROUND DECORATIONS
+       ======================================== */
+    .bg-decoration {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg-decoration::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      opacity: 0.02;
+      mix-blend-mode: overlay;
+    }
+
+    .ambient-glow {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .ambient-glow-1 {
+      top: 10%;
+      right: 10%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(6, 114, 128, 0.08) 0%, transparent 60%);
+      filter: blur(100px);
+    }
+
+    .ambient-glow-2 {
+      bottom: 15%;
+      left: 5%;
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(7, 59, 85, 0.08) 0%, transparent 60%);
+      filter: blur(120px);
+    }
+
+    .orb {
+      position: absolute;
+      top: 20%;
+      right: 8%;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle at 30% 30%,
+        rgba(6, 114, 128, 0.4) 0%,
+        rgba(6, 114, 128, 0.2) 30%,
+        rgba(6, 114, 128, 0.05) 50%,
+        transparent 70%);
+      border-radius: 50%;
+      filter: blur(40px);
+    }
+
+    .orb::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px;
+      height: 40px;
+      background: radial-gradient(circle, rgba(6, 114, 128, 0.3) 0%, transparent 70%);
+      border-radius: 50%;
+      filter: blur(20px);
+    }
+
+    .orb::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      filter: blur(4px);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.4), 0 0 20px rgba(6, 114, 128, 0.3);
+    }
+
+    .dotted-line {
+      position: absolute;
+      top: 0;
+      right: 60px;
+      width: 1px;
+      height: 100%;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent 6px,
+        rgba(255, 255, 255, 0.12) 6px,
+        rgba(255, 255, 255, 0.12) 10px
+      );
+    }
+
+    .flowing-lines {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      opacity: 0.15;
+    }
+
+    @media (max-width: 768px) {
+      .dotted-line {
+        display: none;
+      }
+      .orb {
+        width: 100px;
+        height: 100px;
+        right: 5%;
+        top: 15%;
+      }
+    }
+
+    /* ========================================
+       CONTAINER
+       ======================================== */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ========================================
+       NAVIGATION
+       ======================================== */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 16px 0;
+      background: rgba(12, 25, 41, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    nav .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    /* Glass Container for Nav Logo */
+    .nav-logo-glass {
+      position: relative;
+      padding: 8px 16px;
+      background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.55) 0%,
+        rgba(255, 255, 255, 0.45) 50%,
+        rgba(255, 255, 255, 0.5) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 12px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow:
+        0 4px 24px rgba(0, 0, 0, 0.2),
+        0 0 40px rgba(255, 255, 255, 0.3),
+        0 0 80px rgba(255, 255, 255, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      transition: all 0.4s ease;
+    }
+
+    .nav-logo-glass::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 20%;
+      right: 20%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.95), transparent);
+    }
+
+    .nav-logo:hover .nav-logo-glass {
+      background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.65) 0%,
+        rgba(255, 255, 255, 0.55) 50%,
+        rgba(255, 255, 255, 0.6) 100%);
+      box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.25),
+        0 0 50px rgba(255, 255, 255, 0.4),
+        0 0 100px rgba(255, 255, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.85);
+    }
+
+    .nav-logo-img {
+      height: 32px;
+      width: auto;
+      display: block;
+    }
+
+    .nav-badge {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-pill {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-full);
+      padding: 10px 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--color-white);
+    }
+
+    .nav-pill span {
+      color: var(--color-accent-light);
+    }
+
+    .nav-cta {
+      background: var(--color-white);
+      color: var(--bg-primary);
+      padding: 12px 24px;
+      border-radius: var(--radius-full);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .nav-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+    }
+
+    /* ========================================
+       SECTIONS
+       ======================================== */
+    section {
+      padding: 100px 0;
+      position: relative;
+    }
+
+    /* ========================================
+       SLIDE 1: HERO / COVER SECTION
+       ======================================== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding-top: 100px;
+      padding-bottom: 60px;
+      position: relative;
+    }
+
+    .hero-content {
+      max-width: 800px;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Glass Container for Hero Logo */
+    .hero-logo-glass {
+      position: relative;
+      padding: 32px 48px;
+      margin-bottom: 40px;
+      background: linear-gradient(145deg,
+        rgba(255, 255, 255, 0.6) 0%,
+        rgba(255, 255, 255, 0.5) 40%,
+        rgba(255, 255, 255, 0.55) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: 24px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow:
+        0 8px 60px rgba(0, 0, 0, 0.25),
+        0 0 80px rgba(255, 255, 255, 0.35),
+        0 0 140px rgba(255, 255, 255, 0.2),
+        inset 0 2px 0 rgba(255, 255, 255, 0.8),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+      animation: heroGlassGlow 5s ease-in-out infinite;
+    }
+
+    .hero-logo-glass::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 15%;
+      right: 15%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 1), transparent);
+      border-radius: 50%;
+    }
+
+    .hero-logo-glass::after {
+      content: '';
+      position: absolute;
+      top: 10%;
+      left: 10%;
+      right: 10%;
+      bottom: 10%;
+      border-radius: 20px;
+      background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    @keyframes heroGlassGlow {
+      0%, 100% {
+        box-shadow:
+          0 8px 60px rgba(0, 0, 0, 0.25),
+          0 0 80px rgba(255, 255, 255, 0.35),
+          0 0 140px rgba(255, 255, 255, 0.2),
+          inset 0 2px 0 rgba(255, 255, 255, 0.8),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+      }
+      50% {
+        box-shadow:
+          0 12px 80px rgba(0, 0, 0, 0.3),
+          0 0 100px rgba(255, 255, 255, 0.45),
+          0 0 180px rgba(255, 255, 255, 0.25),
+          inset 0 2px 0 rgba(255, 255, 255, 0.9),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+      }
+    }
+
+    .hero-logo {
+      height: 80px;
+      width: auto;
+      display: block;
+    }
+
+    .hero-headline {
+      font-size: 42px;
+      font-weight: 600;
+      color: white;
+      line-height: 1.3;
+      margin-bottom: 24px;
+    }
+
+    .hero-headline .highlight {
+      color: var(--color-accent-light);
+    }
+
+    .hero-tagline {
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--color-accent-light);
+      margin-bottom: 16px;
+    }
+
+    .hero-description {
+      font-size: 16px;
+      color: var(--color-white-muted);
+      margin-bottom: 40px;
+    }
+
+    /* Partner Lockup (kept for compatibility) */
+    .partner-lockup {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      margin-bottom: 50px;
+      padding: 36px 48px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+      box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.25),
+        0 0 80px rgba(6, 114, 128, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .partner-lockup::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: calc(var(--radius-xl) + 1px);
+      background: linear-gradient(135deg, rgba(6, 114, 128, 0.15) 0%, transparent 50%, rgba(7, 59, 85, 0.1) 100%);
+      z-index: -1;
+      opacity: 0.5;
+    }
+
+    .logo-card {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 20px 28px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      min-width: 180px;
+      min-height: 80px;
+    }
+
+    .logo-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius-lg);
+      background: radial-gradient(ellipse at center, rgba(6, 114, 128, 0.15) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .logo-card:hover {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.04) 100%);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+      box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.3),
+        0 0 40px rgba(6, 114, 128, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
+
+    .logo-card:hover::before {
+      opacity: 1;
+    }
+
+    /* Agency Logo Card (Affiliate Finder) */
+    .agency-card::before {
+      background: radial-gradient(ellipse at center, rgba(6, 114, 128, 0.4) 0%, rgba(6, 114, 128, 0.2) 40%, transparent 70%);
+    }
+
+    .agency-logo-img {
+      height: 44px;
+      width: auto;
+      filter: drop-shadow(0 0 20px rgba(6, 114, 128, 0.6))
+              drop-shadow(0 0 40px rgba(6, 114, 128, 0.4))
+              drop-shadow(0 0 60px rgba(6, 114, 128, 0.25))
+              brightness(1.1);
+      transition: filter 0.3s ease;
+    }
+
+    .agency-card:hover .agency-logo-img {
+      filter: drop-shadow(0 0 30px rgba(6, 114, 128, 0.8))
+              drop-shadow(0 0 60px rgba(6, 114, 128, 0.5))
+              drop-shadow(0 0 90px rgba(6, 114, 128, 0.3))
+              brightness(1.15);
+    }
+
+    /* Client Logo Card (Placeholder) */
+    .client-card {
+      flex-direction: column;
+    }
+
+    .client-card::before {
+      background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 40%, transparent 70%);
+    }
+
+    .client-logo-placeholder {
+      font-size: 14px;
+      color: var(--color-white-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .client-logo-img {
+      height: 44px;
+      width: auto;
+      filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.6))
+              drop-shadow(0 0 40px rgba(255, 255, 255, 0.4));
+      transition: filter 0.3s ease;
+    }
+
+    .partner-connector {
+      color: rgba(255, 255, 255, 0.3);
+      font-size: 36px;
+      font-weight: 200;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    }
+
+    .hero .subtitle {
+      color: var(--color-accent-light);
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
+
+    .hero .description {
+      color: var(--color-white-muted);
+      font-size: 16px;
+      max-width: 560px;
+      line-height: 1.7;
+      font-weight: 400;
+    }
+
+    .scroll-indicator {
+      margin-top: 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--color-white-subtle);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .scroll-indicator svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .scroll-indicator span {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; transform: translateY(0); }
+      50% { opacity: 0.6; transform: translateY(4px); }
+    }
+
+    .partner-lockup.compact {
+      gap: 30px;
+      padding: 24px 36px;
+      margin-bottom: 0;
+      justify-content: center;
+    }
+
+    .partner-lockup.compact .logo-card {
+      padding: 14px 20px;
+      min-width: 140px;
+      min-height: 60px;
+    }
+
+    .partner-lockup.compact .agency-logo-img,
+    .partner-lockup.compact .client-logo-img {
+      height: 32px;
+    }
+
+    .partner-lockup.compact .partner-connector {
+      font-size: 24px;
+    }
+
+    @media (max-width: 768px) {
+      .hero {
+        text-align: center;
+        justify-content: center;
+      }
+
+      .hero-headline {
+        font-size: 32px;
+        margin-bottom: 36px;
+      }
+
+      .partner-lockup {
+        flex-direction: column;
+        gap: 20px;
+        padding: 24px 20px;
+        justify-content: center;
+      }
+
+      .logo-card {
+        padding: 16px 22px;
+        gap: 12px;
+        min-width: 160px;
+      }
+
+      .partner-connector {
+        font-size: 24px;
+        transform: rotate(90deg);
+      }
+
+      .hero .subtitle {
+        font-size: 16px;
+      }
+
+      .hero .description {
+        font-size: 14px;
+      }
+
+      .scroll-indicator {
+        align-items: center;
+      }
+    }
+
+    /* ========================================
+       SECTION HEADERS
+       ======================================== */
+    .section-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .section-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--color-accent-light);
+      background: rgba(6, 114, 128, 0.1);
+      padding: 8px 18px;
+      border-radius: var(--radius-full);
+      margin-bottom: 20px;
+      border: 1px solid rgba(6, 114, 128, 0.15);
+    }
+
+    .section-title {
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 14px;
+      line-height: 1.25;
+    }
+
+    .section-subtitle {
+      font-size: clamp(15px, 2vw, 17px);
+      color: var(--color-accent-light);
+      font-weight: 500;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .section-description {
+      font-size: 15px;
+      color: var(--color-white-muted);
+      max-width: 780px;
+      margin: 20px auto 0;
+      line-height: 1.8;
+    }
+
+    /* ========================================
+       SLIDE 2: CONTEXT SECTION
+       ======================================== */
+    .context-section {
+      padding: 120px 0;
+    }
+
+    .context-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .context-card {
+      padding: 32px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+      backdrop-filter: blur(20px);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .context-card:hover {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+      transform: translateY(-3px);
+    }
+
+    .context-card-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(6, 114, 128, 0.15);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .context-card-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--color-accent-light);
+    }
+
+    .context-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 12px;
+    }
+
+    .context-card ul {
+      list-style: none;
+    }
+
+    .context-card li {
+      font-size: 14px;
+      color: var(--color-white-muted);
+      padding: 8px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .context-card li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 6px;
+      background: var(--color-accent);
+      border-radius: 50%;
+    }
+
+    @media (max-width: 968px) {
+      .context-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+    }
+
+    /* ========================================
+       SLIDE 3: WHO WE ARE SECTION
+       ======================================== */
+    .team-section {
+      padding: 120px 0;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-bottom: 60px;
+    }
+
+    .team-card {
+      text-align: center;
+      padding: 32px 24px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-lg);
+      transition: all 0.3s ease;
+    }
+
+    .team-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateY(-3px);
+    }
+
+    .team-avatar {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+      border-radius: 50%;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 600;
+      color: white;
+      overflow: hidden;
+    }
+
+    .team-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .team-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 4px;
+    }
+
+    .team-role {
+      font-size: 13px;
+      color: var(--color-accent-light);
+    }
+
+    .agency-summary {
+      text-align: center;
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-lg);
+      margin-bottom: 60px;
+    }
+
+    .agency-summary p {
+      font-size: 17px;
+      color: var(--color-white-muted);
+      line-height: 1.8;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .agency-summary .highlight {
+      color: var(--color-accent-light);
+      font-weight: 600;
+    }
+
+    .case-studies-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .case-study-card {
+      padding: 28px;
+      background: linear-gradient(145deg, rgba(6, 114, 128, 0.08) 0%, rgba(6, 114, 128, 0.02) 100%);
+      border: 1px solid rgba(6, 114, 128, 0.15);
+      border-radius: var(--radius-lg);
+      transition: all 0.3s ease;
+    }
+
+    .case-study-card:hover {
+      background: linear-gradient(145deg, rgba(6, 114, 128, 0.12) 0%, rgba(6, 114, 128, 0.04) 100%);
+      transform: translateY(-3px);
+    }
+
+    .case-study-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-accent-light);
+      margin-bottom: 12px;
+    }
+
+    .case-study-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 12px;
+    }
+
+    .case-study-metric {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--color-accent-light);
+      margin-bottom: 8px;
+    }
+
+    .case-study-description {
+      font-size: 14px;
+      color: var(--color-white-muted);
+      line-height: 1.6;
+    }
+
+    @media (max-width: 968px) {
+      .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .case-studies-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .team-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ========================================
+       SLIDE 4: THE STRATEGY SECTION
+       ======================================== */
+    .strategy-section {
+      padding: 120px 0;
+    }
+
+    .strategy-intro {
+      text-align: center;
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-lg);
+      margin-bottom: 48px;
+    }
+
+    .strategy-intro h3 {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 16px;
+    }
+
+    .strategy-intro p {
+      font-size: 16px;
+      color: var(--color-white-muted);
+      line-height: 1.8;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .strategy-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .strategy-card {
+      padding: 32px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-lg);
+    }
+
+    .strategy-card.highlight {
+      background: linear-gradient(145deg, rgba(6, 114, 128, 0.08) 0%, rgba(6, 114, 128, 0.02) 100%);
+      border-color: rgba(6, 114, 128, 0.2);
+    }
+
+    .strategy-card h4 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .strategy-card h4 .icon {
+      width: 32px;
+      height: 32px;
+      background: rgba(6, 114, 128, 0.15);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .strategy-card h4 .icon.negative {
+      background: rgba(239, 68, 68, 0.15);
+    }
+
+    .strategy-card ul {
+      list-style: none;
+    }
+
+    .strategy-card li {
+      font-size: 14px;
+      color: var(--color-white-muted);
+      padding: 10px 0;
+      padding-left: 24px;
+      position: relative;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .strategy-card li:last-child {
+      border-bottom: none;
+    }
+
+    .strategy-card li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--color-accent-light);
+      font-weight: 600;
+    }
+
+    .strategy-card.negative li::before {
+      content: '✕';
+      color: #ef4444;
+    }
+
+    .competitor-highlight {
+      padding: 32px;
+      background: linear-gradient(145deg, rgba(6, 114, 128, 0.1) 0%, rgba(6, 114, 128, 0.03) 100%);
+      border: 1px solid rgba(6, 114, 128, 0.2);
+      border-radius: var(--radius-lg);
+      text-align: center;
+    }
+
+    .competitor-highlight h4 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-accent-light);
+      margin-bottom: 12px;
+    }
+
+    .competitor-highlight p {
+      font-size: 15px;
+      color: var(--color-white-muted);
+      line-height: 1.7;
+    }
+
+    @media (max-width: 768px) {
+      .strategy-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ========================================
+       SLIDE 5: FIRST 90 DAYS SECTION
+       ======================================== */
+    .roadmap-section {
+      padding: 120px 0;
+    }
+
+    .roadmap-timeline {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      position: relative;
+    }
+
+    .roadmap-timeline::before {
+      content: '';
+      position: absolute;
+      top: 40px;
+      left: 60px;
+      right: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(6, 114, 128, 0.3), transparent);
+    }
+
+    .roadmap-phase {
+      text-align: center;
+      position: relative;
+    }
+
+    .roadmap-badge {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 0 30px rgba(6, 114, 128, 0.3);
+    }
+
+    .roadmap-badge span {
+      font-size: 24px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .roadmap-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 8px;
+    }
+
+    .roadmap-subtitle {
+      font-size: 13px;
+      color: var(--color-accent-light);
+      margin-bottom: 20px;
+    }
+
+    .roadmap-content {
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-lg);
+      text-align: left;
+    }
+
+    .roadmap-content ul {
+      list-style: none;
+    }
+
+    .roadmap-content li {
+      font-size: 13px;
+      color: var(--color-white-muted);
+      padding: 8px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .roadmap-content li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 6px;
+      background: var(--color-accent);
+      border-radius: 50%;
+    }
+
+    @media (max-width: 968px) {
+      .roadmap-timeline {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .roadmap-timeline::before {
+        display: none;
+      }
+    }
+
+    /* ========================================
+       SLIDE 6: SUCCESS CRITERIA SECTION
+       ======================================== */
+    .success-section {
+      padding: 120px 0;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 60px;
+    }
+
+    .kpi-card {
+      text-align: center;
+      padding: 40px 28px;
+      background: linear-gradient(145deg, rgba(6, 114, 128, 0.08) 0%, rgba(6, 114, 128, 0.02) 100%);
+      border: 1px solid rgba(6, 114, 128, 0.15);
+      border-radius: var(--radius-lg);
+    }
+
+    .kpi-value {
+      font-size: 42px;
+      font-weight: 700;
+      color: var(--color-accent-light);
+      margin-bottom: 8px;
+    }
+
+    .kpi-label {
+      font-size: 15px;
+      color: var(--color-white-muted);
+    }
+
+    .kpi-timeframe {
+      font-size: 12px;
+      color: var(--color-white-subtle);
+      margin-top: 4px;
+    }
+
+    .expectations-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .expectations-card {
+      padding: 32px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-lg);
+    }
+
+    .expectations-card.realistic {
+      background: linear-gradient(145deg, rgba(6, 114, 128, 0.06) 0%, rgba(6, 114, 128, 0.02) 100%);
+      border-color: rgba(6, 114, 128, 0.15);
+    }
+
+    .expectations-card.not {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .expectations-card h4 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .expectations-card h4 .icon {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .expectations-card.realistic h4 .icon {
+      background: rgba(6, 114, 128, 0.2);
+    }
+
+    .expectations-card.not h4 .icon {
+      background: rgba(239, 68, 68, 0.15);
+    }
+
+    .expectations-card ul {
+      list-style: none;
+    }
+
+    .expectations-card li {
+      font-size: 14px;
+      color: var(--color-white-muted);
+      padding: 10px 0;
+      padding-left: 24px;
+      position: relative;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .expectations-card li:last-child {
+      border-bottom: none;
+    }
+
+    .expectations-card.realistic li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--color-accent-light);
+      font-weight: 600;
+    }
+
+    .expectations-card.not li::before {
+      content: '✕';
+      position: absolute;
+      left: 0;
+      color: #ef4444;
+      font-weight: 600;
+    }
+
+    @media (max-width: 968px) {
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+      .expectations-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ========================================
+       SLIDE 7: PRICING SECTION
+       ======================================== */
+    .pricing-section {
+      padding: 120px 0;
+    }
+
+    .pricing-card {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 48px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+      border: 1px solid rgba(6, 114, 128, 0.2);
+      border-radius: var(--radius-xl);
+      text-align: center;
+      box-shadow: 0 0 60px rgba(6, 114, 128, 0.1);
+    }
+
+    .pricing-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-accent-light);
+      margin-bottom: 16px;
+    }
+
+    .pricing-value {
+      font-size: 56px;
+      font-weight: 700;
+      color: var(--color-white);
+      margin-bottom: 8px;
+    }
+
+    .pricing-value span {
+      font-size: 24px;
+      font-weight: 400;
+      color: var(--color-white-muted);
+    }
+
+    .pricing-period {
+      font-size: 16px;
+      color: var(--color-white-muted);
+      margin-bottom: 32px;
+    }
+
+    .pricing-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      margin: 24px 0;
+    }
+
+    .pricing-details {
+      text-align: left;
+    }
+
+    .pricing-detail-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .pricing-detail-item:last-child {
+      border-bottom: none;
+    }
+
+    .pricing-detail-label {
+      font-size: 14px;
+      color: var(--color-white-muted);
+    }
+
+    .pricing-detail-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-white);
+    }
+
+    .pricing-notes {
+      margin-top: 32px;
+      padding: 20px;
+      background: rgba(6, 114, 128, 0.08);
+      border-radius: var(--radius-md);
+    }
+
+    .pricing-notes h5 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-accent-light);
+      margin-bottom: 12px;
+    }
+
+    .pricing-notes ul {
+      list-style: none;
+    }
+
+    .pricing-notes li {
+      font-size: 13px;
+      color: var(--color-white-muted);
+      padding: 6px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .pricing-notes li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: var(--color-accent-light);
+    }
+
+    /* ========================================
+       SLIDE 8: NEXT STEPS SECTION
+       ======================================== */
+    .next-steps-section {
+      padding: 120px 0;
+    }
+
+    .next-steps-timeline {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      position: relative;
+      margin-bottom: 60px;
+    }
+
+    .next-steps-timeline::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: 50px;
+      right: 50px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(6, 114, 128, 0.3), transparent);
+    }
+
+    .next-step-item {
+      text-align: center;
+      position: relative;
+    }
+
+    .next-step-number {
+      width: 56px;
+      height: 56px;
+      background: var(--color-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 600;
+      color: white;
+      margin: 0 auto 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .next-step-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 10px;
+    }
+
+    .next-step-description {
+      font-size: 12px;
+      color: var(--color-white-muted);
+      line-height: 1.6;
+    }
+
+    .onboarding-info {
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-lg);
+      margin-bottom: 48px;
+    }
+
+    .onboarding-info h4 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .onboarding-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .onboarding-item {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .onboarding-item .icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(6, 114, 128, 0.15);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+    }
+
+    .onboarding-item .icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--color-accent-light);
+    }
+
+    .onboarding-item h5 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 8px;
+    }
+
+    .onboarding-item p {
+      font-size: 13px;
+      color: var(--color-white-muted);
+    }
+
+    .cta-section {
+      text-align: center;
+      padding: 48px;
+      background: linear-gradient(145deg, rgba(6, 114, 128, 0.1) 0%, rgba(6, 114, 128, 0.03) 100%);
+      border: 1px solid rgba(6, 114, 128, 0.2);
+      border-radius: var(--radius-xl);
+    }
+
+    .cta-section h3 {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 16px;
+    }
+
+    .cta-section p {
+      font-size: 16px;
+      color: var(--color-white-muted);
+      margin-bottom: 32px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+      color: white;
+      padding: 16px 40px;
+      border-radius: var(--radius-full);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(6, 114, 128, 0.4);
+    }
+
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(6, 114, 128, 0.5);
+    }
+
+    @media (max-width: 968px) {
+      .next-steps-timeline {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .next-steps-timeline::before {
+        top: 0;
+        bottom: 0;
+        left: 27px;
+        right: auto;
+        width: 1px;
+        height: auto;
+      }
+      .next-step-item {
+        text-align: left;
+        padding-left: 80px;
+      }
+      .next-step-number {
+        position: absolute;
+        left: 0;
+        top: 0;
+        margin: 0;
+        width: 48px;
+        height: 48px;
+        font-size: 18px;
+      }
+      .onboarding-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ========================================
+       CARDS - General
+       ======================================== */
+    .card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      transition: all 0.3s ease;
+      height: 100%;
+      position: relative;
+    }
+
+    .card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+      transform: translateY(-3px);
+    }
+
+    .card-icon {
+      width: 46px;
+      height: 46px;
+      background: rgba(6, 114, 128, 0.1);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+    }
+
+    .card-icon svg {
+      width: 22px;
+      height: 22px;
+      stroke: var(--color-accent-light);
+    }
+
+    .card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 13px;
+      color: var(--color-white-muted);
+      line-height: 1.7;
+    }
+
+    /* ========================================
+       GRIDS
+       ======================================== */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    @media (max-width: 1024px) {
+      .grid-3, .grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .grid-3, .grid-4 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ========================================
+       DIVIDER
+       ======================================== */
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+      margin: 0 auto;
+      max-width: 700px;
+    }
+
+    /* ========================================
+       CONTACT SECTION
+       ======================================== */
+    .contact-section {
+      position: relative;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      max-width: 640px;
+      margin: 0 auto 40px;
+    }
+
+    .contact-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-md);
+      padding: 32px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .contact-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .contact-avatar {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+      border-radius: 50%;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 600;
+      color: white;
+    }
+
+    .contact-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 4px;
+    }
+
+    .contact-role {
+      font-size: 13px;
+      color: var(--color-accent-light);
+      margin-bottom: 14px;
+    }
+
+    .contact-email {
+      font-size: 13px;
+      color: var(--color-white-muted);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .contact-email:hover {
+      color: var(--color-accent-light);
+    }
+
+    .company-info {
+      text-align: center;
+      color: var(--color-white-muted);
+      font-size: 13px;
+      line-height: 1.9;
+    }
+
+    .company-info .company-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-white);
+      margin-bottom: 6px;
+    }
+
+    .company-info .website {
+      display: inline-block;
+      margin-top: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-accent-light);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .company-info .website:hover {
+      color: var(--color-accent);
+    }
+
+    @media (max-width: 640px) {
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ========================================
+       FOOTER
+       ======================================== */
+    footer {
+      padding: 32px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      text-align: center;
+    }
+
+    /* Glass Container for Footer Logo */
+    .footer-logo-glass {
+      position: relative;
+      display: inline-block;
+      padding: 12px 24px;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.5) 0%,
+        rgba(255, 255, 255, 0.4) 50%,
+        rgba(255, 255, 255, 0.45) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 14px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow:
+        0 4px 30px rgba(0, 0, 0, 0.2),
+        0 0 40px rgba(255, 255, 255, 0.25),
+        0 0 70px rgba(255, 255, 255, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      transition: all 0.4s ease;
+    }
+
+    .footer-logo-glass::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 20%;
+      right: 20%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
+    }
+
+    .footer-logo-glass:hover {
+      background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.6) 0%,
+        rgba(255, 255, 255, 0.5) 50%,
+        rgba(255, 255, 255, 0.55) 100%);
+      box-shadow:
+        0 6px 40px rgba(0, 0, 0, 0.25),
+        0 0 50px rgba(255, 255, 255, 0.35),
+        0 0 90px rgba(255, 255, 255, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    .footer-logo {
+      height: 28px;
+      width: auto;
+      display: block;
+    }
+
+    .footer-text {
+      font-size: 12px;
+      color: var(--color-white-subtle);
+    }
+
+    /* ========================================
+       UTILITIES
+       ======================================== */
+    .text-center {
+      text-align: center;
+    }
+
+    .mt-20 {
+      margin-top: 20px;
+    }
+
+    .mb-40 {
+      margin-bottom: 40px;
+    }
+
+    /* ========================================
+       RESPONSIVE
+       ======================================== */
+    @media (max-width: 768px) {
+      section {
+        padding: 80px 0;
+      }
+
+      .container {
+        padding: 0 20px;
+      }
+
+      nav {
+        padding: 14px 0;
+      }
+
+      .nav-cta {
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+
+      .card {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Decorations -->
+  <div class="bg-decoration">
+    <div class="ambient-glow ambient-glow-1"></div>
+    <div class="ambient-glow ambient-glow-2"></div>
+    <div class="orb"></div>
+    <div class="dotted-line"></div>
+
+    <!-- Flowing Lines SVG -->
+    <svg class="flowing-lines" viewBox="0 0 1440 800" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="blueLineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#067280" stop-opacity="0"/>
+          <stop offset="20%" stop-color="#067280" stop-opacity="0.8"/>
+          <stop offset="50%" stop-color="#0a9aa8" stop-opacity="1"/>
+          <stop offset="80%" stop-color="#067280" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="#067280" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="cyanLineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#073b55" stop-opacity="0"/>
+          <stop offset="30%" stop-color="#073b55" stop-opacity="0.5"/>
+          <stop offset="60%" stop-color="#067280" stop-opacity="0.6"/>
+          <stop offset="100%" stop-color="#073b55" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="grayLineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="rgba(148,163,184,0)" stop-opacity="0"/>
+          <stop offset="30%" stop-color="rgba(148,163,184,0.3)" stop-opacity="1"/>
+          <stop offset="70%" stop-color="rgba(148,163,184,0.2)" stop-opacity="1"/>
+          <stop offset="100%" stop-color="rgba(148,163,184,0)" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+
+      <path d="M-50,450
+               C150,400 300,350 450,380
+               C600,410 750,320 900,350
+               C1050,380 1200,280 1350,320
+               C1500,360 1600,300 1750,280"
+            stroke="url(#blueLineGradient)"
+            stroke-width="2.5"
+            fill="none"
+            stroke-linecap="round"/>
+
+      <path d="M-100,520
+               C100,480 250,420 400,460
+               C550,500 700,400 850,440
+               C1000,480 1150,380 1300,420
+               C1450,460 1550,400 1700,380"
+            stroke="url(#cyanLineGradient)"
+            stroke-width="2"
+            fill="none"
+            stroke-linecap="round"/>
+
+      <path d="M-80,580
+               C120,540 280,500 440,530
+               C600,560 760,480 920,510
+               C1080,540 1240,460 1400,490
+               C1560,520 1650,470 1800,450"
+            stroke="url(#grayLineGradient)"
+            stroke-width="1.5"
+            fill="none"
+            stroke-linecap="round"/>
+
+      <path d="M0,620
+               C180,590 360,550 540,580
+               C720,610 900,530 1080,560
+               C1260,590 1440,510 1620,540"
+            stroke="rgba(6,114,128,0.2)"
+            stroke-width="1"
+            fill="none"
+            stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <a href="#" class="nav-logo">
+        <div class="nav-logo-glass">
+          <img src="logo.png" alt="AffiliateFinder.ai" class="nav-logo-img">
+        </div>
+      </a>
+      <div class="nav-badge">
+        <div class="nav-pill"><span>600,000+</span> AFFILIATE PUBLISHERS</div>
+        <a href="#contact" class="nav-cta">Let's Talk</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========================================
+       SLIDE 1: TITLE / HERO
+       ======================================== -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-logo-glass">
+          <img src="logo.png" alt="AffiliateFinder.ai" class="hero-logo">
+        </div>
+
+        <h1 class="hero-headline">
+          Reach 600,000+ Affiliate Publishers<br>
+          <span class="highlight">At Scale</span>
+        </h1>
+
+        <p class="hero-tagline">Find affiliates. Grow revenue.</p>
+
+        <p class="hero-description">Trusted by 2,400+ brands</p>
+
+        <div class="scroll-indicator">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 5v14M5 12l7 7 7-7"/>
+          </svg>
+          <span>Scroll</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================
+       SLIDE 2: THE PROBLEM
+       ======================================== -->
+  <section id="problem" class="context-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">The Problem</span>
+        <h2 class="section-title">Affiliate Publishers Are a Massive Untapped Channel</h2>
+        <p class="section-subtitle mt-20">But nearly impossible to find and reach at scale.</p>
+      </div>
+
+      <div class="context-grid">
+        <!-- Fragmented Market -->
+        <div class="context-card">
+          <div class="context-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+          </div>
+          <h3>Fragmented Ecosystem</h3>
+          <ul>
+            <li>Affiliate publishers drive $billions in revenue but are fragmented across 30,000+ programs</li>
+            <li>No central database exists — outreach is manual and inefficient</li>
+          </ul>
+        </div>
+
+        <!-- Contact Challenge -->
+        <div class="context-card">
+          <div class="context-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <h3>Contact Data Gap</h3>
+          <ul>
+            <li>Finding their contact info is even harder</li>
+            <li>Traditional email enrichment tools are built for B2B businesses, not content websites</li>
+          </ul>
+        </div>
+
+        <!-- Inefficient Methods -->
+        <div class="context-card">
+          <div class="context-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <h3>Traditional Methods Fail</h3>
+          <ul>
+            <li>Cold scraping, LinkedIn, ads are slow, expensive, and low-converting</li>
+            <li>Manual research doesn't scale</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ========================================
+       SLIDE 3: THE SOLUTION
+       ======================================== -->
+  <section id="solution" class="team-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">The Solution</span>
+        <h2 class="section-title">AffiliateFinder Is the Largest Database of Verified Affiliate Publishers</h2>
+        <p class="section-subtitle mt-20">We've done the hard work of mapping the affiliate ecosystem. You just filter and reach out.</p>
+      </div>
+
+      <!-- Key Stats -->
+      <div class="case-studies-grid">
+        <div class="case-study-card">
+          <div class="case-study-metric">600,000+</div>
+          <div class="case-study-title">Affiliate Publishers</div>
+          <div class="case-study-description">Verified, active, and contactable</div>
+        </div>
+        <div class="case-study-card">
+          <div class="case-study-metric">150+</div>
+          <div class="case-study-title">Affiliate Networks</div>
+          <div class="case-study-description">Tracked to find active publishers</div>
+        </div>
+        <div class="case-study-card">
+          <div class="case-study-metric">30,000+</div>
+          <div class="case-study-title">Affiliate Programs</div>
+          <div class="case-study-description">Linked and monitored</div>
+        </div>
+      </div>
+
+      <!-- Additional Info -->
+      <div class="agency-summary" style="margin-top: 48px;">
+        <p>
+          <span class="highlight">190+ countries</span> — measuring websites with significant traffic globally.<br><br>
+          <strong>Rich data included:</strong> niche, traffic, contact info, activity status, networks
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ========================================
+       SLIDE 4: HOW IT WORKS (FOR ENTERPRISE)
+       ======================================== -->
+  <section id="how-it-works" class="strategy-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">How It Works</span>
+        <h2 class="section-title">Two Ways to Access Our Data</h2>
+      </div>
+
+      <!-- Access Options -->
+      <div class="strategy-grid">
+        <div class="strategy-card highlight">
+          <h4>
+            <span class="icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0a9aa8" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+              </svg>
+            </span>
+            Data Licensing
+          </h4>
+          <ul>
+            <li>Bulk exports of publisher data</li>
+            <li>Custom lists based on your criteria</li>
+            <li>Regular data refreshes</li>
+            <li>Ideal for internal teams and campaigns</li>
+          </ul>
+        </div>
+
+        <div class="strategy-card highlight">
+          <h4>
+            <span class="icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0a9aa8" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <line x1="3" y1="9" x2="21" y2="9"/>
+                <line x1="9" y1="21" x2="9" y2="9"/>
+              </svg>
+            </span>
+            API Access
+          </h4>
+          <ul>
+            <li>Real-time queries</li>
+            <li>Integrate with your existing tools</li>
+            <li>Programmatic access to our database</li>
+            <li>Perfect for product integrations</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Flexibility Note -->
+      <div class="competitor-highlight">
+        <h4>Flexible Partnership Structures</h4>
+        <p>
+          Different enterprise clients have different needs. We work with you to find the right access model, data scope, and refresh frequency for your use case.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ========================================
+       SLIDE 5: WHY AFFILIATE PUBLISHERS ARE VALUABLE
+       ======================================== -->
+  <section id="value" class="roadmap-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Why This Matters</span>
+        <h2 class="section-title">Affiliate Publishers Are Pre-Qualified Leads</h2>
+        <p class="section-subtitle mt-20">These aren't cold prospects — they're ideal outreach targets for many use cases.</p>
+      </div>
+
+      <div class="roadmap-timeline">
+        <!-- Revenue Focused -->
+        <div class="roadmap-phase">
+          <div class="roadmap-badge">
+            <span>✓</span>
+          </div>
+          <div class="roadmap-title">Already Monetizing</div>
+          <div class="roadmap-subtitle">Revenue-Minded</div>
+          <div class="roadmap-content">
+            <ul>
+              <li>Already monetize websites</li>
+              <li>Understand online revenue models</li>
+              <li>Actively seeking new revenue streams</li>
+              <li>Receptive to offers</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Data Driven -->
+        <div class="roadmap-phase">
+          <div class="roadmap-badge">
+            <span>✓</span>
+          </div>
+          <div class="roadmap-title">Data-Driven</div>
+          <div class="roadmap-subtitle">Track Everything</div>
+          <div class="roadmap-content">
+            <ul>
+              <li>Track conversions and ROI</li>
+              <li>Understand attribution</li>
+              <li>Make decisions based on data</li>
+              <li>Measure performance</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Real Traffic -->
+        <div class="roadmap-phase">
+          <div class="roadmap-badge">
+            <span>✓</span>
+          </div>
+          <div class="roadmap-title">Established Traffic</div>
+          <div class="roadmap-subtitle">Not Dormant</div>
+          <div class="roadmap-content">
+            <ul>
+              <li>Have established, real traffic</li>
+              <li>Not dormant sites</li>
+              <li>Active in the affiliate ecosystem</li>
+              <li>Proven audience reach</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="competitor-highlight" style="margin-top: 48px;">
+        <h4>Ideal for Multiple Use Cases</h4>
+        <p>
+          Ads, partnerships, acquisitions, services — affiliate publishers are valuable targets for anyone looking to reach website owners who understand monetization.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ========================================
+       SLIDE 6: THE DATA YOU GET
+       ======================================== -->
+  <section id="data" class="success-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">The Data</span>
+        <h2 class="section-title">Filter and Segment by What Matters</h2>
+      </div>
+
+      <!-- Data Points Grid -->
+      <div class="expectations-grid" style="grid-template-columns: 1fr;">
+        <div class="expectations-card realistic" style="width: 100%;">
+          <h4>
+            <span class="icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0a9aa8" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+              </svg>
+            </span>
+            Available Data Points
+          </h4>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 24px;">
+            <div>
+              <ul>
+                <li><strong>Niche/Vertical:</strong> Finance, travel, SaaS, e-commerce, health</li>
+                <li><strong>Traffic Volume:</strong> 10K+, 50K+, 100K+ monthly visitors</li>
+                <li><strong>Geography:</strong> US, UK, EU, APAC, global</li>
+              </ul>
+            </div>
+            <div>
+              <ul>
+                <li><strong>Activity Status:</strong> Active (last 30 days) vs. dormant</li>
+                <li><strong>Contact Info:</strong> Verified owner emails</li>
+                <li><strong>Affiliate Networks:</strong> ShareASale, Impact, CJ, etc.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data Examples -->
+      <div class="kpi-grid" style="margin-top: 48px;">
+        <div class="kpi-card">
+          <div class="kpi-value" style="font-size: 32px;">Niche</div>
+          <div class="kpi-label">Finance, Travel, SaaS, Health, E-commerce</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" style="font-size: 32px;">Traffic</div>
+          <div class="kpi-label">Filter by monthly visitor thresholds</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" style="font-size: 32px;">Networks</div>
+          <div class="kpi-label">ShareASale, Impact, CJ, and more</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ========================================
+       SLIDE 7: LET'S TALK
+       ======================================== -->
+  <section id="contact" class="contact-section" style="padding: 120px 0;">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Ready to Explore?</span>
+        <h2 class="section-title">Let's Talk</h2>
+      </div>
+
+      <!-- Options -->
+      <div class="context-grid" style="margin-bottom: 60px;">
+        <div class="context-card">
+          <div class="context-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <h3>Pilot Program Available</h3>
+          <ul>
+            <li>Test our data with a limited scope</li>
+            <li>See the quality before committing</li>
+          </ul>
+        </div>
+
+        <div class="context-card">
+          <div class="context-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <line x1="3" y1="9" x2="21" y2="9"/>
+              <line x1="9" y1="21" x2="9" y2="9"/>
+            </svg>
+          </div>
+          <h3>Flexible Partnership Structures</h3>
+          <ul>
+            <li>Data licensing or API access</li>
+            <li>Custom terms for enterprise clients</li>
+          </ul>
+        </div>
+
+        <div class="context-card">
+          <div class="context-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+          </div>
+          <h3>Custom Data Requirements?</h3>
+          <ul>
+            <li>Let's discuss your specific needs</li>
+            <li>We can tailor the solution</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Contact Info -->
+      <div style="display: flex; justify-content: center; margin-bottom: 40px;">
+        <div class="contact-card" style="max-width: 400px; width: 100%;">
+          <div class="contact-avatar">JD</div>
+          <div class="contact-name">Jamie Dunmore</div>
+          <div class="contact-role">Founder</div>
+          <a href="mailto:jamie@increasing.com" class="contact-email">jamie@increasing.com</a>
+        </div>
+      </div>
+
+      <div class="company-info" style="margin-top: 40px;">
+        <div class="company-name">AffiliateFinder.ai</div>
+        <a href="https://www.affiliatefinder.ai" target="_blank" class="website">www.affiliatefinder.ai</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-logo-glass">
+        <img src="logo.png" alt="AffiliateFinder.ai" class="footer-logo">
+      </div>
+      <div class="footer-text">Find affiliates. Grow revenue.</div>
+    </div>
+  </footer>
+
+</body>
+</html>
