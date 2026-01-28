@@ -604,6 +604,13 @@
             <option value="Jamie">Jamie only</option>
           </select>
         </div>
+        <div class="ds-filter-group">
+          <label class="ds-filter-label">View</label>
+          <select class="ds-input" id="view-mode-filter" onchange="handleViewModeChange()">
+            <option value="active" selected>Active Calls</option>
+            <option value="deleted">Deleted Calls</option>
+          </select>
+        </div>
         <div class="ds-filter-actions">
           <button class="ds-btn ds-btn-primary" id="applyFiltersBtn" onclick="applyFilters()" data-tooltip="Filter calls by date and rep">Apply Filters</button>
           <button class="ds-btn ds-btn-secondary" id="syncBtn" onclick="triggerSync()" data-tooltip="Import new calls from Fireflies">Sync Calls</button>
@@ -624,9 +631,13 @@
     <div class="bulk-action-bar-placeholder" id="bulkActionBarPlaceholder"></div>
     <div class="bulk-action-bar" id="bulkActionBar">
       <span class="selected-count"><span id="selectedCount">0</span> calls selected</span>
-      <div class="bulk-actions">
+      <div class="bulk-actions" id="activeBulkActions">
         <button class="ds-btn ds-btn-secondary" onclick="bulkAnalyze()" data-tooltip="Run AI analysis on selected calls">Analyze Selected</button>
-        <button class="ds-btn ds-btn-danger" onclick="showDeleteModal()" data-tooltip="Permanently remove selected calls">Delete Selected</button>
+        <button class="ds-btn ds-btn-danger" onclick="showDeleteModal()" data-tooltip="Move selected calls to Deleted. Can be restored later.">Delete Selected</button>
+        <button class="ds-btn ds-btn-secondary" onclick="clearSelection()" data-tooltip="Deselect all calls">Clear</button>
+      </div>
+      <div class="bulk-actions" id="deletedBulkActions" style="display: none;">
+        <button class="ds-btn ds-btn-primary" onclick="bulkRestore()" data-tooltip="Restore selected calls back to Active Calls list">Restore Selected</button>
         <button class="ds-btn ds-btn-secondary" onclick="clearSelection()" data-tooltip="Deselect all calls">Clear</button>
       </div>
     </div>
@@ -690,11 +701,11 @@
       <div class="modal">
         <div class="modal-title">Delete Calls</div>
         <div class="modal-body">
-          Are you sure you want to permanently delete <strong id="deleteCount">0</strong> calls? This action cannot be undone.
+          Move <strong id="deleteCount">0</strong> calls to Deleted? These calls will be hidden from the active list and excluded from analysis. You can restore them later from the "Deleted Calls" view.
         </div>
         <div class="modal-actions">
           <button class="ds-btn ds-btn-secondary" onclick="hideDeleteModal()" data-tooltip="Close modal without deleting">Cancel</button>
-          <button class="ds-btn ds-btn-danger" onclick="confirmDelete()" data-tooltip="Permanently delete calls via DELETE /api/calls">Delete</button>
+          <button class="ds-btn ds-btn-danger" onclick="confirmDelete()" data-tooltip="Move calls to Deleted">Delete</button>
         </div>
       </div>
     </div>
@@ -727,7 +738,8 @@
       datePreset: 'all',
       startDate: null,
       endDate: null,
-      repFilter: 'all'
+      repFilter: 'all',
+      viewMode: 'active'  // 'active' or 'deleted'
     };
 
     // ========================================
@@ -742,6 +754,7 @@
       if (params.has('start')) filters.startDate = params.get('start');
       if (params.has('end')) filters.endDate = params.get('end');
       if (params.has('rep')) filters.repFilter = params.get('rep');
+      if (params.has('view')) filters.viewMode = params.get('view');
 
       return Object.keys(filters).length > 0 ? filters : null;
     }
@@ -759,6 +772,9 @@
       }
       if (filters.repFilter && filters.repFilter !== 'all') {
         params.set('rep', filters.repFilter);
+      }
+      if (filters.viewMode && filters.viewMode !== 'active') {
+        params.set('view', filters.viewMode);
       }
 
       const newURL = params.toString()
@@ -795,6 +811,37 @@
       if (repSelect && filters.repFilter) {
         repSelect.value = filters.repFilter;
       }
+
+      // Set view mode
+      const viewModeSelect = document.getElementById('view-mode-filter');
+      if (viewModeSelect && filters.viewMode) {
+        viewModeSelect.value = filters.viewMode;
+        updateBulkActionsForViewMode(filters.viewMode);
+      }
+    }
+
+    // Update bulk actions bar based on view mode
+    function updateBulkActionsForViewMode(viewMode) {
+      const activeBulkActions = document.getElementById('activeBulkActions');
+      const deletedBulkActions = document.getElementById('deletedBulkActions');
+
+      if (viewMode === 'deleted') {
+        activeBulkActions.style.display = 'none';
+        deletedBulkActions.style.display = 'flex';
+      } else {
+        activeBulkActions.style.display = 'flex';
+        deletedBulkActions.style.display = 'none';
+      }
+    }
+
+    // Handle view mode change
+    function handleViewModeChange() {
+      const viewMode = document.getElementById('view-mode-filter').value;
+      appliedFilters.viewMode = viewMode;
+      updateBulkActionsForViewMode(viewMode);
+      clearSelection();
+      loadDashboard();
+      updateURLWithFilters(appliedFilters);
     }
 
     // Initialize applied filters from URL or default preset
@@ -1228,15 +1275,20 @@
           params.append('rep', appliedFilters.repFilter);
         }
 
+        // Determine endpoint based on view mode
+        const isDeletedView = appliedFilters.viewMode === 'deleted';
+        const endpoint = isDeletedView ? `${API_BASE}/admin/deleted` : `${API_BASE}/admin/calls`;
+
         console.log('[Calls] Loading with filters:', {
           preset: appliedFilters.datePreset,
           startDate: appliedFilters.startDate,
           endDate: appliedFilters.endDate,
           rep: appliedFilters.repFilter,
-          url: `${API_BASE}/admin/calls?${params.toString()}`
+          viewMode: appliedFilters.viewMode,
+          url: `${endpoint}?${params.toString()}`
         });
 
-        const response = await fetch(`${API_BASE}/admin/calls?${params.toString()}`);
+        const response = await fetch(`${endpoint}?${params.toString()}`);
         const data = await response.json();
 
         if (!data.success) {
@@ -1325,62 +1377,140 @@
       selectedCallIds.clear();
       updateBulkActionBar();
 
+      const isDeletedView = appliedFilters.viewMode === 'deleted';
+
       if (!calls || calls.length === 0) {
+        const emptyMessage = isDeletedView
+          ? 'No deleted calls'
+          : 'No calls synced yet';
+        const emptyButton = isDeletedView
+          ? ''
+          : '<button class="ds-btn ds-btn-primary ds-mt-4" onclick="triggerSync()" data-tooltip="Import calls from Fireflies via POST /api/sync">Sync Now</button>';
         container.innerHTML = `
           <div class="ds-empty">
-            <div class="ds-empty-text">No calls synced yet</div>
-            <button class="ds-btn ds-btn-primary ds-mt-4" onclick="triggerSync()" data-tooltip="Import calls from Fireflies via POST /api/sync">Sync Now</button>
+            <div class="ds-empty-text">${emptyMessage}</div>
+            ${emptyButton}
           </div>
         `;
         return;
       }
 
-      container.innerHTML = `
-        <div class="ds-table-container" style="border: none; box-shadow: none;">
-          <table class="ds-table">
-            <thead>
-              <tr>
-                <th style="width: 40px;"><input type="checkbox" class="bulk-checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)"></th>
-                <th>Call Title</th>
-                <th>Rep</th>
-                <th>Date</th>
-                <th>Duration</th>
-                <th>Classification</th>
-                <th>Status</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              ${calls.map(call => {
-                const effectiveClass = call.classificationOverride || call.classification;
-                const isOverridden = !!call.classificationOverride;
-                return `
-                <tr data-call-id="${call.id}">
-                  <td><input type="checkbox" class="bulk-checkbox call-checkbox" data-id="${call.id}" onchange="toggleCallSelection('${call.id}', this)"></td>
-                  <td><a href="/admin/call.html?id=${call.id}" class="call-link">${escapeHtml(call.title || 'Untitled')}</a></td>
-                  <td><span class="rep-badge ${getRepClass(call.rep)}">${getRepDisplayName(call.rep)}</span></td>
-                  <td>${formatDateTime(call.datetime)}</td>
-                  <td class="duration">${formatDuration(call.duration)}</td>
-                  <td>
-                    <select class="classification-select" data-call-id="${call.id}" onchange="updateClassification('${call.id}', this.value)">
-                      <option value="SALES" ${effectiveClass === 'SALES' ? 'selected' : ''}>Sales</option>
-                      <option value="NOT_SALES" ${effectiveClass === 'NOT_SALES' ? 'selected' : ''}>Not Sales</option>
-                      <option value="REVIEW_NEEDED" ${effectiveClass === 'REVIEW_NEEDED' ? 'selected' : ''}>Review</option>
-                    </select>
-                    ${isOverridden ? '<span style="font-size: 10px; color: var(--color-text-muted); margin-left: 4px;" title="Manually overridden">✎</span>' : ''}
-                  </td>
-                  <td>
-                    ${call.hasAnalysis
-                      ? '<span class="ds-badge ds-badge-success">Analyzed</span>'
-                      : '<span class="ds-badge">Pending</span>'}
-                  </td>
-                  <td><a href="/admin/call.html?id=${call.id}" class="view-link">View</a></td>
+      // Different table for deleted view
+      if (isDeletedView) {
+        container.innerHTML = `
+          <div class="ds-table-container" style="border: none; box-shadow: none;">
+            <table class="ds-table">
+              <thead>
+                <tr>
+                  <th style="width: 40px;"><input type="checkbox" class="bulk-checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)"></th>
+                  <th>Call Title</th>
+                  <th>Rep</th>
+                  <th>Call Date</th>
+                  <th>Deleted</th>
+                  <th>Reason</th>
+                  <th></th>
                 </tr>
-              `;}).join('')}
-            </tbody>
-          </table>
-        </div>
-      `;
+              </thead>
+              <tbody>
+                ${calls.map(call => {
+                  const deletedReasonText = formatDeletedReason(call.deletedReason);
+                  return `
+                  <tr data-call-id="${call.id}">
+                    <td><input type="checkbox" class="bulk-checkbox call-checkbox" data-id="${call.id}" onchange="toggleCallSelection('${call.id}', this)"></td>
+                    <td><a href="/admin/call.html?id=${call.id}" class="call-link">${escapeHtml(call.title || 'Untitled')}</a></td>
+                    <td><span class="rep-badge ${getRepClass(call.rep)}">${getRepDisplayName(call.rep)}</span></td>
+                    <td>${formatDateTime(call.datetime)}</td>
+                    <td>${formatDateTime(call.deletedAt)}</td>
+                    <td><span class="ds-badge ds-badge-${deletedReasonText.badgeType}" data-tooltip="${escapeHtml(call.deletedReason || 'manual')}">${deletedReasonText.label}</span></td>
+                    <td><button class="ds-btn ds-btn-secondary" style="padding: 4px 8px; font-size: var(--text-xs);" onclick="restoreSingleCall('${call.id}')" data-tooltip="Restore this call to the active list">Restore</button></td>
+                  </tr>
+                `;}).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="ds-table-container" style="border: none; box-shadow: none;">
+            <table class="ds-table">
+              <thead>
+                <tr>
+                  <th style="width: 40px;"><input type="checkbox" class="bulk-checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)"></th>
+                  <th>Call Title</th>
+                  <th>Rep</th>
+                  <th>Date</th>
+                  <th>Duration</th>
+                  <th>Classification</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                ${calls.map(call => {
+                  const effectiveClass = call.classificationOverride || call.classification;
+                  const isOverridden = !!call.classificationOverride;
+                  return `
+                  <tr data-call-id="${call.id}">
+                    <td><input type="checkbox" class="bulk-checkbox call-checkbox" data-id="${call.id}" onchange="toggleCallSelection('${call.id}', this)"></td>
+                    <td><a href="/admin/call.html?id=${call.id}" class="call-link">${escapeHtml(call.title || 'Untitled')}</a></td>
+                    <td><span class="rep-badge ${getRepClass(call.rep)}">${getRepDisplayName(call.rep)}</span></td>
+                    <td>${formatDateTime(call.datetime)}</td>
+                    <td class="duration">${formatDuration(call.duration)}</td>
+                    <td>
+                      <select class="classification-select" data-call-id="${call.id}" onchange="updateClassification('${call.id}', this.value)">
+                        <option value="SALES" ${effectiveClass === 'SALES' ? 'selected' : ''}>Sales</option>
+                        <option value="NOT_SALES" ${effectiveClass === 'NOT_SALES' ? 'selected' : ''}>Not Sales</option>
+                        <option value="REVIEW_NEEDED" ${effectiveClass === 'REVIEW_NEEDED' ? 'selected' : ''}>Review</option>
+                      </select>
+                      ${isOverridden ? '<span style="font-size: 10px; color: var(--color-text-muted); margin-left: 4px;" title="Manually overridden">✎</span>' : ''}
+                    </td>
+                    <td>
+                      ${call.hasAnalysis
+                        ? '<span class="ds-badge ds-badge-success">Analyzed</span>'
+                        : '<span class="ds-badge">Pending</span>'}
+                    </td>
+                    <td><a href="/admin/call.html?id=${call.id}" class="view-link">View</a></td>
+                  </tr>
+                `;}).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+    }
+
+    // Format deleted reason for display
+    function formatDeletedReason(reason) {
+      if (!reason) return { label: 'Manual', badgeType: '' };
+      if (reason === 'manual') return { label: 'Manual', badgeType: '' };
+      if (reason.startsWith('auto-filter:')) {
+        const filterType = reason.replace('auto-filter:', '');
+        if (filterType === 'weekly') return { label: 'Auto: Weekly', badgeType: 'info' };
+        if (filterType === 'jour-fixe') return { label: 'Auto: Jour Fixe', badgeType: 'info' };
+        if (filterType === 'dev') return { label: 'Auto: Dev', badgeType: 'info' };
+        return { label: `Auto: ${filterType}`, badgeType: 'info' };
+      }
+      return { label: reason, badgeType: '' };
+    }
+
+    // Restore a single call
+    async function restoreSingleCall(callId) {
+      showSyncStatus('Restoring call...', 'active');
+      try {
+        const response = await fetch(`${API_BASE}/admin/calls/${callId}/restore`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await response.json();
+        if (!data.success) {
+          throw new Error(data.error || 'Restore failed');
+        }
+        showSyncStatus('Call restored successfully. It is now visible in "Active Calls".', 'success');
+        await loadDashboard();
+      } catch (error) {
+        console.error('Restore error:', error);
+        showSyncStatus('Restore failed: ' + error.message, 'error');
+      }
     }
 
     // Bulk selection functions
@@ -1503,13 +1633,43 @@
           throw new Error(data.error || 'Delete failed');
         }
 
-        showSyncStatus(`Deleted ${data.deletedCount} calls.`, 'success');
+        showSyncStatus(`Deleted ${data.deletedCount} calls. View them in "Deleted Calls" to restore.`, 'success');
         clearSelection();
         await loadDashboard();
 
       } catch (error) {
         console.error('Delete error:', error);
         showSyncStatus('Delete failed: ' + error.message, 'error');
+      }
+    }
+
+    // Bulk restore function (for deleted calls view)
+    async function bulkRestore() {
+      const ids = Array.from(selectedCallIds);
+      if (ids.length === 0) return;
+
+      showSyncStatus(`Restoring ${ids.length} calls...`, 'active');
+
+      try {
+        const response = await fetch(`${API_BASE}/bulk/restore`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ids })
+        });
+
+        const data = await response.json();
+
+        if (!data.success && data.restoredCount === 0) {
+          throw new Error(data.error || 'Restore failed');
+        }
+
+        showSyncStatus(`Restored ${data.restoredCount} calls. They are now visible in "Active Calls".`, 'success');
+        clearSelection();
+        await loadDashboard();
+
+      } catch (error) {
+        console.error('Restore error:', error);
+        showSyncStatus('Restore failed: ' + error.message, 'error');
       }
     }
 

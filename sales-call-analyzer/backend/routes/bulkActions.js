@@ -19,7 +19,8 @@ let bulkAnalysisProgress = null;
 
 /**
  * POST /api/bulk/delete
- * Delete multiple calls (hard delete)
+ * Soft delete multiple calls (set deleted_at timestamp)
+ * Calls will remain in database but hidden from active views
  */
 router.post('/delete', async (req, res) => {
   try {
@@ -32,11 +33,11 @@ router.post('/delete', async (req, res) => {
       });
     }
 
-    console.log(`[Bulk] Deleting ${ids.length} calls...`);
+    console.log(`[Bulk] Soft deleting ${ids.length} calls...`);
 
-    const result = await transcriptDb.deleteTranscripts(ids);
+    const result = await transcriptDb.softDeleteTranscripts(ids, 'manual');
 
-    console.log(`[Bulk] Deleted ${result.deletedCount}/${ids.length} calls`);
+    console.log(`[Bulk] Soft deleted ${result.deletedCount}/${ids.length} calls`);
 
     res.json({
       success: result.success,
@@ -47,6 +48,57 @@ router.post('/delete', async (req, res) => {
 
   } catch (error) {
     console.error('[Bulk] Delete error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/bulk/restore
+ * Restore soft-deleted calls
+ */
+router.post('/restore', async (req, res) => {
+  try {
+    const { ids } = req.body;
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'ids array is required'
+      });
+    }
+
+    console.log(`[Bulk] Restoring ${ids.length} calls...`);
+
+    let restoredCount = 0;
+    const errors = [];
+
+    for (const id of ids) {
+      try {
+        const result = await transcriptDb.restoreTranscript(id);
+        if (result.restored) {
+          restoredCount++;
+        } else if (result.error) {
+          errors.push({ id, error: result.error });
+        }
+      } catch (error) {
+        errors.push({ id, error: error.message });
+      }
+    }
+
+    console.log(`[Bulk] Restored ${restoredCount}/${ids.length} calls`);
+
+    res.json({
+      success: errors.length === 0,
+      restoredCount,
+      requestedCount: ids.length,
+      errors
+    });
+
+  } catch (error) {
+    console.error('[Bulk] Restore error:', error);
     res.status(500).json({
       success: false,
       error: error.message

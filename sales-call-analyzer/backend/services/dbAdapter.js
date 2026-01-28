@@ -247,10 +247,30 @@ async function createTables() {
       stripe_data TEXT,
       stripe_enriched_at TIMESTAMP,
       classification_override TEXT,
+      deleted_at TIMESTAMP,
+      deleted_reason TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  // Migration: Add deleted_at and deleted_reason columns to existing transcripts table
+  const addColumnSafely = async (table, column, type) => {
+    try {
+      await execute(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
+      console.log(`[DbAdapter] Added column ${column} to ${table}`);
+    } catch (err) {
+      // Column already exists - this is expected for existing databases
+      if (err.message && (err.message.includes('duplicate column') || err.message.includes('already exists'))) {
+        // Silently ignore - column exists
+      } else {
+        console.warn(`[DbAdapter] Column ${column} migration warning:`, err.message);
+      }
+    }
+  };
+
+  await addColumnSafely('transcripts', 'deleted_at', 'TIMESTAMP');
+  await addColumnSafely('transcripts', 'deleted_reason', 'TEXT');
 
   // Sync log table
   await execute(`
@@ -463,6 +483,7 @@ async function createTables() {
   await createIndexSafely('CREATE INDEX IF NOT EXISTS idx_transcripts_fireflies_id ON transcripts(fireflies_id)');
   await createIndexSafely('CREATE INDEX IF NOT EXISTS idx_transcripts_datetime ON transcripts(call_datetime DESC)');
   await createIndexSafely('CREATE INDEX IF NOT EXISTS idx_transcripts_rep ON transcripts(rep_name)');
+  await createIndexSafely('CREATE INDEX IF NOT EXISTS idx_transcripts_deleted ON transcripts(deleted_at)');
   await createIndexSafely('CREATE INDEX IF NOT EXISTS idx_sync_log_started ON sync_log(started_at DESC)');
   await createIndexSafely('CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)');
   await createIndexSafely('CREATE INDEX IF NOT EXISTS idx_users_role ON users(role)');

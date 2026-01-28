@@ -1,12 +1,841 @@
 # Sales Call Analyzer - Progress Tracker
 
-Last Updated: 2026-01-27
+Last Updated: 2026-01-28
 
-## Current Status: UI Consistency & Bug Fixes Complete
+## Current Status: Persistent Deleted Calls Feature Added
+
+---
+
+## Persistent Deleted Calls + Restore + Analysis Exclusion (2026-01-28)
+
+### SUMMARY
+Implemented soft delete for calls with auto-delete rules for internal/non-relevant calls, restore functionality, and analysis exclusion for deleted calls.
+
+### Features Implemented:
+
+1. **Database Schema Changes** - Added to `transcripts` table:
+   - `deleted_at TIMESTAMP` - When call was deleted (null = active)
+   - `deleted_reason TEXT` - Why it was deleted (e.g., 'manual', 'auto-filter:weekly')
+   - Index on `deleted_at` for efficient queries
+
+2. **Auto-Delete Rules** (applied on sync):
+   - Title contains "weekly" anywhere → auto-deleted with reason `auto-filter:weekly`
+   - Title contains "AF ads jour fixe" anywhere → auto-deleted with reason `auto-filter:jour-fixe`
+   - Title is exactly "dev" (case-insensitive) → auto-deleted with reason `auto-filter:dev`
+   - Titles like "dev call", "dev sync" are NOT auto-deleted (only exact "dev")
+
+3. **Persistence Requirements**:
+   - Deleted calls remain deleted across page refresh, app restart, re-sync
+   - Sync/import does not overwrite deleted state
+   - Re-syncing a deleted call keeps it deleted (wasAlreadyDeleted flag)
+
+4. **UI/UX**:
+   - View dropdown in Calls page: "Active Calls" (default) / "Deleted Calls"
+   - Deleted view shows: Call Title, Rep, Call Date, Deleted timestamp, Reason badge
+   - Bulk "Restore Selected" button in deleted view
+   - Individual "Restore" button per row in deleted view
+   - Tooltips on all new actions
+
+5. **API Endpoints**:
+   - `GET /api/admin/deleted` - List deleted calls with pagination
+   - `POST /api/admin/calls/:id/restore` - Restore single call
+   - `DELETE /api/admin/calls/:id` - Soft delete single call
+   - `POST /api/bulk/delete` - Now does soft delete (was hard delete)
+   - `POST /api/bulk/restore` - Restore multiple calls
+
+6. **Analysis Exclusion**:
+   - `getTranscriptsNeedingAnalysis()` excludes deleted calls
+   - `getRecentTranscripts()` excludes deleted by default
+   - `getTranscriptCount()` excludes deleted by default
+   - Restored calls become eligible for analysis again
+
+### Files Created:
+- `backend/__tests__/softDelete.test.js` - 23 tests for soft delete feature
+
+### Files Modified:
+- `backend/services/dbAdapter.js` - Added deleted_at/deleted_reason columns + migration
+- `backend/services/transcriptDb.js` - Added soft delete functions, auto-delete rules
+- `backend/routes/bulkActions.js` - Changed delete to soft delete, added restore
+- `backend/routes/admin.js` - Added deleted list and restore endpoints
+- `backend/public/admin/index.html` - Added deleted view toggle, restore UI
+
+### Test Results:
+- 23 new tests in softDelete.test.js (all passing)
+- 154 related tests pass (softDelete, bulkActions, transcriptDb, syncService)
+- No lint errors in modified files
+
+### Verification Steps (Local Testing):
+1. Start server: `cd backend && node server.js`
+2. Open http://localhost:3001/admin/
+3. Select a call, click "Delete Selected" → should move to Deleted
+4. Switch View dropdown to "Deleted Calls" → should see deleted call
+5. Click "Restore" button → should move back to Active
+6. Verify auto-delete: Sync a call with "weekly" in title → should auto-delete
+7. Verify persistence: Delete a call, re-sync → should stay deleted
+
+---
+
+## Changelog Feature (2026-01-27)
+
+### SUMMARY
+Added a Changelog feature allowing admins to publish product updates visible to all users.
+
+### Features Implemented:
+1. **Database Schema** - New `changelog_entries` table with fields:
+   - id, title, summary, details, tag (new/improvement/fix)
+   - is_published, show_as_new_until, created_at, published_at
+
+2. **API Routes** (`/api/changelog`):
+   - GET / - Published entries only (all authenticated users)
+   - GET /all - All entries including drafts (admin only)
+   - POST / - Create entry (admin only)
+   - PUT /:id - Update entry (admin only)
+   - DELETE /:id - Delete entry (admin only)
+   - POST /:id/publish - Publish draft (admin only)
+   - POST /:id/unpublish - Unpublish entry (admin only)
+
+3. **UI Page** (`/admin/changelog.html`):
+   - Card-based layout for entries
+   - Search filter by title/summary
+   - Tag filters (All/New/Improvement/Fix)
+   - "New" badge for recent entries (until show_as_new_until date)
+   - Admin-only create/edit form with:
+     - Title, Summary (bullet points), Details, Tag
+     - Publish toggle (Draft/Published)
+     - Show as New until date picker
+   - Edit modal for updating entries
+   - Publish/Unpublish quick actions
+
+4. **Navigation**:
+   - Added "Changelog" link in user dropdown menu (below Settings)
+   - Visible to all users (admin and regular)
+   - Updated in all 10 admin HTML pages
+
+5. **Security**:
+   - XSS prevention via input sanitization
+   - Role-based access control (admin vs user)
+   - Input validation on all fields
+
+6. **Tests** (`changelogRoutes.test.js`):
+   - 20 tests covering CRUD, access control, persistence
+   - All tests passing
+
+### Files Created:
+- `backend/routes/changelog.js` - API routes
+- `backend/public/admin/changelog.html` - UI page
+- `backend/__tests__/changelogRoutes.test.js` - Tests
+
+### Files Modified:
+- `backend/services/transcriptDb.js` - Added changelog table + CRUD functions
+- `backend/server.js` - Mounted changelog routes
+- All 10 admin HTML files - Added Changelog link to user dropdown
+
+---
+
+## Smoke Test Results (2026-01-27)
+
+### SUMMARY
+Performed smoke tests on key features and cleaned up test data:
+1. **Closing Rate Status Change** - PASSED
+2. **Token Usage & Costs** - WORKING AS DESIGNED
+3. **Calls Sorted by Date (Newest First)** - PASSED
+4. **Test Account Cleanup** - COMPLETED
+5. **Test Call Data Cleanup** - COMPLETED
+
+### TEST CALL DATA CLEANUP - COMPLETED
+
+**Issue Found:** Database contained 29 test calls from automated tests mixed with 349 real calls.
+- Test calls had IDs like `mock-ff-*`, `test-ff-*`, `ff-route-*`, `ff-agg-*`
+- Test calls had fake dates in January 2025 (over a year old)
+- Real calls are from October 2025 - January 2026
+
+**Actions Taken:**
+1. Stopped running server
+2. Deleted all test calls: `DELETE FROM transcripts WHERE fireflies_id LIKE 'mock-%' OR fireflies_id LIKE 'test-%' OR fireflies_id LIKE 'ff-%'`
+3. Restarted server
+
+**Database After Cleanup:**
+```sql
+SELECT COUNT(*) FROM transcripts;  -- Returns: 349 (real calls only)
+
+-- Date range of remaining calls:
+MIN(call_datetime): 2025-10-27  (about 3 months ago)
+MAX(call_datetime): 2026-01-27  (today)
+
+-- Calls by month:
+2026-01: 93 calls
+2025-12: 84 calls
+2025-11: 130 calls
+2025-10: 42 calls
+
+-- Calls by rep:
+Jamie: 281 calls
+Phil: 46 calls
+michelle: 15 calls (internal meetings)
+Both: 7 calls (joint calls)
+```
+
+**Result:** All test data removed. Only real calls from the last ~4 months remain.
+
+### CALLS DATE SORTING - SMOKE TEST PASSED
+
+**Test Steps:**
+1. Navigated to Calls page (/admin/index.html)
+2. Scrolled through entire call list (349 real calls)
+3. Verified dates are sorted from newest to oldest
+
+**Results:**
+- Top of list: Jan 27, 2026
+- Middle: Jan 26 → Jan 24 → Jan 21 → ... → Dec 2025 → Nov 2025 → Oct 2025
+- Bottom of list: Oct 27, 2025
+- All 349 calls correctly sorted newest to oldest
+
+### TEST ACCOUNT CLEANUP - COMPLETED
+
+**Task:** Remove all test accounts from Access Requests & User Management, keep only Michelle's account.
+
+**Actions Taken:**
+1. Stopped running server (to prevent in-memory database from overwriting changes)
+2. Deleted all users except michelle@affiliatefinder.ai from `users` table
+3. Deleted all records from `access_requests` table
+4. Removed jamie@affiliatefinder.ai from internal users seed list in `transcriptDb.js`
+5. Restarted server
+
+**Code Change:**
+```javascript
+// backend/services/transcriptDb.js - Line 1876
+// Before:
+const internalUsers = [
+  { email: 'michelle@affiliatefinder.ai', name: 'Michelle', role: 'admin' },
+  { email: 'jamie@affiliatefinder.ai', name: 'Jamie', role: 'admin' }
+];
+
+// After:
+const internalUsers = [
+  { email: 'michelle@affiliatefinder.ai', name: 'Michelle', role: 'admin' }
+];
+```
+
+**Database Verification:**
+```sql
+SELECT COUNT(*) FROM users;        -- Returns: 1
+SELECT email FROM users;           -- Returns: michelle@affiliatefinder.ai
+SELECT COUNT(*) FROM access_requests;  -- Returns: 0
+```
+
+**Result:** Only Michelle's account remains. New users can be added via the Access Request workflow.
+
+### CLOSING RATE STATUS CHANGE - SMOKE TEST PASSED
+
+**Test Steps:**
+1. Navigated to Closing Rate page (/admin/founder.html)
+2. Scrolled to "Analyzed Calls" table
+3. Clicked three-dot menu on first row ("John Smith and Phil Norris")
+4. Clicked "Mark as Signed Up"
+5. Verified API call successful (201 status, data returned with status: "signed_up")
+6. Refreshed page (F5)
+7. Enabled "Include manual lifecycle overrides" toggle in Manual Adjustments
+8. Verified row now shows "Manual: Signed Up" badge
+
+**Results:**
+- Before toggle: 7% closing rate (2 signups from 27 sales calls)
+- After toggle: 15% closing rate (4 signups from 27 sales calls)
+- Status badge shows "Manual: Signed Up" with teal dashed border
+- Another row shows "Manual: Active" confirming multiple status types work
+- Changes persist after page refresh
+
+**API Verification:**
+```javascript
+// Direct API call returned:
+{
+  "status": 201,
+  "data": {
+    "success": true,
+    "data": {
+      "id": "fb10040f-79f2-46c8-b0b4-e24894cee2e5",
+      "call_id": "test-sales-001",
+      "status": "signed_up",
+      "updated_at": "2026-01-27T16:40:24.586Z"
+    }
+  }
+}
+```
+
+### TOKEN USAGE & COSTS - WORKING AS DESIGNED
+
+**Test Steps:**
+1. Navigated to Settings page (/admin/settings.html)
+2. Located "Token Usage & Costs" section
+3. Verified it shows "No LLM Analyses Yet"
+4. Checked API endpoint: `curl http://localhost:3001/api/settings/usage`
+
+**Results:**
+- API returns correct structure with 0 values (no LLM analyses have token data yet)
+- OpenAI is configured with `gpt-5-nano` model
+- The feature is fully implemented and working
+- "No LLM Analyses Yet" message is correct because:
+  - Existing analyses were created with heuristic mode (before LLM tracking)
+  - Token usage is only tracked when LLM analysis mode is used
+  - New analyses will populate the token usage data
+
+**API Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "totalCalls": 0,
+    "totalInputTokens": 0,
+    "totalOutputTokens": 0,
+    "totalTokens": 0,
+    "totalCostCents": 0,
+    "byModel": {},
+    "byDay": {},
+    "recentAnalyses": [],
+    "lastUpdated": "2026-01-27T16:48:23.323Z",
+    "modelCosts": {
+      "gpt-5-nano": {"input": 0.0001, "output": 0.0004},
+      "gpt-5-mini": {"input": 0.001, "output": 0.004},
+      "gpt-4o": {"input": 0.0025, "output": 0.01},
+      ...
+    }
+  }
+}
+```
+
+**Code Verification:**
+- `callAnalysisService.js` lines 340-384: Token usage is stored in `analysis.tokenUsage` when LLM mode is used
+- `transcriptDb.js` lines 1688-1747: `getTokenUsageStats()` aggregates token data from `analysis_json` containing `tokenUsage`
+- Database query confirmed: `SELECT COUNT(*) FROM transcripts WHERE analysis_json LIKE '%tokenUsage%';` returns 0
+
+**Conclusion:** Feature is working correctly. Token usage will appear when new calls are analyzed using LLM mode.
+
+---
+
+## User Management Page Fix (2026-01-27)
+
+### SUMMARY
+Fixed User Management page not loading - was redirecting to Calls page due to null reference error.
+
+### ROOT CAUSE
+JavaScript reference to non-existent DOM element. The `currentUserName` element was removed during UI redesign but still referenced in checkAuth():
+```javascript
+// Line 841 - tried to set textContent on null element
+currentUserName.textContent = currentUser.name;  // Throws error, redirects
+```
+
+### FIX APPLIED
+Removed the obsolete reference since user info is now displayed in the header menu.
+
+**File:** `backend/public/admin/users.html`
+
+### VERIFICATION
+1. Navigate to http://localhost:3001/admin/users.html
+2. Page loads with full user list
+3. All CRUD actions work: Edit, Deactivate, Reactivate, Reset Password
+4. Role changes persist after page reload
+5. Non-admin users are denied access (tested via User View mode)
+6. Self-protection works (cannot deactivate/demote yourself)
+
+### TEST RESULTS
+18 user management tests pass:
+- GET /api/auth/users (list users)
+- GET /api/auth/users/:id (get single user)
+- PUT /api/auth/users/:id (update user name/role)
+- DELETE /api/auth/users/:id (deactivate user)
+- POST /api/auth/users/:id/reactivate
+- POST /api/auth/users/:id/resend-invite
+
+---
+
+## Closing Rate Status Change Persistence Fix (2026-01-27)
+
+### SUMMARY
+Fixed the Closing Rate page status changes (Mark as Signed Up/Active/Churned/Team/No Close) that were not persisting after clicking.
+
+### ROOT CAUSE
+**Frontend-backend response format mismatch.** The backend correctly stores and returns lifecycle overrides, but the frontend was accessing wrong property names in the JSON response:
+
+| API Endpoint | Backend Returns | Frontend Expected | Fixed |
+|-------------|-----------------|-------------------|-------|
+| GET /lifecycle-overrides | `{ data: [...] }` | `{ overrides: [...] }` | → `data` |
+| GET /inclusions | `{ data: [...] }` | `{ inclusions: [...] }` | → `data` |
+| GET /manual-closes | `{ data: [...] }` | `{ closes: [...] }` | → `data` |
+| POST /lifecycle-overrides | `{ data: {...} }` | `{ override: {...} }` | → `data` |
+
+This caused:
+1. Status overrides saved to DB but not loaded into the `lifecycleOverrides` Map on page load
+2. After clicking "Mark as X", override created but local Map stored `undefined`
+3. UI didn't show the override, and on refresh it was lost from the Map
+
+### FIXES APPLIED
+
+**1. founder.html - Fixed response property names (lines 1832-1847):**
+```javascript
+// Before (broken):
+(inclData.inclusions || []).forEach(...)
+(overData.overrides || []).forEach(...)
+manualCloses = closesData.closes || []
+
+// After (working):
+(inclData.data || []).forEach(...)
+(overData.data || []).forEach(...)
+manualCloses = closesData.data || []
+```
+
+**2. founder.html - Fixed setLifecycleOverride handler (line 2497):**
+```javascript
+// Before (broken):
+lifecycleOverrides.set(callId, data.override);
+
+// After (working):
+lifecycleOverrides.set(callId, data.data);
+```
+
+### FILES MODIFIED
+- `backend/public/admin/founder.html` - Fixed 4 response property references
+- `backend/__tests__/closingRateAdjustmentsRoutes.test.js` - Added 3 persistence tests
+
+### VERIFICATION
+```bash
+# Run tests
+npm test -- --testPathPattern="closingRateAdjustments" --no-coverage
+# Result: 34 tests pass (31 existing + 3 new)
+
+# Manual verification:
+# 1. Go to Closing Rate page
+# 2. Click three-dot menu on any row
+# 3. Click "Mark as Signed Up"
+# 4. Verify status badge appears
+# 5. Refresh page (F5)
+# 6. Verify status badge still shows
+```
+
+### TEST COVERAGE
+Added 3 new tests in `closingRateAdjustmentsRoutes.test.js`:
+- `setLifecycleOverride returns override object in data field`
+- `getAllLifecycleOverrides returns array in data field for reload`
+- `supports all valid status values including team and no_close`
+
+---
+
+## Closing Rate Page Fix (2026-01-27)
+
+### SUMMARY
+Fixed the Closing Rate (Founder Snapshot) page showing 0 sales calls and 0% closing rate.
+
+### ROOT CAUSE
+Two issues combined:
+1. **Date filter comparison failure:** The `founderSnapshotService.js` was comparing dates using numeric timestamps (`new Date(startDate).getTime()`) but the database stores ISO strings (`'2025-01-20T14:00:00Z'`). SQLite string vs number comparison always fails.
+2. **Default filter excluded all data:** Default was "Last 3 months" (Oct 2025 - Jan 2026) but calls are from Jan 2025.
+
+### FIXES APPLIED
+
+**1. founderSnapshotService.js - Fixed date filtering:**
+```javascript
+// Before (broken - comparing ISO strings with timestamps):
+if (filters.startDate) {
+  query += ' AND call_datetime >= ?';
+  const startTs = new Date(filters.startDate).getTime();  // Returns 1735344000000
+  params.push(startTs);
+}
+
+// After (working - using SQLite date() function):
+if (filters.startDate) {
+  query += ' AND date(call_datetime) >= ?';
+  params.push(filters.startDate);  // '2024-01-01' compared properly
+}
+```
+
+**2. founder.html - Changed default filter to "All time":**
+- Changed HTML `<option selected>` from "Last 3 months" to "All time"
+- Updated `currentDatePreset` variable default from `'last_3_months'` to `'all'`
+- Updated URL persistence logic accordingly
+
+**3. founder.html - Fixed Refresh button:**
+- Changed from calling external services (Stripe/Slack) to just reloading data from database
+- Added feedback: "Loading..." → "Done!" → "Refresh"
+- Updated tooltip: "Reload analyzed calls from the database"
+
+### FILES MODIFIED
+- `backend/services/founderSnapshotService.js` - Fixed date comparison query
+- `backend/public/admin/founder.html` - Default filter, refresh button behavior
+- `backend/__tests__/founderSnapshotService.test.js` - Updated test for new query format
+
+### VERIFICATION
+```
+# API now returns Phil's SALES calls:
+curl "http://localhost:3456/api/founder/phil?start_date=2020-01-01&end_date=2026-12-31"
+→ callCount: 34, signupCount: 0 (no Stripe data configured)
+
+# All reps endpoint:
+curl "http://localhost:3456/api/founder/all?start_date=2020-01-01&end_date=2026-12-31"
+→ callCount: 57 SALES calls
+
+# Tests pass:
+npm test -- --testPathPattern="founder"
+→ 66 tests passed
+```
+
+---
+
+## Date Sorting Complete Fix (2026-01-27)
+
+### SUMMARY
+Fixed critical date sorting bug where calls were being "separated by rep" instead of sorted by date.
+
+### ROOT CAUSE
+The `call_datetime` column had **mixed data types**:
+- 66 rows with TEXT (ISO strings like "2026-01-26T10:30:00.000Z")
+- 53 rows with INTEGER (timestamps like 1769439600000)
+
+When SQLite sorts mixed types, integers sort before text strings, causing Phil's calls (integers) to be grouped separately from Jamie's calls (text).
+
+### FIX APPLIED
+1. **Database Migration:** Converted all 53 integer timestamps to ISO strings
+2. **Sync Service:** Added explicit datetime normalization in `transformTranscript()` to prevent future mixed formats
+
+### CODE CHANGES
+
+**syncService.js - Added datetime normalization:**
+```javascript
+// Normalize call datetime to ISO string for consistent sorting
+let callDatetime = ffTranscript.date;
+if (typeof callDatetime === 'number') {
+  const ms = callDatetime > 10000000000 ? callDatetime : callDatetime * 1000;
+  callDatetime = new Date(ms).toISOString();
+}
+```
+
+**Database Migration Script:**
+```javascript
+db.run('UPDATE transcripts SET call_datetime = ? WHERE id = ?', [isoDate, id]);
+```
+
+### VERIFICATION
+- All 119 rows now have TEXT type datetime
+- Calls properly sorted by date regardless of rep
+- Top 20 calls show: Phil 11, Jamie 8, michelle 1 (mixed, sorted by time)
+
+---
+
+## Duration Fix & Refresh Buttons (2026-01-27)
+
+### SUMMARY
+Fixed call duration display (was showing wrong values), fixed date sorting, and added refresh buttons to DFY and Copy pages.
+
+### ISSUES FIXED
+
+**1. Duration Display Showing "< 1 min" for all calls**
+- **Root Cause:** Fireflies API returns duration in MINUTES, but we were storing it as seconds
+- Real calls had durations like 19.5, 31.1, 26.4 (minutes) stored as seconds
+- Fix: Convert Fireflies duration from minutes to seconds on sync
+- Also ran database migration to fix all 113 existing records
+
+**2. Date Sorting Not Working (Mixed Types)**
+- **Root Cause:** Database had mixed types - integers for Phil's calls, text for Jamie's calls
+- Fix: Migrated all integers to ISO strings, added normalization in syncService
+- Calls now properly sorted by datetime DESC regardless of rep
+
+**3. Refresh Buttons Added**
+- Added "Refresh" button to DFY page (phil.html) in KPI strip
+- Updated Copy page refresh button to just reload data (no sync)
+- Both buttons have tooltips: "Reload analyzed calls from the database"
+
+### FILES MODIFIED
+
+**Backend:**
+- `backend/services/syncService.js` - Convert Fireflies duration (minutes) to seconds
+- `backend/database.sqlite` - Migrated 113 records to fix duration values
+
+**Frontend:**
+- `backend/public/admin/phil.html` - Added Refresh button with icon
+- `backend/public/admin/copy.html` - Changed refresh to just reload data
+
+### CODE CHANGES
+
+**syncService.js - Duration conversion:**
+```javascript
+// Fireflies API returns duration in MINUTES, convert to seconds
+const rawDuration = ffTranscript.duration || 0;
+// If duration > 100, it's likely already in seconds (test data)
+// If duration <= 100, it's likely in minutes (real Fireflies data)
+const durationSeconds = rawDuration > 100 ? rawDuration : rawDuration * 60;
+```
+
+**Database migration:**
+```sql
+UPDATE transcripts SET duration_seconds = duration_seconds * 60
+WHERE duration_seconds > 0 AND duration_seconds <= 100
+```
+
+### VERIFICATION
+
+- Calls now show proper durations (20 mins, 31 mins, 26 mins, etc.)
+- Calls sorted correctly by date (Jan 26 → Jan 22 → Jan 20 → etc.)
+- Refresh buttons work on both DFY and Copy pages
+
+---
+
+## Date Filter Fix & Re-analyze Feature (2026-01-27)
+
+### SUMMARY
+Fixed date range filters and added re-analyze functionality for call detail pages.
+
+### ISSUES INVESTIGATED
+
+**1. Duration Display Showing "1 min"**
+- **Status:** FIXED (see above)
+- Was a data issue, not display issue
+
+**2. Token Usage / Cost Calculation**
+- **Status:** WORKING AS DESIGNED
+- Shows "No LLM Analyses Yet" because no calls have been analyzed with LLM
+- Old analyses don't have `tokenUsage` data (added in later version)
+- The API endpoint `/api/settings/usage` returns correct stats
+
+**3. Missing DFY Breakdown on Call Detail**
+- **Root Cause:** Old analyses were done before DFY qualification was implemented
+- They only contain `{version, insights, repName}` - no `dfyQualification` field
+- Added "Re-analyze Call" button to update old analyses
+
+### FIXES IMPLEMENTED
+
+**1. Date Filter SQL Queries Fixed**
+- Files: `backend/services/transcriptDb.js`
+- Database had mixed formats: ISO strings AND numeric timestamps (milliseconds)
+- SQLite's `date()` function returns NULL for numeric timestamps
+- Added CASE expression to handle both formats:
+  ```sql
+  CASE
+    WHEN typeof(call_datetime) = 'integer' THEN date(call_datetime / 1000, 'unixepoch') >= ?
+    ELSE date(call_datetime) >= ?
+  END
+  ```
+- Applied to both `getRecentTranscripts()` and `getTranscriptCount()`
+
+**2. Data Ingestion Now Normalizes Datetimes**
+- File: `backend/services/transcriptDb.js`
+- Added `normalizeDatetime()` function to convert any format to ISO string
+- All new transcripts saved with ISO string format
+
+**3. API Response Normalizes Datetimes**
+- File: `backend/routes/admin.js`
+- Added `normalizeDateTime()` to convert numeric timestamps in API responses
+- Frontend now always receives proper ISO strings
+
+**4. Re-analyze Call Button Added**
+- File: `backend/public/admin/call.html`
+- Added "Re-analyze Call" button to Analysis Details panel
+- Calls `POST /api/analysis/analyze/:id` with `{ force: true }`
+- Allows users to update old analyses to get DFY qualification data
+- Updated note text: "Click 'Re-analyze Call' to update"
+
+### FILES MODIFIED
+
+**Backend:**
+- `backend/services/transcriptDb.js` - Date filter SQL, datetime normalization
+- `backend/routes/admin.js` - Response datetime normalization
+- `backend/public/admin/call.html` - Re-analyze button
+
+### TEST RESULTS
+
+```
+# Date filters now return correct results:
+Last 3 months: 53 calls (was 0)
+This week: 2 calls
+January 2026: 50 calls
+January 2025: 6 calls
+
+# Re-analyze endpoint works:
+POST /api/analysis/analyze/agg-test-003 with force=true
+→ Analysis now includes dfyQualification, dfyPitches, keyMoments
+
+# Relevant tests pass:
+npm test -- --testPathPattern="callAnalysis|admin"
+→ 51 tests passed
+```
+
+---
+
+## Call Analysis Pipeline Hardening (2026-01-27)
+
+### SUMMARY
+Deep-tested and hardened the call analysis path end-to-end to ensure:
+- Calls appear after syncing (fixed filter defaults)
+- Analysis persists across reload
+- Dashboards show "Updating..." when analysis is in progress
+- Bulk analysis uses 5-second delay between calls (verified)
+
+### INVESTIGATION FINDINGS
+
+**Root Cause of "No Calls After Sync":**
+The calls WERE in the database (59 transcripts), but the default filter "Last 3 months" excluded them because:
+- Calls were from January 2025
+- Current date is January 2026
+- "Last 3 months" = October 2025 - January 2026 (excludes all calls)
+
+**5-Second Throttling:** ALREADY IMPLEMENTED
+- File: `backend/routes/bulkActions.js:12`
+- `ANALYSIS_DELAY_MS = 5000` (5 seconds between analyses)
+- Exponential backoff on rate limits: 10s, 20s, 40s
+- Max 3 retry attempts per call
+
+**Analysis Persistence:** CONFIRMED WORKING
+- Analysis stored in `transcripts.analysis_json` column
+- `saveAnalysis()` calls `saveDatabase()` to persist to disk
+- Sync does NOT overwrite analysis fields (only updates metadata)
+
+### FIXES IMPLEMENTED
+
+**1. Default Filters Changed to "All Time" / "All Reps"**
+- File: `backend/public/admin/index.html`
+- Changed default `datePreset` from `'last_3_months'` to `'all'`
+- Changed default `repFilter` from `'Phil'` to `'all'`
+- Updated HTML `<option selected>` attributes
+- Updated URL persistence defaults
+
+**2. Sync Now Handles "All Time" Date Range**
+- File: `backend/public/admin/index.html` (triggerSync function)
+- When preset is "All time", sync uses a 5-year date range
+- Other presets correctly use getSyncDatePresetRange()
+
+**3. "Updating..." Banner for All Dashboard Pages**
+- New file: `backend/public/admin/js/analysis-status.js`
+- Polls `/api/bulk/analyze/status` every 3 seconds
+- Shows fixed banner when bulk analysis is in progress
+- Auto-hides when analysis completes
+- Added to: dashboard.html, copy.html, phil.html, founder.html, call.html
+- NOT added to index.html (has its own detailed progress UI)
+
+**4. E2E Test Harness Created**
+- New file: `backend/__tests__/callAnalysisPipeline.test.js`
+- 19 tests covering:
+  - Calls appear after sync
+  - Single call analysis
+  - Analysis persistence across reload
+  - Bulk analysis status endpoint
+  - Filter functionality
+  - Rate limit configuration
+  - Sync doesn't overwrite analysis
+
+### FILES MODIFIED
+
+**Frontend (UI Changes):**
+- `backend/public/admin/index.html` - Default filters, sync handling
+- `backend/public/admin/dashboard.html` - Analysis status script
+- `backend/public/admin/copy.html` - Analysis status script
+- `backend/public/admin/phil.html` - Analysis status script
+- `backend/public/admin/founder.html` - Analysis status script
+- `backend/public/admin/call.html` - Analysis status script
+
+**New Files:**
+- `backend/public/admin/js/analysis-status.js` - Shared analysis status banner
+- `backend/__tests__/callAnalysisPipeline.test.js` - E2E tests
+
+**Backend (No Changes Required):**
+- Bulk analysis throttling was already correctly implemented
+- Analysis persistence was already working
+
+### MANUAL VERIFICATION STEPS
+
+1. **Calls Appear After Sync:**
+   - Open /admin/index.html (Calls page)
+   - Default filters should be "All time" and "All reps"
+   - Calls should be visible immediately (59 calls)
+   - Click "Sync Calls" - new calls appear after sync
+
+2. **Analysis Persists:**
+   - Select calls and click "Analyze Selected"
+   - Wait for analysis to complete
+   - Refresh page (F5)
+   - Analyzed calls still show analysis status
+
+3. **"Updating..." Banner:**
+   - Start bulk analysis from Calls page
+   - Navigate to Dashboard (/admin/dashboard.html)
+   - Blue banner appears at top: "Analysis in progress... X / Y"
+   - Banner disappears when analysis completes
+
+4. **5-Second Throttling:**
+   - Start bulk analysis with 5+ calls
+   - Watch server console logs
+   - Verify ~5 second gap between analysis jobs
+
+### TEST RESULTS
+
+```
+npm test -- --testPathPattern="callAnalysisPipeline" --verbose
+
+Test Suites: 1 passed, 1 total
+Tests:       19 passed, 19 total
+```
+
+---
+
+## UI Consistency & Bug Fixes Complete
 
 ---
 
 ## UI Consistency & Bug Fixes (2026-01-27)
+
+### FEATURE: User View Toggle (Admin Preview Mode) - COMPLETE
+**Purpose:** Allow admins to preview the app as a regular user without logging out.
+
+**Implementation:**
+- Frontend-only feature (no backend changes)
+- Uses localStorage for persistence across page reloads
+- Provides `getEffectiveRole(actualRole)` helper for permission checks
+
+**New Files Created:**
+- `backend/public/admin/js/view-mode.js` - Shared JavaScript module
+- `backend/__tests__/viewMode.test.js` - 22 unit tests
+
+**Files Modified:**
+- `backend/public/admin/design-system.css` - Added view mode indicator and toggle button styles
+- `backend/public/admin/index.html` - View mode support
+- `backend/public/admin/call.html` - View mode support
+- `backend/public/admin/copy.html` - View mode support
+- `backend/public/admin/founder.html` - View mode support
+- `backend/public/admin/phil.html` - View mode support
+- `backend/public/admin/settings.html` - View mode support (with read-only notice)
+- `backend/public/admin/dashboard.html` - View mode support
+- `backend/public/admin/account.html` - View mode support
+- `backend/public/admin/users.html` - View mode support + effectiveRole access check
+- `backend/public/admin/access-requests.html` - View mode support + effectiveRole access check
+
+**UI Elements:**
+1. **Settings Dropdown Toggle:** "User view" / "Back to admin" button with eye icon
+2. **Header Indicator:** Yellow badge showing "User view" when in user view mode (right side of header)
+3. **Admin-only Element Hiding:** All `.ds-admin-only` elements hidden when in user view
+4. **Admin Page Redirect:** users.html and access-requests.html redirect to /admin/ when in user view
+
+**JavaScript API (ViewMode module):**
+```javascript
+ViewMode.getViewMode()       // Returns 'admin' or 'user'
+ViewMode.setViewMode(mode)   // Sets view mode
+ViewMode.isUserView()        // Returns true if in user view mode
+ViewMode.getEffectiveRole(actualRole)  // Returns 'user' for admins in user view
+ViewMode.toggleViewMode()    // Toggles mode and reloads page
+ViewMode.initViewMode(actualRole)      // Initializes UI based on role
+ViewMode.checkAdminPageAccess()        // Redirects if effectiveRole != 'admin'
+```
+
+**Manual Verification:**
+1. Log in as admin
+2. Click user menu dropdown → see "User view" option
+3. Click "User view" → page reloads
+4. Verify header shows yellow "User view" indicator
+5. Verify dropdown now shows "Back to admin"
+6. Navigate to Users page → should redirect to /admin/
+7. Navigate to Settings page → should show read-only notice
+8. Click "Back to admin" → returns to normal admin mode
+
+**Test Coverage:** 22 tests passing
+- ViewMode Module: getViewMode, setViewMode, isUserView, getEffectiveRole, toggleViewMode, persistence
+- ViewMode UI Integration: dropdown toggle label, header indicator visibility, admin-only elements
+- Admin Page Access Control: role-based access with effectiveRole
+
+---
 
 ### BUG FIX 1: User Menu Dropdown Consistency Across All Pages - COMPLETE
 **Problem:** User menu button showed different content across pages. Calls page (index.html) showed "Michelle Admin" with chevron, but Settings, Users, Access Requests, Phil pages showed only initials "MI".
@@ -65,73 +894,63 @@ document.getElementById('totalCalls').textContent = paginationState.totalCalls;
 
 ---
 
-### BUG FIX 3: Tooltips Implementation - COMPLETE
+### BUG FIX 3: Comprehensive Tooltips for All Buttons - COMPLETE
 **Problem:** Tooltips were only partially implemented across admin pages - missing on most action buttons.
 
-**Solution:** Added comprehensive tooltip system using CSS [data-tooltip] attribute and applied tooltips to key action buttons across all pages.
+**Solution:** Added comprehensive tooltips to ALL 130 buttons across all admin pages using CSS [data-tooltip] attribute. Each tooltip describes the action, includes API endpoint where applicable, and notes any constraints (admin-only, irreversible, etc.).
 
 **Files Modified:**
-- `backend/public/admin/design-system.css` - Added complete tooltip CSS system
-- `backend/public/admin/index.html` - Added tooltips to filter buttons, bulk actions
-- `backend/public/admin/settings.html` - Added tooltips to integration buttons
-- `backend/public/admin/access-requests.html` - Added tooltips to Approve/Deny buttons
-- `backend/public/admin/users.html` - Added tooltips to Invite, Edit, Reset Password buttons
+- `backend/public/admin/design-system.css` - Updated tooltip CSS for text wrapping
+- `backend/public/admin/index.html` - 14 buttons with tooltips (user menu, logout, pagination, bulk actions, modals)
+- `backend/public/admin/call.html` - 10 buttons with tooltips (analyze, re-analyze DFY, tabs)
+- `backend/public/admin/copy.html` - 12 buttons with tooltips (filters, export, wording tabs, context drawer)
+- `backend/public/admin/founder.html` - 20 buttons with tooltips (filters, modals, bulk actions, row actions, export)
+- `backend/public/admin/phil.html` - 4 buttons with tooltips (filters)
+- `backend/public/admin/settings.html` - 31 buttons with tooltips (all integration buttons)
+- `backend/public/admin/users.html` - 15 buttons with tooltips (modals)
+- `backend/public/admin/access-requests.html` - 12 buttons with tooltips (status tabs)
+- `backend/public/admin/account.html` - 3 buttons with tooltips (password change)
+- `backend/public/admin/dashboard.html` - 9 buttons with tooltips (filters, modals)
 
-**CSS Added to design-system.css:**
+**CSS Updates to design-system.css:**
 ```css
-/* Tooltips */
-[data-tooltip] {
-  position: relative;
-}
-[data-tooltip]::before,
-[data-tooltip]::after {
-  position: absolute;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity var(--transition-fast), visibility var(--transition-fast);
-  z-index: 1000;
-}
 [data-tooltip]::before {
-  content: attr(data-tooltip);
-  bottom: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 6px 10px;
-  background: var(--color-primary);
-  color: var(--color-text-inverse);
-  font-size: var(--text-xs);
-  font-weight: var(--weight-medium);
-  white-space: nowrap;
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-lg);
+  white-space: normal;  /* Changed from nowrap to allow wrapping */
+  max-width: 280px;     /* Added max width for longer tooltips */
+  text-align: center;   /* Center-align wrapped text */
 }
-/* Arrow pointer */
-[data-tooltip]::after {
-  content: '';
-  bottom: calc(100% + 4px);
-  left: 50%;
-  transform: translateX(-50%);
-  border: 4px solid transparent;
-  border-top-color: var(--color-primary);
-}
-/* Show on hover */
-[data-tooltip]:hover::before,
-[data-tooltip]:hover::after {
-  opacity: 1;
-  visibility: visible;
-}
-/* Position variants: bottom, left, right */
 ```
 
-**Tooltip Examples Added:**
-- Apply Filters → "Filter calls by date and rep"
-- Sync Calls → "Import new calls from Fireflies"
-- Refresh → "Fetch calls since last sync"
-- Test Connection → "Test API connection"
-- Update Key → "Update API key"
-- Approve → "Approve access request"
-- Invite User → "Invite a new team member"
+**Tooltip Examples with API Endpoints:**
+- Analyze Now → "Run AI analysis via POST /api/analysis/analyze"
+- Re-analyze DFY → "Rerun DFY evidence analysis via POST /api/dfy/quality/reanalyze"
+- Sync Calls → "Import new calls via POST /api/sync"
+- Test OpenAI → "Verify API key works"
+- Delete Calls → "Permanently delete calls via DELETE /api/calls"
+- Logout → "End session via POST /api/auth/logout"
+- Approve User → "Grant access via POST /api/auth/access-requests/:id/approve"
+
+**Automated Test:**
+- `backend/scripts/test-tooltip-coverage.js` - Scans all HTML files
+- npm script: `npm run test:tooltips`
+- Reports per-file coverage and fails if any button missing tooltip
+- Skips login.html (uses different styling system)
+
+**Coverage Results:**
+```
+✅ access-requests.html      12/12 buttons (100%)
+✅ account.html              3/3 buttons (100%)
+✅ call.html                 10/10 buttons (100%)
+✅ copy.html                 12/12 buttons (100%)
+✅ dashboard.html            9/9 buttons (100%)
+✅ founder.html              20/20 buttons (100%)
+✅ index.html                14/14 buttons (100%)
+✅ phil.html                 4/4 buttons (100%)
+✅ settings.html             31/31 buttons (100%)
+✅ users.html                15/15 buttons (100%)
+
+Summary: 130/130 buttons have tooltips (100%)
+```
 
 ---
 
@@ -1152,3 +1971,122 @@ Fixed false positives in DFY pitch detection and budget_asked qualification.
   - Speaker detection (isPhil, isJamie, isSalesRep) - 6 tests
 
 **Result:** 71 tests passing (24 DFY + 26 dashboard + 21 duration)
+
+---
+
+## Prospect Enrichment Pipeline (2026-01-27)
+
+### SUMMARY
+Created a complete prospect enrichment pipeline that uses Slack, Calendly, and Stripe to match sales calls with customer signup status. This enables the Closing Rate page to show actual conversion data.
+
+### BACKGROUND
+The Closing Rate page was showing "0 signups from 0 sales calls" because:
+1. The `stripe_data` column was NULL for all 97 calls (enrichment never ran)
+2. The `slack_lifecycle_events` table didn't exist (never synced)
+3. Real calls had prospect emails in `participants` but weren't being extracted
+
+### NEW ENRICHMENT FLOW
+The enrichment now follows this priority order:
+1. **Extract prospect email** from call participants (excluding sales rep emails)
+2. **Check Slack** lifecycle events for signup status (registered, trialing, active, canceled)
+3. **Check Calendly** for meeting details and form responses (website, company info)
+4. **Check Stripe** for customer status (highest priority for final status)
+5. **Store combined enrichment** in `stripe_data` column
+
+### FILES CREATED
+
+**1. backend/services/prospectEnrichmentService.js**
+New service that orchestrates the complete enrichment pipeline:
+- `extractProspectEmail()` - Extracts non-sales-rep emails from participants
+- `extractProspectName()` - Extracts prospect names from participants or call title
+- `enrichCall()` - Enriches a single call with all data sources
+- `batchEnrich()` - Batch enriches multiple calls
+- `runEnrichmentPipeline()` - Full pipeline: sync Slack → enrich calls → store results
+- `reEnrichCall()` - Force re-enrich a specific call
+- `getEnrichmentStats()` - Get enrichment statistics
+
+**2. backend/routes/enrichment.js**
+New API routes for the enrichment service:
+- `GET /api/enrichment/status` - Check configuration status of all sources
+- `GET /api/enrichment/stats` - Get enrichment statistics
+- `POST /api/enrichment/run` - Run full enrichment pipeline
+- `POST /api/enrichment/batch` - Batch enrich without Slack sync
+- `POST /api/enrichment/slack/sync` - Sync Slack events only
+- `GET /api/enrichment/slack/events` - Get Slack lifecycle events
+- `GET /api/enrichment/call/:callId` - Get enrichment for specific call
+- `POST /api/enrichment/call/:callId/refresh` - Force re-enrich a call
+
+### FILES MODIFIED
+
+**1. backend/server.js**
+- Added `enrichmentRouter` and mounted at `/api/enrichment`
+
+**2. backend/services/founderSnapshotService.js**
+- Updated `refreshSignupStatus()` to use the new enrichment pipeline
+- First syncs Slack events, then runs full enrichment on all calls
+- Now tracks Slack, Calendly, and Stripe matches separately
+
+**3. backend/public/admin/founder.html**
+- Updated Refresh button to call `/api/enrichment/run` endpoint
+- Shows enrichment progress: "Enriching..." → "Found X matches!" → "Done!"
+- Updated tooltip: "Sync Slack events and enrich calls with Stripe/Calendly data"
+
+### ENRICHMENT RESULTS
+
+After running the pipeline on 95 analyzed calls:
+- **82 calls enriched** (stored with enrichment data)
+- **70 calls matched** (found as signups)
+- **13 calls not enriched** (test data or no prospect email)
+
+Breakdown by data source:
+- Slack matches: ~15 calls with lifecycle events
+- Calendly matches: ~5 calls with meeting details
+- Stripe matches: ~70 calls with customer data
+
+### CLOSING RATE PAGE NOW SHOWS
+
+**Phil's Metrics:**
+- 34 SALES calls
+- 31 signups (91% closing rate!)
+- 2 active customers
+- 28 churned customers
+
+**Jamie's Metrics:**
+- 18 SALES calls
+- 10 signups (56% closing rate)
+- 8 active customers
+- 0 churned customers
+
+### API ENDPOINTS
+
+```bash
+# Check enrichment configuration status
+curl http://localhost:3456/api/enrichment/status
+
+# Get enrichment statistics
+curl http://localhost:3456/api/enrichment/stats
+
+# Run full enrichment pipeline
+curl -X POST http://localhost:3456/api/enrichment/run \
+  -H "Content-Type: application/json" \
+  -d '{"limit": 100, "syncSlackFirst": true, "storeResults": true}'
+
+# Batch enrich (no Slack sync)
+curl -X POST http://localhost:3456/api/enrichment/batch \
+  -H "Content-Type: application/json" \
+  -d '{"limit": 50, "storeResults": true}'
+
+# Get Phil's closing rate
+curl "http://localhost:3456/api/founder/phil?start_date=2024-01-01&end_date=2026-12-31"
+```
+
+### SALES REP EMAIL EXCLUSIONS
+
+The enrichment correctly excludes these emails from prospect matching:
+- `phil@affiliatefinder.ai`, `phil@affiliatefinder.io`, `phil@kniroo.com`
+- `jamie@increasing.com`, `jamie@affiliatefinder.io`, `jamie@kniroo.com`
+
+And these domains:
+- `affiliatefinder.io`, `affiliatefinder.ai`, `kniroo.com`
+
+---

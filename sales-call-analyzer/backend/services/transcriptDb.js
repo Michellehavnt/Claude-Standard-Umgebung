@@ -82,11 +82,209 @@ function parseJsonFields(obj) {
 }
 
 /**
+ * Check if a call title matches auto-delete rules
+ * Returns the reason if should be auto-deleted, null otherwise
+ *
+ * Rules (case-insensitive, trimmed):
+ * 1) If title contains "weekly" anywhere → auto-delete (reason: "auto-filter:weekly")
+ * 2) If title contains "AF ads jour fixe" anywhere → auto-delete (reason: "auto-filter:jour-fixe")
+ * 3) For dev calls: ONLY auto-delete if title is exactly "dev" (reason: "auto-filter:dev")
+ *    - Do NOT auto-delete titles that merely contain "dev" (e.g. "dev call", "dev sync")
+ *
+ * @param {string} title - Call title
+ * @returns {string|null} - Delete reason if should auto-delete, null otherwise
+ */
+function shouldAutoDelete(title) {
+  if (!title) return null;
+
+  const normalizedTitle = title.trim().toLowerCase();
+  // Normalize whitespace (collapse multiple spaces to single space)
+  const normalizedWhitespace = normalizedTitle.replace(/\s+/g, ' ');
+
+  // Rule 1: Contains "weekly" anywhere
+  if (normalizedWhitespace.includes('weekly')) {
+    return 'auto-filter:weekly';
+  }
+
+  // Rule 2: Contains "AF ads jour fixe" anywhere (case-insensitive, whitespace-normalized)
+  if (normalizedWhitespace.includes('af ads jour fixe')) {
+    return 'auto-filter:jour-fixe';
+  }
+
+  // Rule 3: Exactly "dev" (after trimming, case-insensitive)
+  if (normalizedTitle === 'dev') {
+    return 'auto-filter:dev';
+  }
+
+  return null;
+}
+
+/**
+ * Soft delete a transcript (set deleted_at timestamp)
+ * @param {string} transcriptId - Internal transcript ID
+ * @param {string} reason - Deletion reason (e.g., 'manual', 'auto-filter:weekly')
+ * @returns {Object} - { success: boolean, deleted: boolean }
+ */
+async function softDeleteTranscript(transcriptId, reason = 'manual') {
+  const existing = await getTranscriptById(transcriptId);
+  if (!existing) {
+    return { success: false, deleted: false, error: 'Transcript not found' };
+  }
+
+  const now = new Date().toISOString();
+  await dbAdapter.execute(
+    'UPDATE transcripts SET deleted_at = $1, deleted_reason = $2, updated_at = $3 WHERE id = $4',
+    [now, reason, now, transcriptId]
+  );
+
+  return { success: true, deleted: true };
+}
+
+/**
+ * Soft delete multiple transcripts
+ * @param {Array<string>} transcriptIds - Array of transcript IDs to delete
+ * @param {string} reason - Deletion reason
+ * @returns {Object} - { success: boolean, deletedCount: number, errors: Array }
+ */
+async function softDeleteTranscripts(transcriptIds, reason = 'manual') {
+  if (!Array.isArray(transcriptIds) || transcriptIds.length === 0) {
+    return { success: false, deletedCount: 0, errors: ['No transcript IDs provided'] };
+  }
+
+  let deletedCount = 0;
+  const errors = [];
+
+  for (const id of transcriptIds) {
+    try {
+      const result = await softDeleteTranscript(id, reason);
+      if (result.deleted) {
+        deletedCount++;
+      } else if (result.error) {
+        errors.push({ id, error: result.error });
+      }
+    } catch (error) {
+      errors.push({ id, error: error.message });
+    }
+  }
+
+  return {
+    success: errors.length === 0,
+    deletedCount,
+    errors
+  };
+}
+
+/**
+ * Restore a soft-deleted transcript
+ * @param {string} transcriptId - Internal transcript ID
+ * @returns {Object} - { success: boolean, restored: boolean }
+ */
+async function restoreTranscript(transcriptId) {
+  const existing = await getTranscriptById(transcriptId);
+  if (!existing) {
+    return { success: false, restored: false, error: 'Transcript not found' };
+  }
+
+  if (!existing.deleted_at) {
+    return { success: false, restored: false, error: 'Transcript is not deleted' };
+  }
+
+  const now = new Date().toISOString();
+  await dbAdapter.execute(
+    'UPDATE transcripts SET deleted_at = NULL, deleted_reason = NULL, updated_at = $1 WHERE id = $2',
+    [now, transcriptId]
+  );
+
+  return { success: true, restored: true };
+}
+
+/**
+ * Get deleted transcripts
+ * @param {number} limit - Maximum number to return
+ * @param {number} offset - Offset for pagination
+ * @param {Object} filters - Optional filters (startDate, endDate, repFilter)
+ */
+async function getDeletedTranscripts(limit = 100, offset = 0, filters = {}) {
+  const { startDate, endDate, repFilter } = filters;
+
+  const conditions = ['deleted_at IS NOT NULL'];
+  const params = [];
+  let paramIndex = 1;
+
+  if (startDate) {
+    conditions.push(`DATE(call_datetime) >= $${paramIndex}`);
+    params.push(startDate);
+    paramIndex++;
+  }
+  if (endDate) {
+    conditions.push(`DATE(call_datetime) <= $${paramIndex}`);
+    params.push(endDate);
+    paramIndex++;
+  }
+  if (repFilter && repFilter !== 'all') {
+    conditions.push(`LOWER(rep_name) LIKE $${paramIndex}`);
+    params.push(`%${repFilter.toLowerCase()}%`);
+    paramIndex++;
+  }
+
+  const whereClause = `WHERE ${conditions.join(' AND ')}`;
+
+  params.push(limit, offset);
+  const result = await dbAdapter.query(
+    `SELECT * FROM transcripts ${whereClause} ORDER BY deleted_at DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
+    params
+  );
+
+  return result.rows.map(parseJsonFields);
+}
+
+/**
+ * Get count of deleted transcripts
+ * @param {Object} filters - Optional filters
+ */
+async function getDeletedTranscriptCount(filters = {}) {
+  const { startDate, endDate, repFilter } = filters;
+
+  const conditions = ['deleted_at IS NOT NULL'];
+  const params = [];
+  let paramIndex = 1;
+
+  if (startDate) {
+    conditions.push(`DATE(call_datetime) >= $${paramIndex}`);
+    params.push(startDate);
+    paramIndex++;
+  }
+  if (endDate) {
+    conditions.push(`DATE(call_datetime) <= $${paramIndex}`);
+    params.push(endDate);
+    paramIndex++;
+  }
+  if (repFilter && repFilter !== 'all') {
+    conditions.push(`LOWER(rep_name) LIKE $${paramIndex}`);
+    params.push(`%${repFilter.toLowerCase()}%`);
+    paramIndex++;
+  }
+
+  const whereClause = `WHERE ${conditions.join(' AND ')}`;
+
+  const count = await dbAdapter.queryScalar(
+    `SELECT COUNT(*) as count FROM transcripts ${whereClause}`,
+    params
+  );
+
+  return parseInt(count) || 0;
+}
+
+/**
  * Save a transcript to the database
+ * Respects deleted state: if a transcript is already deleted, it stays deleted on re-sync.
+ * Applies auto-delete rules for new transcripts.
  * @param {Object} transcript - Transcript data from Fireflies
+ * @param {Object} options - Options { skipAutoDelete: boolean }
  * @returns {Object} - Saved transcript with ID
  */
-async function saveTranscript(transcript) {
+async function saveTranscript(transcript, options = {}) {
+  const { skipAutoDelete = false } = options;
   const id = transcript.id || uuidv4();
   const now = new Date().toISOString();
 
@@ -97,7 +295,8 @@ async function saveTranscript(transcript) {
   const existing = await getTranscriptByFirefliesId(transcript.fireflies_id);
 
   if (existing) {
-    // Update existing transcript
+    // If already deleted, keep it deleted (don't resurrect on re-sync)
+    // Just update metadata but preserve deleted state
     await dbAdapter.execute(`
       UPDATE transcripts SET
         call_title = $1,
@@ -123,16 +322,28 @@ async function saveTranscript(transcript) {
       transcript.fireflies_id
     ]);
 
-    return { ...existing, ...transcript, updated: true };
+    // Return with existing deleted state preserved
+    return {
+      ...existing,
+      ...transcript,
+      updated: true,
+      deleted_at: existing.deleted_at,
+      deleted_reason: existing.deleted_reason,
+      wasAlreadyDeleted: !!existing.deleted_at
+    };
   }
 
-  // Insert new transcript
+  // For new transcripts, check if should be auto-deleted
+  const autoDeleteReason = skipAutoDelete ? null : shouldAutoDelete(transcript.call_title);
+
+  // Insert new transcript (with auto-delete fields if applicable)
   await dbAdapter.execute(`
     INSERT INTO transcripts (
       id, fireflies_id, call_title, call_datetime, duration_seconds,
       rep_name, rep_email, participants, transcript_text, source_url,
+      deleted_at, deleted_reason,
       created_at, updated_at
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
   `, [
     id,
     transcript.fireflies_id,
@@ -144,11 +355,19 @@ async function saveTranscript(transcript) {
     JSON.stringify(transcript.participants || []),
     transcript.transcript_text || null,
     transcript.source_url || null,
+    autoDeleteReason ? now : null,          // deleted_at
+    autoDeleteReason || null,                // deleted_reason
     now,
     now
   ]);
 
-  return { ...transcript, id, created: true };
+  return {
+    ...transcript,
+    id,
+    created: true,
+    autoDeleted: !!autoDeleteReason,
+    deleted_reason: autoDeleteReason
+  };
 }
 
 /**
@@ -182,18 +401,23 @@ async function getExistingFirefliesIds() {
 }
 
 /**
- * Get recent transcripts
+ * Get recent transcripts (excludes deleted calls by default)
  * @param {number} limit - Maximum number of transcripts to return
  * @param {number} offset - Offset for pagination
- * @param {Object} filters - Optional filters (startDate, endDate, repFilter)
+ * @param {Object} filters - Optional filters (startDate, endDate, repFilter, includeDeleted)
  */
 async function getRecentTranscripts(limit = 20, offset = 0, filters = {}) {
-  const { startDate, endDate, repFilter } = filters;
+  const { startDate, endDate, repFilter, includeDeleted = false } = filters;
 
   // Build WHERE clause based on filters
+  // Always exclude deleted calls unless explicitly requested
   const conditions = [];
   const params = [];
   let paramIndex = 1;
+
+  if (!includeDeleted) {
+    conditions.push('deleted_at IS NULL');
+  }
 
   if (startDate) {
     conditions.push(`DATE(call_datetime) >= $${paramIndex}`);
@@ -223,15 +447,19 @@ async function getRecentTranscripts(limit = 20, offset = 0, filters = {}) {
 }
 
 /**
- * Get transcript count
- * @param {Object} filters - Optional filters (startDate, endDate, repFilter)
+ * Get transcript count (excludes deleted calls by default)
+ * @param {Object} filters - Optional filters (startDate, endDate, repFilter, includeDeleted)
  */
 async function getTranscriptCount(filters = {}) {
-  const { startDate, endDate, repFilter } = filters;
+  const { startDate, endDate, repFilter, includeDeleted = false } = filters;
 
   const conditions = [];
   const params = [];
   let paramIndex = 1;
+
+  if (!includeDeleted) {
+    conditions.push('deleted_at IS NULL');
+  }
 
   if (startDate) {
     conditions.push(`DATE(call_datetime) >= $${paramIndex}`);
@@ -390,7 +618,7 @@ async function hasAnalysis(transcriptId, minVersion = 1) {
 }
 
 /**
- * Get transcripts that need analysis
+ * Get transcripts that need analysis (excludes deleted calls)
  * @param {number} limit - Maximum number to return
  * @param {number} minVersion - Minimum analysis version (transcripts below this need re-analysis)
  */
@@ -399,6 +627,7 @@ async function getTranscriptsNeedingAnalysis(limit = 10, minVersion = 1) {
     SELECT * FROM transcripts
     WHERE (analysis_version IS NULL OR analysis_version < $1)
     AND transcript_text IS NOT NULL AND transcript_text != ''
+    AND deleted_at IS NULL
     ORDER BY call_datetime DESC
     LIMIT $2
   `, [minVersion, limit]);
@@ -1143,7 +1372,7 @@ async function updateClassificationOverride(transcriptId, classification) {
   // Validate classification value
   const validValues = ['SALES', 'NOT_SALES', null];
   if (!validValues.includes(classification)) {
-    throw new Error(`Invalid classification value. Must be 'SALES', 'NOT_SALES', or null`);
+    throw new Error('Invalid classification value. Must be SALES, NOT_SALES, or null');
   }
 
   await dbAdapter.execute(`
@@ -1959,6 +2188,13 @@ module.exports = {
   deleteTranscript,
   deleteTranscripts,
   getTranscriptsByIds,
+  // Soft delete / restore operations
+  shouldAutoDelete,
+  softDeleteTranscript,
+  softDeleteTranscripts,
+  restoreTranscript,
+  getDeletedTranscripts,
+  getDeletedTranscriptCount,
   // Classification
   updateClassificationOverride,
   // Token usage
