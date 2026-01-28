@@ -167,7 +167,7 @@
       background: var(--color-surface);
       border-radius: var(--radius-lg);
       border: 1px solid var(--color-border);
-      overflow: hidden;
+      overflow-x: auto;
     }
 
     .leads-header {
@@ -909,14 +909,14 @@
       color: var(--color-text-primary);
     }
 
-    /* Analysis Button */
+    /* Analysis Button - matches design system primary colors */
     .analyze-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: var(--space-2);
       padding: var(--space-2) var(--space-3);
-      background: linear-gradient(135deg, var(--color-primary), #4f46e5);
+      background: var(--color-primary);
       color: white;
       border: none;
       border-radius: var(--radius-md);
@@ -924,18 +924,18 @@
       font-weight: 600;
       cursor: pointer;
       transition: all var(--transition-fast);
-      box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
+      box-shadow: 0 2px 4px rgba(7, 59, 85, 0.15);
     }
 
     .analyze-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
+      background: var(--color-primary-hover);
+      box-shadow: 0 4px 8px rgba(7, 59, 85, 0.2);
     }
 
     .analyze-btn:disabled {
       opacity: 0.6;
       cursor: not-allowed;
-      transform: none;
+      background: var(--color-text-muted);
     }
 
     .analyze-btn svg {
@@ -976,26 +976,29 @@
       to { transform: rotate(360deg); }
     }
 
-    /* Unified Analyze Modal */
+    /* Unified Analyze Modal - Larger and cleaner */
     .modal.analyze-modal {
-      max-width: 480px;
+      max-width: 580px;
+      padding: var(--space-6) var(--space-8);
     }
 
-    .analyze-modal .modal-header {
+    .analyze-modal .analyze-modal-header {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
       margin-bottom: var(--space-5);
     }
 
     .analyze-modal .modal-title {
       margin: 0;
+      text-align: left;
     }
 
     .analyze-modal .modal-subtitle {
       font-size: var(--text-sm);
       color: var(--color-text-secondary);
       margin-top: var(--space-1);
+      text-align: left;
     }
 
     .analyze-modal .close-btn {
@@ -1006,6 +1009,7 @@
       color: var(--color-text-muted);
       border-radius: var(--radius-sm);
       transition: all var(--transition-fast);
+      flex-shrink: 0;
     }
 
     .analyze-modal .close-btn:hover {
@@ -1013,14 +1017,28 @@
       color: var(--color-text-primary);
     }
 
-    /* Model Cards - Side by side layout */
+    .analyze-modal .modal-body {
+      text-align: left;
+      padding: var(--space-4) 0;
+    }
+
+    .analyze-modal .modal-section-label {
+      text-align: left;
+      font-weight: 600;
+      margin-bottom: var(--space-4);
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-3);
+    }
+
+    /* Model Cards - Side by side layout with more space */
     .model-cards {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: var(--space-3);
+      gap: var(--space-4);
     }
 
-    @media (max-width: 500px) {
+    @media (max-width: 560px) {
       .model-cards {
         grid-template-columns: 1fr;
       }
@@ -1029,13 +1047,14 @@
     .model-card {
       display: flex;
       align-items: center;
-      gap: var(--space-4);
+      gap: var(--space-3);
       padding: var(--space-4);
       border: 2px solid var(--color-border);
       border-radius: var(--radius-lg);
       background: var(--color-surface);
       cursor: pointer;
       transition: all var(--transition-fast);
+      min-height: 80px;
     }
 
     .model-card:hover {
@@ -1049,13 +1068,15 @@
     }
 
     .model-card .model-icon-wrap {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
       border-radius: var(--radius-md);
       display: flex;
       align-items: center;
       justify-content: center;
       background: var(--color-surface-secondary);
+      overflow: hidden;
     }
 
     .model-card.selected .model-icon-wrap {
@@ -1063,25 +1084,29 @@
     }
 
     .model-card .model-icon {
-      width: 28px;
-      height: 28px;
+      width: 36px;
+      height: 36px;
       object-fit: contain;
     }
 
     .model-card .model-info {
       flex: 1;
+      min-width: 0;
+      text-align: left;
     }
 
     .model-card .model-name {
       font-weight: 600;
       font-size: var(--text-sm);
       color: var(--color-text-primary);
-      margin-bottom: var(--space-1);
+      margin-bottom: 2px;
+      white-space: nowrap;
     }
 
     .model-card .model-desc {
       font-size: var(--text-xs);
       color: var(--color-text-muted);
+      white-space: nowrap;
     }
 
     .model-card .model-check {
@@ -1165,14 +1190,15 @@
       color: var(--color-text-secondary);
     }
 
-    /* Analyzed Button State (Green) */
+    /* Analyzed Button State (Green) - uses design system success color */
     .analyze-btn.analyzed {
-      background: linear-gradient(135deg, var(--color-success), #059669);
-      box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+      background: var(--color-success);
+      box-shadow: 0 2px 4px rgba(13, 148, 136, 0.15);
     }
 
     .analyze-btn.analyzed:hover {
-      box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+      background: #0a7d73;
+      box-shadow: 0 4px 8px rgba(13, 148, 136, 0.2);
     }
 
     /* Analysis Metadata in Table Row */
@@ -1433,7 +1459,6 @@
               <tr>
                 <th style="width: 30px;"></th>
                 <th>Lead</th>
-                <th>Company</th>
                 <th>Website</th>
                 <th>Pre-Call Score</th>
                 <th>Scheduled</th>
@@ -1442,7 +1467,7 @@
             </thead>
             <tbody id="upcoming-tbody">
               <tr>
-                <td colspan="7">
+                <td colspan="6">
                   <div class="empty-state">
                     <div class="empty-state-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
                     <div class="empty-state-title">No upcoming calls</div>
@@ -1467,9 +1492,7 @@
               <tr>
                 <th style="width: 30px;"></th>
                 <th>Lead</th>
-                <th>Company</th>
                 <th>Website</th>
-                <th>Pre-Call Score</th>
                 <th>Post-Call Score</th>
                 <th>Call Date</th>
                 <th>Deal Stage</th>
@@ -1478,7 +1501,7 @@
             </thead>
             <tbody id="past-tbody">
               <tr>
-                <td colspan="9">
+                <td colspan="7">
                   <div class="empty-state">
                     <div class="empty-state-title">No past calls</div>
                     <p>Past calls will appear here after the scheduled time.</p>
@@ -1543,6 +1566,14 @@
             <div class="status-title" id="transcript-status-title">Transcript Available</div>
             <div class="status-subtitle" id="transcript-status-subtitle">Linked from Calls tab</div>
           </div>
+          <button id="btn-fetch-fireflies" class="ds-btn ds-btn-secondary ds-btn-sm" style="display: none; margin-left: auto;" onclick="fetchFromFireflies()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Fetch from Fireflies
+          </button>
         </div>
 
         <div class="modal-section-label">Choose Analysis Model</div>
@@ -1797,7 +1828,7 @@
       if (upcomingLeads.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="7">
+            <td colspan="6">
               <div class="empty-state">
                 <div class="empty-state-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
                 <div class="empty-state-title">No upcoming calls</div>
@@ -1820,7 +1851,6 @@
             <div style="font-weight: 500;">${escapeHtml(lead.inviteeName || 'Unknown')}</div>
             <div style="font-size: var(--text-xs); color: var(--color-text-muted);">${escapeHtml(lead.inviteeEmail)}</div>
           </td>
-          <td>${escapeHtml(lead.companyName || '-')}</td>
           <td>
             ${lead.website ? `<a href="${ensureHttps(lead.website)}" target="_blank" onclick="event.stopPropagation();" style="color: var(--color-primary);">${truncateUrl(lead.website)}</a>` : '-'}
           </td>
@@ -1844,7 +1874,7 @@
           </td>
         </tr>
         <tr class="lead-detail" id="detail-upcoming-${lead.id}">
-          <td colspan="7">
+          <td colspan="6">
             <div class="lead-detail-content">
               ${renderLeadDetail(lead, false)}
             </div>
@@ -1853,7 +1883,7 @@
       `).join('');
     }
 
-    // Render past leads table
+    // Render past leads table (no Pre-Call Score column)
     function renderPastLeads() {
       const tbody = document.getElementById('past-tbody');
       document.getElementById('past-leads-count').textContent = `${pastLeads.length} leads`;
@@ -1861,7 +1891,7 @@
       if (pastLeads.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="9">
+            <td colspan="7">
               <div class="empty-state">
                 <div class="empty-state-title">No past calls</div>
                 <p>Past calls will appear here after the scheduled time.</p>
@@ -1874,7 +1904,6 @@
 
       tbody.innerHTML = pastLeads.map(lead => {
         const hasAnalysis = lead.transcriptAnalysisJson || lead.postCallScore;
-        const analysisModel = getAnalysisModel(lead);
         const analysisDate = lead.transcriptAnalyzedAt;
 
         return `
@@ -1888,11 +1917,9 @@
             <div style="font-weight: 500;">${escapeHtml(lead.inviteeName || 'Unknown')}</div>
             <div style="font-size: var(--text-xs); color: var(--color-text-muted);">${escapeHtml(lead.inviteeEmail)}</div>
           </td>
-          <td>${escapeHtml(lead.companyName || '-')}</td>
           <td>
             ${lead.website ? `<a href="${ensureHttps(lead.website)}" target="_blank" onclick="event.stopPropagation();" style="color: var(--color-primary);">${truncateUrl(lead.website)}</a>` : '-'}
           </td>
-          <td>${renderScoreBadge(lead)}</td>
           <td>
             ${renderPostCallScore(lead)}
             ${hasAnalysis && analysisDate ? `<div class="analysis-meta">${formatShortDate(analysisDate)}</div>` : ''}
@@ -1916,7 +1943,7 @@
           </td>
         </tr>
         <tr class="lead-detail" id="detail-past-${lead.id}">
-          <td colspan="9">
+          <td colspan="7">
             <div class="lead-detail-content">
               ${renderLeadDetail(lead, true)}
             </div>
@@ -2433,7 +2460,9 @@
       const text = document.getElementById('refresh-text');
 
       btn.disabled = true;
-      text.textContent = 'Syncing...';
+
+      // Step 1: Fetching from Calendly
+      text.innerHTML = '<span style="display: inline-flex; align-items: center; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>Fetching Calendly...</span>';
 
       try {
         const response = await fetch('/api/lead-quality/sync', {
@@ -2450,21 +2479,28 @@
         const data = await response.json();
 
         if (data.success) {
-          text.textContent = `Synced ${data.data.synced}!`;
+          // Step 2: Analyzing with Perplexity (show progress)
+          if (data.data.analyzed > 0) {
+            text.innerHTML = '<span style="display: inline-flex; align-items: center; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>Analyzing leads...</span>';
+            await new Promise(resolve => setTimeout(resolve, 500));
+          }
+
+          // Step 3: Done
+          text.innerHTML = `<span style="color: var(--color-success);">✓ Synced ${data.data.synced}, analyzed ${data.data.analyzed}</span>`;
           await loadLeads();
         } else {
-          text.textContent = 'Error';
+          text.innerHTML = '<span style="color: var(--color-danger);">✗ Error</span>';
           alert(data.error || 'Sync failed. Check if Calendly API key is configured in Railway environment variables.');
         }
       } catch (err) {
         console.error('Sync failed:', err);
-        text.textContent = 'Error';
+        text.innerHTML = '<span style="color: var(--color-danger);">✗ Error</span>';
         alert('Sync failed: ' + err.message);
       } finally {
         setTimeout(() => {
           btn.disabled = false;
           text.textContent = 'Sync Leads';
-        }, 2000);
+        }, 3000);
       }
     }
 
@@ -2541,6 +2577,19 @@
       // Hide loading bar and status
       document.getElementById('analyze-loading-bar').classList.remove('active');
       document.getElementById('analyze-status').style.display = 'none';
+      document.getElementById('analyze-status').style.color = ''; // Reset color
+
+      // Hide fetch button (will be shown if needed)
+      document.getElementById('btn-fetch-fireflies').style.display = 'none';
+      document.getElementById('btn-fetch-fireflies').disabled = false;
+      document.getElementById('btn-fetch-fireflies').innerHTML = `
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Fetch from Fireflies
+      `;
 
       // Show modal first (for responsiveness)
       document.getElementById('analyzeModal').classList.add('active');
@@ -2587,9 +2636,12 @@
             transcriptStatusSection.className = 'transcript-status-modal unavailable';
             transcriptStatusIcon.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
             transcriptStatusTitle.textContent = 'No Transcript Found';
-            transcriptStatusSubtitle.textContent = 'Sync calls or manually link a transcript first';
+            transcriptStatusSubtitle.textContent = 'Click "Fetch from Fireflies" to get transcript';
 
-            // Disable analysis button
+            // Show Fetch from Fireflies button
+            document.getElementById('btn-fetch-fireflies').style.display = 'inline-flex';
+
+            // Disable analysis button (need transcript first)
             document.getElementById('btn-run-analysis').disabled = true;
             document.getElementById('btn-run-analysis').innerHTML = `
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
@@ -2673,40 +2725,23 @@
           statusDiv.textContent = '✓ Analysis complete!';
           statusDiv.style.color = 'var(--color-success)';
 
+          // Store IDs before closing modal
+          const leadId = currentAnalyzeLeadId;
+          const leadType = currentAnalyzeLeadType;
+
           // Reload leads data to get updated analysis
           await loadLeads();
 
-          // IMPORTANT: Keep the detail panel open and update its content
-          // Find and re-expand the detail row
-          const detailId = `${currentAnalyzeLeadType}-${currentAnalyzeLeadId}`;
-          const detailRow = document.getElementById(`detail-${detailId}`);
-          const chevron = document.getElementById(`chevron-${detailId}`);
-
-          if (detailRow) {
-            // Re-render the detail content with new data
-            const updatedLead = allLeads.find(l => l.id === currentAnalyzeLeadId);
-            if (updatedLead) {
-              const isPast = currentAnalyzeLeadType === 'past';
-              detailRow.querySelector('.lead-detail-content').innerHTML = renderLeadDetail(updatedLead, isPast);
-            }
-
-            // Ensure it stays expanded
-            detailRow.classList.add('expanded');
-            if (chevron) chevron.style.transform = 'rotate(90deg)';
-          }
-
-          // Reset button but keep modal open
+          // Auto-close modal after brief success message
           setTimeout(() => {
-            btn.disabled = false;
-            btn.innerHTML = `
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
-                <polygon points="5 3 19 12 5 21 5 3"></polygon>
-              </svg>
-              Run Again
-            `;
+            closeAnalyzeModal();
             loadingBar.classList.remove('active');
             isAnalyzing = false;
-          }, 1500);
+
+            // Expand the lead detail row to show results
+            const detailId = `${leadType}-${leadId}`;
+            toggleDetail(detailId, true); // Force open
+          }, 800);
 
         } else {
           throw new Error(data.error || 'Analysis failed');
@@ -2734,6 +2769,101 @@
       currentAnalyzeLeadType = null;
       isAnalyzing = false;
       document.getElementById('analyzeModal').classList.remove('active');
+      // Hide fetch button when closing
+      document.getElementById('btn-fetch-fireflies').style.display = 'none';
+    }
+
+    // Fetch transcript from Fireflies
+    async function fetchFromFireflies() {
+      if (!currentAnalyzeLeadId) return;
+
+      const btn = document.getElementById('btn-fetch-fireflies');
+      const statusDiv = document.getElementById('analyze-status');
+      const transcriptStatusIcon = document.getElementById('transcript-status-icon');
+      const transcriptStatusTitle = document.getElementById('transcript-status-title');
+      const transcriptStatusSubtitle = document.getElementById('transcript-status-subtitle');
+
+      // Show loading state on button
+      btn.disabled = true;
+      btn.innerHTML = `
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px; animation: spin 1s linear infinite;">
+          <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+        </svg>
+        Fetching...
+      `;
+
+      // Update transcript status section
+      transcriptStatusIcon.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>';
+      transcriptStatusTitle.textContent = 'Fetching transcript...';
+      transcriptStatusSubtitle.textContent = 'Searching Fireflies for matching call';
+
+      try {
+        const response = await fetch(`/api/lead-quality/fetch-transcript/${currentAnalyzeLeadId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ source: 'fireflies', syncToCallsTab: true, autoAnalyze: false })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Update transcript status to available
+          const transcriptStatusSection = document.getElementById('transcript-status-section');
+          transcriptStatusSection.className = 'transcript-status-modal available';
+          transcriptStatusIcon.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+          transcriptStatusTitle.textContent = 'Transcript Fetched';
+          transcriptStatusSubtitle.textContent = `From Fireflies: ${data.data?.transcriptTitle || 'call transcript'}`;
+
+          // Hide fetch button
+          btn.style.display = 'none';
+
+          // Enable analysis button
+          document.getElementById('btn-run-analysis').disabled = false;
+          document.getElementById('btn-run-analysis').innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            Run Analysis
+          `;
+
+          // Update current transcript status
+          currentTranscriptStatus = { hasTranscript: true };
+
+        } else {
+          // Show error
+          transcriptStatusIcon.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+          transcriptStatusTitle.textContent = 'Fetch Failed';
+          transcriptStatusSubtitle.textContent = data.error || 'No matching transcript found in Fireflies';
+
+          // Reset button
+          btn.disabled = false;
+          btn.innerHTML = `
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Retry Fetch
+          `;
+        }
+      } catch (err) {
+        console.error('Fetch from Fireflies failed:', err);
+        transcriptStatusIcon.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+        transcriptStatusTitle.textContent = 'Fetch Error';
+        transcriptStatusSubtitle.textContent = err.message;
+
+        // Reset button
+        btn.disabled = false;
+        btn.innerHTML = `
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Retry Fetch
+        `;
+      }
     }
 
     // Legacy function for backward compatibility - redirects to new modal

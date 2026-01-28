@@ -92,11 +92,47 @@ Enhanced Past Calls analysis with improved UX, transcript linkage, and Deal Stag
 
 **Tests:** 16 new tests (website extraction, generic domain exclusion)
 
+#### P1.9 - Lead Quality Scoring Flow Fixes - COMPLETE (2026-01-28)
+
+Fixed regression where calls were not being analyzed on add and scores weren't being stored.
+
+**Implemented:**
+- `canAnalyzeLead()` - validates email + name required before analysis
+- `isGenericEmailDomain()` - filters generic domains from website field
+- `detectAffiliateAgency()` - detects if company IS an affiliate agency
+- `scoreAffiliateReadiness()` - updated to give 3/3 for affiliate agencies
+- Auto-analyze when transcript is linked to a lead
+- Model selection for link-transcript endpoint (gpt-5-nano or perplexity-sonar)
+- Button styling fixed to match design system colors
+
+**Files:**
+- Modified: `leadQualityService.js` (new detection functions, validation)
+- Modified: `routes/leadQuality.js` (model selection in link-transcript)
+- Modified: `lead-quality.html` (button styling)
+- Modified: `__tests__/leadQualityService.test.js` (17 new tests)
+
+**Tests:** 33 total tests (17 new for agency detection, validation, scoring)
+
 #### P1.8 - MRR Tracker Dashboard - REMOVED (2026-01-28)
 
 ~~MRR tracker feature was implemented but later removed.~~
 
 **Status:** Feature removed per user request. All MRR-related code, routes, and UI have been deleted.
+
+#### P1.10 - Lead Quality Final Polish - COMPLETE (2026-01-28)
+
+UI polish and bug fixes for the Lead Quality tab.
+
+**Implemented:**
+- Modal padding fix (580px width, horizontal padding for model cards)
+- Sync visual feedback ("Fetching Calendly..." spinner, "Analyzing leads..." phase, success/error messages)
+- Removed Company column from both Upcoming and Past Calls tables
+- Fixed table overflow (Past Calls now scrolls horizontally to show all columns)
+
+**Files:**
+- Modified: `lead-quality.html` (CSS, JS updates)
+
+**Tests:** Smoke tested via Claude MCP browser automation
 
 ### P2 - Nice-to-have / Polish
 

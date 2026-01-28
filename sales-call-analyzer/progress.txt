@@ -2,7 +2,223 @@
 
 Last Updated: 2026-01-28
 
-## Current Status: Lead Quality Tab Enhancements - Complete
+## Current Status: Lead Quality Final Polish - Complete
+
+---
+
+## Lead Quality Final Polish (2026-01-28)
+
+### IMPROVEMENTS IMPLEMENTED
+
+1. **Modal Padding Fix**
+   - Increased modal width from 560px to 580px
+   - Added horizontal padding (var(--space-8)) for better spacing
+   - Left-aligned modal body and section labels
+   - Model selection cards now have proper breathing room
+
+2. **Sync Visual Feedback**
+   - Sync button now shows "Fetching Calendly..." with animated spinner during sync
+   - Shows "Analyzing leads..." phase when Perplexity analysis runs
+   - Shows success message "✓ Synced X, analyzed Y" in green
+   - Shows error message in red if sync fails
+   - Button auto-resets to "Sync Leads" after 3 seconds
+
+3. **Removed Company Column**
+   - Removed Company column from Upcoming Calls table header
+   - Removed Company column from Past Calls table header
+   - Updated renderUpcomingLeads() to exclude company cell
+   - Updated renderPastLeads() to exclude company cell
+   - Updated empty state colspan values accordingly
+
+4. **Fixed Table Overflow Issue**
+   - Changed `.leads-section` from `overflow: hidden` to `overflow-x: auto`
+   - Past Calls table now scrolls horizontally when columns exceed container width
+   - All 7 columns now visible: Lead, Website, Post-Call Score, Call Date, Deal Stage, Actions
+
+### FILES CHANGED
+- `backend/public/admin/lead-quality.html` - CSS and JS updates
+
+### VERIFICATION (Smoke Test via MCP)
+- ✅ Modal padding looks correct with proper spacing around model cards
+- ✅ Sync shows "Fetching Calendly..." spinner during operation
+- ✅ Company column removed from both Upcoming and Past Calls tables
+- ✅ Past Calls table scrolls horizontally, all columns visible
+- ✅ Analyze button opens modal with correct padding
+
+---
+
+## Lead Quality UI/UX Improvements (2026-01-28)
+
+### IMPROVEMENTS IMPLEMENTED
+
+1. **Agency Detection Extended**
+   - Expanded `AFFILIATE_AGENCY_KEYWORDS` to include marketing agencies
+   - New keywords: 'marketing agency', 'digital marketing agency', 'performance marketing agency', 'growth agency', 'media agency', 'advertising agency', 'ad agency'
+   - Both affiliate and marketing agencies now get 3/3 readiness score
+
+2. **Removed Pre-Call Score from Past Calls Table**
+   - Past calls don't need pre-call score column (only relevant for upcoming calls)
+   - Removed from table header and render function
+
+3. **Fetch from Fireflies Button**
+   - New button appears in Analyze modal when no transcript is found
+   - Calls `/api/lead-quality/fetch-transcript/:id` endpoint
+   - Shows loading state while fetching
+   - Updates transcript status and enables analysis when successful
+   - Allows retry on failure
+
+4. **Modal Improvements**
+   - Increased modal width from 480px to 560px
+   - Left-aligned text in model cards
+   - Increased model icon wrapper to 52x52px (prevents logo cutoff)
+   - Auto-close modal after successful analysis (800ms delay)
+   - Auto-expand lead detail row to show results after analysis
+
+5. **Transcript Status in Modal**
+   - Shows "Checking transcript..." while loading
+   - Shows "Transcript Available" with green checkmark when found
+   - Shows "No Transcript Found" with option to fetch from Fireflies
+   - Shows transcript source (Calls tab or Fireflies)
+
+### FILES CHANGED
+- `backend/services/leadQualityService.js` - Extended agency detection keywords
+- `backend/public/admin/lead-quality.html` - Modal improvements, fetch button, UI fixes
+
+### VERIFICATION
+- All 33 automated tests pass
+- Modal opens correctly with transcript status check
+- Fetch from Fireflies button appears when no transcript found
+- Modal auto-closes and expands lead detail after successful analysis
+
+---
+
+## Lead Quality Scoring Fixes (2026-01-28)
+
+### ROOT CAUSE
+Analysis was not running on sync because:
+1. Validation only checked Perplexity config, not email+name requirements
+2. No affiliate agency detection to force 3/3 readiness score
+3. Auto-analyze on transcript link was missing
+4. Button colors didn't match design system
+
+### FIXES IMPLEMENTED
+
+1. **Analysis Validation**
+   - Added `canAnalyzeLead()` function - requires email + name before analysis
+   - Added `isGenericEmailDomain()` - filters gmail/yahoo/outlook from website field
+   - Sync now validates lead data before attempting analysis
+
+2. **Affiliate Agency Detection (3/3 Rule)**
+   - Added `AFFILIATE_AGENCY_KEYWORDS` constant
+   - Added `detectAffiliateAgency()` function - checks company name, description, form responses
+   - Updated `scoreAffiliateReadiness()` - agencies automatically get 3/3 score
+   - Detection sources: Perplexity research, Calendly form responses, company name
+
+3. **Auto-Analyze on Transcript Link**
+   - Updated `linkTranscript()` to accept `autoAnalyze` and `model` options
+   - When transcript is linked, GPT analysis runs automatically
+   - Updated route to support model selection (gpt-5-nano or perplexity-sonar)
+
+4. **Button Styling (Design System Alignment)**
+   - Changed Analyze button from indigo gradient to design system primary (#073b55)
+   - Changed Analyzed (green) button to design system success (#0d9488)
+   - Consistent hover states and disabled states
+
+5. **Model Selection**
+   - `/api/lead-quality/link-transcript/:id` now accepts `model` parameter
+   - Valid models: 'gpt-5-nano', 'perplexity-sonar'
+   - Existing `/api/lead-quality/analyze-transcript/:id` already supported model selection
+
+### FILES CHANGED
+- `backend/services/leadQualityService.js` - Core scoring logic, new detection functions
+- `backend/routes/leadQuality.js` - Updated link-transcript route with model selection
+- `backend/public/admin/lead-quality.html` - Button styling fixes
+- `backend/__tests__/leadQualityService.test.js` - New tests for detection and validation
+
+### VERIFICATION
+- All automated tests pass (33 tests)
+- Smoke test verifies:
+  - canAnalyzeLead validation works
+  - Generic email filtering works
+  - Website fallback from business email works
+  - Affiliate agency detection works
+  - Scoring gives 3/3 for agencies
+
+### REMAINING ITEMS
+- Verify in production that Perplexity/OpenAI API keys are configured
+- Monitor sync logs for any analysis errors
+
+---
+
+## MRR Tracker Dashboard (2026-01-28)
+
+### SUMMARY
+New default landing page with Monthly Recurring Revenue tracking from Stripe.
+MRR tab is now the first tab in navigation and the default page after login.
+
+### Features Implemented:
+
+1. **MRR Dashboard as Default Tab**
+   - New mrr.html page as default landing
+   - Login redirects to /admin/mrr.html instead of /admin/
+   - MRR tab first in navigation across all pages
+
+2. **Real-time MRR Computation**
+   - Fetches all active subscriptions from Stripe API
+   - Handles pagination for accounts with many subscriptions
+   - Normalizes yearly/weekly subscriptions to monthly MRR
+   - Handles subscription quantities
+
+3. **Currency Conversion (GBP to USD)**
+   - Fetches live exchange rate from exchangerate-api.com
+   - Displays MRR in USD with exchange rate shown in legend
+   - Fallback rate (1.27) if API unavailable
+   - Stores both GBP and USD values in snapshots
+
+4. **Growth Indicators**
+   - vs Last Week: shows delta amount and percentage
+   - vs 4 Weeks Ago: shows delta amount and percentage
+   - Color-coded: green (positive), red (negative), gray (neutral)
+   - Arrow indicators for direction
+
+5. **4-Week Trend Chart**
+   - Chart.js line chart showing MRR over time
+   - Labels: "This week", "Last week", "2 weeks ago", etc.
+   - Tooltips show dollar amounts
+   - Empty state when no historical data
+
+6. **Manual Refresh**
+   - "Refresh from Stripe" button captures new snapshot
+   - Updates or creates today's snapshot
+   - Shows spinning indicator during refresh
+   - Refreshes all data and chart after capture
+
+7. **Snapshot Storage**
+   - New `mrr_snapshots` table in database
+   - Stores: date, mrr_cents (GBP), exchange_rate, mrr_usd_cents, active_subscriptions
+   - Unique constraint on snapshot_date (one per day)
+   - Index on date for fast queries
+
+### API Endpoints:
+- GET /api/mrr/current - Current MRR with growth calculations
+- GET /api/mrr/chart?weeks=4 - Chart data for trend line
+- POST /api/mrr/refresh - Capture new snapshot
+- GET /api/mrr/snapshots?weeks=4 - Historical snapshots
+- GET /api/mrr/status - Check if Stripe is configured
+
+### Files Changed:
+- Created: services/mrrSnapshotService.js
+- Created: routes/mrr.js
+- Created: public/admin/mrr.html
+- Created: __tests__/mrrSnapshotService.test.js (17 tests)
+- Modified: services/dbAdapter.js (mrr_snapshots table)
+- Modified: server.js (MRR routes)
+- Modified: public/admin/login.html (redirect to mrr.html)
+- Modified: All 12 admin HTML files (MRR nav link)
+
+### Tests:
+- 17 new tests for mrrSnapshotService.js
+- Tests cover: exchange rate fetching, MRR computation, pagination, snapshots, growth calculations
 
 ---
 
