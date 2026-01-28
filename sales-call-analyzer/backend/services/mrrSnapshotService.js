@@ -357,10 +357,10 @@ async function getChartData(weeks = 4) {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   };
 
-  // Manual fallback values for missing historical data (in USD)
-  // Used when no snapshot exists for a given week
-  const manualFallbacks = {
-    1: 11800  // Last week: $11,800
+  // Manual override values for specific weeks (in USD)
+  // i=0 is current week, i=1 is last week, i=2 is 2 weeks ago, etc.
+  const manualOverrides = {
+    1: 11800  // Last week (Jan 21): $11,800
   };
 
   for (let i = weeks - 1; i >= 0; i--) {
@@ -375,10 +375,12 @@ async function getChartData(weeks = 4) {
       return diffDays <= 7;
     });
 
-    // Use snapshot if available, otherwise use manual fallback
-    let mrrUsd = snapshot ? (snapshot.total_mrr_usd_cents / 100) : null;
-    if (mrrUsd === null && manualFallbacks[i] !== undefined) {
-      mrrUsd = manualFallbacks[i];
+    // Use manual override if specified, otherwise use snapshot
+    let mrrUsd;
+    if (manualOverrides[i] !== undefined) {
+      mrrUsd = manualOverrides[i];
+    } else {
+      mrrUsd = snapshot ? (snapshot.total_mrr_usd_cents / 100) : null;
     }
 
     dataPoints.push({
