@@ -340,21 +340,27 @@ async function getCurrentMrrWithGrowth() {
 
 /**
  * Get chart data for last N weeks
- * Returns data points with date labels (e.g., "Jan 4", "Jan 11")
- * Current week/day is at the end (rightmost position)
+ * Returns data points with date labels (e.g., "Jan 7", "Jan 14")
+ * Oldest week on left, current week on right
  * @param {number} weeks - Number of weeks
  * @returns {Promise<Object>} Chart-ready data
  */
 async function getChartData(weeks = 4) {
   const snapshots = await getSnapshots(weeks);
 
-  // Build data points - oldest first, newest (current) last
+  // Build data points - oldest first (left), newest (current) last (right)
   const dataPoints = [];
   const now = new Date();
 
   // Format date as "Jan 4", "Jan 11", etc.
   const formatDateLabel = (date) => {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
+  // Manual fallback values for missing historical data (in USD)
+  // Used when no snapshot exists for a given week
+  const manualFallbacks = {
+    1: 11800  // Last week: $11,800
   };
 
   for (let i = weeks - 1; i >= 0; i--) {
@@ -369,17 +375,22 @@ async function getChartData(weeks = 4) {
       return diffDays <= 7;
     });
 
+    // Use snapshot if available, otherwise use manual fallback
+    let mrrUsd = snapshot ? (snapshot.total_mrr_usd_cents / 100) : null;
+    if (mrrUsd === null && manualFallbacks[i] !== undefined) {
+      mrrUsd = manualFallbacks[i];
+    }
+
     dataPoints.push({
       label: formatDateLabel(weekDate),
       date: weekDateStr,
-      mrrUsd: snapshot ? (snapshot.total_mrr_usd_cents / 100) : null,
+      mrrUsd: mrrUsd,
       mrrGbp: snapshot ? (snapshot.total_mrr_cents / 100) : null,
       subscriptions: snapshot ? snapshot.active_subscriptions : null
     });
   }
 
-  // Data is already in chronological order (oldest to newest)
-  // Current week is at the end (rightmost position)
+  // Data is in chronological order: oldest (left) to newest/current (right)
   return {
     labels: dataPoints.map(d => d.label),
     mrrUsd: dataPoints.map(d => d.mrrUsd),
