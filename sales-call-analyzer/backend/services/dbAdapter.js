@@ -578,23 +578,6 @@ async function createTables() {
   await createIndexSafely('CREATE INDEX IF NOT EXISTS idx_lead_quality_booking_time ON lead_quality_scores(calendly_booking_time DESC)');
   await createIndexSafely('CREATE INDEX IF NOT EXISTS idx_lead_quality_settings_key ON lead_quality_settings(setting_key)');
 
-  // MRR snapshots table for tracking Monthly Recurring Revenue over time
-  await execute(`
-    CREATE TABLE IF NOT EXISTS mrr_snapshots (
-      id ${isUsingPostgres() ? 'SERIAL' : 'INTEGER'} PRIMARY KEY ${isUsingPostgres() ? '' : 'AUTOINCREMENT'},
-      snapshot_date DATE NOT NULL,
-      total_mrr_cents INTEGER NOT NULL,
-      currency TEXT DEFAULT 'GBP',
-      exchange_rate REAL,
-      total_mrr_usd_cents INTEGER,
-      active_subscriptions INTEGER,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      UNIQUE(snapshot_date)
-    )
-  `);
-
-  await createIndexSafely('CREATE INDEX IF NOT EXISTS idx_mrr_snapshots_date ON mrr_snapshots(snapshot_date DESC)');
-
   console.log('[DbAdapter] Tables created successfully');
 }
 

@@ -92,6 +92,12 @@ Enhanced Past Calls analysis with improved UX, transcript linkage, and Deal Stag
 
 **Tests:** 16 new tests (website extraction, generic domain exclusion)
 
+#### P1.8 - MRR Tracker Dashboard - REMOVED (2026-01-28)
+
+~~MRR tracker feature was implemented but later removed.~~
+
+**Status:** Feature removed per user request. All MRR-related code, routes, and UI have been deleted.
+
 ### P2 - Nice-to-have / Polish
 
 | # | Task | Files | Notes |

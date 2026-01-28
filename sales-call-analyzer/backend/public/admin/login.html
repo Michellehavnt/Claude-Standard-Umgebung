@@ -700,7 +700,7 @@
 
         if (response.ok) {
           // Already logged in, redirect to MRR dashboard
-          window.location.href = '/admin/mrr.html';
+          window.location.href = '/admin/';
           return true;
         }
       } catch (error) {
@@ -754,7 +754,7 @@
           showView('success');
           // Redirect to MRR dashboard after a short delay
           setTimeout(() => {
-            window.location.href = '/admin/mrr.html';
+            window.location.href = '/admin/';
           }, 1000);
         } else if (data.error === 'ACCESS_PENDING') {
           // User's access request is still pending
