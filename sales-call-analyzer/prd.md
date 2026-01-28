@@ -1998,7 +1998,7 @@ CREATE INDEX idx_stripe_domain ON stripe_customers(company_domain);
 
 ---
 
-*Document Version: 2.4*
+*Document Version: 2.5*
 *Last Updated: 2026-01-28*
 *Implementation Audit: 2026-01-28*
 *Product: AffiliateFinder.ai Sales Call Analyzer*
@@ -2011,6 +2011,22 @@ CREATE INDEX idx_stripe_domain ON stripe_customers(company_domain);
   - Added link to full transcript in Calls tab
   - Improved research sources URL display (URL-decoded, truncated)
   - Added linkedin_url column to database schema with migration
+  - Fixed dropdown menu in lead-quality.html (added Changelog and Admin sections)
+
+- **DFY Routes PostgreSQL Fix**:
+  - Fixed `/api/dfy/phil`, `/api/dfy/summary`, `/api/dfy/quality` endpoints
+  - Migrated from raw `db.exec()` (SQLite-only) to `dbAdapter.query()` (PostgreSQL compatible)
+  - Routes now work correctly on Railway (PostgreSQL) environment
+
+- **Closing Rate "Not Matched" Status**:
+  - Root cause: `stripe_data` column is NULL - enrichment pipeline not yet executed
+  - Fix: Click "Refresh" button on founder.html to run Stripe/Slack enrichment
+  - Requires: Stripe API configured with customer data for matching
+  - Matching cascade: Email exact → Domain fallback → Name fallback
+
+- **Railway Deployment**:
+  - Added `nixpacks.toml` to disable cache mounts (fixes EBUSY errors)
+  - Added `.npmrc` to redirect npm cache to `/tmp/npm-cache`
 
 ### Previous Changes (2026-01-26)
 - Added Slack lifecycle event ingestion as second data source for signup detection

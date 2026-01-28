@@ -6,6 +6,7 @@
 const express = require('express');
 const router = express.Router();
 const transcriptDb = require('../services/transcriptDb');
+const dbAdapter = require('../services/dbAdapter');
 const dfyPitchService = require('../services/dfyPitchService');
 const {
   analyzeDFYQualification,
@@ -34,31 +35,30 @@ router.get('/phil', async (req, res) => {
 
     console.log('[DFY] Fetching Phil\'s DFY pitches with filters:', filters);
 
-    // Get Phil's analyzed transcripts
-    const db = await transcriptDb.getDb();
-
-    let query = `
+    // Get Phil's analyzed transcripts using dbAdapter
+    let sql = `
       SELECT * FROM transcripts
       WHERE analysis_json IS NOT NULL
       AND analysis_version > 0
       AND LOWER(rep_name) = 'phil'
     `;
     const params = [];
+    let paramIndex = 1;
 
     if (filters.startDate) {
-      query += ' AND call_datetime >= ?';
+      sql += ` AND call_datetime >= $${paramIndex++}`;
       params.push(filters.startDate);
     }
     if (filters.endDate) {
-      query += ' AND call_datetime <= ?';
+      sql += ` AND call_datetime <= $${paramIndex++}`;
       params.push(filters.endDate + 'T23:59:59Z');
     }
 
-    query += ' ORDER BY call_datetime DESC';
+    sql += ' ORDER BY call_datetime DESC';
 
-    const result = db.exec(query, params);
+    const result = await dbAdapter.query(sql, params);
 
-    if (!result.length) {
+    if (!result.rows.length) {
       return res.json({
         success: true,
         data: {
@@ -73,8 +73,8 @@ router.get('/phil', async (req, res) => {
       });
     }
 
-    // Convert to objects
-    const transcripts = rowsToObjects(result[0]);
+    // Parse JSON fields from rows
+    const transcripts = result.rows.map(row => parseTranscriptRow(row));
 
     // Aggregate DFY pitches
     const aggregation = dfyPitchService.aggregateDFYPitches(transcripts);
@@ -187,10 +187,8 @@ router.get('/triggers', (req, res) => {
  */
 router.get('/summary', async (req, res) => {
   try {
-    const db = await transcriptDb.getDb();
-
-    // Get all Phil's analyzed transcripts
-    const result = db.exec(`
+    // Get all Phil's analyzed transcripts using dbAdapter
+    const result = await dbAdapter.query(`
       SELECT * FROM transcripts
       WHERE analysis_json IS NOT NULL
       AND analysis_version > 0
@@ -198,7 +196,7 @@ router.get('/summary', async (req, res) => {
       ORDER BY call_datetime DESC
     `);
 
-    if (!result.length) {
+    if (!result.rows.length) {
       return res.json({
         success: true,
         data: {
@@ -212,7 +210,7 @@ router.get('/summary', async (req, res) => {
       });
     }
 
-    const transcripts = rowsToObjects(result[0]);
+    const transcripts = result.rows.map(row => parseTranscriptRow(row));
     const aggregation = dfyPitchService.aggregateDFYPitches(transcripts);
 
     res.json({
@@ -294,31 +292,30 @@ router.get('/quality', async (req, res) => {
 
     console.log('[DFY] Fetching Phil\'s DFY quality data with filters:', filters);
 
-    // Get Phil's analyzed transcripts
-    const db = await transcriptDb.getDb();
-
-    let query = `
+    // Get Phil's analyzed transcripts using dbAdapter
+    let sql = `
       SELECT * FROM transcripts
       WHERE analysis_json IS NOT NULL
       AND analysis_version > 0
       AND LOWER(rep_name) = 'phil'
     `;
     const params = [];
+    let paramIndex = 1;
 
     if (filters.startDate) {
-      query += ' AND call_datetime >= ?';
+      sql += ` AND call_datetime >= $${paramIndex++}`;
       params.push(filters.startDate);
     }
     if (filters.endDate) {
-      query += ' AND call_datetime <= ?';
+      sql += ` AND call_datetime <= $${paramIndex++}`;
       params.push(filters.endDate + 'T23:59:59Z');
     }
 
-    query += ' ORDER BY call_datetime DESC';
+    sql += ' ORDER BY call_datetime DESC';
 
-    const result = db.exec(query, params);
+    const result = await dbAdapter.query(sql, params);
 
-    if (!result.length) {
+    if (!result.rows.length) {
       return res.json({
         success: true,
         data: {
@@ -329,8 +326,8 @@ router.get('/quality', async (req, res) => {
       });
     }
 
-    // Convert to objects
-    const transcripts = rowsToObjects(result[0]);
+    // Parse JSON fields from rows
+    const transcripts = result.rows.map(row => parseTranscriptRow(row));
 
     // Analyze each transcript for DFY qualification
     const qualifications = [];
@@ -495,30 +492,24 @@ router.post('/quality/reanalyze/:id', async (req, res) => {
   }
 });
 
-// Helper function to convert SQL.js result to objects
-function rowsToObjects(result) {
-  const columns = result.columns;
-  return result.values.map(row => {
-    const obj = {};
-    columns.forEach((col, i) => {
-      obj[col] = row[i];
-    });
-    if (obj.participants && typeof obj.participants === 'string') {
-      try {
-        obj.participants = JSON.parse(obj.participants);
-      } catch (e) {
-        obj.participants = [];
-      }
+// Helper function to parse JSON fields in a transcript row
+function parseTranscriptRow(row) {
+  const obj = { ...row };
+  if (obj.participants && typeof obj.participants === 'string') {
+    try {
+      obj.participants = JSON.parse(obj.participants);
+    } catch (e) {
+      obj.participants = [];
     }
-    if (obj.analysis_json && typeof obj.analysis_json === 'string') {
-      try {
-        obj.analysis = JSON.parse(obj.analysis_json);
-      } catch (e) {
-        obj.analysis = null;
-      }
+  }
+  if (obj.analysis_json && typeof obj.analysis_json === 'string') {
+    try {
+      obj.analysis = JSON.parse(obj.analysis_json);
+    } catch (e) {
+      obj.analysis = null;
     }
-    return obj;
-  });
+  }
+  return obj;
 }
 
 module.exports = router;
