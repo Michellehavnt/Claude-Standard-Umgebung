@@ -28,6 +28,7 @@ const closingRateAdjustmentsRouter = require('./routes/closingRateAdjustments');
 const enrichmentRouter = require('./routes/enrichment');
 const changelogRouter = require('./routes/changelog');
 const leadQualityRouter = require('./routes/leadQuality');
+const mrrRouter = require('./routes/mrr');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -62,6 +63,7 @@ app.use('/api/closing-rate', closingRateAdjustmentsRouter);
 app.use('/api/enrichment', enrichmentRouter);
 app.use('/api/changelog', changelogRouter);
 app.use('/api/lead-quality', leadQualityRouter);
+app.use('/api/mrr', mrrRouter);
 
 // Health check
 app.get('/health', (req, res) => {

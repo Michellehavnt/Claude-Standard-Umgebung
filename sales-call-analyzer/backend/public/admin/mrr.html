@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MRR Tracker - Sales Call Analyzer</title>
+  <link rel="stylesheet" href="design-system.css">
+  <style>
+    /* MRR-specific styles */
+
+    .mrr-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: var(--space-8) var(--space-5);
+      background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-surface-alt) 100%);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      margin-bottom: var(--space-6);
+    }
+
+    .mrr-currency-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      background: var(--color-surface-alt);
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      padding: var(--space-1) var(--space-3);
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-4);
+    }
+
+    .mrr-currency-badge svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .mrr-headline {
+      font-size: 56px;
+      font-weight: var(--weight-bold);
+      color: var(--color-primary);
+      line-height: 1;
+      margin-bottom: var(--space-2);
+      letter-spacing: -1px;
+    }
+
+    .mrr-subtitle {
+      font-size: var(--text-lg);
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: var(--weight-medium);
+      margin-bottom: var(--space-5);
+    }
+
+    .mrr-growth-indicators {
+      display: flex;
+      gap: var(--space-6);
+      margin-bottom: var(--space-5);
+    }
+
+    .mrr-growth-item {
+      text-align: center;
+    }
+
+    .mrr-growth-value {
+      font-size: var(--text-xl);
+      font-weight: var(--weight-bold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-1);
+    }
+
+    .mrr-growth-value.positive {
+      color: var(--color-success);
+    }
+
+    .mrr-growth-value.negative {
+      color: var(--color-danger);
+    }
+
+    .mrr-growth-value.neutral {
+      color: var(--color-text-muted);
+    }
+
+    .mrr-growth-label {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      margin-top: var(--space-1);
+    }
+
+    .mrr-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+    }
+
+    .mrr-meta-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .mrr-meta-item svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .mrr-actions {
+      margin-top: var(--space-5);
+    }
+
+    /* Chart section */
+    .mrr-chart-section {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+    }
+
+    .mrr-chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-5);
+      padding-bottom: var(--space-4);
+      border-bottom: 1px solid var(--color-border-light);
+    }
+
+    .mrr-chart-title {
+      font-size: var(--text-base);
+      font-weight: var(--weight-semibold);
+      color: var(--color-text-primary);
+    }
+
+    .mrr-chart-period {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+    }
+
+    .mrr-chart-container {
+      height: 280px;
+      position: relative;
+    }
+
+    .mrr-chart-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--color-text-muted);
+      gap: var(--space-3);
+    }
+
+    .mrr-chart-empty svg {
+      width: 48px;
+      height: 48px;
+      opacity: 0.5;
+    }
+
+    /* Currency legend */
+    .currency-legend {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-5);
+      margin-top: var(--space-4);
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--color-border-light);
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+    }
+
+    .currency-legend-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    /* Loading state */
+    .mrr-loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-8);
+      color: var(--color-text-muted);
+      gap: var(--space-3);
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .mrr-loading svg {
+      width: 32px;
+      height: 32px;
+      animation: spin 1s linear infinite;
+    }
+
+    /* Error state */
+    .mrr-error {
+      background: var(--color-danger-bg);
+      border: 1px solid var(--color-danger);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      text-align: center;
+      color: var(--color-danger);
+    }
+
+    /* Refresh button */
+    .btn-refresh {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      background: var(--color-primary);
+      color: var(--color-text-inverse);
+      border: none;
+      padding: var(--space-3) var(--space-5);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      font-weight: var(--weight-medium);
+      cursor: pointer;
+      transition: background var(--transition-fast);
+    }
+
+    .btn-refresh:hover {
+      background: var(--color-primary-hover);
+    }
+
+    .btn-refresh:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-refresh svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .btn-refresh.refreshing svg {
+      animation: spin 1s linear infinite;
+    }
+
+    /* Stats row */
+    .mrr-stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--space-4);
+      margin-top: var(--space-6);
+    }
+  </style>
+  <script src="/admin/js/view-mode.js"></script>
+</head>
+<body>
+  <!-- Header -->
+  <header class="ds-header">
+    <div class="ds-header-inner">
+      <a href="/admin/mrr.html" class="ds-header-logo">
+        <img src="/admin/logo.svg" alt="AffiliateFinder">
+      </a>
+      <div class="ds-header-divider"></div>
+      <nav class="ds-header-nav">
+        <a href="/admin/mrr.html" class="active">MRR</a>
+        <a href="/admin/">Calls</a>
+        <a href="/admin/lead-quality.html">Lead Quality</a>
+        <a href="/admin/copy.html">Copy</a>
+        <a href="/admin/phil.html">DFY</a>
+        <a href="/admin/founder.html">Closing Rate</a>
+      </nav>
+
+      <!-- View Mode Indicator (shown when in user view) -->
+      <div class="view-mode-indicator" id="viewModeIndicator" data-tooltip="You are viewing as a regular user">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+        <span>User view</span>
+      </div>
+
+      <!-- User Menu -->
+      <div class="ds-header-user">
+        <button class="ds-user-button" id="userMenuBtn" aria-expanded="false" aria-haspopup="true" data-tooltip="Open user menu" data-tooltip-position="left">
+          <div class="ds-user-avatar" id="userAvatar">-</div>
+          <div class="ds-user-info">
+            <span class="ds-user-name" id="userDisplayName">Loading...</span>
+            <span class="ds-user-role" id="userDisplayRole">-</span>
+          </div>
+          <svg class="ds-user-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+
+        <div class="ds-user-dropdown" id="userDropdown">
+          <div class="ds-dropdown-header">
+            <div class="ds-dropdown-email" id="userEmail">-</div>
+            <span class="ds-dropdown-role user" id="userRoleBadge">User</span>
+          </div>
+
+          <div class="ds-dropdown-section">
+            <a href="/admin/account.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              Account
+            </a>
+            <a href="/admin/settings.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              Settings
+            </a>
+            <a href="/admin/changelog.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              Changelog
+            </a>
+          </div>
+
+          <div class="ds-dropdown-divider ds-admin-only" style="display: none;"></div>
+
+          <div class="ds-dropdown-section ds-admin-only" style="display: none;">
+            <div class="ds-dropdown-label">Admin</div>
+            <a href="/admin/access-requests.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="8.5" cy="7" r="4"></circle>
+                <line x1="20" y1="8" x2="20" y2="14"></line>
+                <line x1="23" y1="11" x2="17" y2="11"></line>
+              </svg>
+              Access Requests
+            </a>
+            <a href="/admin/users.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              User Management
+            </a>
+          </div>
+
+          <!-- View Mode Toggle (admin only) -->
+          <div class="ds-dropdown-divider ds-admin-only" id="viewModeSection" style="display: none;"></div>
+          <div class="ds-dropdown-section ds-admin-only" id="viewModeToggleContainer" style="display: none;">
+            <button class="view-mode-toggle" id="viewModeToggle" onclick="ViewMode.toggleViewMode()" data-tooltip="Preview app as a regular user">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <span class="view-mode-label">User view</span>
+            </button>
+          </div>
+
+          <div class="ds-dropdown-divider"></div>
+
+          <div class="ds-dropdown-section">
+            <button class="ds-dropdown-item danger" id="logoutBtn" data-tooltip="End session via POST /api/auth/logout">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="ds-container ds-page">
+    <!-- Loading State -->
+    <div id="loadingState" class="mrr-loading">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+      </svg>
+      <span>Loading MRR data...</span>
+    </div>
+
+    <!-- Error State -->
+    <div id="errorState" class="mrr-error" style="display: none;">
+      <p id="errorMessage">Unable to load MRR data</p>
+      <button class="ds-button ds-button-outline" onclick="loadMrrData()" style="margin-top: var(--space-3);">Retry</button>
+    </div>
+
+    <!-- Not Configured State -->
+    <div id="notConfiguredState" style="display: none;">
+      <div class="ds-card" style="text-align: center; padding: var(--space-8);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 64px; height: 64px; margin: 0 auto var(--space-4); color: var(--color-text-muted);">
+          <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+          <line x1="1" y1="10" x2="23" y2="10"/>
+        </svg>
+        <h2 style="font-size: var(--text-xl); margin-bottom: var(--space-3);">Stripe Not Configured</h2>
+        <p style="color: var(--color-text-secondary); margin-bottom: var(--space-5); max-width: 400px; margin-left: auto; margin-right: auto;">
+          To view MRR data, you need to configure your Stripe API key in the Settings page.
+        </p>
+        <a href="/admin/settings.html" class="ds-button ds-button-primary">Go to Settings</a>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="mrrContent" style="display: none;">
+      <!-- Hero Section with Headline MRR -->
+      <div class="mrr-hero">
+        <div class="mrr-currency-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 6v12M8 10h8M8 14h8"/>
+          </svg>
+          <span>GBP converted to USD at <span id="exchangeRate">1.27</span></span>
+        </div>
+
+        <div class="mrr-headline" id="mrrHeadline">$0</div>
+        <div class="mrr-subtitle">Monthly Recurring Revenue</div>
+
+        <div class="mrr-growth-indicators">
+          <div class="mrr-growth-item">
+            <div class="mrr-growth-value neutral" id="growthWeek">
+              <span>--</span>
+            </div>
+            <div class="mrr-growth-label">vs last week</div>
+          </div>
+          <div class="mrr-growth-item">
+            <div class="mrr-growth-value neutral" id="growthMonth">
+              <span>--</span>
+            </div>
+            <div class="mrr-growth-label">vs 4 weeks ago</div>
+          </div>
+        </div>
+
+        <div class="mrr-meta">
+          <div class="mrr-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            <span id="lastUpdated">--</span>
+          </div>
+          <div class="mrr-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <span id="activeSubscriptions">-- active subscriptions</span>
+          </div>
+        </div>
+
+        <div class="mrr-actions">
+          <button class="btn-refresh" id="refreshBtn" onclick="refreshMrr()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"/>
+              <polyline points="1 20 1 14 7 14"/>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+            </svg>
+            Refresh from Stripe
+          </button>
+        </div>
+      </div>
+
+      <!-- Chart Section -->
+      <div class="mrr-chart-section">
+        <div class="mrr-chart-header">
+          <h2 class="mrr-chart-title">MRR Trend</h2>
+          <span class="mrr-chart-period">Last 4 weeks</span>
+        </div>
+
+        <div class="mrr-chart-container" id="chartContainer">
+          <div class="mrr-chart-empty" id="chartEmpty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 3v18h18"/>
+              <path d="M18 17l-5-5-4 4-3-3"/>
+            </svg>
+            <span>No historical data yet. Click "Refresh from Stripe" to capture the first snapshot.</span>
+          </div>
+          <canvas id="mrrChart" style="display: none;"></canvas>
+        </div>
+
+        <div class="currency-legend">
+          <div class="currency-legend-item">
+            <span>Source: Stripe API (all active subscriptions)</span>
+          </div>
+          <div class="currency-legend-item">
+            <span>Currency: GBP converted to USD</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="mrr-stats-row">
+        <div class="ds-stat-card">
+          <div class="ds-stat-value" id="mrrGbp">-</div>
+          <div class="ds-stat-label">MRR in GBP</div>
+        </div>
+        <div class="ds-stat-card">
+          <div class="ds-stat-value" id="totalSubs">-</div>
+          <div class="ds-stat-label">Active Subscriptions</div>
+        </div>
+        <div class="ds-stat-card">
+          <div class="ds-stat-value" id="avgMrr">-</div>
+          <div class="ds-stat-label">Avg Revenue/Sub</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Chart.js for simple line chart -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <script>
+    let currentUser = null;
+    let mrrChart = null;
+
+    // Auth check
+    async function checkAuth() {
+      try {
+        const response = await fetch('/api/auth/me', {
+          credentials: 'include'
+        });
+        if (!response.ok) {
+          window.location.href = '/admin/login.html';
+          return null;
+        }
+        const data = await response.json();
+        if (!data.success) {
+          window.location.href = '/admin/login.html';
+          return null;
+        }
+        return data.user;
+      } catch (error) {
+        console.error('Auth check error:', error);
+        window.location.href = '/admin/login.html';
+        return null;
+      }
+    }
+
+    // Update UI with user info
+    function updateUserUI(user) {
+      currentUser = user;
+      const initials = (user.name || user.email || '?').substring(0, 2).toUpperCase();
+      document.getElementById('userAvatar').textContent = initials;
+      document.getElementById('userDisplayName').textContent = user.name || user.email?.split('@')[0] || 'User';
+      document.getElementById('userDisplayRole').textContent = user.role || 'user';
+      document.getElementById('userEmail').textContent = user.email || '-';
+
+      const roleBadge = document.getElementById('userRoleBadge');
+      roleBadge.textContent = user.role || 'User';
+      roleBadge.className = 'ds-dropdown-role ' + (user.role === 'admin' ? 'admin' : 'user');
+
+      // Show admin sections
+      if (user.role === 'admin') {
+        document.querySelectorAll('.ds-admin-only').forEach(el => {
+          el.style.display = '';
+        });
+      }
+    }
+
+    // Format currency
+    function formatUsd(cents) {
+      if (cents === null || cents === undefined) return '--';
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }).format(cents / 100);
+    }
+
+    function formatGbp(cents) {
+      if (cents === null || cents === undefined) return '--';
+      return new Intl.NumberFormat('en-GB', {
+        style: 'currency',
+        currency: 'GBP',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }).format(cents / 100);
+    }
+
+    // Format growth value
+    function formatGrowth(deltaCents, percent) {
+      if (deltaCents === null || deltaCents === undefined) {
+        return { text: '--', class: 'neutral' };
+      }
+
+      const deltaUsd = deltaCents / 100;
+      const sign = deltaUsd >= 0 ? '+' : '';
+      const arrow = deltaUsd > 0 ? '\u2191' : deltaUsd < 0 ? '\u2193' : '';
+      const percentStr = percent !== null ? ` (${sign}${percent}%)` : '';
+
+      return {
+        text: `${arrow} ${sign}$${Math.abs(deltaUsd).toLocaleString()}${percentStr}`,
+        class: deltaUsd > 0 ? 'positive' : deltaUsd < 0 ? 'negative' : 'neutral'
+      };
+    }
+
+    // Load MRR data
+    async function loadMrrData() {
+      document.getElementById('loadingState').style.display = 'flex';
+      document.getElementById('errorState').style.display = 'none';
+      document.getElementById('notConfiguredState').style.display = 'none';
+      document.getElementById('mrrContent').style.display = 'none';
+
+      try {
+        const response = await fetch('/api/mrr/current', {
+          credentials: 'include'
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch MRR data');
+        }
+
+        const data = await response.json();
+
+        if (!data.success) {
+          // Check if it's a "not configured" error
+          if (data.error && data.error.toLowerCase().includes('not configured')) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('notConfiguredState').style.display = 'block';
+            return;
+          }
+          throw new Error(data.error || 'Failed to load MRR data');
+        }
+
+        displayMrrData(data.data);
+
+        // Load chart data
+        await loadChartData();
+
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('mrrContent').style.display = 'block';
+
+      } catch (error) {
+        console.error('Error loading MRR data:', error);
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('errorState').style.display = 'block';
+        document.getElementById('errorMessage').textContent = error.message || 'Unable to load MRR data';
+      }
+    }
+
+    // Display MRR data
+    function displayMrrData(data) {
+      const { current, growth } = data;
+
+      // Headline MRR
+      document.getElementById('mrrHeadline').textContent = formatUsd(current.mrrUsdCents);
+
+      // Exchange rate
+      document.getElementById('exchangeRate').textContent = current.exchangeRate?.toFixed(4) || '1.27';
+
+      // Growth indicators
+      const weekGrowth = formatGrowth(growth.vsLastWeek.deltaCents, growth.vsLastWeek.percent);
+      const weekEl = document.getElementById('growthWeek');
+      weekEl.innerHTML = `<span>${weekGrowth.text}</span>`;
+      weekEl.className = 'mrr-growth-value ' + weekGrowth.class;
+
+      const monthGrowth = formatGrowth(growth.vs4WeeksAgo.deltaCents, growth.vs4WeeksAgo.percent);
+      const monthEl = document.getElementById('growthMonth');
+      monthEl.innerHTML = `<span>${monthGrowth.text}</span>`;
+      monthEl.className = 'mrr-growth-value ' + monthGrowth.class;
+
+      // Meta
+      const lastUpdated = current.lastUpdated ? new Date(current.lastUpdated).toLocaleString() : 'Never';
+      document.getElementById('lastUpdated').textContent = `Updated: ${lastUpdated}`;
+      document.getElementById('activeSubscriptions').textContent = `${current.activeSubscriptions || 0} active subscriptions`;
+
+      // Stats row
+      document.getElementById('mrrGbp').textContent = formatGbp(current.mrrGbpCents);
+      document.getElementById('totalSubs').textContent = current.activeSubscriptions || 0;
+
+      const avgMrr = current.activeSubscriptions > 0
+        ? Math.round(current.mrrUsdCents / current.activeSubscriptions)
+        : 0;
+      document.getElementById('avgMrr').textContent = formatUsd(avgMrr);
+    }
+
+    // Load chart data
+    async function loadChartData() {
+      try {
+        const response = await fetch('/api/mrr/chart?weeks=4', {
+          credentials: 'include'
+        });
+
+        if (!response.ok) return;
+
+        const data = await response.json();
+
+        if (!data.success || !data.data.mrrUsd.some(v => v !== null)) {
+          document.getElementById('chartEmpty').style.display = 'flex';
+          document.getElementById('mrrChart').style.display = 'none';
+          return;
+        }
+
+        document.getElementById('chartEmpty').style.display = 'none';
+        document.getElementById('mrrChart').style.display = 'block';
+
+        renderChart(data.data);
+
+      } catch (error) {
+        console.error('Error loading chart data:', error);
+      }
+    }
+
+    // Render chart
+    function renderChart(chartData) {
+      const ctx = document.getElementById('mrrChart').getContext('2d');
+
+      if (mrrChart) {
+        mrrChart.destroy();
+      }
+
+      mrrChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: chartData.labels,
+          datasets: [{
+            label: 'MRR (USD)',
+            data: chartData.mrrUsd,
+            borderColor: '#073b55',
+            backgroundColor: 'rgba(7, 59, 85, 0.1)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 6,
+            pointBackgroundColor: '#073b55',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return '$' + (context.raw || 0).toLocaleString();
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: false,
+              ticks: {
+                callback: function(value) {
+                  return '$' + value.toLocaleString();
+                }
+              },
+              grid: {
+                color: 'rgba(0, 0, 0, 0.05)'
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Refresh MRR from Stripe
+    async function refreshMrr() {
+      const btn = document.getElementById('refreshBtn');
+      btn.disabled = true;
+      btn.classList.add('refreshing');
+
+      try {
+        const response = await fetch('/api/mrr/refresh', {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to refresh MRR');
+        }
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to refresh');
+        }
+
+        // Reload all data
+        await loadMrrData();
+
+      } catch (error) {
+        console.error('Error refreshing MRR:', error);
+        alert('Failed to refresh MRR: ' + error.message);
+      } finally {
+        btn.disabled = false;
+        btn.classList.remove('refreshing');
+      }
+    }
+
+    // User menu toggle
+    document.getElementById('userMenuBtn').addEventListener('click', function(e) {
+      e.stopPropagation();
+      const dropdown = document.getElementById('userDropdown');
+      const isOpen = dropdown.classList.contains('open');
+      dropdown.classList.toggle('open');
+      this.setAttribute('aria-expanded', !isOpen);
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.ds-header-user')) {
+        document.getElementById('userDropdown').classList.remove('open');
+        document.getElementById('userMenuBtn').setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', async function() {
+      try {
+        await fetch('/api/auth/logout', {
+          method: 'POST',
+          credentials: 'include'
+        });
+      } catch (error) {
+        console.error('Logout error:', error);
+      }
+      window.location.href = '/admin/login.html';
+    });
+
+    // Initialize
+    async function init() {
+      const user = await checkAuth();
+      if (user) {
+        updateUserUI(user);
+        await loadMrrData();
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
