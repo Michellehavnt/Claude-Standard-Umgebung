@@ -435,6 +435,7 @@
       <div class="ds-header-divider"></div>
       <nav class="ds-header-nav">
         <a href="/admin/" class="active">Calls</a>
+        <a href="/admin/lead-quality.html">Lead Quality</a>
         <a href="/admin/copy.html">Copy</a>
         <a href="/admin/phil.html">DFY</a>
         <a href="/admin/founder.html">Closing Rate</a>
@@ -616,9 +617,6 @@
           <button class="ds-btn ds-btn-secondary" id="syncBtn" onclick="triggerSync()" data-tooltip="Import new calls from Fireflies">Sync Calls</button>
           <button class="ds-btn ds-btn-secondary" id="refreshBtn" onclick="refreshFromLastSync()" data-tooltip="Fetch calls since last sync">Refresh</button>
         </div>
-      </div>
-      <div class="ds-alert ds-alert-info ds-mt-4" style="margin-bottom: 0;">
-        Existing transcripts are skipped automatically. No data will be overwritten.
       </div>
     </div>
 
@@ -1902,7 +1900,7 @@
 
       const repLabel = repFilter === 'all' ? 'all reps' : `${repFilter} only`;
       const dateLabel = preset === 'all' ? 'all time' : `${startDate} to ${endDate}`;
-      showSyncStatus(`Syncing calls (${dateLabel}, ${repLabel})...`, 'active');
+      showSyncStatus(`Syncing calls (${dateLabel}, ${repLabel})... Existing transcripts are skipped automatically.`, 'active');
 
       try {
         const response = await fetch(`${API_BASE}/sync/date-range`, {
