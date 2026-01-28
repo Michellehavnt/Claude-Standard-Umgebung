@@ -33,6 +33,7 @@
  */
 
 const transcriptDb = require('./transcriptDb');
+const dbAdapter = require('./dbAdapter');
 const analyzer = require('./analyzer');
 const slackIngestionService = require('./slackIngestionService');
 
@@ -45,39 +46,52 @@ const slackIngestionService = require('./slackIngestionService');
  * @returns {Promise<Array>} - Array of transcript objects with parsed analysis and stripe data
  */
 async function getRepSalesCalls(filters = {}) {
-  const database = await transcriptDb.getDb();
   const rep = filters.rep || 'Phil';
 
-  let query = `
+  // Build query with parameterized placeholders for PostgreSQL compatibility
+  let sql = `
     SELECT * FROM transcripts
     WHERE analysis_json IS NOT NULL
     AND analysis_version > 0
+    AND deleted_at IS NULL
   `;
   const params = [];
+  let paramIndex = 1;
 
   // Filter by rep unless "all" is specified
   if (rep.toLowerCase() !== 'all') {
-    query += ' AND LOWER(rep_name) LIKE LOWER(?)';
+    sql += ` AND LOWER(rep_name) LIKE LOWER($${paramIndex})`;
     params.push(`%${rep}%`);
+    paramIndex++;
   }
 
   // Date range filter - call_datetime is stored as ISO strings (e.g., '2025-01-20T14:00:00Z')
-  // Use string comparison with ISO format for consistency
+  // Use date() for SQLite compatibility, substring for PostgreSQL
   if (filters.startDate) {
-    query += ' AND date(call_datetime) >= ?';
+    if (dbAdapter.isUsingPostgres()) {
+      sql += ` AND call_datetime::date >= $${paramIndex}::date`;
+    } else {
+      sql += ` AND date(call_datetime) >= $${paramIndex}`;
+    }
     params.push(filters.startDate);
+    paramIndex++;
   }
   if (filters.endDate) {
-    query += ' AND date(call_datetime) <= ?';
+    if (dbAdapter.isUsingPostgres()) {
+      sql += ` AND call_datetime::date <= $${paramIndex}::date`;
+    } else {
+      sql += ` AND date(call_datetime) <= $${paramIndex}`;
+    }
     params.push(filters.endDate);
+    paramIndex++;
   }
 
-  query += ' ORDER BY call_datetime ASC';
+  sql += ' ORDER BY call_datetime ASC';
 
-  const result = database.exec(query, params);
-  if (!result.length) return [];
+  const result = await dbAdapter.query(sql, params);
+  if (!result.rows || !result.rows.length) return [];
 
-  const transcripts = rowsToObjects(result[0]);
+  const transcripts = result.rows.map(row => parseJsonFields(row));
 
   // Filter to only SALES-classified calls
   return transcripts.filter(t => {
@@ -87,40 +101,38 @@ async function getRepSalesCalls(filters = {}) {
 }
 
 /**
- * Helper to convert SQL.js result to objects with parsed JSON fields
+ * Parse JSON fields in a transcript row
  */
-function rowsToObjects(result) {
-  const columns = result.columns;
-  return result.values.map(row => {
-    const obj = {};
-    columns.forEach((col, i) => {
-      obj[col] = row[i];
-    });
-    // Parse JSON fields
-    if (obj.participants && typeof obj.participants === 'string') {
-      try {
-        obj.participants = JSON.parse(obj.participants);
-      } catch (e) {
-        obj.participants = [];
-      }
+function parseJsonFields(row) {
+  const obj = { ...row };
+
+  if (obj.participants && typeof obj.participants === 'string') {
+    try {
+      obj.participants = JSON.parse(obj.participants);
+    } catch (e) {
+      obj.participants = [];
     }
-    if (obj.analysis_json && typeof obj.analysis_json === 'string') {
-      try {
-        obj.analysis = JSON.parse(obj.analysis_json);
-      } catch (e) {
-        obj.analysis = null;
-      }
+  }
+  if (obj.analysis_json && typeof obj.analysis_json === 'string') {
+    try {
+      obj.analysis = JSON.parse(obj.analysis_json);
+    } catch (e) {
+      obj.analysis = null;
     }
-    if (obj.stripe_data && typeof obj.stripe_data === 'string') {
-      try {
-        obj.stripeData = JSON.parse(obj.stripe_data);
-      } catch (e) {
-        obj.stripeData = null;
-      }
+  }
+  if (obj.stripe_data && typeof obj.stripe_data === 'string') {
+    try {
+      obj.stripeData = JSON.parse(obj.stripe_data);
+    } catch (e) {
+      obj.stripeData = null;
     }
-    return obj;
-  });
+  } else if (obj.stripe_data) {
+    obj.stripeData = obj.stripe_data;
+  }
+  return obj;
 }
+
+// Note: rowsToObjects removed - now using parseJsonFields with dbAdapter
 
 /**
  * Extract prospect email from transcript data

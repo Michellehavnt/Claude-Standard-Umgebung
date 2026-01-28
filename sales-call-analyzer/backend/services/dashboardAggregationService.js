@@ -35,6 +35,7 @@
  */
 
 const transcriptDb = require('./transcriptDb');
+const dbAdapter = require('./dbAdapter');
 
 /**
  * Known sales rep names to filter out from quotes
@@ -127,51 +128,78 @@ function filterProspectInsights(items, quoteField = 'quote') {
  * @returns {Promise<Array>} - Array of transcripts with analysis
  */
 async function getFilteredAnalyzedTranscripts(filters = {}) {
-  const database = await transcriptDb.getDb();
-
-  // Build query with filters
-  let query = `
+  // Build query with filters - using $1, $2, etc. for PostgreSQL compatibility
+  let sql = `
     SELECT * FROM transcripts
     WHERE analysis_json IS NOT NULL
     AND analysis_version > 0
+    AND deleted_at IS NULL
   `;
   const params = [];
+  let paramIndex = 1;
 
   // Date range filter
   if (filters.startDate) {
-    query += ' AND call_datetime >= ?';
+    sql += ` AND call_datetime >= $${paramIndex}`;
     params.push(filters.startDate);
+    paramIndex++;
   }
   if (filters.endDate) {
-    query += ' AND call_datetime <= ?';
+    sql += ` AND call_datetime <= $${paramIndex}`;
     // Add time to include full end date
     params.push(filters.endDate + 'T23:59:59Z');
+    paramIndex++;
   }
 
   // Rep filter (case-insensitive)
   if (filters.rep) {
-    query += ' AND LOWER(rep_name) = LOWER(?)';
+    sql += ` AND LOWER(rep_name) = LOWER($${paramIndex})`;
     params.push(filters.rep);
+    paramIndex++;
   }
 
   // Keyword search in transcript text (case-insensitive)
   if (filters.keyword) {
-    query += ' AND LOWER(transcript_text) LIKE LOWER(?)';
+    sql += ` AND LOWER(transcript_text) LIKE LOWER($${paramIndex})`;
     params.push(`%${filters.keyword}%`);
+    paramIndex++;
   }
 
-  query += ' ORDER BY call_datetime DESC';
+  sql += ' ORDER BY call_datetime DESC';
 
-  const result = database.exec(query, params);
+  const result = await dbAdapter.query(sql, params);
 
-  if (!result.length) return [];
+  if (!result.rows || !result.rows.length) return [];
 
-  // Convert to objects and parse JSON fields
-  return rowsToObjects(result[0]);
+  // Parse JSON fields in results
+  return result.rows.map(row => parseJsonFields(row));
 }
 
 /**
- * Helper to convert SQL.js result to objects
+ * Parse JSON fields in a transcript row
+ */
+function parseJsonFields(row) {
+  const obj = { ...row };
+
+  if (obj.participants && typeof obj.participants === 'string') {
+    try {
+      obj.participants = JSON.parse(obj.participants);
+    } catch (e) {
+      obj.participants = [];
+    }
+  }
+  if (obj.analysis_json && typeof obj.analysis_json === 'string') {
+    try {
+      obj.analysis = JSON.parse(obj.analysis_json);
+    } catch (e) {
+      obj.analysis = null;
+    }
+  }
+  return obj;
+}
+
+/**
+ * Helper to convert SQL.js result to objects (legacy - kept for backward compatibility)
  */
 function rowsToObjects(result) {
   const columns = result.columns;
@@ -603,38 +631,36 @@ async function getDashboardAggregation(filters = {}) {
  * Get list of unique sales reps for filter dropdown
  */
 async function getUniqueReps() {
-  const database = await transcriptDb.getDb();
-
-  const result = database.exec(`
+  const result = await dbAdapter.query(`
     SELECT DISTINCT rep_name FROM transcripts
     WHERE rep_name IS NOT NULL AND rep_name != ''
+    AND deleted_at IS NULL
     ORDER BY rep_name
   `);
 
-  if (!result.length) return [];
+  if (!result.rows || !result.rows.length) return [];
 
-  return result[0].values.map(row => row[0]);
+  return result.rows.map(row => row.rep_name);
 }
 
 /**
  * Get date range of available calls
  */
 async function getDateRange() {
-  const database = await transcriptDb.getDb();
-
-  const result = database.exec(`
+  const result = await dbAdapter.query(`
     SELECT MIN(call_datetime) as earliest, MAX(call_datetime) as latest
     FROM transcripts
     WHERE analysis_json IS NOT NULL AND analysis_version > 0
+    AND deleted_at IS NULL
   `);
 
-  if (!result.length || !result[0].values.length) {
+  if (!result.rows || !result.rows.length) {
     return { earliest: null, latest: null };
   }
 
   return {
-    earliest: result[0].values[0][0],
-    latest: result[0].values[0][1]
+    earliest: result.rows[0].earliest,
+    latest: result.rows[0].latest
   };
 }
 
