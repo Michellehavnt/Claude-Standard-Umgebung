@@ -2,14 +2,19 @@
  * MRR Snapshot Service
  *
  * Captures and retrieves Monthly Recurring Revenue snapshots from Stripe.
- * Handles GBP to USD currency conversion with exchange rate tracking.
+ * Auto-detects currency and handles USD natively.
  *
  * Features:
  * - Fetches all active subscriptions from Stripe
- * - Computes total MRR in original currency (GBP)
- * - Converts to USD using live exchange rate
+ * - Only counts monthly subscriptions (not yearly) for MRR
+ * - Only counts subscriptions with at least one paid invoice
+ * - Excludes subscriptions scheduled to cancel (churn)
+ * - Auto-detects currency (typically USD)
  * - Stores snapshots for historical tracking
  * - Provides growth calculations (vs previous week/4 weeks ago)
+ *
+ * Note: MRR values may differ slightly from Stripe Billing Overview due to
+ * differences in calculation methodology (e.g., handling of trials, prorations).
  */
 
 const stripeClient = require('./stripeClient');
@@ -46,6 +51,7 @@ async function getExchangeRate() {
 
 /**
  * Fetch all active subscriptions from Stripe and compute total MRR
+ * Only counts subscriptions where the latest invoice has been paid.
  * @returns {Promise<{mrrCents: number, currency: string, activeCount: number}>}
  */
 async function fetchCurrentMrrFromStripe() {
@@ -57,12 +63,15 @@ async function fetchCurrentMrrFromStripe() {
   let activeCount = 0;
   let hasMore = true;
   let startingAfter = null;
+  let detectedCurrency = null;
 
   // Paginate through all active subscriptions
+  // Include latest_invoice expansion to check payment status
   while (hasMore) {
     const params = {
       status: 'active',
-      limit: 100
+      limit: 100,
+      'expand[]': 'data.latest_invoice'
     };
     if (startingAfter) {
       params.starting_after = startingAfter;
@@ -75,34 +84,46 @@ async function fetchCurrentMrrFromStripe() {
     }
 
     for (const subscription of response.data) {
+      // Skip subscriptions scheduled to cancel (churn) - they shouldn't count towards MRR
+      if (subscription.cancel_at_period_end) {
+        continue;
+      }
+
+      // Only count subscriptions that have been paid at least once
+      // Check if latest invoice exists and has been paid
+      const invoice = subscription.latest_invoice;
+      const isPaid = invoice && typeof invoice === 'object' &&
+        (invoice.status === 'paid' || invoice.amount_paid > 0);
+
+      if (!isPaid) {
+        // Skip unpaid subscriptions (e.g., draft invoices, failed payments)
+        continue;
+      }
+
       activeCount++;
 
+      // Detect currency from subscription
+      if (!detectedCurrency && subscription.currency) {
+        detectedCurrency = subscription.currency.toUpperCase();
+      }
+
       // Sum MRR from all items in the subscription
+      // Note: Only count MONTHLY subscriptions for MRR (matches Stripe's MRR definition)
+      // Yearly subscriptions are tracked separately as ARR
       if (subscription.items && subscription.items.data) {
         for (const item of subscription.items.data) {
           const price = item.price;
-          if (price && price.unit_amount) {
-            // Normalize to monthly
-            let monthlyAmount = price.unit_amount;
+          if (price && price.unit_amount && price.recurring) {
+            const interval = price.recurring.interval;
+            const intervalCount = price.recurring.interval_count || 1;
 
-            if (price.recurring) {
-              const interval = price.recurring.interval;
-              const intervalCount = price.recurring.interval_count || 1;
-
-              if (interval === 'year') {
-                monthlyAmount = Math.round(price.unit_amount / (12 * intervalCount));
-              } else if (interval === 'week') {
-                monthlyAmount = Math.round(price.unit_amount * 4.33 / intervalCount);
-              } else if (interval === 'day') {
-                monthlyAmount = Math.round(price.unit_amount * 30 / intervalCount);
-              } else if (interval === 'month') {
-                monthlyAmount = Math.round(price.unit_amount / intervalCount);
-              }
+            // Only include monthly subscriptions in MRR
+            if (interval === 'month') {
+              const monthlyAmount = Math.round(price.unit_amount / intervalCount);
+              const quantity = item.quantity || 1;
+              totalMrrCents += monthlyAmount * quantity;
             }
-
-            // Handle quantity
-            const quantity = item.quantity || 1;
-            totalMrrCents += monthlyAmount * quantity;
+            // Skip yearly/weekly/daily subscriptions - they don't count towards MRR
           }
         }
       }
@@ -116,7 +137,7 @@ async function fetchCurrentMrrFromStripe() {
 
   return {
     mrrCents: totalMrrCents,
-    currency: 'GBP', // Stripe account is in GBP
+    currency: detectedCurrency || 'USD', // Auto-detect from subscriptions (usually USD)
     activeCount
   };
 }
@@ -128,6 +149,24 @@ async function fetchCurrentMrrFromStripe() {
 async function captureSnapshot() {
   const today = new Date().toISOString().split('T')[0];
 
+  // Get Stripe data first to know the currency
+  const stripeData = await fetchCurrentMrrFromStripe();
+
+  // Determine USD amount based on source currency
+  let mrrUsdCents;
+  let exchangeRate;
+
+  if (stripeData.currency === 'USD') {
+    // Subscriptions are already in USD, no conversion needed
+    mrrUsdCents = stripeData.mrrCents;
+    exchangeRate = 1.0;
+  } else {
+    // Convert from source currency (e.g., GBP) to USD
+    const exchangeData = await getExchangeRate();
+    mrrUsdCents = Math.round(stripeData.mrrCents * exchangeData.rate);
+    exchangeRate = exchangeData.rate;
+  }
+
   // Check if we already have a snapshot for today
   const existing = await dbAdapter.queryOne(
     'SELECT * FROM mrr_snapshots WHERE snapshot_date = $1',
@@ -136,10 +175,6 @@ async function captureSnapshot() {
 
   if (existing) {
     // Update existing snapshot
-    const stripeData = await fetchCurrentMrrFromStripe();
-    const exchangeData = await getExchangeRate();
-    const mrrUsdCents = Math.round(stripeData.mrrCents * exchangeData.rate);
-
     await dbAdapter.execute(
       `UPDATE mrr_snapshots
        SET total_mrr_cents = $1,
@@ -148,14 +183,14 @@ async function captureSnapshot() {
            active_subscriptions = $4,
            created_at = CURRENT_TIMESTAMP
        WHERE snapshot_date = $5`,
-      [stripeData.mrrCents, exchangeData.rate, mrrUsdCents, stripeData.activeCount, today]
+      [stripeData.mrrCents, exchangeRate, mrrUsdCents, stripeData.activeCount, today]
     );
 
     return {
       snapshot_date: today,
       total_mrr_cents: stripeData.mrrCents,
-      currency: 'GBP',
-      exchange_rate: exchangeData.rate,
+      currency: stripeData.currency,
+      exchange_rate: exchangeRate,
       total_mrr_usd_cents: mrrUsdCents,
       active_subscriptions: stripeData.activeCount,
       updated: true
@@ -163,21 +198,17 @@ async function captureSnapshot() {
   }
 
   // Create new snapshot
-  const stripeData = await fetchCurrentMrrFromStripe();
-  const exchangeData = await getExchangeRate();
-  const mrrUsdCents = Math.round(stripeData.mrrCents * exchangeData.rate);
-
   await dbAdapter.execute(
     `INSERT INTO mrr_snapshots (snapshot_date, total_mrr_cents, currency, exchange_rate, total_mrr_usd_cents, active_subscriptions)
      VALUES ($1, $2, $3, $4, $5, $6)`,
-    [today, stripeData.mrrCents, 'GBP', exchangeData.rate, mrrUsdCents, stripeData.activeCount]
+    [today, stripeData.mrrCents, stripeData.currency, exchangeRate, mrrUsdCents, stripeData.activeCount]
   );
 
   return {
     snapshot_date: today,
     total_mrr_cents: stripeData.mrrCents,
-    currency: 'GBP',
-    exchange_rate: exchangeData.rate,
+    currency: stripeData.currency,
+    exchange_rate: exchangeRate,
     total_mrr_usd_cents: mrrUsdCents,
     active_subscriptions: stripeData.activeCount,
     created: true
@@ -194,14 +225,14 @@ async function getSnapshots(weeks = 4) {
   // Compute date in JavaScript for cross-database compatibility
   const minDate = new Date(Date.now() - daysBack * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
-  const snapshots = await dbAdapter.query(
+  const result = await dbAdapter.query(
     `SELECT * FROM mrr_snapshots
      WHERE snapshot_date >= $1
      ORDER BY snapshot_date ASC`,
     [minDate]
   );
 
-  return snapshots || [];
+  return result?.rows || [];
 }
 
 /**
@@ -273,12 +304,20 @@ async function getCurrentMrrWithGrowth() {
     deltaMonthPercent = prevUsd > 0 ? Math.round((deltaMonth / prevUsd) * 100) : null;
   }
 
+  // Determine source currency (stored in DB, or default to USD if not set)
+  const sourceCurrency = latest.currency || 'USD';
+
   return {
     current: {
       mrrUsdCents: currentUsd,
       mrrUsd: currentUsd / 100,
+      // Source currency fields (for backwards compatibility, keep GBP names but values may be in USD)
       mrrGbpCents: latest.total_mrr_cents,
       mrrGbp: latest.total_mrr_cents / 100,
+      // New generic source currency fields
+      mrrSourceCents: latest.total_mrr_cents,
+      mrrSource: latest.total_mrr_cents / 100,
+      sourceCurrency: sourceCurrency,
       exchangeRate: latest.exchange_rate,
       activeSubscriptions: latest.active_subscriptions,
       snapshotDate: latest.snapshot_date,

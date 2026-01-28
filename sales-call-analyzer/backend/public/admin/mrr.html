@@ -416,12 +416,12 @@
     <div id="mrrContent" style="display: none;">
       <!-- Hero Section with Headline MRR -->
       <div class="mrr-hero">
-        <div class="mrr-currency-badge">
+        <div class="mrr-currency-badge" id="currencyBadge">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"/>
             <path d="M12 6v12M8 10h8M8 14h8"/>
           </svg>
-          <span>GBP converted to USD at <span id="exchangeRate">1.27</span></span>
+          <span id="currencyBadgeText">USD (native currency)</span>
         </div>
 
         <div class="mrr-headline" id="mrrHeadline">$0</div>
@@ -495,19 +495,29 @@
 
         <div class="currency-legend">
           <div class="currency-legend-item">
-            <span>Source: Stripe API (all active subscriptions)</span>
+            <span>Source: Stripe API (monthly subscriptions with at least one paid invoice)</span>
           </div>
           <div class="currency-legend-item">
-            <span>Currency: GBP converted to USD</span>
+            <span id="currencyLegendText">Currency: USD</span>
           </div>
+        </div>
+
+        <!-- MRR Disclaimer -->
+        <div class="mrr-disclaimer" style="margin-top: var(--space-4); padding: var(--space-3) var(--space-4); background: var(--color-surface-alt); border-radius: var(--radius-md); font-size: var(--text-xs); color: var(--color-text-muted); text-align: center;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px; vertical-align: middle; margin-right: var(--space-1);">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          MRR values may differ slightly from the Stripe Billing Overview due to differences in calculation methodology (e.g., handling of trials, prorations, timing of snapshots).
         </div>
       </div>
 
       <!-- Stats Row -->
       <div class="mrr-stats-row">
         <div class="ds-stat-card">
-          <div class="ds-stat-value" id="mrrGbp">-</div>
-          <div class="ds-stat-label">MRR in GBP</div>
+          <div class="ds-stat-value" id="mrrSource">-</div>
+          <div class="ds-stat-label" id="mrrSourceLabel">MRR (Source)</div>
         </div>
         <div class="ds-stat-card">
           <div class="ds-stat-value" id="totalSubs">-</div>
@@ -661,8 +671,17 @@
       // Headline MRR
       document.getElementById('mrrHeadline').textContent = formatUsd(current.mrrUsdCents);
 
-      // Exchange rate
-      document.getElementById('exchangeRate').textContent = current.exchangeRate?.toFixed(4) || '1.27';
+      // Currency badge - update based on source currency
+      const sourceCurrency = current.sourceCurrency || 'USD';
+      const exchangeRate = current.exchangeRate || 1;
+
+      if (sourceCurrency === 'USD' || exchangeRate === 1) {
+        document.getElementById('currencyBadgeText').textContent = 'USD (native currency)';
+        document.getElementById('currencyLegendText').textContent = 'Currency: USD';
+      } else {
+        document.getElementById('currencyBadgeText').textContent = `${sourceCurrency} converted to USD at ${exchangeRate.toFixed(4)}`;
+        document.getElementById('currencyLegendText').textContent = `Currency: ${sourceCurrency} → USD`;
+      }
 
       // Growth indicators
       const weekGrowth = formatGrowth(growth.vsLastWeek.deltaCents, growth.vsLastWeek.percent);
@@ -680,8 +699,14 @@
       document.getElementById('lastUpdated').textContent = `Updated: ${lastUpdated}`;
       document.getElementById('activeSubscriptions').textContent = `${current.activeSubscriptions || 0} active subscriptions`;
 
-      // Stats row
-      document.getElementById('mrrGbp').textContent = formatGbp(current.mrrGbpCents);
+      // Stats row - source currency value
+      if (sourceCurrency === 'USD' || exchangeRate === 1) {
+        document.getElementById('mrrSource').textContent = formatUsd(current.mrrSourceCents || current.mrrUsdCents);
+        document.getElementById('mrrSourceLabel').textContent = 'MRR in USD';
+      } else {
+        document.getElementById('mrrSource').textContent = formatGbp(current.mrrSourceCents || current.mrrGbpCents);
+        document.getElementById('mrrSourceLabel').textContent = `MRR in ${sourceCurrency}`;
+      }
       document.getElementById('totalSubs').textContent = current.activeSubscriptions || 0;
 
       const avgMrr = current.activeSubscriptions > 0
