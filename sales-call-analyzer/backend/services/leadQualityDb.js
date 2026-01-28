@@ -520,7 +520,7 @@ function formatLead(row) {
     postCallRationale: row.post_call_rationale,
 
     // LinkedIn profile (extracted from perplexity data)
-    linkedinUrl: row.linkedin_url || (perplexityData?.linkedin_url) || null,
+    linkedinUrl: row.linkedin_url || perplexityData?.person_info?.linkedin_url || perplexityData?.linkedin_url || null,
 
     // Timestamps
     createdAt: row.created_at,
