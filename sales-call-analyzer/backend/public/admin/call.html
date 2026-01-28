@@ -78,6 +78,19 @@
       color: var(--color-text-secondary);
     }
 
+    /* Date badge styles */
+    .date-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-md);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      background: rgba(59, 130, 246, 0.1);
+      color: #3b82f6;
+    }
+
     .score-badge {
       display: inline-flex;
       align-items: center;
@@ -1009,17 +1022,20 @@
       return `${totalMins} mins`;
     }
 
-    function formatDate(dateStr) {
+    function formatDate(dateStr, asBadge = true) {
       if (!dateStr) return '-';
       const date = new Date(dateStr);
-      return date.toLocaleDateString('en-US', {
-        weekday: 'short',
+      const formatted = date.toLocaleString('en-US', {
         month: 'short',
         day: 'numeric',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
       });
+      if (asBadge) {
+        return `<span class="date-badge">${formatted}</span>`;
+      }
+      return formatted;
     }
 
     function escapeHtml(str) {
@@ -1959,7 +1975,7 @@
           </div>
           <div class="stripe-item">
             <div class="stripe-item-label">Signup</div>
-            <div class="stripe-item-value">${data.signupDate ? formatDate(data.signupDate).split(',')[0] : '-'}</div>
+            <div class="stripe-item-value">${data.signupDate ? formatDate(data.signupDate) : '-'}</div>
           </div>
           ${data.mrr > 0 ? `
           <div class="stripe-item">
