@@ -2012,6 +2012,7 @@ CREATE INDEX idx_stripe_domain ON stripe_customers(company_domain);
   - Improved research sources URL display (URL-decoded, truncated)
   - Added linkedin_url column to database schema with migration
   - Fixed dropdown menu in lead-quality.html (added Changelog and Admin sections)
+  - **NEW: Perplexity Research Results display** - Shows company_info, person_info, affiliate_signals with expandable raw response
 
 - **DFY Routes PostgreSQL Fix**:
   - Fixed `/api/dfy/phil`, `/api/dfy/summary`, `/api/dfy/quality` endpoints
