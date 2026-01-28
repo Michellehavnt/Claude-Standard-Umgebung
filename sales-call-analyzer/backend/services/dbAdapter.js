@@ -549,15 +549,22 @@ async function createTables() {
   `);
 
   // Add new columns if they don't exist (for existing databases)
-  try {
-    await execute(`ALTER TABLE lead_quality_scores ADD COLUMN IF NOT EXISTS calendly_form_responses TEXT`);
-    await execute(`ALTER TABLE lead_quality_scores ADD COLUMN IF NOT EXISTS transcript_analysis_json TEXT`);
-    await execute(`ALTER TABLE lead_quality_scores ADD COLUMN IF NOT EXISTS transcript_analyzed_at TIMESTAMP`);
-    await execute(`ALTER TABLE lead_quality_scores ADD COLUMN IF NOT EXISTS post_call_score INTEGER`);
-    await execute(`ALTER TABLE lead_quality_scores ADD COLUMN IF NOT EXISTS post_call_rationale TEXT`);
-    await execute(`ALTER TABLE lead_quality_scores ADD COLUMN IF NOT EXISTS linkedin_url TEXT`);
-  } catch (e) {
-    // Columns may already exist or ALTER not supported
+  // SQLite doesn't support IF NOT EXISTS, so we try each and catch errors
+  const columnsToAdd = [
+    { name: 'calendly_form_responses', type: 'TEXT' },
+    { name: 'transcript_analysis_json', type: 'TEXT' },
+    { name: 'transcript_analyzed_at', type: 'TIMESTAMP' },
+    { name: 'post_call_score', type: 'INTEGER' },
+    { name: 'post_call_rationale', type: 'TEXT' },
+    { name: 'linkedin_url', type: 'TEXT' }
+  ];
+
+  for (const col of columnsToAdd) {
+    try {
+      await execute(`ALTER TABLE lead_quality_scores ADD COLUMN ${col.name} ${col.type}`);
+    } catch (e) {
+      // Column already exists - ignore
+    }
   }
 
   // Lead quality settings table

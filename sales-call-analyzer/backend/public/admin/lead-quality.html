@@ -204,6 +204,7 @@
       color: var(--color-text-secondary);
       background: var(--color-surface-secondary);
       border-bottom: 1px solid var(--color-border);
+      white-space: nowrap;
     }
 
     .leads-table td {
@@ -212,6 +213,11 @@
       border-bottom: 1px solid var(--color-border-light);
       vertical-align: middle;
     }
+
+    /* Prevent columns from spreading too wide */
+    .leads-table th:nth-child(1) { width: 30px; }
+    .leads-table th:nth-child(2) { width: 20%; }
+    .leads-table th:nth-child(3) { width: 18%; }
 
     .leads-table tbody tr:hover {
       background: var(--color-surface-hover);
@@ -978,8 +984,8 @@
 
     /* Unified Analyze Modal - Larger and cleaner */
     .modal.analyze-modal {
-      max-width: 580px;
-      padding: var(--space-6) var(--space-8);
+      max-width: 640px;
+      padding: var(--space-6) var(--space-6);
     }
 
     .analyze-modal .analyze-modal-header {
@@ -1346,10 +1352,9 @@
     </div>
   </header>
 
-  <main class="ds-main">
-    <div class="ds-container">
-      <!-- Page Header -->
-      <div class="ds-page-header">
+  <main class="ds-container ds-page">
+    <!-- Page Header -->
+    <div class="ds-page-header">
         <div>
           <h1 class="ds-page-title">Lead Quality</h1>
           <p class="ds-page-subtitle">AI-powered lead scoring for Calendly bookings</p>
@@ -1513,8 +1518,7 @@
         </div>
       </div>
 
-      <div class="generated-at" id="generated-at"></div>
-    </div>
+    <div class="generated-at" id="generated-at"></div>
   </main>
 
   <!-- Override Modal -->
