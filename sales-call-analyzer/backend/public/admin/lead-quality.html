@@ -974,7 +974,7 @@
   <!-- Transcript Analysis Modal -->
   <div class="modal-overlay" id="transcriptModal">
     <div class="modal transcript-modal">
-      <div class="modal-title">Analyze Transcript</div>
+      <div class="modal-title">Analyze Transcript: <span id="transcript-modal-lead-name"></span></div>
       <div class="modal-body">
         <!-- Transcript Status -->
         <div class="transcript-status" id="transcript-status">
@@ -1395,6 +1395,9 @@
         transcriptAnalysis = null;
       }
 
+      // Parse research links for cleaner display
+      const researchLinks = lead.researchLinks || [];
+
       return `
         <div class="detail-grid">
           <div class="detail-section">
@@ -1456,12 +1459,46 @@
                 <p><strong>Country:</strong> ${escapeHtml(lead.calendlyCountry || 'Not provided')}</p>
               </div>
             `}
-            ${lead.researchLinks && lead.researchLinks.length > 0 ? `
+
+            ${lead.linkedinUrl ? `
+              <div style="margin-top: var(--space-4); padding-top: var(--space-3); border-top: 1px solid var(--color-border-light);">
+                <div class="detail-section-title">LinkedIn Profile</div>
+                <a href="${escapeHtml(lead.linkedinUrl)}" target="_blank" style="display: inline-flex; align-items: center; gap: var(--space-2); font-size: var(--text-sm); color: #0077b5;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                  View Profile
+                </a>
+              </div>
+            ` : ''}
+
+            ${researchLinks.length > 0 ? `
               <div style="margin-top: var(--space-4); padding-top: var(--space-3); border-top: 1px solid var(--color-border-light);">
                 <div class="detail-section-title">Research Sources</div>
-                <ul style="font-size: var(--text-xs); margin: 0; padding-left: var(--space-4);">
-                  ${lead.researchLinks.map(link => `<li><a href="${escapeHtml(link)}" target="_blank">${truncateUrl(link)}</a></li>`).join('')}
+                <ul style="font-size: var(--text-xs); margin: 0; padding-left: var(--space-4); list-style: none;">
+                  ${researchLinks.map(link => {
+                    const cleanUrl = cleanResearchUrl(link);
+                    return `<li style="margin-bottom: var(--space-1);"><a href="${escapeHtml(link)}" target="_blank" style="color: var(--color-primary); word-break: break-all;">${escapeHtml(cleanUrl)}</a></li>`;
+                  }).join('')}
                 </ul>
+              </div>
+            ` : ''}
+
+            ${isPast && lead.transcriptId ? `
+              <div style="margin-top: var(--space-4); padding-top: var(--space-3); border-top: 1px solid var(--color-border-light);">
+                <div class="detail-section-title">Transcript</div>
+                <a href="/admin/call.html?id=${lead.transcriptId}" target="_blank" style="display: inline-flex; align-items: center; gap: var(--space-2); font-size: var(--text-sm); color: var(--color-primary);">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                  View Full Transcript in Calls Tab
+                </a>
+              </div>
+            ` : ''}
+
+            ${transcriptAnalysis ? `
+              <div style="margin-top: var(--space-4); padding-top: var(--space-3); border-top: 1px solid var(--color-border-light);">
+                <div class="detail-section-title">Analysis Info</div>
+                <div style="font-size: var(--text-xs); color: var(--color-text-muted);">
+                  <p style="margin: 0;"><strong>Analyzed:</strong> ${lead.transcriptAnalyzedAt ? formatAnalysisDateTime(lead.transcriptAnalyzedAt) : 'Unknown'}</p>
+                  <p style="margin: var(--space-1) 0 0 0;"><strong>Model:</strong> ${escapeHtml(transcriptAnalysis.model_used || 'GPT-5-nano')}</p>
+                </div>
               </div>
             ` : ''}
           </div>
@@ -1657,6 +1694,11 @@
     async function analyzeTranscript(id) {
       currentTranscriptLeadId = id;
       transcriptAvailability = null;
+
+      // Get lead name for modal title
+      const lead = allLeads.find(l => l.id === id);
+      const leadName = lead?.inviteeName || lead?.inviteeEmail || 'Unknown';
+      document.getElementById('transcript-modal-lead-name').textContent = leadName;
 
       // Reset modal state
       document.getElementById('btn-analyze-transcript').disabled = true;
@@ -1932,6 +1974,44 @@
         return 'https://' + url;
       }
       return url;
+    }
+
+    function cleanResearchUrl(url) {
+      if (!url) return '';
+      try {
+        // Decode URL-encoded characters
+        const decoded = decodeURIComponent(url);
+        // Extract hostname and path
+        const parsed = new URL(decoded.startsWith('http') ? decoded : 'https://' + decoded);
+        const hostname = parsed.hostname.replace(/^www\./, '');
+        // Get path without too much detail
+        let path = parsed.pathname;
+        if (path.length > 40) {
+          path = path.substring(0, 37) + '...';
+        }
+        return hostname + (path !== '/' ? path : '');
+      } catch {
+        // If URL parsing fails, just truncate
+        const decoded = url.replace(/%20/g, ' ').replace(/%2C/g, ',');
+        if (decoded.length > 60) {
+          return decoded.substring(0, 57) + '...';
+        }
+        return decoded;
+      }
+    }
+
+    function formatAnalysisDateTime(dateStr) {
+      if (!dateStr) return '-';
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      }) + ' at ' + date.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
     }
   </script>
 </body>

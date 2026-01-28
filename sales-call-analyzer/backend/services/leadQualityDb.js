@@ -66,7 +66,7 @@ async function updateLead(id, updates) {
     'inbound_quality_score', 'inbound_quality_rationale',
     'total_score', 'research_links', 'prompt_version', 'transcript_id',
     'transcript_analysis_json', 'transcript_analyzed_at',
-    'post_call_score', 'post_call_rationale'
+    'post_call_score', 'post_call_rationale', 'linkedin_url'
   ];
 
   const setClauses = [];
@@ -512,6 +512,15 @@ function formatLead(row) {
       at: row.manual_override_at,
       by: row.manual_override_by
     } : null,
+
+    // Transcript analysis
+    transcriptAnalysisJson: row.transcript_analysis_json,
+    transcriptAnalyzedAt: row.transcript_analyzed_at,
+    postCallScore: row.post_call_score,
+    postCallRationale: row.post_call_rationale,
+
+    // LinkedIn profile (extracted from perplexity data)
+    linkedinUrl: row.linkedin_url || (perplexityData?.linkedin_url) || null,
 
     // Timestamps
     createdAt: row.created_at,

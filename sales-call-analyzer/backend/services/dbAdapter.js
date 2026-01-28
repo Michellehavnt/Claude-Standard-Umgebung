@@ -506,6 +506,78 @@ async function createTables() {
   await createIndexSafely('CREATE INDEX IF NOT EXISTS idx_language_call ON customer_language(call_id)');
   await createIndexSafely('CREATE INDEX IF NOT EXISTS idx_dfy_call ON dfy_mentions(call_id)');
 
+  // Lead quality scores table
+  await execute(`
+    CREATE TABLE IF NOT EXISTS lead_quality_scores (
+      id TEXT PRIMARY KEY,
+      calendly_event_id TEXT,
+      invitee_email TEXT NOT NULL,
+      invitee_name TEXT,
+      company_name TEXT,
+      website TEXT,
+      calendly_challenge TEXT,
+      calendly_country TEXT,
+      calendly_booking_time TIMESTAMP,
+      calendly_form_responses TEXT,
+      perplexity_response_json TEXT,
+      enriched_at TIMESTAMP,
+      company_strength_score INTEGER,
+      company_strength_rationale TEXT,
+      affiliate_readiness_score INTEGER,
+      affiliate_readiness_rationale TEXT,
+      buyer_authority_score INTEGER,
+      buyer_authority_rationale TEXT,
+      inbound_quality_score INTEGER,
+      inbound_quality_rationale TEXT,
+      total_score INTEGER,
+      research_links TEXT,
+      calendly_booking_owner TEXT,
+      prompt_version TEXT,
+      manual_override_score INTEGER,
+      manual_override_notes TEXT,
+      manual_override_at TIMESTAMP,
+      manual_override_by TEXT REFERENCES users(id),
+      transcript_id TEXT REFERENCES transcripts(id),
+      transcript_analysis_json TEXT,
+      transcript_analyzed_at TIMESTAMP,
+      post_call_score INTEGER,
+      post_call_rationale TEXT,
+      linkedin_url TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // Add new columns if they don't exist (for existing databases)
+  try {
+    await execute(`ALTER TABLE lead_quality_scores ADD COLUMN IF NOT EXISTS calendly_form_responses TEXT`);
+    await execute(`ALTER TABLE lead_quality_scores ADD COLUMN IF NOT EXISTS transcript_analysis_json TEXT`);
+    await execute(`ALTER TABLE lead_quality_scores ADD COLUMN IF NOT EXISTS transcript_analyzed_at TIMESTAMP`);
+    await execute(`ALTER TABLE lead_quality_scores ADD COLUMN IF NOT EXISTS post_call_score INTEGER`);
+    await execute(`ALTER TABLE lead_quality_scores ADD COLUMN IF NOT EXISTS post_call_rationale TEXT`);
+    await execute(`ALTER TABLE lead_quality_scores ADD COLUMN IF NOT EXISTS linkedin_url TEXT`);
+  } catch (e) {
+    // Columns may already exist or ALTER not supported
+  }
+
+  // Lead quality settings table
+  await execute(`
+    CREATE TABLE IF NOT EXISTS lead_quality_settings (
+      id TEXT PRIMARY KEY,
+      setting_key TEXT UNIQUE NOT NULL,
+      setting_value TEXT,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_by TEXT REFERENCES users(id)
+    )
+  `);
+
+  // Lead quality indexes
+  await createIndexSafely('CREATE INDEX IF NOT EXISTS idx_lead_quality_email ON lead_quality_scores(invitee_email)');
+  await createIndexSafely('CREATE INDEX IF NOT EXISTS idx_lead_quality_owner ON lead_quality_scores(calendly_booking_owner)');
+  await createIndexSafely('CREATE INDEX IF NOT EXISTS idx_lead_quality_score ON lead_quality_scores(total_score)');
+  await createIndexSafely('CREATE INDEX IF NOT EXISTS idx_lead_quality_booking_time ON lead_quality_scores(calendly_booking_time DESC)');
+  await createIndexSafely('CREATE INDEX IF NOT EXISTS idx_lead_quality_settings_key ON lead_quality_settings(setting_key)');
+
   console.log('[DbAdapter] Tables created successfully');
 }
 

@@ -407,6 +407,9 @@ async function analyzeLeadQuality(leadData) {
   const prompt = secretManager.getPerplexityConfig().prompt;
   const promptVersion = prompt ? hashString(prompt.substring(0, 100)) : 'default';
 
+  // Extract LinkedIn URL from person_info if available
+  const linkedinUrl = perplexityData?.person_info?.linkedin_url || null;
+
   return {
     perplexityData,
     perplexitySuccess: researchResult.success,
@@ -426,7 +429,8 @@ async function analyzeLeadQuality(leadData) {
 
     totalScore,
     researchLinks,
-    promptVersion
+    promptVersion,
+    linkedinUrl
   };
 }
 
@@ -567,7 +571,8 @@ async function syncAndAnalyzeLeads(repEmail, options = {}) {
                 inbound_quality_rationale: analysis.inboundQualityRationale,
                 total_score: analysis.totalScore,
                 research_links: JSON.stringify(analysis.researchLinks),
-                prompt_version: analysis.promptVersion
+                prompt_version: analysis.promptVersion,
+                linkedin_url: analysis.linkedinUrl
               });
               results.analyzed++;
             }
@@ -604,7 +609,8 @@ async function syncAndAnalyzeLeads(repEmail, options = {}) {
               inbound_quality_rationale: analysis.inboundQualityRationale,
               total_score: analysis.totalScore,
               research_links: JSON.stringify(analysis.researchLinks),
-              prompt_version: analysis.promptVersion
+              prompt_version: analysis.promptVersion,
+              linkedin_url: analysis.linkedinUrl
             });
             results.analyzed++;
           }
@@ -666,7 +672,8 @@ async function reanalyzeLead(leadId) {
     inbound_quality_rationale: analysis.inboundQualityRationale,
     total_score: analysis.totalScore,
     research_links: JSON.stringify(analysis.researchLinks),
-    prompt_version: analysis.promptVersion
+    prompt_version: analysis.promptVersion,
+    linkedin_url: analysis.linkedinUrl
   });
 }
 
