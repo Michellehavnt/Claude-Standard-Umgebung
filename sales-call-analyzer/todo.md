@@ -375,10 +375,14 @@ Admin-publishable changelog for product updates visible to all users.
 ### NEW: Persistent Deleted Calls + Restore - COMPLETE (2026-01-28)
 - Soft delete pattern with automatic and manual deletion support
 - **Auto-Delete Rules (applied on sync):**
-  - Title contains "weekly" → auto-delete with reason "auto-filter:weekly"
-  - Title contains "af ads jour fixe" → auto-delete with reason "auto-filter:jour-fixe"
-  - Title is exactly "dev" (case-insensitive) → auto-delete with reason "auto-filter:dev"
-  - Note: "dev call", "development weekly" etc. are NOT auto-deleted (only exact "dev")
+  - Title contains "weekly" → auto-filter:weekly
+  - Title contains "af ads jour fixe" → auto-filter:jour-fixe
+  - Title contains "catchup", "catch up", or "catch-up" → auto-filter:catchup
+  - Title is exactly "dev" → auto-filter:dev
+  - Title is exactly "dev call" → auto-filter:dev-call
+  - Title is exactly "week summary meeting" → auto-filter:week-summary
+  - Title is exactly "phil norris and jamie i.f." → auto-filter:internal
+  - Host email starts with "michelle@" → auto-filter:host-michelle
 - **Persistence:**
   - Deleted state survives page refresh, app restart, and re-sync
   - Re-syncing a deleted call does NOT restore it
@@ -410,12 +414,46 @@ Admin-publishable changelog for product updates visible to all users.
   - `backend/routes/admin.js` - New endpoints
   - `backend/routes/bulkActions.js` - Changed to soft delete
   - `backend/public/admin/index.html` - UI for deleted view + restore
+- **Retroactive Auto-Delete Migration (2026-01-28):**
+  - Added `applyAutoDeleteRulesRetroactively()` function for existing calls
+  - Added `shouldAutoDeleteByHost()` for host-based rules
+  - Added `POST /api/admin/apply-auto-delete` endpoint to trigger migration
+  - Applied to production: 8 calls auto-deleted (3 weekly, 2 jour-fixe, 1 catchup, 1 internal, 1 week-summary)
+  - Deleted calls now visible in Deleted view with proper reason badges
 - **Tests:** 23 new tests in `softDelete.test.js`
   - Auto-delete rule tests
   - Soft delete and restore tests
   - Sync preservation tests
   - Analysis exclusion tests
 - All 154 related tests passing (softDelete, bulkActions, transcriptDb, syncService)
+
+### NEW: PostgreSQL Data Flow Fix (2026-01-28)
+- Fixed critical bug where Calls tab shows data but other tabs show zero data on PostgreSQL
+- Root cause: services using sql.js-specific APIs (database.exec/run) instead of dbAdapter
+- **Files Fixed:**
+  - `dashboardAggregationService.js` - Use dbAdapter.query() for PostgreSQL compatibility
+  - `founderSnapshotService.js` - Use dbAdapter.query() with proper date handling
+  - `searchService.js` - Dual implementation for SQLite FTS4 and PostgreSQL full-text search
+- Tests: dashboardAggregation (26), founderSnapshotService (40) - all passing
+- Deployed to Railway via commit `4f90f34`
+
+### NEW: Analysis Progress Persistence + Sync Cancel (2026-01-28)
+- **Analysis Progress Bar:**
+  - Progress bar now persists across page refresh/tab switches during analysis
+  - Completed results shown for 5 minutes after completion (via `justCompleted` API flag)
+  - Auto-hides after 10 seconds when returning to page after completion
+  - Backend tracks `bulkAnalysisCompletedAt` for result persistence
+- **Sync Cancellation:**
+  - Added cancel functionality to sync operations
+  - "Sync Calls" button becomes red "Cancel" button during sync
+  - Backend `cancelSync()` sets cancellation flag, loops check and break
+  - Added `POST /api/sync/cancel` endpoint
+  - Both `syncNewTranscripts` and `syncDateRange` support cancellation
+- **Files Modified:**
+  - `routes/bulkActions.js` - Progress persistence with TTL
+  - `services/syncService.js` - Cancel support
+  - `routes/sync.js` - Cancel endpoint
+  - `public/admin/index.html` - UI for progress persistence and cancel button
 
 ---
 
