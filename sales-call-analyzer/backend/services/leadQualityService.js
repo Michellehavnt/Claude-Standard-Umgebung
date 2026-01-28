@@ -49,6 +49,39 @@ function isBusinessEmail(email) {
 }
 
 /**
+ * Derive website from email domain, excluding generic providers
+ * @param {string} email - Email address
+ * @returns {string|null} - Website domain or null if generic/unavailable
+ */
+function deriveWebsiteFromEmail(email) {
+  const domain = getEmailDomain(email);
+  if (!domain) return null;
+
+  // Don't use generic email providers as website
+  if (FREE_EMAIL_DOMAINS.includes(domain)) return null;
+
+  return domain;
+}
+
+/**
+ * Get website with fallback logic
+ * 1. Use provided website (from Calendly form)
+ * 2. Fallback to email domain if business email
+ * @param {string|null} providedWebsite - Website from form
+ * @param {string} email - Email address
+ * @returns {string|null} - Website or null
+ */
+function getWebsiteWithFallback(providedWebsite, email) {
+  // First choice: website provided in form
+  if (providedWebsite && providedWebsite.trim()) {
+    return providedWebsite.trim();
+  }
+
+  // Fallback: derive from email domain (if not generic)
+  return deriveWebsiteFromEmail(email);
+}
+
+/**
  * Score company strength (0-3)
  * 0 = solo founder / micro SaaS / indie hacker
  * 1 = small SaaS / ecom (1–10 employees)
@@ -538,11 +571,14 @@ async function syncAndAnalyzeLeads(repEmail, options = {}) {
             r.question.toLowerCase().includes('targeting')
           );
 
+          // Use website with fallback to email domain (excluding generic providers)
+          const derivedWebsite = getWebsiteWithFallback(websiteResponse?.answer, invitee.email);
+
           const leadData = {
             calendly_event_id: eventId,
             invitee_email: invitee.email,
             invitee_name: invitee.name,
-            website: websiteResponse?.answer || null,
+            website: derivedWebsite,
             calendly_challenge: challengeResponse?.answer || null,
             calendly_country: countryResponse?.answer || null,
             calendly_form_responses: JSON.stringify(allFormResponses),
@@ -1109,6 +1145,8 @@ module.exports = {
   // Utilities
   isBusinessEmail,
   getEmailDomain,
+  deriveWebsiteFromEmail,
+  getWebsiteWithFallback,
 
   // Constants
   FREE_EMAIL_DOMAINS,

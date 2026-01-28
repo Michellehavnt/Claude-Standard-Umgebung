@@ -71,6 +71,27 @@ Admin-publishable changelog for product updates visible to all users.
 - Created: `routes/changelog.js`, `changelog.html`, `changelogRoutes.test.js`
 - Modified: `transcriptDb.js`, `server.js`, all 10 admin HTML files
 
+#### P1.7 - Lead Quality Tab - Past Calls Analysis UX - COMPLETE (2026-01-28)
+
+Enhanced Past Calls analysis with improved UX, transcript linkage, and Deal Stage integration.
+
+**Implemented:**
+- Model selection cards in side-by-side layout (GPT-5-nano | Perplexity Sonar)
+- Transcript status check BEFORE analysis (green/red indicator in modal)
+- "Analyzed" button state (green) vs "Analyze" (blue) based on completion
+- Analysis metadata (date) shown in Post-Call Score column
+- Deal Stage dropdown (Closed/Lost/Follow up) linked to Closing Rate
+- Website extraction with generic domain exclusion (gmail, yahoo, etc.)
+- Column consistency between Past and Upcoming Calls tables
+- Professional SVG icons replacing all emojis
+
+**Files:**
+- Modified: `lead-quality.html` (CSS, HTML, JS)
+- Modified: `leadQualityService.js` (deriveWebsiteFromEmail, getWebsiteWithFallback)
+- Created: `__tests__/leadQualityService.test.js` (16 tests)
+
+**Tests:** 16 new tests (website extraction, generic domain exclusion)
+
 ### P2 - Nice-to-have / Polish
 
 | # | Task | Files | Notes |

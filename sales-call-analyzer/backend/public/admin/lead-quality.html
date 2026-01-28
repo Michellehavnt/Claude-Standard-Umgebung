@@ -1013,10 +1013,17 @@
       color: var(--color-text-primary);
     }
 
-    /* Model Cards */
+    /* Model Cards - Side by side layout */
     .model-cards {
       display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: var(--space-3);
+    }
+
+    @media (max-width: 500px) {
+      .model-cards {
+        grid-template-columns: 1fr;
+      }
     }
 
     .model-card {
@@ -1101,6 +1108,113 @@
 
     .model-card.selected .model-check svg {
       display: block;
+    }
+
+    /* Transcript Status in Modal */
+    .transcript-status-modal {
+      margin-bottom: var(--space-4);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .transcript-status-modal.available {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .transcript-status-modal.unavailable {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .transcript-status-modal .status-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .transcript-status-modal.available .status-icon {
+      background: var(--color-success);
+      color: white;
+    }
+
+    .transcript-status-modal.unavailable .status-icon {
+      background: var(--color-danger);
+      color: white;
+    }
+
+    .transcript-status-modal .status-text {
+      flex: 1;
+    }
+
+    .transcript-status-modal .status-title {
+      font-weight: 600;
+      font-size: var(--text-sm);
+      color: var(--color-text-primary);
+    }
+
+    .transcript-status-modal .status-subtitle {
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+    }
+
+    /* Analyzed Button State (Green) */
+    .analyze-btn.analyzed {
+      background: linear-gradient(135deg, var(--color-success), #059669);
+      box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+    }
+
+    .analyze-btn.analyzed:hover {
+      box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+    }
+
+    /* Analysis Metadata in Table Row */
+    .analysis-meta {
+      font-size: 10px;
+      color: var(--color-text-muted);
+      margin-top: 2px;
+    }
+
+    /* Deal Stage Dropdown */
+    .deal-stage-select {
+      font-size: var(--text-xs);
+      padding: var(--space-1) var(--space-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      color: var(--color-text-primary);
+      cursor: pointer;
+      min-width: 100px;
+    }
+
+    .deal-stage-select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+    }
+
+    .deal-stage-select.closed {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: var(--color-success);
+      color: var(--color-success);
+    }
+
+    .deal-stage-select.lost {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: var(--color-danger);
+      color: var(--color-danger);
+    }
+
+    .deal-stage-select.follow-up {
+      background: rgba(245, 158, 11, 0.1);
+      border-color: #f59e0b;
+      color: #f59e0b;
     }
   </style>
 </head>
@@ -1320,8 +1434,8 @@
                 <th style="width: 30px;"></th>
                 <th>Lead</th>
                 <th>Company</th>
-                <th>Pre-Call Score</th>
                 <th>Website</th>
+                <th>Pre-Call Score</th>
                 <th>Scheduled</th>
                 <th>Actions</th>
               </tr>
@@ -1330,7 +1444,7 @@
               <tr>
                 <td colspan="7">
                   <div class="empty-state">
-                    <div class="empty-state-icon">📅</div>
+                    <div class="empty-state-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
                     <div class="empty-state-title">No upcoming calls</div>
                     <p>Click "Sync Leads" to fetch Calendly bookings.</p>
                   </div>
@@ -1354,17 +1468,18 @@
                 <th style="width: 30px;"></th>
                 <th>Lead</th>
                 <th>Company</th>
-                <th>Score</th>
-                <th>Post-Call</th>
+                <th>Website</th>
+                <th>Pre-Call Score</th>
+                <th>Post-Call Score</th>
                 <th>Call Date</th>
+                <th>Deal Stage</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody id="past-tbody">
               <tr>
-                <td colspan="7">
+                <td colspan="9">
                   <div class="empty-state">
-                    <div class="empty-state-icon">📊</div>
                     <div class="empty-state-title">No past calls</div>
                     <p>Past calls will appear here after the scheduled time.</p>
                   </div>
@@ -1417,7 +1532,20 @@
       </div>
 
       <div class="modal-body">
-        <div class="modal-section-label">Choose Analysis Type</div>
+        <!-- Transcript Status (shown for past calls) -->
+        <div id="transcript-status-section" class="transcript-status-modal available" style="display: none;">
+          <div class="status-icon" id="transcript-status-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <div class="status-text">
+            <div class="status-title" id="transcript-status-title">Transcript Available</div>
+            <div class="status-subtitle" id="transcript-status-subtitle">Linked from Calls tab</div>
+          </div>
+        </div>
+
+        <div class="modal-section-label">Choose Analysis Model</div>
         <div class="model-cards">
           <div class="model-card selected" data-model="gpt-5-nano" onclick="selectAnalysisModel('gpt-5-nano')">
             <div class="model-icon-wrap">
@@ -1425,7 +1553,7 @@
             </div>
             <div class="model-info">
               <div class="model-name">GPT-5-nano</div>
-              <div class="model-desc">Fast transcript analysis with structured scoring</div>
+              <div class="model-desc">Fast transcript analysis</div>
             </div>
             <div class="model-check">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
@@ -1440,7 +1568,7 @@
             </div>
             <div class="model-info">
               <div class="model-name">Perplexity Sonar</div>
-              <div class="model-desc">Web-enhanced research on company & person</div>
+              <div class="model-desc">Web-enhanced research</div>
             </div>
             <div class="model-check">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
@@ -1671,7 +1799,7 @@
           <tr>
             <td colspan="7">
               <div class="empty-state">
-                <div class="empty-state-icon">📅</div>
+                <div class="empty-state-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
                 <div class="empty-state-title">No upcoming calls</div>
                 <p>Click "Sync Leads" to fetch Calendly bookings.</p>
               </div>
@@ -1693,12 +1821,12 @@
             <div style="font-size: var(--text-xs); color: var(--color-text-muted);">${escapeHtml(lead.inviteeEmail)}</div>
           </td>
           <td>${escapeHtml(lead.companyName || '-')}</td>
-          <td>${renderScoreBadge(lead)}</td>
           <td>
             ${lead.website ? `<a href="${ensureHttps(lead.website)}" target="_blank" onclick="event.stopPropagation();" style="color: var(--color-primary);">${truncateUrl(lead.website)}</a>` : '-'}
           </td>
+          <td>${renderScoreBadge(lead)}</td>
           <td>
-            <span class="call-status upcoming">📅 ${formatDateTime(lead.calendlyBookingTime)}</span>
+            <span class="call-status upcoming">${formatDateTime(lead.calendlyBookingTime)}</span>
           </td>
           <td onclick="event.stopPropagation();">
             <div class="row-actions">
@@ -1733,9 +1861,8 @@
       if (pastLeads.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="7">
+            <td colspan="9">
               <div class="empty-state">
-                <div class="empty-state-icon">📊</div>
                 <div class="empty-state-title">No past calls</div>
                 <p>Past calls will appear here after the scheduled time.</p>
               </div>
@@ -1745,7 +1872,12 @@
         return;
       }
 
-      tbody.innerHTML = pastLeads.map(lead => `
+      tbody.innerHTML = pastLeads.map(lead => {
+        const hasAnalysis = lead.transcriptAnalysisJson || lead.postCallScore;
+        const analysisModel = getAnalysisModel(lead);
+        const analysisDate = lead.transcriptAnalyzedAt;
+
+        return `
         <tr onclick="toggleDetail('past-${lead.id}')">
           <td>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="chevron-past-${lead.id}" style="transition: transform 0.2s;">
@@ -1757,17 +1889,23 @@
             <div style="font-size: var(--text-xs); color: var(--color-text-muted);">${escapeHtml(lead.inviteeEmail)}</div>
           </td>
           <td>${escapeHtml(lead.companyName || '-')}</td>
-          <td>${renderScoreBadge(lead)}</td>
-          <td>${renderPostCallScore(lead)}</td>
           <td>
-            <span class="call-status completed">✓ ${formatDate(lead.calendlyBookingTime)}</span>
+            ${lead.website ? `<a href="${ensureHttps(lead.website)}" target="_blank" onclick="event.stopPropagation();" style="color: var(--color-primary);">${truncateUrl(lead.website)}</a>` : '-'}
+          </td>
+          <td>${renderScoreBadge(lead)}</td>
+          <td>
+            ${renderPostCallScore(lead)}
+            ${hasAnalysis && analysisDate ? `<div class="analysis-meta">${formatShortDate(analysisDate)}</div>` : ''}
+          </td>
+          <td>
+            <span class="call-status completed">${formatDate(lead.calendlyBookingTime)}</span>
+          </td>
+          <td onclick="event.stopPropagation();">
+            ${renderDealStageDropdown(lead)}
           </td>
           <td onclick="event.stopPropagation();">
             <div class="row-actions">
-              <button class="analyze-btn" onclick="openAnalyzeModal('${lead.id}', 'past')" title="Analyze lead">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
-                Analyze
-              </button>
+              ${renderAnalyzeButton(lead)}
               <button class="action-btn" onclick="openOverrideModal('${lead.id}')" title="Override score">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
               </button>
@@ -1778,13 +1916,131 @@
           </td>
         </tr>
         <tr class="lead-detail" id="detail-past-${lead.id}">
-          <td colspan="7">
+          <td colspan="9">
             <div class="lead-detail-content">
               ${renderLeadDetail(lead, true)}
             </div>
           </td>
         </tr>
-      `).join('');
+      `;
+      }).join('');
+    }
+
+    // Render Analyze button (blue for pending, green for analyzed)
+    function renderAnalyzeButton(lead) {
+      const hasAnalysis = lead.transcriptAnalysisJson || lead.postCallScore;
+
+      if (hasAnalysis) {
+        return `
+          <button class="analyze-btn analyzed" onclick="openAnalyzeModal('${lead.id}', 'past')" title="Re-analyze (already analyzed)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Analyzed
+          </button>
+        `;
+      }
+
+      return `
+        <button class="analyze-btn" onclick="openAnalyzeModal('${lead.id}', 'past')" title="Analyze transcript">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+          Analyze
+        </button>
+      `;
+    }
+
+    // Render Deal Stage dropdown
+    function renderDealStageDropdown(lead) {
+      const currentStage = lead.dealStage || '';
+      const stageClass = currentStage === 'closed' ? 'closed' : currentStage === 'lost' ? 'lost' : currentStage === 'follow_up' ? 'follow-up' : '';
+
+      return `
+        <select class="deal-stage-select ${stageClass}" onchange="updateDealStage('${lead.id}', this.value, '${lead.inviteeEmail}')" onclick="event.stopPropagation();">
+          <option value="" ${!currentStage ? 'selected' : ''}>-</option>
+          <option value="closed" ${currentStage === 'closed' ? 'selected' : ''}>Closed</option>
+          <option value="lost" ${currentStage === 'lost' ? 'selected' : ''}>Lost</option>
+          <option value="follow_up" ${currentStage === 'follow_up' ? 'selected' : ''}>Follow up</option>
+        </select>
+      `;
+    }
+
+    // Get analysis model from lead data
+    function getAnalysisModel(lead) {
+      if (!lead.transcriptAnalysisJson) return null;
+      try {
+        const analysis = JSON.parse(lead.transcriptAnalysisJson);
+        return analysis.model_used || null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Format short date (e.g., "Jan 15")
+    function formatShortDate(dateStr) {
+      if (!dateStr) return '';
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    // Update deal stage
+    async function updateDealStage(leadId, stage, prospectEmail) {
+      try {
+        // Map stage to lifecycle override status
+        const statusMap = {
+          'closed': 'signed_up',
+          'lost': 'no_close',
+          'follow_up': 'active',
+          '': null
+        };
+
+        const status = statusMap[stage];
+
+        if (!status) {
+          // Clear the override
+          const lead = allLeads.find(l => l.id === leadId);
+          if (lead && lead.transcriptId) {
+            await fetch(`/api/closing-rate/lifecycle-overrides/${lead.transcriptId}`, {
+              method: 'DELETE',
+              credentials: 'include'
+            });
+          }
+        } else {
+          // Get the transcript ID from the lead
+          const lead = allLeads.find(l => l.id === leadId);
+          const callId = lead?.transcriptId;
+
+          if (!callId) {
+            console.warn('No transcript linked to this lead, cannot update deal stage');
+            return;
+          }
+
+          // Set the lifecycle override
+          await fetch('/api/closing-rate/lifecycle-overrides', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+              call_id: callId,
+              prospect_email: prospectEmail,
+              status: status,
+              notes: `Set from Lead Quality tab`
+            })
+          });
+        }
+
+        // Update local state
+        const leadIndex = allLeads.findIndex(l => l.id === leadId);
+        if (leadIndex !== -1) {
+          allLeads[leadIndex].dealStage = stage;
+        }
+
+        // Update dropdown appearance
+        const select = document.querySelector(`select[onchange*="${leadId}"]`);
+        if (select) {
+          select.className = 'deal-stage-select ' + (stage === 'closed' ? 'closed' : stage === 'lost' ? 'lost' : stage === 'follow_up' ? 'follow-up' : '');
+        }
+      } catch (err) {
+        console.error('Failed to update deal stage:', err);
+        alert('Failed to update deal stage');
+      }
     }
 
     // Render score badge
@@ -1893,7 +2149,7 @@
           <!-- Left Column: Scores -->
           <div class="detail-section-clean">
             <div class="section-header">
-              <h4><span class="section-icon">📊</span> Pre-Call Score Breakdown</h4>
+              <h4><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg> Pre-Call Score Breakdown</h4>
             </div>
 
             <div class="score-item-clean">
@@ -1930,7 +2186,7 @@
 
             ${lead.manualOverride ? `
               <div style="margin-top: var(--space-4); padding: var(--space-3); background: rgba(245, 158, 11, 0.1); border-radius: var(--radius-md); border: 1px dashed rgba(245, 158, 11, 0.3);">
-                <div style="font-size: var(--text-xs); font-weight: 600; color: #f59e0b; margin-bottom: var(--space-1);">⚡ Manual Override</div>
+                <div style="font-size: var(--text-xs); font-weight: 600; color: #f59e0b; margin-bottom: var(--space-1);">Manual Override</div>
                 <p style="font-size: var(--text-sm); color: var(--color-text-primary); margin: 0;">
                   Score set to <strong>${lead.manualOverride.score}</strong> on ${formatDate(lead.manualOverride.at)}
                 </p>
@@ -1945,7 +2201,7 @@
             ${perplexityData ? `
               <div class="detail-section-clean">
                 <div class="section-header">
-                  <h4><span class="section-icon">🔍</span> Research Results</h4>
+                  <h4><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Research Results</h4>
                 </div>
 
                 ${perplexityData.company_info ? `
@@ -2003,7 +2259,7 @@
             <!-- Form Responses -->
             <div class="detail-section-clean">
               <div class="section-header">
-                <h4><span class="section-icon">📝</span> Booking Info</h4>
+                <h4><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg> Booking Info</h4>
               </div>
 
               ${formResponses.length > 0 ? `
@@ -2061,7 +2317,7 @@
         ${isPast && transcriptAnalysis ? `
           <div class="detail-section-clean" style="margin-top: var(--space-4);">
             <div class="section-header">
-              <h4><span class="section-icon">📞</span> Post-Call Analysis</h4>
+              <h4><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg> Post-Call Analysis</h4>
               <span class="score-badge ${transcriptAnalysis.post_call_score >= 7 ? 'high' : transcriptAnalysis.post_call_score >= 4 ? 'medium' : 'low'}">
                 ${transcriptAnalysis.post_call_score || '-'}/10
               </span>
@@ -2094,14 +2350,14 @@
 
             ${transcriptAnalysis.key_insights ? `
               <div class="research-card">
-                <div class="research-card-title">💡 Key Insight</div>
+                <div class="research-card-title">Key Insight</div>
                 <div class="research-card-content">${escapeHtml(transcriptAnalysis.key_insights)}</div>
               </div>
             ` : ''}
 
             ${transcriptAnalysis.next_steps ? `
               <div class="research-card">
-                <div class="research-card-title">➡️ Next Steps</div>
+                <div class="research-card-title">Next Steps</div>
                 <div class="research-card-content">${escapeHtml(transcriptAnalysis.next_steps)}</div>
               </div>
             ` : ''}
@@ -2131,7 +2387,7 @@
 
         ${isPast && !transcriptAnalysis && lead.transcriptId ? `
           <div class="detail-section-clean" style="margin-top: var(--space-4); text-align: center; padding: var(--space-6);">
-            <div style="font-size: 32px; margin-bottom: var(--space-3);">📞</div>
+            <div style="margin-bottom: var(--space-3);"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></div>
             <h4 style="margin: 0 0 var(--space-2) 0;">Transcript Available</h4>
             <p style="color: var(--color-text-muted); font-size: var(--text-sm); margin: 0;">
               Click "Analyze" to run post-call analysis with GPT.
@@ -2263,9 +2519,10 @@
     let currentAnalyzeLeadType = null; // 'upcoming' or 'past'
     let selectedAnalysisModel = 'gpt-5-nano';
     let isAnalyzing = false;
+    let currentTranscriptStatus = null;
 
     // Open unified analyze modal
-    function openAnalyzeModal(id, type) {
+    async function openAnalyzeModal(id, type) {
       currentAnalyzeLeadId = id;
       currentAnalyzeLeadType = type;
       isAnalyzing = false;
@@ -2284,16 +2541,81 @@
       // Hide loading bar and status
       document.getElementById('analyze-loading-bar').classList.remove('active');
       document.getElementById('analyze-status').style.display = 'none';
-      document.getElementById('btn-run-analysis').disabled = false;
-      document.getElementById('btn-run-analysis').innerHTML = `
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
-          <polygon points="5 3 19 12 5 21 5 3"></polygon>
-        </svg>
-        Run Analysis
-      `;
 
-      // Show modal
+      // Show modal first (for responsiveness)
       document.getElementById('analyzeModal').classList.add('active');
+
+      // For past calls, check transcript availability
+      const transcriptStatusSection = document.getElementById('transcript-status-section');
+      const transcriptStatusIcon = document.getElementById('transcript-status-icon');
+      const transcriptStatusTitle = document.getElementById('transcript-status-title');
+      const transcriptStatusSubtitle = document.getElementById('transcript-status-subtitle');
+
+      if (type === 'past') {
+        transcriptStatusSection.style.display = 'flex';
+        transcriptStatusSection.className = 'transcript-status-modal';
+        transcriptStatusIcon.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>';
+        transcriptStatusTitle.textContent = 'Checking transcript...';
+        transcriptStatusSubtitle.textContent = 'Looking for linked transcript';
+
+        // Check transcript availability
+        try {
+          const response = await fetch(`/api/lead-quality/check-transcript/${id}`, { credentials: 'include' });
+          const data = await response.json();
+          currentTranscriptStatus = data.data;
+
+          if (data.success && (currentTranscriptStatus.hasTranscript || currentTranscriptStatus.availableInCallsTab)) {
+            transcriptStatusSection.className = 'transcript-status-modal available';
+            transcriptStatusIcon.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+            transcriptStatusTitle.textContent = 'Transcript Available';
+
+            if (currentTranscriptStatus.hasTranscript) {
+              transcriptStatusSubtitle.textContent = 'Already linked to this lead';
+            } else if (currentTranscriptStatus.availableInCallsTab) {
+              transcriptStatusSubtitle.textContent = `Found in Calls tab: ${currentTranscriptStatus.callsTabMatch?.title || 'matching call'}`;
+            }
+
+            // Enable analysis button
+            document.getElementById('btn-run-analysis').disabled = false;
+            document.getElementById('btn-run-analysis').innerHTML = `
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              Run Analysis
+            `;
+          } else {
+            transcriptStatusSection.className = 'transcript-status-modal unavailable';
+            transcriptStatusIcon.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+            transcriptStatusTitle.textContent = 'No Transcript Found';
+            transcriptStatusSubtitle.textContent = 'Sync calls or manually link a transcript first';
+
+            // Disable analysis button
+            document.getElementById('btn-run-analysis').disabled = true;
+            document.getElementById('btn-run-analysis').innerHTML = `
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              No Transcript
+            `;
+          }
+        } catch (err) {
+          console.error('Failed to check transcript:', err);
+          transcriptStatusSection.className = 'transcript-status-modal unavailable';
+          transcriptStatusIcon.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+          transcriptStatusTitle.textContent = 'Error checking transcript';
+          transcriptStatusSubtitle.textContent = err.message;
+        }
+      } else {
+        // For upcoming calls, hide transcript section
+        transcriptStatusSection.style.display = 'none';
+        document.getElementById('btn-run-analysis').disabled = false;
+        document.getElementById('btn-run-analysis').innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          Run Analysis
+        `;
+      }
     }
 
     // Select analysis model

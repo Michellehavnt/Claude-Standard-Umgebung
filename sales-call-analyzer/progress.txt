@@ -2,7 +2,101 @@
 
 Last Updated: 2026-01-28
 
-## Current Status: Lead Quality QA Complete - All Issues Fixed
+## Current Status: Lead Quality Tab Enhancements - Complete
+
+---
+
+## Lead Quality Tab - Past Calls Analysis UX + Persistence (2026-01-28)
+
+### SUMMARY
+Major enhancement to Lead Quality tab with improved Past Calls analysis UX, transcript linkage, Deal Stage integration, and better data persistence.
+
+### Features Implemented:
+
+1. **Model Selection Layout (Side-by-Side)**
+   - Changed model cards from vertical stack to horizontal left/right layout
+   - GPT-5-nano and Perplexity Sonar displayed side by side
+   - Responsive: stacks vertically on mobile
+
+2. **Transcript Status Before Analysis**
+   - Modal now shows transcript availability status BEFORE allowing analysis
+   - Green indicator if transcript is available (linked or found in Calls tab)
+   - Red indicator with "No Transcript Found" if not available
+   - Analysis button disabled when no transcript
+
+3. **"Analyzed" Button State (Green)**
+   - Past calls with completed analysis show green "Analyzed" button
+   - Button shows checkmark icon instead of info icon
+   - Clicking allows re-analysis
+   - Un-analyzed calls show blue "Analyze" button
+
+4. **Analysis Metadata in Table**
+   - Post-call score column shows analysis date (e.g., "Jan 15")
+   - Model used stored in transcript_analysis_json
+   - Timestamp stored in transcript_analyzed_at
+
+5. **Deal Stage Dropdown**
+   - New column in Past Calls table
+   - Options: - (default), Closed, Lost, Follow up
+   - Color-coded: green (Closed), red (Lost), yellow (Follow up)
+   - Links to Closing Rate via lifecycle overrides API
+
+6. **Website Extraction with Generic Domain Exclusion**
+   - Uses website from Calendly form as first choice
+   - Falls back to email domain if no form response
+   - Excludes generic providers (gmail, yahoo, hotmail, outlook, icloud, etc.)
+   - Returns null (shows "-") if only generic domain available
+   - New functions: `deriveWebsiteFromEmail()`, `getWebsiteWithFallback()`
+
+7. **Column Consistency (Past & Upcoming Calls)**
+   - Both tables now have consistent columns:
+     - Lead (name + email)
+     - Company
+     - Website
+     - Pre-Call Score / Post-Call Score
+     - Scheduled / Call Date
+     - Deal Stage (Past Calls only)
+     - Actions
+
+8. **Emoji Removal**
+   - Replaced all emojis with professional SVG icons
+   - Empty states use calendar/phone icons
+   - Section headers use bar chart, search, document, phone icons
+
+### Files Modified:
+- `backend/public/admin/lead-quality.html` - Full UI redesign
+  - CSS: model-cards grid, transcript status, analyzed button, deal stage dropdown
+  - HTML: Column structure, modal transcript status section
+  - JS: openAnalyzeModal with transcript check, renderPastLeads, renderAnalyzeButton, renderDealStageDropdown, updateDealStage
+- `backend/services/leadQualityService.js` - Website extraction functions
+  - Added: deriveWebsiteFromEmail(), getWebsiteWithFallback()
+  - Updated sync to use website fallback logic
+
+### New Test File:
+- `backend/__tests__/leadQualityService.test.js` - 16 tests
+  - getEmailDomain tests
+  - isBusinessEmail tests
+  - deriveWebsiteFromEmail tests (including generic domain exclusion)
+  - getWebsiteWithFallback tests
+  - FREE_EMAIL_DOMAINS constant tests
+
+### Test Results:
+- 16 new tests in leadQualityService.test.js - ALL PASSING
+- 50 total tests (leadQuality + closingRate) - ALL PASSING
+
+### Verification Checklist:
+| Feature | Status |
+|---------|--------|
+| Model cards side-by-side | DONE |
+| Transcript status in modal | DONE |
+| Green "Analyzed" button | DONE |
+| Analysis metadata display | DONE |
+| Deal Stage dropdown | DONE |
+| Deal Stage → Closing Rate link | DONE |
+| Website fallback excludes generic | DONE |
+| Column consistency | DONE |
+| No emojis | DONE |
+| Tests pass | DONE |
 
 ---
 
