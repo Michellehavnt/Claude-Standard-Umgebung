@@ -4,6 +4,8 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 require('dotenv').config();
 
+// Version: 2026-01-28-dbadapter-fix - Services now use dbAdapter for PostgreSQL
+
 const { initDatabase } = require('./services/database');
 const { initTranscriptsTable, saveDatabase, seedInternalUsers } = require('./services/transcriptDb');
 const { initSecrets } = require('./services/secretManager');
