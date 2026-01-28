@@ -340,42 +340,51 @@ async function getCurrentMrrWithGrowth() {
 
 /**
  * Get chart data for last N weeks
+ * Returns data points with date labels (e.g., "Jan 4", "Jan 11")
+ * Current week/day is at the end (rightmost position)
  * @param {number} weeks - Number of weeks
  * @returns {Promise<Object>} Chart-ready data
  */
 async function getChartData(weeks = 4) {
   const snapshots = await getSnapshots(weeks);
 
-  // Build weekly data points (one per week)
-  const weeklyData = [];
+  // Build data points - oldest first, newest (current) last
+  const dataPoints = [];
   const now = new Date();
 
-  for (let i = weeks - 1; i >= 0; i--) {
-    const weekStart = new Date(now);
-    weekStart.setDate(now.getDate() - (i * 7));
-    const weekStartStr = weekStart.toISOString().split('T')[0];
+  // Format date as "Jan 4", "Jan 11", etc.
+  const formatDateLabel = (date) => {
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
 
-    // Find the closest snapshot to this week
+  for (let i = weeks - 1; i >= 0; i--) {
+    const weekDate = new Date(now);
+    weekDate.setDate(now.getDate() - (i * 7));
+    const weekDateStr = weekDate.toISOString().split('T')[0];
+
+    // Find the closest snapshot to this date
     const snapshot = snapshots.find(s => {
       const snapDate = new Date(s.snapshot_date);
-      const diffDays = Math.abs((weekStart - snapDate) / (1000 * 60 * 60 * 24));
+      const diffDays = Math.abs((weekDate - snapDate) / (1000 * 60 * 60 * 24));
       return diffDays <= 7;
     });
 
-    weeklyData.push({
-      week: i === 0 ? 'This week' : i === 1 ? 'Last week' : `${i} weeks ago`,
-      date: weekStartStr,
+    dataPoints.push({
+      label: formatDateLabel(weekDate),
+      date: weekDateStr,
       mrrUsd: snapshot ? (snapshot.total_mrr_usd_cents / 100) : null,
       mrrGbp: snapshot ? (snapshot.total_mrr_cents / 100) : null,
       subscriptions: snapshot ? snapshot.active_subscriptions : null
     });
   }
 
+  // Data is already in chronological order (oldest to newest)
+  // Current week is at the end (rightmost position)
   return {
-    labels: weeklyData.map(d => d.week).reverse(),
-    mrrUsd: weeklyData.map(d => d.mrrUsd).reverse(),
-    mrrGbp: weeklyData.map(d => d.mrrGbp).reverse(),
-    subscriptions: weeklyData.map(d => d.subscriptions).reverse()
+    labels: dataPoints.map(d => d.label),
+    mrrUsd: dataPoints.map(d => d.mrrUsd),
+    mrrGbp: dataPoints.map(d => d.mrrGbp),
+    subscriptions: dataPoints.map(d => d.subscriptions)
   };
 }
 

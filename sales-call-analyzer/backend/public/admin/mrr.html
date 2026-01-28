@@ -742,13 +742,17 @@
       }
     }
 
-    // Render chart
+    // Render chart - Stripe-style MRR trend
     function renderChart(chartData) {
       const ctx = document.getElementById('mrrChart').getContext('2d');
 
       if (mrrChart) {
         mrrChart.destroy();
       }
+
+      // Stripe-style purple color
+      const primaryColor = '#635bff';
+      const primaryColorLight = 'rgba(99, 91, 255, 0.1)';
 
       mrrChart = new Chart(ctx, {
         type: 'line',
@@ -757,27 +761,44 @@
           datasets: [{
             label: 'MRR (USD)',
             data: chartData.mrrUsd,
-            borderColor: '#073b55',
-            backgroundColor: 'rgba(7, 59, 85, 0.1)',
+            borderColor: primaryColor,
+            backgroundColor: primaryColorLight,
             fill: true,
-            tension: 0.3,
-            pointRadius: 6,
-            pointBackgroundColor: '#073b55',
+            tension: 0.4,
+            pointRadius: 0,
+            pointHoverRadius: 6,
+            pointBackgroundColor: primaryColor,
             pointBorderColor: '#fff',
-            pointBorderWidth: 2
+            pointBorderWidth: 2,
+            borderWidth: 2.5
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
           plugins: {
             legend: {
               display: false
             },
             tooltip: {
+              backgroundColor: '#1a1f36',
+              titleColor: '#fff',
+              bodyColor: '#fff',
+              padding: 12,
+              displayColors: false,
               callbacks: {
+                title: function(context) {
+                  return context[0].label;
+                },
                 label: function(context) {
-                  return '$' + (context.raw || 0).toLocaleString();
+                  return '$' + (context.raw || 0).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                  });
                 }
               }
             }
@@ -785,16 +806,39 @@
           scales: {
             y: {
               beginAtZero: false,
+              position: 'right',
+              border: {
+                display: false
+              },
               ticks: {
                 callback: function(value) {
+                  if (value >= 1000) {
+                    return '$' + (value / 1000).toFixed(1) + 'K';
+                  }
                   return '$' + value.toLocaleString();
-                }
+                },
+                color: '#8898aa',
+                font: {
+                  size: 11
+                },
+                padding: 8
               },
               grid: {
-                color: 'rgba(0, 0, 0, 0.05)'
+                color: 'rgba(0, 0, 0, 0.06)',
+                drawTicks: false
               }
             },
             x: {
+              border: {
+                display: false
+              },
+              ticks: {
+                color: '#8898aa',
+                font: {
+                  size: 11
+                },
+                padding: 8
+              },
               grid: {
                 display: false
               }
