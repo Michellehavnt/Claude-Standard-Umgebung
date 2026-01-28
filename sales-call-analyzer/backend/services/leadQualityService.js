@@ -463,19 +463,16 @@ async function syncAndAnalyzeLeads(repEmail, options = {}) {
   }
 
   // Get tracked reps if 'all' specified
+  // Note: Even if no tracked reps configured, we still sync all events and tag them as 'all'
   let repsToSync = [repEmail];
+  let defaultOwner = repEmail;
   if (repEmail === 'all') {
     const config = secretManager.getPerplexityConfig();
     repsToSync = config.trackedReps || [];
-  }
-
-  if (repsToSync.length === 0) {
-    return {
-      success: false,
-      error: 'No reps to sync. Configure tracked reps in settings.',
-      synced: 0,
-      analyzed: 0
-    };
+    // If no tracked reps configured, still sync but use 'all' as owner
+    if (repsToSync.length === 0) {
+      defaultOwner = 'all';
+    }
   }
 
   const results = {
@@ -546,7 +543,7 @@ async function syncAndAnalyzeLeads(repEmail, options = {}) {
             calendly_country: countryResponse?.answer || null,
             calendly_form_responses: JSON.stringify(allFormResponses),
             calendly_booking_time: event.start_time,
-            calendly_booking_owner: repEmail === 'all' ? 'unknown' : repEmail
+            calendly_booking_owner: defaultOwner
           };
 
           if (!lead) {
@@ -619,6 +616,8 @@ async function syncAndAnalyzeLeads(repEmail, options = {}) {
       }
     }
   } catch (error) {
+    console.error('[LeadQuality] Sync error:', error.message);
+    console.error('[LeadQuality] Full error:', error);
     results.success = false;
     results.error = error.message;
   }
@@ -764,7 +763,9 @@ async function analyzeTranscript(leadId, options = {}) {
 
   // Get the full transcript
   const transcript = await transcriptDb.getTranscriptById(transcriptId);
-  if (!transcript || !transcript.transcript) {
+  // Note: The database column is 'transcript_text' not 'transcript'
+  const transcriptContent = transcript?.transcript_text;
+  if (!transcript || !transcriptContent) {
     throw new Error('Transcript content not available');
   }
 
@@ -782,7 +783,7 @@ async function analyzeTranscript(leadId, options = {}) {
 ${prompts.scoring_prompt}
 
 Transcript:
-${transcript.transcript.substring(0, 15000)}`;
+${transcriptContent.substring(0, 15000)}`;
 
   let analysis;
 

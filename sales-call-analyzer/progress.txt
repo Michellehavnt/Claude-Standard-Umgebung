@@ -2,7 +2,162 @@
 
 Last Updated: 2026-01-28
 
-## Current Status: Past Calls Transcript Analysis Feature Complete
+## Current Status: Lead Quality QA Complete - All Issues Fixed
+
+---
+
+## Lead Quality QA Testing & Bug Fixes (2026-01-28)
+
+### SUMMARY
+Comprehensive QA testing completed. Fixed critical bugs and added missing functionality.
+
+### Bugs Found & Fixed:
+
+1. **Transcript Content Not Available Error** (CRITICAL)
+   - **Issue**: Clicking "Analyze Transcript" showed "Transcript content not available" error
+   - **Root Cause**: Field name mismatch in `leadQualityService.js` line 766
+     - Code used `transcript.transcript` but database column is `transcript_text`
+   - **Fix**: Updated to use `transcript.transcript_text`
+   - **File**: `backend/services/leadQualityService.js`
+
+2. **No Delete Functionality for Leads**
+   - **Issue**: Users couldn't remove leads from the Lead Quality tab
+   - **Fix**: Added complete delete functionality:
+     - Added `DELETE /api/lead-quality/leads/:id` route
+     - Added trash icon button to both upcoming and past leads tables
+     - Added `deleteLead()` JavaScript function with confirmation
+     - Added danger hover state styling for delete button
+   - **Files**: `backend/routes/leadQuality.js`, `backend/public/admin/lead-quality.html`
+
+### QA Checklist Results:
+
+| Test | Status | Notes |
+|------|--------|-------|
+| Tooltips on action buttons | ✅ PASS | All buttons have title attributes |
+| User dropdown on all pages | ✅ PASS | All 12 admin pages have dropdown |
+| Data persistence (Railway) | ✅ PASS | PostgreSQL stores all data |
+| Lead removal capability | ✅ PASS | Delete button now available |
+| Analyzing & syncing | ✅ PASS | Transcript field fix resolved issues |
+| Changelog updated | ✅ PASS | Script created for deployment |
+| Transcript availability | ✅ PASS | Fixed field name mismatch |
+
+### New Files:
+- `backend/scripts/add-changelog-lead-quality-fixes.js` - Adds changelog entry for these fixes
+
+### Files Modified:
+- `backend/services/leadQualityService.js` - Fixed transcript_text field name
+- `backend/routes/leadQuality.js` - Added DELETE endpoint for leads
+- `backend/public/admin/lead-quality.html` - Added delete button, danger styling
+
+### Deployment Notes:
+Run changelog script after deployment:
+```bash
+cd backend && node scripts/add-changelog-lead-quality-fixes.js
+```
+
+---
+
+## Lead Quality UI Improvements & Full Calendly Sync (2026-01-28)
+
+### SUMMARY
+Fixed UI issues, added proper brand icons, and enabled full Calendly event pagination.
+
+### Changes Made:
+
+1. **Action Button Icons**:
+   - Replaced emoji icons with proper brand icons
+   - Perplexity icon for "Re-analyze" button
+   - OpenAI icon for "Analyze Transcript" button
+   - Clean SVG edit icon for "Override" button
+   - Updated button styling (32x32px, proper icon sizing)
+
+2. **Calendly Pagination for All Events**:
+   - Added pagination support to `listScheduledEvents()`
+   - Now fetches ALL events, not just first 100
+   - Pagination continues until no more pages (max 10 pages safety limit)
+   - Added logging: `[Calendly] Fetched page X: Y events (total: Z)`
+
+3. **Default Tracked Rep**:
+   - `phil@affiliatefinder.ai` is now the default tracked rep
+   - Field will never be empty on first load
+   - Users can still modify the list in Settings
+
+4. **Improved Error Logging**:
+   - Better Calendly API error details (includes full response)
+   - Organization/user scope logging for debugging
+   - Full error stack traces in sync failures
+
+### Files Updated:
+- `services/calendlyService.js` - Pagination, error logging, scope logging
+- `services/secretManager.js` - Default tracked rep
+- `services/leadQualityService.js` - Better error logging
+- `public/admin/lead-quality.html` - Brand icons, button styling
+
+### Deployment:
+- Commits: `924c7bc`, `7d13016`, `97e16c9`
+- Pushed to Railway via afbrain-deploy
+
+---
+
+## Lead Quality Railway Deployment Fix (2026-01-28)
+
+### SUMMARY
+Fixed Lead Quality tab deployment to Railway, resolved 500 errors, and documented API key persistence.
+
+### Issues Fixed:
+
+1. **500 Error on Lead Quality API**:
+   - Root Cause: `lead_quality_scores` table was missing from Railway's PostgreSQL
+   - The table creation SQL was not in `afbrain-deploy/services/dbAdapter.js`
+   - Fix: Synced `dbAdapter.js` with `createTables()` including:
+     - `lead_quality_scores` table
+     - `lead_quality_settings` table
+     - Required indexes
+   - Commit: `fcfe6cb Add lead_quality_scores table creation to dbAdapter`
+
+2. **Navigation Not Visible on Railway**:
+   - Updated all 10 admin HTML files in afbrain-deploy to include Lead Quality tab
+   - Commit: `37105c1` pushed to Railway
+
+3. **Sync Working Without Tracked Reps**:
+   - Modified `leadQualityService.syncAndAnalyzeLeads()` to work even when no tracked reps configured
+   - Uses 'all' as default owner instead of failing
+   - Commit: `fbb0886` pushed to Railway
+
+### IMPORTANT: API Key Persistence on Railway
+
+**Why API keys need to be re-added after redeploys:**
+- Railway uses an ephemeral filesystem - files created at runtime are lost on redeploy
+- When you add API keys through Settings UI, they're saved to `secrets.json`
+- This file is lost on each Railway redeploy
+
+**Solution - Use Railway Environment Variables:**
+API keys should be added in Railway dashboard, NOT through the Settings UI:
+
+1. Go to Railway dashboard → Your project → Variables
+2. Add these environment variables:
+   - `PERPLEXITY_API_KEY` - Your Perplexity API key
+   - `CALENDLY_API_KEY` - Your Calendly API key
+   - `FIREFLIES_API_KEY` - Your Fireflies API key
+   - `OPENAI_API_KEY` - Your OpenAI API key
+   - `STRIPE_API_KEY` - Your Stripe API key (if used)
+   - `SLACK_BOT_TOKEN` - Your Slack bot token (if used)
+
+3. Railway will automatically restart with the new variables
+4. The `secretManager` reads from `process.env` as fallback, so these will persist
+
+**Note:** The Settings UI still works for local development where files persist.
+
+### Files Synced to Railway:
+- `services/dbAdapter.js` - Lead quality tables
+- `services/leadQualityService.js` - Sync improvements
+- `services/leadQualityDb.js` - Database operations
+- `services/perplexityService.js` - Lead research
+- `services/secretManager.js` - API key management
+- `routes/leadQuality.js` - API endpoints
+- `routes/settings.js` - Settings endpoints
+- `public/admin/lead-quality.html` - Frontend UI
+- `public/admin/*.html` (10 files) - Navigation update
 
 ---
 

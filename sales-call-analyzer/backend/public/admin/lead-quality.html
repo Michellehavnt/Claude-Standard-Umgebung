@@ -302,24 +302,44 @@
     }
 
     .action-btn {
-      padding: var(--space-1) var(--space-2);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      padding: 0;
       background: var(--color-surface-secondary);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-sm);
       cursor: pointer;
-      font-size: var(--text-sm);
       transition: all var(--transition-fast);
     }
 
     .action-btn:hover {
       background: var(--color-primary-light);
       border-color: var(--color-primary);
-      color: var(--color-primary);
     }
 
     .action-btn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
+    }
+
+    .action-btn img {
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+    }
+
+    .action-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .action-btn-danger:hover {
+      background: var(--color-error-light, #fee2e2);
+      border-color: var(--color-error, #ef4444);
+      color: var(--color-error, #ef4444);
     }
 
     /* Lead Detail */
@@ -1232,8 +1252,15 @@
           </td>
           <td onclick="event.stopPropagation();">
             <div class="row-actions">
-              <button class="action-btn" onclick="reanalyzeLead('${lead.id}')" title="Re-analyze with Perplexity">🔍</button>
-              <button class="action-btn" onclick="openOverrideModal('${lead.id}')" title="Override score">✏️</button>
+              <button class="action-btn" onclick="reanalyzeLead('${lead.id}')" title="Re-analyze with Perplexity">
+                <img src="/admin/icons/Perplexity.png" alt="Perplexity">
+              </button>
+              <button class="action-btn" onclick="openOverrideModal('${lead.id}')" title="Override score">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+              </button>
+              <button class="action-btn action-btn-danger" onclick="deleteLead('${lead.id}', '${escapeHtml(lead.inviteeName || lead.inviteeEmail)}')" title="Delete lead">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+              </button>
             </div>
           </td>
         </tr>
@@ -1286,9 +1313,18 @@
           </td>
           <td onclick="event.stopPropagation();">
             <div class="row-actions">
-              <button class="action-btn" onclick="analyzeTranscript('${lead.id}')" title="Analyze call transcript">🎙️</button>
-              <button class="action-btn" onclick="reanalyzeLead('${lead.id}')" title="Re-analyze with Perplexity">🔍</button>
-              <button class="action-btn" onclick="openOverrideModal('${lead.id}')" title="Override score">✏️</button>
+              <button class="action-btn" onclick="analyzeTranscript('${lead.id}')" title="Analyze call transcript">
+                <img src="/admin/icons/openai.svg" alt="GPT">
+              </button>
+              <button class="action-btn" onclick="reanalyzeLead('${lead.id}')" title="Re-analyze with Perplexity">
+                <img src="/admin/icons/Perplexity.png" alt="Perplexity">
+              </button>
+              <button class="action-btn" onclick="openOverrideModal('${lead.id}')" title="Override score">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+              </button>
+              <button class="action-btn action-btn-danger" onclick="deleteLead('${lead.id}', '${escapeHtml(lead.inviteeName || lead.inviteeEmail)}')" title="Delete lead">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+              </button>
             </div>
           </td>
         </tr>
@@ -1552,11 +1588,12 @@
           await loadLeads();
         } else {
           text.textContent = 'Error';
-          alert(data.error || 'Sync failed');
+          alert(data.error || 'Sync failed. Check if Calendly API key is configured in Railway environment variables.');
         }
       } catch (err) {
         console.error('Sync failed:', err);
         text.textContent = 'Error';
+        alert('Sync failed: ' + err.message);
       } finally {
         setTimeout(() => {
           btn.disabled = false;
@@ -1585,6 +1622,29 @@
       } catch (err) {
         console.error('Re-analyze failed:', err);
         alert('Re-analyze failed');
+      }
+    }
+
+    // Delete a lead
+    async function deleteLead(id, name) {
+      if (!confirm(`Are you sure you want to delete the lead "${name}"? This cannot be undone.`)) return;
+
+      try {
+        const response = await fetch(`/api/lead-quality/leads/${id}`, {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          await loadLeads();
+        } else {
+          alert(data.error || 'Delete failed');
+        }
+      } catch (err) {
+        console.error('Delete failed:', err);
+        alert('Delete failed');
       }
     }
 

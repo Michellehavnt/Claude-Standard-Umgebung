@@ -453,6 +453,45 @@ router.delete('/override/:id', requireAuth, requireAdmin, async (req, res) => {
 });
 
 /**
+ * DELETE /api/lead-quality/leads/:id
+ * Delete a lead (admin only)
+ */
+router.delete('/leads/:id', requireAuth, requireAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const lead = await leadQualityDb.getLead(id);
+    if (!lead) {
+      return res.status(404).json({
+        success: false,
+        error: 'Lead not found'
+      });
+    }
+
+    const deleted = await leadQualityDb.deleteLead(id);
+
+    if (!deleted) {
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to delete lead'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Lead deleted',
+      data: { id }
+    });
+  } catch (error) {
+    console.error('[LeadQuality] Error deleting lead:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
  * GET /api/lead-quality/tracked-reps
  * Get list of tracked rep emails
  */
