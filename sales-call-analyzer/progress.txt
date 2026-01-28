@@ -2,7 +2,126 @@
 
 Last Updated: 2026-01-28
 
-## Current Status: Persistent Deleted Calls Feature Added
+## Current Status: Past Calls Transcript Analysis Feature Complete
+
+---
+
+## Past Calls Transcript Analysis Feature (2026-01-28)
+
+### SUMMARY
+Enhanced the Lead Quality page's Past Calls tab with transcript analysis capabilities, model selection, and configurable prompts.
+
+### Features Implemented:
+
+1. **Model Selection for Transcript Analysis**:
+   - Users can choose between GPT-5-nano and Perplexity Sonar for analysis
+   - Visual model selector with icons in the analysis modal
+   - Model-specific service configuration checks before analysis
+
+2. **Transcript Availability Detection**:
+   - `GET /api/lead-quality/check-transcript/:id` - Check if transcript exists
+   - Searches Calls tab by date range (±2 hours from booking) and name/email matching
+   - Falls back to Fireflies search if not in Calls tab
+   - Returns availability status for both sources
+
+3. **Transcript Fetching & Linking**:
+   - `POST /api/lead-quality/fetch-transcript/:id` - Fetch and link transcript
+   - Can fetch from Calls tab or Fireflies
+   - Options: `syncToCallsTab` (default: true), `autoAnalyze` (default: true)
+   - Triggers full analysis pipeline (DFY detection, copy extraction) when syncing
+
+4. **Transcript Analysis with Model Selection**:
+   - `POST /api/lead-quality/analyze-transcript/:id` - Analyze with chosen model
+   - Body: `{ model: 'gpt-5-nano' | 'perplexity-sonar' }`
+   - Stores results with model_used in post_call_analysis_json field
+   - Updates post_call_score based on analysis
+
+5. **Configurable Transcript Analysis Prompts**:
+   - `GET /api/settings/prompts/transcript-analysis` - Get current prompts
+   - `PUT /api/settings/prompts/transcript-analysis` - Save prompts
+   - `DELETE /api/settings/prompts/transcript-analysis` - Reset to defaults
+   - Two configurable prompts: System Prompt, Scoring Prompt
+   - Prompts stored in secrets.json (TRANSCRIPT_ANALYSIS_PROMPTS)
+
+6. **Frontend UI Updates**:
+   - Transcript Analysis Modal in lead-quality.html
+   - Model selector with OpenAI and Perplexity icons
+   - Transcript status display (linked, available, not found)
+   - Fetch options (from Calls tab or Fireflies)
+   - Settings page: Prompt editor with tabs for each prompt type
+
+### Files Modified:
+- `backend/routes/leadQuality.js` - Added analyze-transcript, fetch-transcript, check-transcript endpoints
+- `backend/services/leadQualityService.js` - Added analyzeTranscript, checkTranscriptAvailability, fetchAndLinkTranscript
+- `backend/services/secretManager.js` - Added getTranscriptAnalysisPrompts, saveTranscriptAnalysisPrompts
+- `backend/routes/settings.js` - Added prompt management endpoints
+- `backend/public/admin/lead-quality.html` - Added modal UI, model selector, JavaScript handlers
+- `backend/public/admin/settings.html` - Added transcript prompt editor section
+- `backend/public/admin/icons/openai.svg` - Created OpenAI icon
+
+### API Endpoints:
+```
+GET  /api/lead-quality/check-transcript/:id  - Check transcript availability
+POST /api/lead-quality/fetch-transcript/:id  - Fetch and link transcript
+POST /api/lead-quality/analyze-transcript/:id - Analyze transcript (body: { model })
+GET  /api/settings/prompts/transcript-analysis - Get prompts
+PUT  /api/settings/prompts/transcript-analysis - Save prompts
+DELETE /api/settings/prompts/transcript-analysis - Reset prompts
+```
+
+---
+
+## PostgreSQL Data Flow Fix Deployed (2026-01-28 - Earlier)
+
+---
+
+## PostgreSQL Data Flow Fix - Dashboard/Founder Services (2026-01-28)
+
+### SUMMARY
+Fixed critical bug where Calls tab shows data but other tabs (Copy, Closing Rate, Founder) show zero data on PostgreSQL deployment. Root cause: services were using sql.js-specific APIs instead of the dbAdapter abstraction layer.
+
+### Root Cause:
+Several services bypassed the `dbAdapter` abstraction layer and used direct sql.js database calls:
+- `database.exec()` and `database.run()` are sql.js-specific methods
+- These methods don't exist on PostgreSQL's pg.Pool client
+- Services affected: dashboardAggregationService, founderSnapshotService, searchService
+
+### Fixes Applied:
+
+1. **dashboardAggregationService.js**:
+   - Replaced `database.exec()` calls with `dbAdapter.query()`
+   - Added `parseJsonFields()` helper for consistent JSON parsing
+   - Added `deleted_at IS NULL` filter to exclude soft-deleted calls
+   - Fixed parameter placeholder format for PostgreSQL ($1, $2, etc.)
+
+2. **founderSnapshotService.js**:
+   - Replaced `database.exec()` calls with `dbAdapter.query()`
+   - Added PostgreSQL/SQLite date handling via `dbAdapter.isUsingPostgres()`
+   - Fixed `stripe_data` → `stripeData` field mapping
+   - Added `parseJsonFields()` helper
+
+3. **searchService.js**:
+   - Complete rewrite to support both SQLite FTS4 and PostgreSQL full-text search
+   - PostgreSQL: Uses `tsvector`, `plainto_tsquery`, `ts_headline`, GIN indexes
+   - SQLite: Uses existing FTS4 virtual table approach
+   - Added `deleted_at IS NULL` filter
+
+### Files Modified:
+- `backend/services/dashboardAggregationService.js` - Use dbAdapter.query()
+- `backend/services/founderSnapshotService.js` - Use dbAdapter.query()
+- `backend/services/searchService.js` - PostgreSQL full-text search support
+
+### Test Results:
+- dashboardAggregation: 26 tests passing
+- founderSnapshotService: 40 tests passing
+- Local API verification:
+  - `/api/dashboard/filters` returns reps and date ranges
+  - `/api/dashboard?limit=5` returns full aggregation data (47 analyzed calls)
+  - `/api/founder/phil` returns 25 calls with metrics
+
+### Deployment:
+- Committed and pushed to Railway
+- Commit: `4f90f34 Fix dashboard and founder services to use dbAdapter for PostgreSQL`
 
 ---
 

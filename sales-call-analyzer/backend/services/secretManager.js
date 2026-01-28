@@ -17,8 +17,45 @@ const KEY_TYPES = {
   STRIPE_API_KEY: 'stripe',
   OPENAI_API_KEY: 'openai',
   CALENDLY_API_KEY: 'calendly',
-  SLACK_BOT_TOKEN: 'slack'
+  SLACK_BOT_TOKEN: 'slack',
+  PERPLEXITY_API_KEY: 'perplexity'
 };
+
+// Default Perplexity prompt for lead research
+const DEFAULT_PERPLEXITY_PROMPT = `Research this lead and return a JSON object with the following structure:
+{
+  "company_info": {
+    "name": "Company name",
+    "website": "Company website URL",
+    "description": "Brief company description",
+    "employee_count": "Estimated number (e.g., '10-50' or '100+')",
+    "industry": "Industry/vertical",
+    "founded_year": null or year number,
+    "funding": "Funding status if known (e.g., 'Series A', 'Bootstrapped')"
+  },
+  "affiliate_signals": {
+    "has_affiliate_program": true/false,
+    "affiliate_software_detected": ["List of detected affiliate platforms like Impact, PartnerStack, Rewardful"],
+    "affiliate_page_url": "URL to their affiliate/partners page or null",
+    "affiliate_terms_found": true/false,
+    "partner_mentions": true/false
+  },
+  "person_info": {
+    "name": "Person's full name",
+    "role": "Job title/role",
+    "linkedin_url": "LinkedIn profile URL or null",
+    "authority_level": "junior|mid|senior|executive"
+  },
+  "sources": ["List of URLs used for research"]
+}
+
+Research the company and person thoroughly. Look for:
+1. Company website, LinkedIn, Crunchbase for company info
+2. Check for /affiliates, /partners, /referrals pages on their website
+3. Look for mentions of affiliate software (Impact, PartnerStack, Rewardful, FirstPromoter, etc.)
+4. Find the person's LinkedIn profile and role
+
+Return ONLY valid JSON, no additional text.`;
 
 // Supported OpenAI models
 const OPENAI_MODELS = [
@@ -112,6 +149,12 @@ function loadSecrets() {
                              jsonSecrets.SLACK_SIGNUP_CHANNEL_ID || null,
     SLACK_PAYMENT_CHANNEL_ID: envLocalSecrets.SLACK_PAYMENT_CHANNEL_ID ||
                               jsonSecrets.SLACK_PAYMENT_CHANNEL_ID || null,
+    // Perplexity configuration
+    PERPLEXITY_API_KEY: envLocalSecrets.PERPLEXITY_API_KEY ||
+                        jsonSecrets.PERPLEXITY_API_KEY ||
+                        process.env.PERPLEXITY_API_KEY || null,
+    PERPLEXITY_PROMPT: jsonSecrets.PERPLEXITY_PROMPT || DEFAULT_PERPLEXITY_PROMPT,
+    LEAD_QUALITY_TRACKED_REPS: jsonSecrets.LEAD_QUALITY_TRACKED_REPS || '[]',
     // Model configuration (non-secret, stored in secrets.json for simplicity)
     OPENAI_MODEL: jsonSecrets.OPENAI_MODEL || 'gpt-5-nano',
     OPENAI_APPLY_MODE: jsonSecrets.OPENAI_APPLY_MODE || APPLY_MODES.FUTURE_ONLY
@@ -131,6 +174,7 @@ function initSecrets() {
   console.log('[SecretManager] OpenAI configured:', !!secretsCache.OPENAI_API_KEY);
   console.log('[SecretManager] Calendly configured:', !!secretsCache.CALENDLY_API_KEY);
   console.log('[SecretManager] Slack configured:', !!secretsCache.SLACK_BOT_TOKEN);
+  console.log('[SecretManager] Perplexity configured:', !!secretsCache.PERPLEXITY_API_KEY);
   console.log('[SecretManager] OpenAI model:', secretsCache.OPENAI_MODEL || 'gpt-4o');
 }
 
@@ -271,6 +315,10 @@ function getIntegrationStatus() {
     slack: {
       configured: isConfigured('SLACK_BOT_TOKEN'),
       maskedKey: getMaskedKey('SLACK_BOT_TOKEN')
+    },
+    perplexity: {
+      configured: isConfigured('PERPLEXITY_API_KEY'),
+      maskedKey: getMaskedKey('PERPLEXITY_API_KEY')
     }
   };
 }
@@ -476,6 +524,238 @@ async function validateOpenAIKey(apiKey = null) {
   }
 }
 
+/**
+ * Validate Perplexity API key by making a test request
+ * @param {string} apiKey - The API key to test (optional, uses stored key if not provided)
+ * @returns {Promise<Object>} - Validation result
+ */
+async function validatePerplexityKey(apiKey = null) {
+  const key = apiKey || getSecret('PERPLEXITY_API_KEY');
+
+  if (!key) {
+    return { valid: false, error: 'No API key provided' };
+  }
+
+  try {
+    // Make a minimal test request to Perplexity API
+    const response = await fetch('https://api.perplexity.ai/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${key}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'sonar',
+        messages: [{ role: 'user', content: 'test' }],
+        max_tokens: 5
+      })
+    });
+
+    // Check content type to avoid parsing HTML as JSON
+    const contentType = response.headers.get('content-type') || '';
+    const isJson = contentType.includes('application/json');
+
+    if (response.status === 200) {
+      // Consume the response body to avoid issues
+      if (isJson) {
+        await response.json().catch(() => {});
+      }
+      return { valid: true };
+    }
+
+    if (response.status === 401) {
+      return { valid: false, error: 'Invalid API key' };
+    }
+
+    if (response.status === 429) {
+      return { valid: false, error: 'Rate limited - too many requests. Please try again later.' };
+    }
+
+    if (response.status >= 500) {
+      return { valid: false, error: `Perplexity server error (${response.status}). Please try again later.` };
+    }
+
+    // Try to get error details from response
+    let errorMessage = `Unexpected response (${response.status})`;
+    if (isJson) {
+      try {
+        const data = await response.json();
+        if (data.error?.message) {
+          errorMessage = data.error.message;
+        }
+      } catch (parseError) {
+        // Ignore JSON parse errors
+      }
+    } else {
+      // Response is not JSON (might be HTML error page)
+      const text = await response.text().catch(() => '');
+      if (text.includes('<!DOCTYPE') || text.includes('<html')) {
+        errorMessage = `Perplexity API returned an error page (${response.status}). The API may be unavailable.`;
+      }
+    }
+
+    return { valid: false, error: errorMessage };
+  } catch (error) {
+    // Network errors
+    if (error.cause?.code === 'ENOTFOUND' || error.message.includes('ENOTFOUND')) {
+      return { valid: false, error: 'Network error: Cannot reach Perplexity API' };
+    }
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      return { valid: false, error: 'Network error: Failed to connect to Perplexity API' };
+    }
+    return { valid: false, error: `Connection error: ${error.message}` };
+  }
+}
+
+/**
+ * Get Perplexity configuration (prompt and tracked reps)
+ * @returns {Object} - Perplexity configuration
+ */
+function getPerplexityConfig() {
+  loadSecrets(); // Refresh cache
+
+  let trackedReps = [];
+  try {
+    trackedReps = JSON.parse(secretsCache.LEAD_QUALITY_TRACKED_REPS || '[]');
+  } catch (e) {
+    trackedReps = [];
+  }
+
+  return {
+    configured: isConfigured('PERPLEXITY_API_KEY'),
+    maskedKey: getMaskedKey('PERPLEXITY_API_KEY'),
+    prompt: secretsCache.PERPLEXITY_PROMPT || DEFAULT_PERPLEXITY_PROMPT,
+    trackedReps
+  };
+}
+
+/**
+ * Save Perplexity prompt configuration
+ * @param {string} prompt - The research prompt to use
+ * @returns {boolean} - Success status
+ */
+function savePerplexityPrompt(prompt) {
+  try {
+    if (!prompt || typeof prompt !== 'string') {
+      console.error('[SecretManager] Invalid prompt');
+      return false;
+    }
+
+    // Load existing secrets
+    let secrets = {};
+    if (fs.existsSync(SECRETS_JSON_PATH)) {
+      const content = fs.readFileSync(SECRETS_JSON_PATH, 'utf8');
+      secrets = JSON.parse(content);
+    }
+
+    // Update configuration
+    secrets.PERPLEXITY_PROMPT = prompt;
+
+    // Write back to file
+    fs.writeFileSync(SECRETS_JSON_PATH, JSON.stringify(secrets, null, 2), 'utf8');
+
+    // Update cache
+    secretsCache.PERPLEXITY_PROMPT = prompt;
+
+    console.log('[SecretManager] Perplexity prompt saved');
+    return true;
+  } catch (error) {
+    console.error('[SecretManager] Error saving Perplexity prompt:', error.message);
+    return false;
+  }
+}
+
+/**
+ * Get transcript analysis prompts configuration
+ * @returns {Object} - Transcript analysis prompts
+ */
+function getTranscriptAnalysisPrompts() {
+  loadSecrets(); // Refresh cache
+
+  const prompts = {};
+  try {
+    if (secretsCache.TRANSCRIPT_ANALYSIS_PROMPTS) {
+      Object.assign(prompts, JSON.parse(secretsCache.TRANSCRIPT_ANALYSIS_PROMPTS));
+    }
+  } catch (e) {
+    // Use defaults
+  }
+
+  return prompts;
+}
+
+/**
+ * Save transcript analysis prompts
+ * @param {Object} prompts - Object with prompt keys and values
+ * @returns {boolean} - Success status
+ */
+function saveTranscriptAnalysisPrompts(prompts) {
+  try {
+    if (!prompts || typeof prompts !== 'object') {
+      console.error('[SecretManager] Invalid prompts - must be object');
+      return false;
+    }
+
+    // Load existing secrets
+    let secrets = {};
+    if (fs.existsSync(SECRETS_JSON_PATH)) {
+      const content = fs.readFileSync(SECRETS_JSON_PATH, 'utf8');
+      secrets = JSON.parse(content);
+    }
+
+    // Update configuration
+    secrets.TRANSCRIPT_ANALYSIS_PROMPTS = JSON.stringify(prompts);
+
+    // Write back to file
+    fs.writeFileSync(SECRETS_JSON_PATH, JSON.stringify(secrets, null, 2), 'utf8');
+
+    // Update cache
+    secretsCache.TRANSCRIPT_ANALYSIS_PROMPTS = secrets.TRANSCRIPT_ANALYSIS_PROMPTS;
+
+    console.log('[SecretManager] Transcript analysis prompts saved');
+    return true;
+  } catch (error) {
+    console.error('[SecretManager] Error saving transcript prompts:', error.message);
+    return false;
+  }
+}
+
+/**
+ * Save tracked reps for lead quality
+ * @param {string[]} repEmails - Array of rep email addresses to track
+ * @returns {boolean} - Success status
+ */
+function saveTrackedReps(repEmails) {
+  try {
+    if (!Array.isArray(repEmails)) {
+      console.error('[SecretManager] Invalid tracked reps - must be array');
+      return false;
+    }
+
+    // Load existing secrets
+    let secrets = {};
+    if (fs.existsSync(SECRETS_JSON_PATH)) {
+      const content = fs.readFileSync(SECRETS_JSON_PATH, 'utf8');
+      secrets = JSON.parse(content);
+    }
+
+    // Update configuration
+    secrets.LEAD_QUALITY_TRACKED_REPS = JSON.stringify(repEmails);
+
+    // Write back to file
+    fs.writeFileSync(SECRETS_JSON_PATH, JSON.stringify(secrets, null, 2), 'utf8');
+
+    // Update cache
+    secretsCache.LEAD_QUALITY_TRACKED_REPS = JSON.stringify(repEmails);
+
+    console.log('[SecretManager] Tracked reps saved:', repEmails);
+    return true;
+  } catch (error) {
+    console.error('[SecretManager] Error saving tracked reps:', error.message);
+    return false;
+  }
+}
+
 module.exports = {
   initSecrets,
   getSecret,
@@ -487,11 +767,18 @@ module.exports = {
   validateFirefliesKey,
   validateStripeKey,
   validateOpenAIKey,
+  validatePerplexityKey,
   getOpenAIConfig,
   saveOpenAIConfig,
+  getPerplexityConfig,
+  savePerplexityPrompt,
+  saveTrackedReps,
+  getTranscriptAnalysisPrompts,
+  saveTranscriptAnalysisPrompts,
   KEY_TYPES,
   OPENAI_MODELS,
   APPLY_MODES,
+  DEFAULT_PERPLEXITY_PROMPT,
   // For testing only
   _loadSecrets: loadSecrets,
   _ENV_LOCAL_PATH: ENV_LOCAL_PATH,

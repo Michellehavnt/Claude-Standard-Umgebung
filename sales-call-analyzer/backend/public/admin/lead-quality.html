@@ -1,0 +1,1878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lead Quality - Sales Call Analyzer</title>
+  <link rel="stylesheet" href="design-system.css">
+  <style>
+    /* Page-specific styles */
+
+    /* Tabs */
+    .tabs-container {
+      display: flex;
+      gap: var(--space-1);
+      margin-bottom: var(--space-6);
+      border-bottom: 2px solid var(--color-border);
+    }
+
+    .tab-btn {
+      padding: var(--space-3) var(--space-5);
+      background: none;
+      border: none;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      position: relative;
+      transition: color var(--transition-fast);
+    }
+
+    .tab-btn:hover {
+      color: var(--color-text-primary);
+    }
+
+    .tab-btn.active {
+      color: var(--color-primary);
+    }
+
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--color-primary);
+    }
+
+    .tab-btn .tab-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 var(--space-2);
+      margin-left: var(--space-2);
+      background: var(--color-surface-secondary);
+      border-radius: var(--radius-full);
+      font-size: var(--text-xs);
+      font-weight: 600;
+    }
+
+    .tab-btn.active .tab-count {
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* Filter row layout */
+    .ds-filters-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+      align-items: flex-end;
+    }
+
+    .ds-filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+
+    .ds-filter-label {
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .ds-filter-actions {
+      display: flex;
+      gap: var(--space-2);
+      margin-left: auto;
+    }
+
+    @media (max-width: 768px) {
+      .ds-filters-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .ds-filter-group {
+        width: 100%;
+      }
+
+      .ds-filter-actions {
+        margin-left: 0;
+        margin-top: var(--space-3);
+      }
+    }
+
+    /* KPI Strip */
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--space-4);
+      margin-bottom: var(--space-6);
+    }
+
+    .kpi-card {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      border: 1px solid var(--color-border);
+      text-align: center;
+    }
+
+    .kpi-value {
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      color: var(--color-text-primary);
+      line-height: 1;
+    }
+
+    .kpi-value.success { color: var(--color-success); }
+    .kpi-value.warning { color: #f59e0b; }
+    .kpi-value.danger { color: var(--color-danger); }
+    .kpi-value.primary { color: var(--color-primary); }
+
+    .kpi-label {
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      margin-top: var(--space-2);
+      letter-spacing: 0.5px;
+      font-weight: var(--weight-medium);
+    }
+
+    @media (max-width: 900px) {
+      .kpi-strip { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 600px) {
+      .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* Leads Table */
+    .leads-section {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      overflow: hidden;
+    }
+
+    .leads-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .leads-header h3 {
+      margin: 0;
+      font-size: var(--text-base);
+      font-weight: 600;
+    }
+
+    .leads-count {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+    }
+
+    .leads-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .leads-table th {
+      padding: var(--space-3) var(--space-4);
+      text-align: left;
+      font-size: var(--text-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--color-text-secondary);
+      background: var(--color-surface-secondary);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .leads-table td {
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--text-sm);
+      border-bottom: 1px solid var(--color-border-light);
+      vertical-align: middle;
+    }
+
+    .leads-table tbody tr:hover {
+      background: var(--color-surface-hover);
+      cursor: pointer;
+    }
+
+    /* Score Badge */
+    .score-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-md);
+      font-size: var(--text-xs);
+      font-weight: 600;
+    }
+
+    .score-badge.high {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--color-success);
+    }
+
+    .score-badge.medium {
+      background: rgba(245, 158, 11, 0.1);
+      color: #f59e0b;
+    }
+
+    .score-badge.low {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--color-danger);
+    }
+
+    .score-badge.pending {
+      background: var(--color-surface-secondary);
+      color: var(--color-text-muted);
+    }
+
+    .score-badge.override {
+      border: 1px dashed currentColor;
+    }
+
+    .score-pips {
+      display: flex;
+      gap: 2px;
+    }
+
+    .score-pip {
+      width: 4px;
+      height: 10px;
+      border-radius: 1px;
+      background: var(--color-border);
+    }
+
+    .score-pip.active.high { background: var(--color-success); }
+    .score-pip.active.medium { background: #f59e0b; }
+    .score-pip.active.low { background: var(--color-danger); }
+
+    /* Call Status Badge */
+    .call-status {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-md);
+      font-size: var(--text-xs);
+      font-weight: 500;
+    }
+
+    .call-status.upcoming {
+      background: rgba(59, 130, 246, 0.1);
+      color: #3b82f6;
+    }
+
+    .call-status.completed {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--color-success);
+    }
+
+    .call-status.analyzed {
+      background: rgba(139, 92, 246, 0.1);
+      color: #8b5cf6;
+    }
+
+    /* Row Actions */
+    .row-actions {
+      display: flex;
+      gap: var(--space-2);
+    }
+
+    .action-btn {
+      padding: var(--space-1) var(--space-2);
+      background: var(--color-surface-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: var(--text-sm);
+      transition: all var(--transition-fast);
+    }
+
+    .action-btn:hover {
+      background: var(--color-primary-light);
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .action-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Lead Detail */
+    .lead-detail {
+      display: none;
+    }
+
+    .lead-detail.expanded {
+      display: table-row;
+    }
+
+    .lead-detail td {
+      background: var(--color-surface-secondary);
+      padding: 0 !important;
+    }
+
+    .lead-detail-content {
+      padding: var(--space-4) var(--space-5);
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+
+    @media (max-width: 900px) {
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .detail-section {
+      background: var(--color-surface);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      border: 1px solid var(--color-border-light);
+    }
+
+    .detail-section-title {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-3);
+    }
+
+    .bucket-score {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: var(--space-2) 0;
+      border-bottom: 1px solid var(--color-border-light);
+    }
+
+    .bucket-score:last-child {
+      border-bottom: none;
+    }
+
+    .bucket-label {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--color-text-primary);
+    }
+
+    .bucket-rationale {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      margin-top: var(--space-1);
+    }
+
+    .bucket-value {
+      font-weight: 600;
+      font-size: var(--text-sm);
+      color: var(--color-primary);
+      white-space: nowrap;
+    }
+
+    /* Form Responses */
+    .form-responses {
+      display: grid;
+      gap: var(--space-3);
+    }
+
+    .form-response {
+      padding: var(--space-2) 0;
+      border-bottom: 1px solid var(--color-border-light);
+    }
+
+    .form-response:last-child {
+      border-bottom: none;
+    }
+
+    .form-response-question {
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-1);
+    }
+
+    .form-response-answer {
+      font-size: var(--text-sm);
+      color: var(--color-text-primary);
+    }
+
+    /* Transcript Analysis */
+    .transcript-analysis {
+      margin-top: var(--space-4);
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--color-border-light);
+    }
+
+    .analysis-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-3);
+      margin-top: var(--space-3);
+    }
+
+    .analysis-item {
+      background: var(--color-surface-secondary);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-sm);
+    }
+
+    .analysis-item-label {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+    }
+
+    .analysis-item-value {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--color-text-primary);
+    }
+
+    .buying-signals, .objections-list {
+      margin-top: var(--space-3);
+    }
+
+    .signal-tag {
+      display: inline-block;
+      padding: var(--space-1) var(--space-2);
+      margin: var(--space-1);
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--color-success);
+      border-radius: var(--radius-sm);
+      font-size: var(--text-xs);
+    }
+
+    .objection-tag {
+      display: inline-block;
+      padding: var(--space-1) var(--space-2);
+      margin: var(--space-1);
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--color-danger);
+      border-radius: var(--radius-sm);
+      font-size: var(--text-xs);
+    }
+
+    /* Config Warning */
+    .config-warning {
+      display: none;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      background: #fef3c7;
+      border: 1px solid #fcd34d;
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-6);
+    }
+
+    .config-warning.active {
+      display: flex;
+    }
+
+    .config-warning-icon {
+      font-size: var(--text-lg);
+      color: #f59e0b;
+    }
+
+    .config-warning-text {
+      font-size: var(--text-sm);
+      color: #92400e;
+    }
+
+    .config-warning-text a {
+      color: #92400e;
+      font-weight: 500;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: var(--space-8) var(--space-4);
+    }
+
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: var(--space-4);
+      opacity: 0.5;
+    }
+
+    .empty-state-title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      margin-bottom: var(--space-2);
+    }
+
+    .empty-state p {
+      color: var(--color-text-muted);
+      font-size: var(--text-sm);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      margin-bottom: var(--space-4);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: var(--space-3);
+      justify-content: flex-end;
+      margin-top: var(--space-6);
+    }
+
+    .generated-at {
+      text-align: center;
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      margin-top: var(--space-6);
+    }
+
+    /* Transcript Modal - Model Selector */
+    .modal.transcript-modal {
+      max-width: 500px;
+    }
+
+    .model-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+      margin-top: var(--space-3);
+    }
+
+    .model-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-4);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      background: var(--color-surface);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .model-btn:hover {
+      border-color: var(--color-primary-light);
+      background: var(--color-surface-hover);
+    }
+
+    .model-btn.active {
+      border-color: var(--color-primary);
+      background: var(--color-primary-light);
+    }
+
+    .model-icon {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+    }
+
+    .model-btn span:first-of-type {
+      font-weight: 600;
+      font-size: var(--text-sm);
+    }
+
+    .model-desc {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      text-align: center;
+    }
+
+    /* Transcript Status */
+    .transcript-status {
+      margin-top: var(--space-4);
+      padding: var(--space-4);
+      border-radius: var(--radius-md);
+      background: var(--color-surface-secondary);
+    }
+
+    .transcript-status.has-transcript {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .transcript-status.no-transcript {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .transcript-status-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-weight: 500;
+      font-size: var(--text-sm);
+      margin-bottom: var(--space-2);
+    }
+
+    .transcript-status-text {
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+    }
+
+    .transcript-actions {
+      display: flex;
+      gap: var(--space-2);
+      margin-top: var(--space-3);
+    }
+
+    .transcript-actions .ds-btn {
+      flex: 1;
+      font-size: var(--text-xs);
+      padding: var(--space-2) var(--space-3);
+    }
+
+    /* Model section label */
+    .modal-section-label {
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: var(--space-2);
+    }
+  </style>
+</head>
+<body>
+  <header class="ds-header">
+    <div class="ds-header-inner">
+      <a href="/admin/" class="ds-header-logo">
+        <img src="/admin/logo.svg" alt="AffiliateFinder">
+      </a>
+      <div class="ds-header-divider"></div>
+      <nav class="ds-header-nav">
+        <a href="/admin/">Calls</a>
+        <a href="/admin/lead-quality.html" class="active">Lead Quality</a>
+        <a href="/admin/copy.html">Copy</a>
+        <a href="/admin/phil.html">DFY</a>
+        <a href="/admin/founder.html">Closing Rate</a>
+      </nav>
+
+      <!-- User Menu -->
+      <div class="ds-header-user">
+        <button class="ds-user-button" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+          <div class="ds-user-avatar" id="user-avatar">-</div>
+          <div class="ds-user-info">
+            <span class="ds-user-name" id="user-display-name">Loading...</span>
+            <span class="ds-user-role" id="user-display-role">-</span>
+          </div>
+          <svg class="ds-user-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+
+        <div class="ds-user-dropdown" id="user-dropdown">
+          <div class="ds-dropdown-header">
+            <div class="ds-dropdown-email" id="user-email">-</div>
+            <span class="ds-dropdown-role user" id="user-role-badge">User</span>
+          </div>
+
+          <div class="ds-dropdown-section">
+            <a href="/admin/account.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              Account
+            </a>
+            <a href="/admin/settings.html" class="ds-dropdown-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              Settings
+            </a>
+          </div>
+
+          <div class="ds-dropdown-divider"></div>
+
+          <div class="ds-dropdown-section">
+            <button class="ds-dropdown-item" onclick="logout()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              Log Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="ds-main">
+    <div class="ds-container">
+      <!-- Page Header -->
+      <div class="ds-page-header">
+        <div>
+          <h1 class="ds-page-title">Lead Quality</h1>
+          <p class="ds-page-subtitle">AI-powered lead scoring for Calendly bookings</p>
+        </div>
+        <div style="display: flex; gap: var(--space-3);">
+          <button class="ds-btn ds-btn-secondary" id="btn-refresh" onclick="syncLeads()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M23 4v6h-6"></path>
+              <path d="M1 20v-6h6"></path>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            <span id="refresh-text">Sync Leads</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Config Warning -->
+      <div class="config-warning" id="configWarning">
+        <span class="config-warning-icon">!</span>
+        <div class="config-warning-text" id="configWarningText">
+          Configuration required. <a href="/admin/settings.html">Go to Settings</a> to set up Perplexity and Calendly integrations.
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs-container">
+        <button class="tab-btn active" data-tab="upcoming" onclick="switchTab('upcoming')">
+          Upcoming Calls
+          <span class="tab-count" id="upcoming-count">0</span>
+        </button>
+        <button class="tab-btn" data-tab="past" onclick="switchTab('past')">
+          Past Calls
+          <span class="tab-count" id="past-count">0</span>
+        </button>
+      </div>
+
+      <!-- Filters -->
+      <div class="ds-filters">
+        <div class="ds-filters-row">
+          <div class="ds-filter-group">
+            <label class="ds-filter-label">Rep</label>
+            <select class="ds-input" id="filter-rep" onchange="applyFilters()">
+              <option value="all">All Tracked Reps</option>
+            </select>
+          </div>
+
+          <div class="ds-filter-group">
+            <label class="ds-filter-label">Score Range</label>
+            <select class="ds-input" id="filter-score" onchange="applyFilters()">
+              <option value="all">All Scores</option>
+              <option value="high">High (7-10)</option>
+              <option value="medium">Medium (4-6)</option>
+              <option value="low">Low (1-3)</option>
+              <option value="pending">Not Scored</option>
+            </select>
+          </div>
+
+          <div class="ds-filter-group">
+            <label class="ds-filter-label">Date Range</label>
+            <select class="ds-input" id="filter-date" onchange="handleDateChange()">
+              <option value="last_30_days">Last 30 days</option>
+              <option value="last_7_days">Last 7 days</option>
+              <option value="last_90_days">Last 90 days</option>
+              <option value="all">All time</option>
+            </select>
+          </div>
+
+          <div class="ds-filter-actions">
+            <button class="ds-btn ds-btn-secondary" onclick="clearFilters()">Clear</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI Strip -->
+      <div class="kpi-strip">
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpi-total">-</div>
+          <div class="kpi-label">Total Leads</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value primary" id="kpi-avg">-</div>
+          <div class="kpi-label">Avg Score</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value success" id="kpi-high">-</div>
+          <div class="kpi-label">High Quality</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value warning" id="kpi-medium">-</div>
+          <div class="kpi-label">Medium Quality</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value danger" id="kpi-low">-</div>
+          <div class="kpi-label">Low Quality</div>
+        </div>
+      </div>
+
+      <!-- Upcoming Calls Tab -->
+      <div class="tab-panel active" id="panel-upcoming">
+        <div class="leads-section">
+          <div class="leads-header">
+            <h3>Upcoming Calls</h3>
+            <span class="leads-count" id="upcoming-leads-count">0 leads</span>
+          </div>
+          <table class="leads-table">
+            <thead>
+              <tr>
+                <th style="width: 30px;"></th>
+                <th>Lead</th>
+                <th>Company</th>
+                <th>Pre-Call Score</th>
+                <th>Website</th>
+                <th>Scheduled</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="upcoming-tbody">
+              <tr>
+                <td colspan="7">
+                  <div class="empty-state">
+                    <div class="empty-state-icon">📅</div>
+                    <div class="empty-state-title">No upcoming calls</div>
+                    <p>Click "Sync Leads" to fetch Calendly bookings.</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Past Calls Tab -->
+      <div class="tab-panel" id="panel-past">
+        <div class="leads-section">
+          <div class="leads-header">
+            <h3>Past Calls</h3>
+            <span class="leads-count" id="past-leads-count">0 leads</span>
+          </div>
+          <table class="leads-table">
+            <thead>
+              <tr>
+                <th style="width: 30px;"></th>
+                <th>Lead</th>
+                <th>Company</th>
+                <th>Score</th>
+                <th>Post-Call</th>
+                <th>Call Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="past-tbody">
+              <tr>
+                <td colspan="7">
+                  <div class="empty-state">
+                    <div class="empty-state-icon">📊</div>
+                    <div class="empty-state-title">No past calls</div>
+                    <p>Past calls will appear here after the scheduled time.</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="generated-at" id="generated-at"></div>
+    </div>
+  </main>
+
+  <!-- Override Modal -->
+  <div class="modal-overlay" id="overrideModal">
+    <div class="modal">
+      <div class="modal-title">Override Score</div>
+      <div class="modal-body">
+        <div class="ds-form-group">
+          <label class="ds-label">New Score (1-10)</label>
+          <input type="number" class="ds-input" id="override-score" min="1" max="10" value="5">
+        </div>
+        <div class="ds-form-group" style="margin-top: var(--space-4);">
+          <label class="ds-label">Notes (optional)</label>
+          <textarea class="ds-input" id="override-notes" rows="3" placeholder="Reason for override..."></textarea>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="ds-btn ds-btn-secondary" onclick="closeOverrideModal()">Cancel</button>
+        <button class="ds-btn ds-btn-primary" onclick="saveOverride()">Save Override</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transcript Analysis Modal -->
+  <div class="modal-overlay" id="transcriptModal">
+    <div class="modal transcript-modal">
+      <div class="modal-title">Analyze Transcript</div>
+      <div class="modal-body">
+        <!-- Transcript Status -->
+        <div class="transcript-status" id="transcript-status">
+          <div class="transcript-status-header" id="transcript-status-header">
+            <span>⏳</span>
+            <span>Checking transcript availability...</span>
+          </div>
+          <div class="transcript-status-text" id="transcript-status-text">
+            Please wait...
+          </div>
+          <div class="transcript-actions" id="transcript-actions" style="display: none;">
+            <button class="ds-btn ds-btn-secondary" onclick="fetchTranscript('calls_tab')" id="btn-fetch-calls">
+              📞 Get from Calls Tab
+            </button>
+            <button class="ds-btn ds-btn-secondary" onclick="fetchTranscript('fireflies')" id="btn-fetch-fireflies">
+              🔥 Fetch from Fireflies
+            </button>
+          </div>
+        </div>
+
+        <!-- Model Selector -->
+        <div id="model-section" style="margin-top: var(--space-5);">
+          <div class="modal-section-label">Analysis Model</div>
+          <div class="model-selector">
+            <button class="model-btn active" data-model="gpt-5-nano" onclick="selectModel('gpt-5-nano')">
+              <img src="/admin/icons/openai.svg" class="model-icon" alt="OpenAI" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><circle cx=%2212%22 cy=%2212%22 r=%2210%22 fill=%22%2310a37f%22/><text x=%2212%22 y=%2216%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2210%22>AI</text></svg>'">
+              <span>GPT-5-nano</span>
+              <span class="model-desc">Fast & cost-effective</span>
+            </button>
+            <button class="model-btn" data-model="perplexity-sonar" onclick="selectModel('perplexity-sonar')">
+              <img src="/admin/icons/Perplexity.png" class="model-icon" alt="Perplexity" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><circle cx=%2212%22 cy=%2212%22 r=%2210%22 fill=%22%235436DA%22/><text x=%2212%22 y=%2216%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2210%22>P</text></svg>'">
+              <span>Perplexity Sonar</span>
+              <span class="model-desc">Web-enhanced research</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="ds-btn ds-btn-secondary" onclick="closeTranscriptModal()">Cancel</button>
+        <button class="ds-btn ds-btn-primary" id="btn-analyze-transcript" onclick="runTranscriptAnalysis()" disabled>
+          Analyze Transcript
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Global state
+    let currentUser = null;
+    let isAdmin = false;
+    let allLeads = [];
+    let upcomingLeads = [];
+    let pastLeads = [];
+    let stats = {};
+    let trackedReps = [];
+    let currentOverrideLeadId = null;
+    let currentTab = 'upcoming';
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', async () => {
+      await initUserMenu();
+      await loadConfig();
+      await loadLeads();
+    });
+
+    // User menu initialization
+    async function initUserMenu() {
+      try {
+        const response = await fetch('/api/auth/me', { credentials: 'include' });
+        if (!response.ok) {
+          window.location.href = '/admin/login.html';
+          return;
+        }
+        const data = await response.json();
+        currentUser = data.user;
+        isAdmin = currentUser.role === 'admin';
+
+        document.getElementById('user-display-name').textContent = currentUser.name;
+        document.getElementById('user-display-role').textContent = currentUser.role;
+        document.getElementById('user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
+        document.getElementById('user-email').textContent = currentUser.email;
+
+        const badge = document.getElementById('user-role-badge');
+        badge.textContent = currentUser.role;
+        badge.className = `ds-dropdown-role ${currentUser.role}`;
+
+        // User dropdown toggle
+        const menuBtn = document.getElementById('user-menu-button');
+        const dropdown = document.getElementById('user-dropdown');
+        menuBtn.addEventListener('click', () => {
+          dropdown.classList.toggle('open');
+        });
+        document.addEventListener('click', (e) => {
+          if (!menuBtn.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.remove('open');
+          }
+        });
+      } catch (err) {
+        console.error('Failed to load user:', err);
+      }
+    }
+
+    async function logout() {
+      await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+      window.location.href = '/admin/login.html';
+    }
+
+    // Tab switching
+    function switchTab(tab) {
+      currentTab = tab;
+
+      // Update tab buttons
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tab);
+      });
+
+      // Update tab panels
+      document.querySelectorAll('.tab-panel').forEach(panel => {
+        panel.classList.toggle('active', panel.id === `panel-${tab}`);
+      });
+    }
+
+    // Load configuration
+    async function loadConfig() {
+      try {
+        const response = await fetch('/api/lead-quality/config', { credentials: 'include' });
+        const data = await response.json();
+
+        if (data.success) {
+          trackedReps = data.data.trackedReps || [];
+
+          // Populate rep dropdown
+          const repSelect = document.getElementById('filter-rep');
+          trackedReps.forEach(email => {
+            const option = document.createElement('option');
+            option.value = email;
+            option.textContent = email;
+            repSelect.appendChild(option);
+          });
+
+          // Show config warning if needed
+          const warning = document.getElementById('configWarning');
+          const warningText = document.getElementById('configWarningText');
+
+          if (!data.data.perplexity.configured && !data.data.calendly.configured) {
+            warningText.innerHTML = 'Perplexity and Calendly are not configured. <a href="/admin/settings.html">Go to Settings</a> to set up integrations.';
+            warning.classList.add('active');
+          } else if (!data.data.perplexity.configured) {
+            warningText.innerHTML = 'Perplexity is not configured. <a href="/admin/settings.html">Go to Settings</a> to add your API key for AI-powered research.';
+            warning.classList.add('active');
+          } else if (!data.data.calendly.configured) {
+            warningText.innerHTML = 'Calendly is not configured. <a href="/admin/settings.html">Go to Settings</a> to connect Calendly.';
+            warning.classList.add('active');
+          } else if (trackedReps.length === 0) {
+            warningText.innerHTML = 'No reps are being tracked. <a href="/admin/settings.html">Go to Settings</a> to add rep emails.';
+            warning.classList.add('active');
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load config:', err);
+      }
+    }
+
+    // Load leads
+    async function loadLeads() {
+      try {
+        const rep = document.getElementById('filter-rep').value;
+        const scoreFilter = document.getElementById('filter-score').value;
+        const dateFilter = document.getElementById('filter-date').value;
+
+        // Build query params
+        const params = new URLSearchParams();
+        params.append('rep', rep);
+        params.append('limit', '200');
+
+        // Score filter
+        if (scoreFilter === 'high') {
+          params.append('minScore', '7');
+        } else if (scoreFilter === 'medium') {
+          params.append('minScore', '4');
+          params.append('maxScore', '6');
+        } else if (scoreFilter === 'low') {
+          params.append('maxScore', '3');
+        }
+
+        // Date filter
+        const now = new Date();
+        if (dateFilter === 'last_7_days') {
+          params.append('startDate', new Date(now - 7 * 24 * 60 * 60 * 1000).toISOString());
+        } else if (dateFilter === 'last_30_days') {
+          params.append('startDate', new Date(now - 30 * 24 * 60 * 60 * 1000).toISOString());
+        } else if (dateFilter === 'last_90_days') {
+          params.append('startDate', new Date(now - 90 * 24 * 60 * 60 * 1000).toISOString());
+        }
+
+        const response = await fetch(`/api/lead-quality/leads?${params}`, { credentials: 'include' });
+        const data = await response.json();
+
+        if (data.success) {
+          allLeads = data.data.leads;
+          stats = data.data.stats;
+
+          // Split into upcoming and past
+          const nowTime = new Date().getTime();
+          upcomingLeads = allLeads.filter(lead => {
+            const bookingTime = new Date(lead.calendlyBookingTime).getTime();
+            return bookingTime > nowTime;
+          });
+          pastLeads = allLeads.filter(lead => {
+            const bookingTime = new Date(lead.calendlyBookingTime).getTime();
+            return bookingTime <= nowTime;
+          });
+
+          // Update tab counts
+          document.getElementById('upcoming-count').textContent = upcomingLeads.length;
+          document.getElementById('past-count').textContent = pastLeads.length;
+
+          renderKPIs();
+          renderUpcomingLeads();
+          renderPastLeads();
+          document.getElementById('generated-at').textContent = `Last updated: ${new Date().toLocaleString()}`;
+        }
+      } catch (err) {
+        console.error('Failed to load leads:', err);
+      }
+    }
+
+    // Render KPIs
+    function renderKPIs() {
+      document.getElementById('kpi-total').textContent = stats.totalLeads || 0;
+      document.getElementById('kpi-avg').textContent = stats.avgScore || '-';
+      document.getElementById('kpi-high').textContent = stats.highQuality || 0;
+      document.getElementById('kpi-medium').textContent = stats.mediumQuality || 0;
+      document.getElementById('kpi-low').textContent = stats.lowQuality || 0;
+    }
+
+    // Render upcoming leads table
+    function renderUpcomingLeads() {
+      const tbody = document.getElementById('upcoming-tbody');
+      document.getElementById('upcoming-leads-count').textContent = `${upcomingLeads.length} leads`;
+
+      if (upcomingLeads.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7">
+              <div class="empty-state">
+                <div class="empty-state-icon">📅</div>
+                <div class="empty-state-title">No upcoming calls</div>
+                <p>Click "Sync Leads" to fetch Calendly bookings.</p>
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = upcomingLeads.map(lead => `
+        <tr onclick="toggleDetail('upcoming-${lead.id}')">
+          <td>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="chevron-upcoming-${lead.id}" style="transition: transform 0.2s;">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </td>
+          <td>
+            <div style="font-weight: 500;">${escapeHtml(lead.inviteeName || 'Unknown')}</div>
+            <div style="font-size: var(--text-xs); color: var(--color-text-muted);">${escapeHtml(lead.inviteeEmail)}</div>
+          </td>
+          <td>${escapeHtml(lead.companyName || '-')}</td>
+          <td>${renderScoreBadge(lead)}</td>
+          <td>
+            ${lead.website ? `<a href="${ensureHttps(lead.website)}" target="_blank" onclick="event.stopPropagation();" style="color: var(--color-primary);">${truncateUrl(lead.website)}</a>` : '-'}
+          </td>
+          <td>
+            <span class="call-status upcoming">📅 ${formatDateTime(lead.calendlyBookingTime)}</span>
+          </td>
+          <td onclick="event.stopPropagation();">
+            <div class="row-actions">
+              <button class="action-btn" onclick="reanalyzeLead('${lead.id}')" title="Re-analyze with Perplexity">🔍</button>
+              <button class="action-btn" onclick="openOverrideModal('${lead.id}')" title="Override score">✏️</button>
+            </div>
+          </td>
+        </tr>
+        <tr class="lead-detail" id="detail-upcoming-${lead.id}">
+          <td colspan="7">
+            <div class="lead-detail-content">
+              ${renderLeadDetail(lead, false)}
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Render past leads table
+    function renderPastLeads() {
+      const tbody = document.getElementById('past-tbody');
+      document.getElementById('past-leads-count').textContent = `${pastLeads.length} leads`;
+
+      if (pastLeads.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7">
+              <div class="empty-state">
+                <div class="empty-state-icon">📊</div>
+                <div class="empty-state-title">No past calls</div>
+                <p>Past calls will appear here after the scheduled time.</p>
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = pastLeads.map(lead => `
+        <tr onclick="toggleDetail('past-${lead.id}')">
+          <td>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="chevron-past-${lead.id}" style="transition: transform 0.2s;">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </td>
+          <td>
+            <div style="font-weight: 500;">${escapeHtml(lead.inviteeName || 'Unknown')}</div>
+            <div style="font-size: var(--text-xs); color: var(--color-text-muted);">${escapeHtml(lead.inviteeEmail)}</div>
+          </td>
+          <td>${escapeHtml(lead.companyName || '-')}</td>
+          <td>${renderScoreBadge(lead)}</td>
+          <td>${renderPostCallScore(lead)}</td>
+          <td>
+            <span class="call-status completed">✓ ${formatDate(lead.calendlyBookingTime)}</span>
+          </td>
+          <td onclick="event.stopPropagation();">
+            <div class="row-actions">
+              <button class="action-btn" onclick="analyzeTranscript('${lead.id}')" title="Analyze call transcript">🎙️</button>
+              <button class="action-btn" onclick="reanalyzeLead('${lead.id}')" title="Re-analyze with Perplexity">🔍</button>
+              <button class="action-btn" onclick="openOverrideModal('${lead.id}')" title="Override score">✏️</button>
+            </div>
+          </td>
+        </tr>
+        <tr class="lead-detail" id="detail-past-${lead.id}">
+          <td colspan="7">
+            <div class="lead-detail-content">
+              ${renderLeadDetail(lead, true)}
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Render score badge
+    function renderScoreBadge(lead) {
+      const score = lead.effectiveScore;
+      const isOverride = lead.manualOverride !== null;
+
+      if (score === null || score === undefined) {
+        return '<span class="score-badge pending">Not Scored</span>';
+      }
+
+      let cls = 'low';
+      if (score >= 7) cls = 'high';
+      else if (score >= 4) cls = 'medium';
+
+      return `
+        <span class="score-badge ${cls} ${isOverride ? 'override' : ''}" title="${isOverride ? 'Manually overridden' : ''}">
+          ${score}/10
+          <span class="score-pips">
+            ${Array.from({length: 10}, (_, i) => `<span class="score-pip ${i < score ? 'active ' + cls : ''}"></span>`).join('')}
+          </span>
+        </span>
+      `;
+    }
+
+    // Render post-call score
+    function renderPostCallScore(lead) {
+      if (!lead.postCallScore) {
+        if (lead.transcriptId) {
+          return '<span class="call-status" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">Has transcript</span>';
+        }
+        return '<span style="color: var(--color-text-muted);">-</span>';
+      }
+
+      let cls = 'low';
+      if (lead.postCallScore >= 7) cls = 'high';
+      else if (lead.postCallScore >= 4) cls = 'medium';
+
+      return `<span class="score-badge ${cls}">${lead.postCallScore}/10</span>`;
+    }
+
+    // Render lead detail
+    function renderLeadDetail(lead, isPast) {
+      // Parse form responses
+      let formResponses = [];
+      try {
+        formResponses = JSON.parse(lead.calendlyFormResponses || '[]');
+      } catch (e) {
+        formResponses = [];
+      }
+
+      // Parse transcript analysis
+      let transcriptAnalysis = null;
+      try {
+        transcriptAnalysis = lead.transcriptAnalysisJson ? JSON.parse(lead.transcriptAnalysisJson) : null;
+      } catch (e) {
+        transcriptAnalysis = null;
+      }
+
+      return `
+        <div class="detail-grid">
+          <div class="detail-section">
+            <div class="detail-section-title">Pre-Call Score Breakdown</div>
+            <div class="bucket-score">
+              <div>
+                <div class="bucket-label">Company Strength</div>
+                <div class="bucket-rationale">${escapeHtml(lead.companyStrengthRationale || 'Not analyzed')}</div>
+              </div>
+              <div class="bucket-value">${lead.companyStrengthScore ?? '-'}/3</div>
+            </div>
+            <div class="bucket-score">
+              <div>
+                <div class="bucket-label">Affiliate Readiness</div>
+                <div class="bucket-rationale">${escapeHtml(lead.affiliateReadinessRationale || 'Not analyzed')}</div>
+              </div>
+              <div class="bucket-value">${lead.affiliateReadinessScore ?? '-'}/3</div>
+            </div>
+            <div class="bucket-score">
+              <div>
+                <div class="bucket-label">Buyer Authority</div>
+                <div class="bucket-rationale">${escapeHtml(lead.buyerAuthorityRationale || 'Not analyzed')}</div>
+              </div>
+              <div class="bucket-value">${lead.buyerAuthorityScore ?? '-'}/2</div>
+            </div>
+            <div class="bucket-score">
+              <div>
+                <div class="bucket-label">Inbound Quality</div>
+                <div class="bucket-rationale">${escapeHtml(lead.inboundQualityRationale || 'Not analyzed')}</div>
+              </div>
+              <div class="bucket-value">${lead.inboundQualityScore ?? '-'}/2</div>
+            </div>
+            ${lead.manualOverride ? `
+              <div style="margin-top: var(--space-4); padding-top: var(--space-3); border-top: 1px solid var(--color-border-light);">
+                <div class="detail-section-title">Manual Override</div>
+                <p style="font-size: var(--text-sm); color: var(--color-text-secondary);">
+                  Score set to <strong>${lead.manualOverride.score}</strong> on ${formatDate(lead.manualOverride.at)}
+                </p>
+                ${lead.manualOverride.notes ? `<p style="font-size: var(--text-xs); color: var(--color-text-muted);">${escapeHtml(lead.manualOverride.notes)}</p>` : ''}
+              </div>
+            ` : ''}
+          </div>
+
+          <div class="detail-section">
+            <div class="detail-section-title">Calendly Booking Form Responses</div>
+            ${formResponses.length > 0 ? `
+              <div class="form-responses">
+                ${formResponses.map(r => `
+                  <div class="form-response">
+                    <div class="form-response-question">${escapeHtml(r.question)}</div>
+                    <div class="form-response-answer">${escapeHtml(r.answer) || '<em>Not provided</em>'}</div>
+                  </div>
+                `).join('')}
+              </div>
+            ` : `
+              <div style="font-size: var(--text-sm); color: var(--color-text-secondary);">
+                <p><strong>Website:</strong> ${lead.website ? `<a href="${ensureHttps(lead.website)}" target="_blank">${escapeHtml(lead.website)}</a>` : 'Not provided'}</p>
+                <p><strong>Challenge:</strong> ${escapeHtml(lead.calendlyChallenge || 'Not provided')}</p>
+                <p><strong>Country:</strong> ${escapeHtml(lead.calendlyCountry || 'Not provided')}</p>
+              </div>
+            `}
+            ${lead.researchLinks && lead.researchLinks.length > 0 ? `
+              <div style="margin-top: var(--space-4); padding-top: var(--space-3); border-top: 1px solid var(--color-border-light);">
+                <div class="detail-section-title">Research Sources</div>
+                <ul style="font-size: var(--text-xs); margin: 0; padding-left: var(--space-4);">
+                  ${lead.researchLinks.map(link => `<li><a href="${escapeHtml(link)}" target="_blank">${truncateUrl(link)}</a></li>`).join('')}
+                </ul>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+
+        ${isPast && transcriptAnalysis ? `
+          <div class="transcript-analysis">
+            <div class="detail-section-title">📊 Post-Call Analysis (GPT)</div>
+            <div style="margin-top: var(--space-3);">
+              <p style="font-size: var(--text-sm); margin-bottom: var(--space-2);">
+                <strong>Post-Call Score: ${transcriptAnalysis.post_call_score || '-'}/10</strong> -
+                ${escapeHtml(transcriptAnalysis.post_call_rationale || '')}
+              </p>
+
+              <div class="analysis-grid">
+                <div class="analysis-item">
+                  <div class="analysis-item-label">Deal Likelihood</div>
+                  <div class="analysis-item-value">${escapeHtml(transcriptAnalysis.deal_likelihood || '-')}</div>
+                </div>
+                <div class="analysis-item">
+                  <div class="analysis-item-label">Budget Discussed</div>
+                  <div class="analysis-item-value">${transcriptAnalysis.budget_discussed ? '✓ Yes' : '✗ No'}</div>
+                </div>
+                <div class="analysis-item">
+                  <div class="analysis-item-label">Timeline Discussed</div>
+                  <div class="analysis-item-value">${transcriptAnalysis.timeline_discussed ? '✓ Yes' : '✗ No'}</div>
+                </div>
+                <div class="analysis-item">
+                  <div class="analysis-item-label">Decision Maker</div>
+                  <div class="analysis-item-value">${transcriptAnalysis.decision_maker_confirmed ? '✓ Confirmed' : '? Unclear'}</div>
+                </div>
+              </div>
+
+              ${transcriptAnalysis.key_insights ? `
+                <div style="margin-top: var(--space-3); padding: var(--space-3); background: var(--color-surface-secondary); border-radius: var(--radius-sm);">
+                  <strong>Key Insight:</strong> ${escapeHtml(transcriptAnalysis.key_insights)}
+                </div>
+              ` : ''}
+
+              ${transcriptAnalysis.next_steps ? `
+                <div style="margin-top: var(--space-3);">
+                  <strong>Next Steps:</strong> ${escapeHtml(transcriptAnalysis.next_steps)}
+                </div>
+              ` : ''}
+
+              ${transcriptAnalysis.buying_signals && transcriptAnalysis.buying_signals.length > 0 ? `
+                <div class="buying-signals">
+                  <strong>Buying Signals:</strong>
+                  <div style="margin-top: var(--space-1);">
+                    ${transcriptAnalysis.buying_signals.map(s => `<span class="signal-tag">✓ ${escapeHtml(s)}</span>`).join('')}
+                  </div>
+                </div>
+              ` : ''}
+
+              ${transcriptAnalysis.objections && transcriptAnalysis.objections.length > 0 ? `
+                <div class="objections-list">
+                  <strong>Objections Raised:</strong>
+                  <div style="margin-top: var(--space-1);">
+                    ${transcriptAnalysis.objections.map(o => `<span class="objection-tag">⚠ ${escapeHtml(o)}</span>`).join('')}
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        ` : ''}
+
+        ${isPast && !transcriptAnalysis && lead.transcriptId ? `
+          <div class="transcript-analysis">
+            <div class="detail-section-title">📊 Post-Call Analysis</div>
+            <p style="color: var(--color-text-muted); font-size: var(--text-sm);">
+              Transcript available. Click the 🎙️ button to analyze with GPT.
+            </p>
+          </div>
+        ` : ''}
+      `;
+    }
+
+    // Toggle detail row
+    function toggleDetail(id) {
+      const detail = document.getElementById(`detail-${id}`);
+      const chevron = document.getElementById(`chevron-${id}`);
+
+      if (detail.classList.contains('expanded')) {
+        detail.classList.remove('expanded');
+        chevron.style.transform = 'rotate(0deg)';
+      } else {
+        // Close all other details
+        document.querySelectorAll('.lead-detail.expanded').forEach(el => {
+          el.classList.remove('expanded');
+        });
+        document.querySelectorAll('[id^="chevron-"]').forEach(el => {
+          el.style.transform = 'rotate(0deg)';
+        });
+
+        detail.classList.add('expanded');
+        chevron.style.transform = 'rotate(90deg)';
+      }
+    }
+
+    // Sync leads
+    async function syncLeads() {
+      const btn = document.getElementById('btn-refresh');
+      const text = document.getElementById('refresh-text');
+
+      btn.disabled = true;
+      text.textContent = 'Syncing...';
+
+      try {
+        const response = await fetch('/api/lead-quality/sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            rep: document.getElementById('filter-rep').value,
+            analyzeNew: true,
+            daysBack: 60
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          text.textContent = `Synced ${data.data.synced}!`;
+          await loadLeads();
+        } else {
+          text.textContent = 'Error';
+          alert(data.error || 'Sync failed');
+        }
+      } catch (err) {
+        console.error('Sync failed:', err);
+        text.textContent = 'Error';
+      } finally {
+        setTimeout(() => {
+          btn.disabled = false;
+          text.textContent = 'Sync Leads';
+        }, 2000);
+      }
+    }
+
+    // Re-analyze lead with Perplexity
+    async function reanalyzeLead(id) {
+      if (!confirm('Re-analyze this lead? This will fetch fresh data from Perplexity.')) return;
+
+      try {
+        const response = await fetch(`/api/lead-quality/analyze/${id}`, {
+          method: 'POST',
+          credentials: 'include'
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          await loadLeads();
+        } else {
+          alert(data.error || 'Analysis failed');
+        }
+      } catch (err) {
+        console.error('Re-analyze failed:', err);
+        alert('Re-analyze failed');
+      }
+    }
+
+    // Transcript Modal State
+    let currentTranscriptLeadId = null;
+    let selectedModel = 'gpt-5-nano';
+    let transcriptAvailability = null;
+
+    // Open transcript analysis modal
+    async function analyzeTranscript(id) {
+      currentTranscriptLeadId = id;
+      transcriptAvailability = null;
+
+      // Reset modal state
+      document.getElementById('btn-analyze-transcript').disabled = true;
+      document.getElementById('transcript-actions').style.display = 'none';
+      document.getElementById('btn-fetch-calls').style.display = 'none';
+      document.getElementById('btn-fetch-fireflies').style.display = 'none';
+
+      // Show modal
+      document.getElementById('transcriptModal').classList.add('active');
+
+      // Update status to loading
+      const statusDiv = document.getElementById('transcript-status');
+      const headerDiv = document.getElementById('transcript-status-header');
+      const textDiv = document.getElementById('transcript-status-text');
+
+      statusDiv.className = 'transcript-status';
+      headerDiv.innerHTML = '<span>⏳</span><span>Checking transcript availability...</span>';
+      textDiv.textContent = 'Please wait...';
+
+      // Check transcript availability
+      try {
+        const response = await fetch(`/api/lead-quality/check-transcript/${id}`, {
+          credentials: 'include'
+        });
+        const data = await response.json();
+
+        if (data.success) {
+          transcriptAvailability = data.data;
+          updateTranscriptStatus(data.data);
+        } else {
+          headerDiv.innerHTML = '<span>❌</span><span>Error checking transcript</span>';
+          textDiv.textContent = data.error || 'Could not check transcript status';
+        }
+      } catch (err) {
+        console.error('Check transcript failed:', err);
+        headerDiv.innerHTML = '<span>❌</span><span>Error</span>';
+        textDiv.textContent = err.message;
+      }
+    }
+
+    // Update transcript status display
+    function updateTranscriptStatus(availability) {
+      const statusDiv = document.getElementById('transcript-status');
+      const headerDiv = document.getElementById('transcript-status-header');
+      const textDiv = document.getElementById('transcript-status-text');
+      const actionsDiv = document.getElementById('transcript-actions');
+      const analyzeBtn = document.getElementById('btn-analyze-transcript');
+      const callsBtn = document.getElementById('btn-fetch-calls');
+      const firefliesBtn = document.getElementById('btn-fetch-fireflies');
+
+      if (availability.hasTranscript) {
+        // Has transcript - ready to analyze
+        statusDiv.className = 'transcript-status has-transcript';
+        headerDiv.innerHTML = '<span>✅</span><span>Transcript Available</span>';
+        textDiv.textContent = 'Ready to analyze. Choose your model below.';
+        analyzeBtn.disabled = false;
+        actionsDiv.style.display = 'none';
+      } else {
+        // No transcript - show fetch options
+        statusDiv.className = 'transcript-status no-transcript';
+        headerDiv.innerHTML = '<span>⚠️</span><span>No Transcript Linked</span>';
+        analyzeBtn.disabled = true;
+
+        const options = [];
+        if (availability.availableInCallsTab) {
+          options.push(`Found in Calls tab: "${availability.callsTabMatch?.title}"`);
+          callsBtn.style.display = 'flex';
+        }
+        if (availability.availableInFireflies) {
+          options.push(`Found in Fireflies: "${availability.firefliesMatch?.title}"`);
+          firefliesBtn.style.display = 'flex';
+        }
+
+        if (options.length > 0) {
+          textDiv.textContent = 'Found matching transcripts. Click to link:';
+          actionsDiv.style.display = 'flex';
+        } else {
+          textDiv.textContent = 'No matching transcript found in Calls tab or Fireflies.';
+          actionsDiv.style.display = 'none';
+        }
+      }
+    }
+
+    // Model selection
+    function selectModel(model) {
+      selectedModel = model;
+      document.querySelectorAll('.model-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.model === model);
+      });
+    }
+
+    // Fetch transcript from source
+    async function fetchTranscript(source) {
+      const btn = source === 'calls_tab' ?
+        document.getElementById('btn-fetch-calls') :
+        document.getElementById('btn-fetch-fireflies');
+
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '⏳ Fetching...';
+
+      try {
+        const response = await fetch(`/api/lead-quality/fetch-transcript/${currentTranscriptLeadId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            source,
+            syncToCallsTab: true,
+            autoAnalyze: true
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Update availability and re-check
+          transcriptAvailability = { ...transcriptAvailability, hasTranscript: true };
+          updateTranscriptStatus({ hasTranscript: true });
+
+          // Show success message
+          const syncMsg = data.data.synced ? ' Synced to Calls tab.' : '';
+          const analyzeMsg = data.data.analyzed ? ' Full analysis triggered.' : '';
+          alert(`Transcript linked successfully!${syncMsg}${analyzeMsg}`);
+        } else {
+          alert(data.error || 'Failed to fetch transcript');
+        }
+      } catch (err) {
+        console.error('Fetch transcript failed:', err);
+        alert('Failed to fetch transcript: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+
+    // Run transcript analysis
+    async function runTranscriptAnalysis() {
+      const analyzeBtn = document.getElementById('btn-analyze-transcript');
+      analyzeBtn.disabled = true;
+      analyzeBtn.textContent = 'Analyzing...';
+
+      try {
+        const response = await fetch(`/api/lead-quality/analyze-transcript/${currentTranscriptLeadId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ model: selectedModel })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          closeTranscriptModal();
+          alert(`Transcript analyzed with ${selectedModel}!`);
+          await loadLeads();
+        } else {
+          alert(data.error || 'Transcript analysis failed');
+        }
+      } catch (err) {
+        console.error('Transcript analysis failed:', err);
+        alert('Transcript analysis failed: ' + err.message);
+      } finally {
+        analyzeBtn.disabled = false;
+        analyzeBtn.textContent = 'Analyze Transcript';
+      }
+    }
+
+    // Close transcript modal
+    function closeTranscriptModal() {
+      currentTranscriptLeadId = null;
+      transcriptAvailability = null;
+      document.getElementById('transcriptModal').classList.remove('active');
+    }
+
+    // Override modal
+    function openOverrideModal(id) {
+      currentOverrideLeadId = id;
+      const lead = allLeads.find(l => l.id === id);
+      if (lead) {
+        document.getElementById('override-score').value = lead.effectiveScore || 5;
+        document.getElementById('override-notes').value = lead.manualOverride?.notes || '';
+      }
+      document.getElementById('overrideModal').classList.add('active');
+    }
+
+    function closeOverrideModal() {
+      currentOverrideLeadId = null;
+      document.getElementById('overrideModal').classList.remove('active');
+    }
+
+    async function saveOverride() {
+      const score = parseInt(document.getElementById('override-score').value, 10);
+      const notes = document.getElementById('override-notes').value;
+
+      if (isNaN(score) || score < 1 || score > 10) {
+        alert('Score must be between 1 and 10');
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/lead-quality/override/${currentOverrideLeadId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ score, notes })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          closeOverrideModal();
+          await loadLeads();
+        } else {
+          alert(data.error || 'Override failed');
+        }
+      } catch (err) {
+        console.error('Override failed:', err);
+        alert('Override failed');
+      }
+    }
+
+    // Filter handlers
+    function applyFilters() {
+      loadLeads();
+    }
+
+    function handleDateChange() {
+      loadLeads();
+    }
+
+    function clearFilters() {
+      document.getElementById('filter-rep').value = 'all';
+      document.getElementById('filter-score').value = 'all';
+      document.getElementById('filter-date').value = 'last_30_days';
+      loadLeads();
+    }
+
+    // Utilities
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '-';
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function formatDateTime(dateStr) {
+      if (!dateStr) return '-';
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) +
+             ' at ' + date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    }
+
+    function truncateUrl(url) {
+      if (!url) return '';
+      try {
+        const parsed = new URL(ensureHttps(url));
+        return parsed.hostname.replace(/^www\./, '');
+      } catch {
+        return url.substring(0, 30) + '...';
+      }
+    }
+
+    function ensureHttps(url) {
+      if (!url) return '';
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        return 'https://' + url;
+      }
+      return url;
+    }
+  </script>
+</body>
+</html>

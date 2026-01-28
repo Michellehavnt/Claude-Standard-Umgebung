@@ -66,6 +66,10 @@
       background: #10a37f;
     }
 
+    .perplexity-icon {
+      background: #1a7f64;
+    }
+
     .status-badge {
       display: inline-flex;
       align-items: center;
@@ -332,6 +336,124 @@
     body.read-only-mode .admin-only {
       display: none !important;
     }
+
+    /* Prompt editor textarea */
+    textarea.prompt-editor {
+      width: 100%;
+      min-height: 200px;
+      padding: 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-family: monospace;
+      font-size: var(--text-sm);
+      line-height: 1.5;
+      background: var(--color-surface);
+      color: var(--color-text-primary);
+      resize: vertical;
+    }
+
+    textarea.prompt-editor:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(7, 59, 85, 0.1);
+    }
+
+    /* Tracked reps tag input */
+    .tracked-reps-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      min-height: 44px;
+      align-items: center;
+    }
+
+    .tracked-reps-container:focus-within {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(7, 59, 85, 0.1);
+    }
+
+    .rep-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 16px;
+      font-size: var(--text-xs);
+      color: var(--color-text-primary);
+    }
+
+    .rep-tag .remove-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border: none;
+      background: transparent;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      padding: 0;
+      border-radius: 50%;
+    }
+
+    .rep-tag .remove-btn:hover {
+      background: var(--color-error-bg);
+      color: var(--color-error);
+    }
+
+    .tracked-reps-input {
+      flex: 1;
+      min-width: 150px;
+      border: none;
+      background: transparent;
+      font-size: var(--text-sm);
+      color: var(--color-text-primary);
+      outline: none;
+    }
+
+    .collapsible-section {
+      border-top: 1px solid var(--color-border);
+      margin-top: var(--space-4);
+      padding-top: var(--space-4);
+    }
+
+    .collapsible-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      padding: var(--space-2) 0;
+    }
+
+    .collapsible-header h4 {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin: 0;
+    }
+
+    .collapsible-header .toggle-icon {
+      transition: transform 0.2s;
+    }
+
+    .collapsible-header.expanded .toggle-icon {
+      transform: rotate(180deg);
+    }
+
+    .collapsible-content {
+      display: none;
+      padding-top: var(--space-3);
+    }
+
+    .collapsible-content.expanded {
+      display: block;
+    }
   </style>
   <script src="/admin/js/view-mode.js"></script>
 </head>
@@ -344,6 +466,7 @@
       <div class="ds-header-divider"></div>
       <nav class="ds-header-nav">
         <a href="/admin/">Calls</a>
+        <a href="/admin/lead-quality.html">Lead Quality</a>
         <a href="/admin/copy.html">Copy</a>
         <a href="/admin/phil.html">DFY</a>
         <a href="/admin/founder.html">Closing Rate</a>
@@ -855,6 +978,149 @@
           </div>
         </div>
 
+        <!-- Perplexity Integration -->
+        <div class="integration-card" id="perplexityCard">
+          <div class="integration-header">
+            <div class="integration-title">
+              <img src="/admin/icons/Perplexity.png" alt="Perplexity" style="width: 40px; height: 40px; border-radius: var(--radius-md); object-fit: contain;">
+              <div>
+                <h3>Perplexity AI</h3>
+                <p>Research leads using AI-powered web search</p>
+              </div>
+            </div>
+            <span class="status-badge status-disconnected" id="perplexityStatus">
+              <span class="status-dot"></span>
+              <span id="perplexityStatusText">Not configured</span>
+            </span>
+          </div>
+
+          <!-- Current Config Display (when configured) -->
+          <div id="perplexityCurrentKey" class="hidden">
+            <div class="form-group">
+              <label>API Key</label>
+              <div class="masked-key" id="perplexityMaskedKey">****</div>
+            </div>
+            <div class="button-group">
+              <button class="ds-btn ds-btn-secondary" onclick="testPerplexity()" data-tooltip="Verify API key works">
+                <span id="perplexityTestSpinner" class="spinner hidden"></span>
+                Test Connection
+              </button>
+              <button class="ds-btn ds-btn-secondary admin-only" onclick="showPerplexityEdit()" data-tooltip="Change API key">Update Key</button>
+              <button class="ds-btn ds-btn-danger admin-only" onclick="deletePerplexityConfig()" data-tooltip="Remove integration">Remove</button>
+            </div>
+            <div id="perplexityTestResult" class="test-result hidden"></div>
+
+            <!-- Prompt Configuration (shown when API key is configured) -->
+            <div class="collapsible-section admin-only">
+              <div class="collapsible-header" onclick="togglePromptSection(this)">
+                <h4>Prompt Configuration</h4>
+                <svg class="toggle-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+              <div class="collapsible-content">
+                <div class="form-group">
+                  <label for="perplexityPrompt">Research Prompt</label>
+                  <textarea class="prompt-editor" id="perplexityPrompt" placeholder="Enter the prompt used for lead research..."></textarea>
+                  <p class="hint">This prompt is used when researching leads. Variables: {email}, {name}, {company}, {website}</p>
+                </div>
+                <div class="button-group">
+                  <button class="ds-btn ds-btn-primary" onclick="savePerplexityPrompt()" data-tooltip="Save prompt changes">
+                    <span id="perplexityPromptSpinner" class="spinner hidden"></span>
+                    Save Prompt
+                  </button>
+                  <button class="ds-btn ds-btn-secondary" onclick="resetPerplexityPrompt()" data-tooltip="Reset to default prompt">Reset to Default</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tracked Reps Configuration -->
+            <div class="collapsible-section admin-only">
+              <div class="collapsible-header" onclick="toggleTrackedRepsSection(this)">
+                <h4>Tracked Sales Reps</h4>
+                <svg class="toggle-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+              <div class="collapsible-content">
+                <div class="form-group">
+                  <label>Rep Email Addresses</label>
+                  <p class="hint" style="margin-bottom: 8px;">Add email addresses of sales reps whose Calendly bookings should be tracked for lead quality scoring.</p>
+                  <div class="tracked-reps-container" id="trackedRepsContainer">
+                    <input type="email" class="tracked-reps-input" id="trackedRepsInput" placeholder="Enter email and press Enter...">
+                  </div>
+                </div>
+                <div class="button-group">
+                  <button class="ds-btn ds-btn-primary" onclick="saveTrackedReps()" data-tooltip="Save tracked reps">
+                    <span id="trackedRepsSpinner" class="spinner hidden"></span>
+                    Save Tracked Reps
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Config Input Form (when not configured or editing) -->
+          <div id="perplexityForm" class="admin-only">
+            <div class="form-group">
+              <label for="perplexityApiKey">API Key</label>
+              <div class="input-group">
+                <input type="password" id="perplexityApiKey" placeholder="pplx-...">
+              </div>
+              <p class="hint">Get your API key from <a href="https://www.perplexity.ai/settings/api" target="_blank">Perplexity API Settings</a></p>
+            </div>
+            <div class="button-group">
+              <button class="ds-btn ds-btn-primary" onclick="savePerplexityConfig()" data-tooltip="Save and validate API key">
+                <span id="perplexitySaveSpinner" class="spinner hidden"></span>
+                Save & Validate
+              </button>
+              <button class="ds-btn ds-btn-secondary hidden" id="perplexityCancelBtn" onclick="cancelPerplexityEdit()" data-tooltip="Discard changes">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Transcript Analysis Prompts Section -->
+    <div class="ds-card" style="margin-top: var(--space-5);">
+      <div class="ds-card-header">
+        <h2 class="ds-card-title">Transcript Analysis Prompts</h2>
+        <p style="font-size: var(--text-sm); color: var(--color-text-secondary); margin-top: var(--space-2);">
+          Configure prompts used for analyzing call transcripts in Lead Quality. These prompts are used when running transcript analysis with GPT-5-nano or Perplexity Sonar.
+        </p>
+      </div>
+      <div class="ds-card-body admin-only">
+        <div class="prompt-tabs" style="display: flex; gap: var(--space-2); margin-bottom: var(--space-4); border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-3);">
+          <button class="prompt-tab active" data-prompt="system_prompt" onclick="selectPromptTab('system_prompt')" style="padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); border: none; background: var(--color-primary); color: white; cursor: pointer; font-size: var(--text-sm);">
+            System Prompt
+          </button>
+          <button class="prompt-tab" data-prompt="scoring_prompt" onclick="selectPromptTab('scoring_prompt')" style="padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); border: 1px solid var(--color-border); background: var(--color-bg); color: var(--color-text-primary); cursor: pointer; font-size: var(--text-sm);">
+            Scoring Prompt
+          </button>
+        </div>
+
+        <div class="prompt-editor">
+          <label style="display: block; margin-bottom: var(--space-2); font-weight: 500;">
+            <span id="currentPromptLabel">System Prompt</span>
+          </label>
+          <textarea id="transcriptPromptTextarea" rows="12" style="width: 100%; padding: var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-md); font-family: var(--font-mono); font-size: var(--text-sm); resize: vertical; background: var(--color-bg); color: var(--color-text-primary);"></textarea>
+          <p class="hint" id="promptHint" style="margin-top: var(--space-2); font-size: var(--text-xs); color: var(--color-text-muted);">
+            The system prompt sets the AI's role and context for transcript analysis.
+          </p>
+        </div>
+
+        <div class="button-group" style="display: flex; gap: var(--space-3); margin-top: var(--space-4);">
+          <button class="ds-btn ds-btn-secondary" onclick="resetTranscriptPrompt()" data-tooltip="Reset to default prompt">
+            Reset to Default
+          </button>
+          <button class="ds-btn ds-btn-primary" onclick="saveTranscriptPrompt()" data-tooltip="Save prompt changes">
+            <span id="transcriptPromptSpinner" class="spinner hidden"></span>
+            Save Prompt
+          </button>
+        </div>
+
+        <div id="transcriptPromptStatus" style="margin-top: var(--space-3); display: none;"></div>
       </div>
     </div>
 
@@ -2302,6 +2568,597 @@
     }
 
     // =====================
+    // Perplexity Integration
+    // =====================
+
+    let trackedReps = [];
+
+    function updatePerplexityUI(configured, maskedKey = null) {
+      const statusBadge = document.getElementById('perplexityStatus');
+      const statusText = document.getElementById('perplexityStatusText');
+      const currentKeyDiv = document.getElementById('perplexityCurrentKey');
+      const formDiv = document.getElementById('perplexityForm');
+      const maskedKeyDiv = document.getElementById('perplexityMaskedKey');
+
+      if (configured) {
+        statusBadge.className = 'status-badge status-connected';
+        statusText.textContent = 'Connected';
+        currentKeyDiv.classList.remove('hidden');
+        formDiv.classList.add('hidden');
+
+        if (maskedKey) {
+          maskedKeyDiv.textContent = maskedKey;
+        }
+      } else {
+        statusBadge.className = 'status-badge status-disconnected';
+        statusText.textContent = 'Not configured';
+        currentKeyDiv.classList.add('hidden');
+        formDiv.classList.remove('hidden');
+      }
+    }
+
+    function showPerplexityEdit() {
+      document.getElementById('perplexityCurrentKey').classList.add('hidden');
+      document.getElementById('perplexityForm').classList.remove('hidden');
+      document.getElementById('perplexityCancelBtn').classList.remove('hidden');
+      document.getElementById('perplexityApiKey').value = '';
+      document.getElementById('perplexityApiKey').focus();
+    }
+
+    function cancelPerplexityEdit() {
+      document.getElementById('perplexityCancelBtn').classList.add('hidden');
+      loadPerplexityConfig();
+    }
+
+    async function loadPerplexityConfig() {
+      try {
+        const response = await fetch(`${API_BASE}/integrations/perplexity`);
+
+        // Check if response is JSON before parsing
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          console.error('Perplexity config: Unexpected response format');
+          updatePerplexityUI(false);
+          return;
+        }
+
+        const data = await response.json();
+
+        if (!data.success) {
+          updatePerplexityUI(false);
+          return;
+        }
+
+        updatePerplexityUI(
+          data.data.configured,
+          data.data.maskedKey
+        );
+
+        // Load prompt if configured
+        if (data.data.configured) {
+          const promptResponse = await fetch(`${API_BASE}/integrations/perplexity/prompt`);
+          const promptContentType = promptResponse.headers.get('content-type');
+          if (promptContentType && promptContentType.includes('application/json')) {
+            const promptData = await promptResponse.json();
+            if (promptData.success && promptData.data?.prompt) {
+              document.getElementById('perplexityPrompt').value = promptData.data.prompt;
+            }
+          }
+
+          // Load tracked reps
+          loadTrackedReps();
+        }
+      } catch (error) {
+        console.error('Error loading Perplexity config:', error);
+        updatePerplexityUI(false);
+      }
+    }
+
+    async function savePerplexityConfig() {
+      const apiKey = document.getElementById('perplexityApiKey').value.trim();
+
+      if (!apiKey) {
+        showAlert('Please enter an API key', 'error');
+        return;
+      }
+
+      // Note: Perplexity keys typically start with pplx- but we'll let the server validate
+
+      const spinner = document.getElementById('perplexitySaveSpinner');
+      spinner.classList.remove('hidden');
+
+      try {
+        const response = await fetch(`${API_BASE}/integrations/perplexity`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ apiKey }),
+          credentials: 'include'
+        });
+
+        // Check if response is JSON before parsing
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error(`Server error (${response.status}): Unexpected response format`);
+        }
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to save Perplexity configuration');
+        }
+
+        showAlert('Perplexity configuration saved successfully!', 'success');
+        document.getElementById('perplexityApiKey').value = '';
+        document.getElementById('perplexityCancelBtn').classList.add('hidden');
+        loadPerplexityConfig();
+
+      } catch (error) {
+        showAlert('Error: ' + error.message, 'error');
+      } finally {
+        spinner.classList.add('hidden');
+      }
+    }
+
+    async function testPerplexity() {
+      const spinner = document.getElementById('perplexityTestSpinner');
+      const resultDiv = document.getElementById('perplexityTestResult');
+
+      spinner.classList.remove('hidden');
+      resultDiv.classList.add('hidden');
+
+      try {
+        const response = await fetch(`${API_BASE}/integrations/perplexity/test`, {
+          method: 'POST',
+          credentials: 'include'
+        });
+
+        // Check if response is JSON before parsing
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error(`Server error (${response.status}): Unexpected response format`);
+        }
+
+        const data = await response.json();
+
+        if (data.data?.valid) {
+          resultDiv.className = 'test-result success';
+          resultDiv.textContent = 'Connection successful! Perplexity API key is valid.';
+        } else {
+          resultDiv.className = 'test-result error';
+          resultDiv.textContent = `Connection failed: ${data.data?.error || data.error || 'Unknown error'}`;
+        }
+        resultDiv.classList.remove('hidden');
+
+      } catch (error) {
+        resultDiv.className = 'test-result error';
+        resultDiv.textContent = `Error: ${error.message}`;
+        resultDiv.classList.remove('hidden');
+      } finally {
+        spinner.classList.add('hidden');
+      }
+    }
+
+    async function deletePerplexityConfig() {
+      if (!confirm('Are you sure you want to remove the Perplexity configuration?')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/integrations/perplexity`, {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error(`Server error (${response.status}): Unexpected response format`);
+        }
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to remove Perplexity configuration');
+        }
+
+        showAlert('Perplexity configuration removed', 'success');
+        loadPerplexityConfig();
+
+      } catch (error) {
+        showAlert('Error: ' + error.message, 'error');
+      }
+    }
+
+    function togglePromptSection(header) {
+      header.classList.toggle('expanded');
+      const content = header.nextElementSibling;
+      content.classList.toggle('expanded');
+    }
+
+    function toggleTrackedRepsSection(header) {
+      header.classList.toggle('expanded');
+      const content = header.nextElementSibling;
+      content.classList.toggle('expanded');
+    }
+
+    async function savePerplexityPrompt() {
+      const prompt = document.getElementById('perplexityPrompt').value.trim();
+
+      if (!prompt) {
+        showAlert('Please enter a prompt', 'error');
+        return;
+      }
+
+      const spinner = document.getElementById('perplexityPromptSpinner');
+      spinner.classList.remove('hidden');
+
+      try {
+        const response = await fetch(`${API_BASE}/integrations/perplexity/prompt`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt }),
+          credentials: 'include'
+        });
+
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error(`Server error (${response.status}): Unexpected response format`);
+        }
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to save prompt');
+        }
+
+        showAlert('Prompt saved successfully!', 'success');
+
+      } catch (error) {
+        showAlert('Error: ' + error.message, 'error');
+      } finally {
+        spinner.classList.add('hidden');
+      }
+    }
+
+    async function resetPerplexityPrompt() {
+      if (!confirm('Are you sure you want to reset the prompt to default?')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/integrations/perplexity/prompt/reset`, {
+          method: 'POST',
+          credentials: 'include'
+        });
+
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error(`Server error (${response.status}): Unexpected response format`);
+        }
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to reset prompt');
+        }
+
+        // Reload prompt
+        const promptResponse = await fetch(`${API_BASE}/integrations/perplexity/prompt`, {
+          credentials: 'include'
+        });
+        const promptContentType = promptResponse.headers.get('content-type');
+        if (promptContentType && promptContentType.includes('application/json')) {
+          const promptData = await promptResponse.json();
+          if (promptData.success && promptData.data?.prompt) {
+            document.getElementById('perplexityPrompt').value = promptData.data.prompt;
+          }
+        }
+
+        showAlert('Prompt reset to default', 'success');
+
+      } catch (error) {
+        showAlert('Error: ' + error.message, 'error');
+      }
+    }
+
+    // Tracked Reps Functions
+    async function loadTrackedReps() {
+      try {
+        const response = await fetch('/api/lead-quality/tracked-reps', {
+          credentials: 'include'
+        });
+
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          console.error('Tracked reps: Unexpected response format');
+          return;
+        }
+
+        const data = await response.json();
+
+        if (data.success && data.data?.trackedReps) {
+          trackedReps = data.data.trackedReps;
+          renderTrackedReps();
+        }
+      } catch (error) {
+        console.error('Error loading tracked reps:', error);
+      }
+    }
+
+    function renderTrackedReps() {
+      const container = document.getElementById('trackedRepsContainer');
+      const input = document.getElementById('trackedRepsInput');
+
+      // Remove existing tags
+      container.querySelectorAll('.rep-tag').forEach(tag => tag.remove());
+
+      // Add tags for each rep
+      trackedReps.forEach((email, index) => {
+        const tag = document.createElement('span');
+        tag.className = 'rep-tag';
+        tag.innerHTML = `
+          ${escapeHtml(email)}
+          <button class="remove-btn" onclick="removeTrackedRep(${index})" title="Remove">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        `;
+        container.insertBefore(tag, input);
+      });
+    }
+
+    function removeTrackedRep(index) {
+      trackedReps.splice(index, 1);
+      renderTrackedReps();
+    }
+
+    function addTrackedRep(email) {
+      email = email.trim().toLowerCase();
+      if (!email) return;
+
+      // Basic email validation
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showAlert('Please enter a valid email address', 'error');
+        return;
+      }
+
+      // Check for duplicates
+      if (trackedReps.includes(email)) {
+        showAlert('This email is already in the list', 'error');
+        return;
+      }
+
+      trackedReps.push(email);
+      renderTrackedReps();
+      document.getElementById('trackedRepsInput').value = '';
+    }
+
+    async function saveTrackedReps() {
+      const spinner = document.getElementById('trackedRepsSpinner');
+      spinner.classList.remove('hidden');
+
+      try {
+        const response = await fetch('/api/lead-quality/tracked-reps', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ repEmails: trackedReps }),
+          credentials: 'include'
+        });
+
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error(`Server error (${response.status}): Unexpected response format`);
+        }
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to save tracked reps');
+        }
+
+        showAlert('Tracked reps saved successfully!', 'success');
+
+      } catch (error) {
+        showAlert('Error: ' + error.message, 'error');
+      } finally {
+        spinner.classList.add('hidden');
+      }
+    }
+
+    // Setup tracked reps input
+    function setupTrackedRepsInput() {
+      const input = document.getElementById('trackedRepsInput');
+      if (input) {
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ',') {
+            e.preventDefault();
+            addTrackedRep(input.value);
+          }
+        });
+
+        input.addEventListener('blur', () => {
+          if (input.value.trim()) {
+            addTrackedRep(input.value);
+          }
+        });
+      }
+    }
+
+    // =====================
+    // Transcript Analysis Prompts
+    // =====================
+
+    let transcriptPrompts = {};
+    let currentPromptKey = 'system_prompt';
+
+    const DEFAULT_TRANSCRIPT_PROMPTS = {
+      system_prompt: `You are an expert sales analyst. Analyze call transcripts and evaluate lead quality based on engagement, buying signals, objections, and overall fit.`,
+      scoring_prompt: `Analyze this sales call transcript and score the lead on a scale of 1-10 based on:
+- Lead engagement level (1-3 points)
+- Solution fit indicators (1-3 points)
+- Buying authority signals (1-2 points)
+- Timeline clarity (1-2 points)
+
+Return a JSON object with:
+{
+  "score": number (1-10),
+  "breakdown": {
+    "engagement": number,
+    "fit": number,
+    "authority": number,
+    "timeline": number
+  },
+  "buyingSignals": ["signal1", "signal2"],
+  "objections": ["objection1", "objection2"],
+  "nextSteps": "summary of agreed next steps",
+  "rationale": "brief explanation of the score"
+}`
+    };
+
+    const PROMPT_HINTS = {
+      system_prompt: 'The system prompt sets the AI\'s role and context for transcript analysis.',
+      scoring_prompt: 'The scoring prompt defines how to evaluate and score the call transcript. Must return JSON.'
+    };
+
+    const PROMPT_LABELS = {
+      system_prompt: 'System Prompt',
+      scoring_prompt: 'Scoring Prompt'
+    };
+
+    async function loadTranscriptPrompts() {
+      try {
+        const response = await fetch(`${API_BASE}/prompts/transcript-analysis`, {
+          credentials: 'include'
+        });
+
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          console.log('Transcript prompts: Using defaults');
+          transcriptPrompts = { ...DEFAULT_TRANSCRIPT_PROMPTS };
+          updatePromptTextarea();
+          return;
+        }
+
+        const data = await response.json();
+
+        if (data.success && data.data) {
+          // Merge with defaults to ensure all keys exist
+          transcriptPrompts = {
+            ...DEFAULT_TRANSCRIPT_PROMPTS,
+            ...data.data
+          };
+        } else {
+          transcriptPrompts = { ...DEFAULT_TRANSCRIPT_PROMPTS };
+        }
+
+        updatePromptTextarea();
+      } catch (error) {
+        console.error('Error loading transcript prompts:', error);
+        transcriptPrompts = { ...DEFAULT_TRANSCRIPT_PROMPTS };
+        updatePromptTextarea();
+      }
+    }
+
+    function selectPromptTab(promptKey) {
+      currentPromptKey = promptKey;
+
+      // Update tab buttons
+      document.querySelectorAll('.prompt-tab').forEach(tab => {
+        if (tab.dataset.prompt === promptKey) {
+          tab.style.background = 'var(--color-primary)';
+          tab.style.color = 'white';
+          tab.style.border = 'none';
+          tab.classList.add('active');
+        } else {
+          tab.style.background = 'var(--color-bg)';
+          tab.style.color = 'var(--color-text-primary)';
+          tab.style.border = '1px solid var(--color-border)';
+          tab.classList.remove('active');
+        }
+      });
+
+      updatePromptTextarea();
+    }
+
+    function updatePromptTextarea() {
+      const textarea = document.getElementById('transcriptPromptTextarea');
+      const label = document.getElementById('currentPromptLabel');
+      const hint = document.getElementById('promptHint');
+
+      if (textarea) {
+        textarea.value = transcriptPrompts[currentPromptKey] || DEFAULT_TRANSCRIPT_PROMPTS[currentPromptKey] || '';
+      }
+      if (label) {
+        label.textContent = PROMPT_LABELS[currentPromptKey] || currentPromptKey;
+      }
+      if (hint) {
+        hint.textContent = PROMPT_HINTS[currentPromptKey] || '';
+      }
+    }
+
+    async function saveTranscriptPrompt() {
+      const textarea = document.getElementById('transcriptPromptTextarea');
+      const spinner = document.getElementById('transcriptPromptSpinner');
+      const statusDiv = document.getElementById('transcriptPromptStatus');
+
+      if (!textarea.value.trim()) {
+        showAlert('Prompt cannot be empty', 'error');
+        return;
+      }
+
+      // Update local state
+      transcriptPrompts[currentPromptKey] = textarea.value.trim();
+
+      spinner.classList.remove('hidden');
+
+      try {
+        const response = await fetch(`${API_BASE}/prompts/transcript-analysis`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompts: transcriptPrompts }),
+          credentials: 'include'
+        });
+
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error(`Server error (${response.status}): Unexpected response format`);
+        }
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to save prompt');
+        }
+
+        showAlert('Transcript prompt saved successfully!', 'success');
+        statusDiv.style.display = 'none';
+
+      } catch (error) {
+        showAlert('Error: ' + error.message, 'error');
+        statusDiv.style.display = 'block';
+        statusDiv.innerHTML = `<span style="color: var(--color-error);">${escapeHtml(error.message)}</span>`;
+      } finally {
+        spinner.classList.add('hidden');
+      }
+    }
+
+    function resetTranscriptPrompt() {
+      if (!confirm(`Are you sure you want to reset "${PROMPT_LABELS[currentPromptKey]}" to the default?`)) {
+        return;
+      }
+
+      const textarea = document.getElementById('transcriptPromptTextarea');
+      const defaultValue = DEFAULT_TRANSCRIPT_PROMPTS[currentPromptKey];
+
+      if (defaultValue) {
+        textarea.value = defaultValue;
+        transcriptPrompts[currentPromptKey] = defaultValue;
+        showAlert('Prompt reset to default. Click "Save Prompt" to apply.', 'success');
+      }
+    }
+
+    // =====================
     // Initialize
     // =====================
 
@@ -2312,7 +3169,10 @@
       loadOpenAIConfig();
       loadSlackConfig();
       loadCalendlyConfig();
+      loadPerplexityConfig();
+      loadTranscriptPrompts();
       loadTokenUsage();
+      setupTrackedRepsInput();
     });
   </script>
 </body>

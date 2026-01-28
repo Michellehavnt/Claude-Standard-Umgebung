@@ -1420,4 +1420,353 @@ router.get('/integrations/calendly/enrich/:email', async (req, res) => {
   }
 });
 
+// ==========================================
+// PERPLEXITY INTEGRATION ROUTES
+// ==========================================
+
+const perplexityService = require('../services/perplexityService');
+
+/**
+ * GET /api/settings/integrations/perplexity
+ * Get Perplexity integration status
+ */
+router.get('/integrations/perplexity', (req, res) => {
+  try {
+    const config = secretManager.getPerplexityConfig();
+
+    res.json({
+      success: true,
+      data: {
+        configured: config.configured,
+        maskedKey: config.maskedKey
+      }
+    });
+  } catch (error) {
+    console.error('[Settings] Error getting Perplexity status:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/settings/integrations/perplexity
+ * Save Perplexity API key
+ */
+router.post('/integrations/perplexity', requireAuth, requireAdmin, async (req, res) => {
+  try {
+    const { apiKey } = req.body;
+
+    if (!apiKey || typeof apiKey !== 'string') {
+      return res.status(400).json({
+        success: false,
+        error: 'API key is required'
+      });
+    }
+
+    const trimmedKey = apiKey.trim();
+
+    // Validate the key by testing it against the Perplexity API
+    const validation = await secretManager.validatePerplexityKey(trimmedKey);
+
+    if (!validation.valid) {
+      return res.status(400).json({
+        success: false,
+        error: `Invalid API key: ${validation.error}`
+      });
+    }
+
+    // Save the key
+    const saved = secretManager.saveSecret('PERPLEXITY_API_KEY', trimmedKey);
+
+    if (!saved) {
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to save API key'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Perplexity API key saved successfully',
+      data: {
+        configured: true,
+        maskedKey: secretManager.getMaskedKey('PERPLEXITY_API_KEY')
+      }
+    });
+  } catch (error) {
+    console.error('[Settings] Error saving Perplexity key:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/settings/integrations/perplexity/test
+ * Test Perplexity connection
+ */
+router.post('/integrations/perplexity/test', async (req, res) => {
+  try {
+    const testResult = await perplexityService.testConnection();
+
+    res.json({
+      success: true,
+      data: testResult
+    });
+  } catch (error) {
+    console.error('[Settings] Error testing Perplexity:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * DELETE /api/settings/integrations/perplexity
+ * Remove Perplexity API key
+ */
+router.delete('/integrations/perplexity', requireAuth, requireAdmin, (req, res) => {
+  try {
+    secretManager.deleteSecret('PERPLEXITY_API_KEY');
+
+    res.json({
+      success: true,
+      message: 'Perplexity API key removed'
+    });
+  } catch (error) {
+    console.error('[Settings] Error deleting Perplexity key:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/settings/integrations/perplexity/prompt
+ * Get Perplexity prompt configuration
+ */
+router.get('/integrations/perplexity/prompt', requireAuth, (req, res) => {
+  try {
+    const config = secretManager.getPerplexityConfig();
+
+    res.json({
+      success: true,
+      data: {
+        prompt: config.prompt,
+        defaultPrompt: secretManager.DEFAULT_PERPLEXITY_PROMPT
+      }
+    });
+  } catch (error) {
+    console.error('[Settings] Error getting Perplexity prompt:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * PUT /api/settings/integrations/perplexity/prompt
+ * Update Perplexity prompt configuration
+ */
+router.put('/integrations/perplexity/prompt', requireAuth, requireAdmin, (req, res) => {
+  try {
+    const { prompt } = req.body;
+
+    if (!prompt || typeof prompt !== 'string') {
+      return res.status(400).json({
+        success: false,
+        error: 'Prompt is required'
+      });
+    }
+
+    if (prompt.length < 50) {
+      return res.status(400).json({
+        success: false,
+        error: 'Prompt must be at least 50 characters'
+      });
+    }
+
+    const saved = secretManager.savePerplexityPrompt(prompt);
+
+    if (!saved) {
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to save prompt'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Perplexity prompt saved successfully'
+    });
+  } catch (error) {
+    console.error('[Settings] Error saving Perplexity prompt:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/settings/integrations/perplexity/prompt/reset
+ * Reset Perplexity prompt to default
+ */
+router.post('/integrations/perplexity/prompt/reset', requireAuth, requireAdmin, (req, res) => {
+  try {
+    const saved = secretManager.savePerplexityPrompt(secretManager.DEFAULT_PERPLEXITY_PROMPT);
+
+    if (!saved) {
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to reset prompt'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Perplexity prompt reset to default',
+      data: {
+        prompt: secretManager.DEFAULT_PERPLEXITY_PROMPT
+      }
+    });
+  } catch (error) {
+    console.error('[Settings] Error resetting Perplexity prompt:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// ============================================================================
+// TRANSCRIPT ANALYSIS PROMPTS
+// ============================================================================
+
+/**
+ * GET /api/settings/prompts/transcript-analysis
+ * Get transcript analysis prompts configuration
+ */
+router.get('/prompts/transcript-analysis', requireAuth, (req, res) => {
+  try {
+    const leadQualityService = require('../services/leadQualityService');
+    const customPrompts = secretManager.getTranscriptAnalysisPrompts();
+    const defaults = leadQualityService.getDefaultTranscriptPrompts();
+
+    res.json({
+      success: true,
+      data: {
+        current: {
+          system_prompt: customPrompts.system_prompt || defaults.system_prompt,
+          scoring_prompt: customPrompts.scoring_prompt || defaults.scoring_prompt
+        },
+        defaults
+      }
+    });
+  } catch (error) {
+    console.error('[Settings] Error getting transcript prompts:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * PUT /api/settings/prompts/transcript-analysis
+ * Update transcript analysis prompts (admin-only)
+ */
+router.put('/prompts/transcript-analysis', requireAuth, requireAdmin, (req, res) => {
+  try {
+    const { prompts } = req.body;
+
+    if (!prompts || typeof prompts !== 'object') {
+      return res.status(400).json({
+        success: false,
+        error: 'prompts object is required'
+      });
+    }
+
+    // Validate prompt fields
+    const validFields = ['system_prompt', 'scoring_prompt'];
+    const updates = {};
+
+    for (const field of validFields) {
+      if (prompts[field] && typeof prompts[field] === 'string') {
+        updates[field] = prompts[field].trim();
+      }
+    }
+
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'At least one valid prompt field is required'
+      });
+    }
+
+    // Merge with existing prompts
+    const existing = secretManager.getTranscriptAnalysisPrompts();
+    const merged = { ...existing, ...updates };
+
+    const saved = secretManager.saveTranscriptAnalysisPrompts(merged);
+
+    if (!saved) {
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to save prompts'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Transcript analysis prompts updated',
+      data: merged
+    });
+  } catch (error) {
+    console.error('[Settings] Error saving transcript prompts:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * DELETE /api/settings/prompts/transcript-analysis
+ * Reset transcript analysis prompts to defaults (admin-only)
+ */
+router.delete('/prompts/transcript-analysis', requireAuth, requireAdmin, (req, res) => {
+  try {
+    const saved = secretManager.saveTranscriptAnalysisPrompts({});
+
+    if (!saved) {
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to reset prompts'
+      });
+    }
+
+    const leadQualityService = require('../services/leadQualityService');
+    const defaults = leadQualityService.getDefaultTranscriptPrompts();
+
+    res.json({
+      success: true,
+      message: 'Transcript analysis prompts reset to defaults',
+      data: defaults
+    });
+  } catch (error) {
+    console.error('[Settings] Error resetting transcript prompts:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 module.exports = router;
