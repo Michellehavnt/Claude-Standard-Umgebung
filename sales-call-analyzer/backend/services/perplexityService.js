@@ -282,9 +282,9 @@ async function researchLead(leadData) {
 
       // Try to extract partial data
       parsedData = {
-        company_info: { name: company || 'Unknown', website: website || null },
+        company_info: { name: company || 'Unknown', website: website || null, linkedin_url: null },
         affiliate_signals: { has_affiliate_program: false },
-        person_info: { name: name || 'Unknown', role: null },
+        person_info: { name: name || 'Unknown', role: null, linkedin_url: null },
         sources: [],
         raw_response: response.content
       };

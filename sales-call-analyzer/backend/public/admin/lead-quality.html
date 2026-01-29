@@ -192,7 +192,38 @@
     .leads-table {
       width: 100%;
       border-collapse: collapse;
+      table-layout: fixed;
     }
+
+    /* Column widths - Upcoming Calls (6 cols) */
+    #panel-upcoming .leads-table th:nth-child(1),
+    #panel-upcoming .leads-table td:nth-child(1) { width: 40px; }
+    #panel-upcoming .leads-table th:nth-child(2),
+    #panel-upcoming .leads-table td:nth-child(2) { width: 22%; }
+    #panel-upcoming .leads-table th:nth-child(3),
+    #panel-upcoming .leads-table td:nth-child(3) { width: 18%; }
+    #panel-upcoming .leads-table th:nth-child(4),
+    #panel-upcoming .leads-table td:nth-child(4) { width: 15%; }
+    #panel-upcoming .leads-table th:nth-child(5),
+    #panel-upcoming .leads-table td:nth-child(5) { width: 15%; }
+    #panel-upcoming .leads-table th:nth-child(6),
+    #panel-upcoming .leads-table td:nth-child(6) { width: auto; }
+
+    /* Column widths - Past Calls (7 cols) */
+    #panel-past .leads-table th:nth-child(1),
+    #panel-past .leads-table td:nth-child(1) { width: 40px; }
+    #panel-past .leads-table th:nth-child(2),
+    #panel-past .leads-table td:nth-child(2) { width: 20%; }
+    #panel-past .leads-table th:nth-child(3),
+    #panel-past .leads-table td:nth-child(3) { width: 15%; }
+    #panel-past .leads-table th:nth-child(4),
+    #panel-past .leads-table td:nth-child(4) { width: 12%; }
+    #panel-past .leads-table th:nth-child(5),
+    #panel-past .leads-table td:nth-child(5) { width: 12%; }
+    #panel-past .leads-table th:nth-child(6),
+    #panel-past .leads-table td:nth-child(6) { width: 12%; }
+    #panel-past .leads-table th:nth-child(7),
+    #panel-past .leads-table td:nth-child(7) { width: auto; }
 
     .leads-table th {
       padding: var(--space-3) var(--space-4);
@@ -213,11 +244,6 @@
       border-bottom: 1px solid var(--color-border-light);
       vertical-align: middle;
     }
-
-    /* Prevent columns from spreading too wide */
-    .leads-table th:nth-child(1) { width: 30px; }
-    .leads-table th:nth-child(2) { width: 20%; }
-    .leads-table th:nth-child(3) { width: 18%; }
 
     .leads-table tbody tr:hover {
       background: var(--color-surface-hover);
@@ -2097,20 +2123,34 @@
       `;
     }
 
-    // Render post-call score
+    // Render post-call score (same design as pre-call score with pips)
+    // Falls back to pre-call score if post-call score not available
     function renderPostCallScore(lead) {
-      if (!lead.postCallScore) {
+      // Use post-call score if available, otherwise fall back to pre-call score
+      const score = lead.postCallScore || lead.effectiveScore;
+      const isPostCall = !!lead.postCallScore;
+      const isOverride = !isPostCall && lead.manualOverride !== null;
+
+      if (score === null || score === undefined) {
         if (lead.transcriptId) {
           return '<span class="call-status" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">Has transcript</span>';
         }
-        return '<span style="color: var(--color-text-muted);">-</span>';
+        return '<span class="score-badge pending">Not Scored</span>';
       }
 
       let cls = 'low';
-      if (lead.postCallScore >= 7) cls = 'high';
-      else if (lead.postCallScore >= 4) cls = 'medium';
+      if (score >= 7) cls = 'high';
+      else if (score >= 4) cls = 'medium';
 
-      return `<span class="score-badge ${cls}">${lead.postCallScore}/10</span>`;
+      // Use same exact design as renderScoreBadge for consistency
+      return `
+        <span class="score-badge ${cls} ${isOverride ? 'override' : ''}" title="${isPostCall ? 'Post-call analysis score' : isOverride ? 'Manually overridden pre-call score' : 'Pre-call score'}">
+          ${score}/10
+          <span class="score-pips">
+            ${Array.from({length: 10}, (_, i) => `<span class="score-pip ${i < score ? 'active ' + cls : ''}"></span>`).join('')}
+          </span>
+        </span>
+      `;
     }
 
     // Render lead detail - REDESIGNED for cleaner layout
@@ -2137,8 +2177,9 @@
       // Parse perplexity research data
       const perplexityData = lead.perplexityData || null;
 
-      // Extract LinkedIn from perplexity data if not already set
-      const linkedinUrl = lead.linkedinUrl || perplexityData?.person_info?.linkedin_url || perplexityData?.linkedin_url || null;
+      // Extract LinkedIn URLs from lead data or perplexity response
+      const linkedinUrl = lead.linkedinUrl || perplexityData?.person_info?.linkedin_url || null;
+      const linkedinCompanyUrl = lead.linkedinCompanyUrl || perplexityData?.company_info?.linkedin_url || null;
 
       // Get analysis model and date
       const analysisModel = transcriptAnalysis?.model_used || perplexityData?.model_used || lead.researchModel || null;
@@ -2166,12 +2207,20 @@
                 <span>Model: <strong>${escapeHtml(analysisModel)}</strong></span>
               </div>
             ` : ''}
-            ${linkedinUrl ? `
+            ${linkedinUrl || linkedinCompanyUrl ? `
               <div class="info-divider"></div>
-              <a href="${escapeHtml(linkedinUrl)}" target="_blank" class="linkedin-badge" onclick="event.stopPropagation();">
-                <svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-                LinkedIn
-              </a>
+              ${linkedinUrl ? `
+                <a href="${escapeHtml(linkedinUrl)}" target="_blank" class="linkedin-badge" onclick="event.stopPropagation();" title="Personal LinkedIn">
+                  <svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                  Person
+                </a>
+              ` : ''}
+              ${linkedinCompanyUrl ? `
+                <a href="${escapeHtml(linkedinCompanyUrl)}" target="_blank" class="linkedin-badge" onclick="event.stopPropagation();" title="Company LinkedIn" style="margin-left: 6px;">
+                  <svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                  Company
+                </a>
+              ` : ''}
             ` : ''}
           </div>
         ` : ''}

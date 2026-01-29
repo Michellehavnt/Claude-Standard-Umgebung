@@ -13,7 +13,12 @@ const {
   getEmailDomain,
   deriveWebsiteFromEmail,
   getWebsiteWithFallback,
-  FREE_EMAIL_DOMAINS
+  FREE_EMAIL_DOMAINS,
+  AFFILIATE_AGENCY_KEYWORDS,
+  detectAffiliateAgency,
+  scoreAffiliateReadiness,
+  canAnalyzeLead,
+  isGenericEmailDomain
 } = require('../services/leadQualityService');
 
 describe('Lead Quality Service', () => {
@@ -90,7 +95,8 @@ describe('Lead Quality Service', () => {
     describe('getWebsiteWithFallback', () => {
       it('should use provided website as first choice', () => {
         expect(getWebsiteWithFallback('example.com', 'user@other.com')).toBe('example.com');
-        expect(getWebsiteWithFallback('https://mysite.io', 'user@gmail.com')).toBe('https://mysite.io');
+        // Protocol is stripped for consistency
+        expect(getWebsiteWithFallback('https://mysite.io', 'user@gmail.com')).toBe('mysite.io');
       });
 
       it('should trim whitespace from provided website', () => {
@@ -112,6 +118,26 @@ describe('Lead Quality Service', () => {
       it('should return null if both website and email are invalid', () => {
         expect(getWebsiteWithFallback(null, null)).toBeNull();
         expect(getWebsiteWithFallback('', '')).toBeNull();
+      });
+
+      it('should reject placeholder values and fallback to email domain', () => {
+        // Placeholders like "na", "n/a", "-" should be rejected
+        expect(getWebsiteWithFallback('na', 'user@marrowz.com')).toBe('marrowz.com');
+        expect(getWebsiteWithFallback('n/a', 'user@acme.com')).toBe('acme.com');
+        expect(getWebsiteWithFallback('-', 'user@company.io')).toBe('company.io');
+        expect(getWebsiteWithFallback('none', 'user@startup.co')).toBe('startup.co');
+        expect(getWebsiteWithFallback('not applicable', 'user@business.com')).toBe('business.com');
+        expect(getWebsiteWithFallback('tbd', 'user@enterprise.com')).toBe('enterprise.com');
+      });
+
+      it('should extract first domain from multi-URL strings', () => {
+        // Handle cases like "Multiple brands: https://site1.com, https://site2.com"
+        expect(getWebsiteWithFallback('Multiple brands: https://site1.com, https://site2.com', 'user@gmail.com')).toBe('site1.com');
+      });
+
+      it('should return null for placeholder with generic email', () => {
+        expect(getWebsiteWithFallback('na', 'user@gmail.com')).toBeNull();
+        expect(getWebsiteWithFallback('-', 'user@yahoo.com')).toBeNull();
       });
     });
   });
@@ -137,6 +163,166 @@ describe('Lead Quality Service', () => {
     it('should be lowercase for consistent comparison', () => {
       FREE_EMAIL_DOMAINS.forEach(domain => {
         expect(domain).toBe(domain.toLowerCase());
+      });
+    });
+  });
+
+  describe('isGenericEmailDomain', () => {
+    it('should return true for generic email domains', () => {
+      expect(isGenericEmailDomain('user@gmail.com')).toBe(true);
+      expect(isGenericEmailDomain('user@yahoo.com')).toBe(true);
+      expect(isGenericEmailDomain('user@outlook.com')).toBe(true);
+    });
+
+    it('should return false for business email domains', () => {
+      expect(isGenericEmailDomain('user@company.com')).toBe(false);
+      expect(isGenericEmailDomain('user@startup.io')).toBe(false);
+    });
+  });
+
+  describe('canAnalyzeLead', () => {
+    it('should return true if email and name are present', () => {
+      const result = canAnalyzeLead({
+        invitee_email: 'john@company.com',
+        invitee_name: 'John Doe'
+      });
+      expect(result.canAnalyze).toBe(true);
+    });
+
+    it('should return false if email is missing', () => {
+      const result = canAnalyzeLead({
+        invitee_name: 'John Doe'
+      });
+      expect(result.canAnalyze).toBe(false);
+      expect(result.reason).toContain('Email');
+    });
+
+    it('should return false if name is missing', () => {
+      const result = canAnalyzeLead({
+        invitee_email: 'john@company.com'
+      });
+      expect(result.canAnalyze).toBe(false);
+      expect(result.reason).toContain('Name');
+    });
+
+    it('should return false if name is empty string', () => {
+      const result = canAnalyzeLead({
+        invitee_email: 'john@company.com',
+        invitee_name: '   '
+      });
+      expect(result.canAnalyze).toBe(false);
+    });
+
+    it('should work with camelCase field names too', () => {
+      const result = canAnalyzeLead({
+        inviteeEmail: 'john@company.com',
+        inviteeName: 'John Doe'
+      });
+      expect(result.canAnalyze).toBe(true);
+    });
+  });
+
+  describe('Affiliate Agency Detection', () => {
+    describe('AFFILIATE_AGENCY_KEYWORDS', () => {
+      it('should contain common agency keywords', () => {
+        expect(AFFILIATE_AGENCY_KEYWORDS).toContain('affiliate agency');
+        expect(AFFILIATE_AGENCY_KEYWORDS).toContain('partner marketing');
+        expect(AFFILIATE_AGENCY_KEYWORDS).toContain('performance marketing agency');
+      });
+    });
+
+    describe('detectAffiliateAgency', () => {
+      it('should detect agency from Perplexity company description', () => {
+        const perplexityData = {
+          company_info: {
+            description: 'We are a leading affiliate marketing agency helping brands grow'
+          }
+        };
+        const result = detectAffiliateAgency(perplexityData, {});
+        expect(result.isAgency).toBe(true);
+        expect(result.reason).toContain('affiliate');
+      });
+
+      it('should detect agency from company name', () => {
+        const perplexityData = {
+          company_info: {
+            name: 'Performance Marketing Agency Inc'
+          }
+        };
+        const result = detectAffiliateAgency(perplexityData, {});
+        expect(result.isAgency).toBe(true);
+      });
+
+      it('should detect agency from form responses', () => {
+        const calendlyData = {
+          calendly_challenge: 'We are an affiliate agency looking to scale partner programs'
+        };
+        const result = detectAffiliateAgency({}, calendlyData);
+        expect(result.isAgency).toBe(true);
+      });
+
+      it('should detect agency from JSON form responses', () => {
+        const calendlyData = {
+          calendly_form_responses: JSON.stringify([
+            { question: 'What does your company do?', answer: 'We run a partner marketing agency' }
+          ])
+        };
+        const result = detectAffiliateAgency({}, calendlyData);
+        expect(result.isAgency).toBe(true);
+      });
+
+      it('should return false for non-agency companies', () => {
+        const perplexityData = {
+          company_info: {
+            description: 'We are an e-commerce company selling organic products'
+          }
+        };
+        const result = detectAffiliateAgency(perplexityData, {});
+        expect(result.isAgency).toBe(false);
+      });
+    });
+
+    describe('scoreAffiliateReadiness', () => {
+      it('should give 3/3 for affiliate agencies', () => {
+        const perplexityData = {
+          company_info: {
+            description: 'Leading affiliate marketing agency'
+          }
+        };
+        const result = scoreAffiliateReadiness(perplexityData, {});
+        expect(result.score).toBe(3);
+        expect(result.rationale).toContain('affiliate agency');
+      });
+
+      it('should give 3/3 for companies with affiliate software', () => {
+        const perplexityData = {
+          affiliate_signals: {
+            affiliate_software_detected: ['PartnerStack']
+          }
+        };
+        const result = scoreAffiliateReadiness(perplexityData, {});
+        expect(result.score).toBe(3);
+        expect(result.rationale).toContain('partnerstack');
+      });
+
+      it('should give 2/3 for companies with affiliate page', () => {
+        const perplexityData = {
+          affiliate_signals: {
+            affiliate_page_url: 'https://example.com/partners'
+          }
+        };
+        const result = scoreAffiliateReadiness(perplexityData, {});
+        expect(result.score).toBe(2);
+      });
+
+      it('should give 0/3 for companies with no signals', () => {
+        const perplexityData = {
+          company_info: {
+            description: 'Just a regular company'
+          }
+        };
+        const result = scoreAffiliateReadiness(perplexityData, {});
+        expect(result.score).toBe(0);
       });
     });
   });

@@ -27,6 +27,7 @@ const DEFAULT_PERPLEXITY_PROMPT = `Research this lead and return a JSON object w
   "company_info": {
     "name": "Company name",
     "website": "Company website URL",
+    "linkedin_url": "Company LinkedIn page URL or null",
     "description": "Brief company description",
     "employee_count": "Estimated number (e.g., '10-50' or '100+')",
     "industry": "Industry/vertical",
@@ -50,10 +51,11 @@ const DEFAULT_PERPLEXITY_PROMPT = `Research this lead and return a JSON object w
 }
 
 Research the company and person thoroughly. Look for:
-1. Company website, LinkedIn, Crunchbase for company info
+1. Company website, LinkedIn page, Crunchbase for company info
 2. Check for /affiliates, /partners, /referrals pages on their website
 3. Look for mentions of affiliate software (Impact, PartnerStack, Rewardful, FirstPromoter, etc.)
 4. Find the person's LinkedIn profile and role
+5. Find the company's LinkedIn page URL
 
 Return ONLY valid JSON, no additional text.`;
 
@@ -154,7 +156,7 @@ function loadSecrets() {
                         jsonSecrets.PERPLEXITY_API_KEY ||
                         process.env.PERPLEXITY_API_KEY || null,
     PERPLEXITY_PROMPT: jsonSecrets.PERPLEXITY_PROMPT || DEFAULT_PERPLEXITY_PROMPT,
-    LEAD_QUALITY_TRACKED_REPS: jsonSecrets.LEAD_QUALITY_TRACKED_REPS || '[]',
+    LEAD_QUALITY_TRACKED_REPS: jsonSecrets.LEAD_QUALITY_TRACKED_REPS || '["phil@affiliatefinder.ai"]',
     // Model configuration (non-secret, stored in secrets.json for simplicity)
     OPENAI_MODEL: jsonSecrets.OPENAI_MODEL || 'gpt-5-nano',
     OPENAI_APPLY_MODE: jsonSecrets.OPENAI_APPLY_MODE || APPLY_MODES.FUTURE_ONLY

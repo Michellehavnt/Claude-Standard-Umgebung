@@ -23,12 +23,32 @@ const FREE_EMAIL_DOMAINS = [
   'googlemail.com', 'fastmail.com', 'tutanota.com', 'pm.me'
 ];
 
+// Website placeholders to reject (user entered garbage instead of real website)
+const WEBSITE_PLACEHOLDERS = [
+  'na', 'n/a', '-', 'none', 'no', 'no website', 'tbd', '...', 'not applicable',
+  'null', 'undefined', 'test', 'example', 'asdf', 'xxx', 'website', 'url',
+  'www', 'http', 'https', 'coming soon', 'in progress', 'not yet', 'soon'
+];
+
 // Known affiliate software for detection
 const AFFILIATE_SOFTWARE = [
   'impact', 'partnerstack', 'rewardful', 'firstpromoter', 'refersion',
   'affiliatly', 'leaddyno', 'tapfiliate', 'post affiliate pro', 'hasoffers',
   'tune', 'everflow', 'cj affiliate', 'shareasale', 'rakuten', 'awin',
   'clickbank', 'commission junction', 'flexoffers', 'pepperjam'
+];
+
+// Keywords that indicate the company IS an agency that warrants 3/3 readiness
+// Includes: affiliate agencies, marketing agencies, performance agencies
+const AFFILIATE_AGENCY_KEYWORDS = [
+  // Affiliate-specific agencies
+  'affiliate agency', 'affiliate marketing agency', 'partner marketing',
+  'affiliate management', 'affiliate network', 'partner agency',
+  'affiliate consultancy', 'affiliate services', 'affiliate program management',
+  // General marketing agencies (also get 3/3)
+  'marketing agency', 'digital marketing agency', 'performance marketing agency',
+  'performance agency', 'growth agency', 'digital agency',
+  'media agency', 'advertising agency', 'ad agency'
 ];
 
 /**
@@ -64,21 +84,109 @@ function deriveWebsiteFromEmail(email) {
 }
 
 /**
+ * Check if a website value is a valid website (not a placeholder)
+ * @param {string|null} website - Website value to validate
+ * @returns {boolean} - True if valid website
+ */
+function isValidWebsite(website) {
+  if (!website || typeof website !== 'string') return false;
+
+  const trimmed = website.trim().toLowerCase();
+
+  // Too short to be valid
+  if (trimmed.length < 3) return false;
+
+  // Check against placeholder list
+  if (WEBSITE_PLACEHOLDERS.includes(trimmed)) return false;
+
+  // Must contain at least one dot for a domain
+  if (!trimmed.includes('.')) return false;
+
+  // Reject placeholder patterns that don't have a real domain structure
+  // e.g., "test123" is rejected, but "test.com" or "example.com" are valid
+  // Only reject if the entire string (without protocol) matches the pattern with no proper TLD
+  const withoutProtocol = trimmed.replace(/^https?:\/\//, '');
+  if (/^(test|sample|demo|placeholder)\d*$/i.test(withoutProtocol)) return false;
+
+  return true;
+}
+
+/**
+ * Extract first valid URL/domain from a string that may contain multiple
+ * @param {string} input - Input that may contain URLs
+ * @returns {string|null} - First valid domain or null
+ */
+function extractFirstDomain(input) {
+  if (!input) return null;
+
+  // Try to extract URL with protocol first
+  const urlMatch = input.match(/https?:\/\/([^\s,;|]+)/i);
+  if (urlMatch) {
+    // Extract just the domain from the URL
+    const domain = urlMatch[1].replace(/\/.*$/, '').toLowerCase();
+    return domain;
+  }
+
+  // Try to extract bare domain (something.tld)
+  const domainMatch = input.match(/([a-z0-9][-a-z0-9]*\.)+[a-z]{2,}/i);
+  if (domainMatch) {
+    return domainMatch[0].toLowerCase();
+  }
+
+  return null;
+}
+
+/**
  * Get website with fallback logic
- * 1. Use provided website (from Calendly form)
+ * 1. Use provided website (from Calendly form) if valid
  * 2. Fallback to email domain if business email
  * @param {string|null} providedWebsite - Website from form
  * @param {string} email - Email address
  * @returns {string|null} - Website or null
  */
 function getWebsiteWithFallback(providedWebsite, email) {
-  // First choice: website provided in form
-  if (providedWebsite && providedWebsite.trim()) {
-    return providedWebsite.trim();
+  // First choice: website provided in form (if valid, not a placeholder)
+  if (isValidWebsite(providedWebsite)) {
+    // Extract first valid domain (handles "multiple brands: url1, url2" cases)
+    const extracted = extractFirstDomain(providedWebsite);
+    if (extracted) {
+      return extracted;
+    }
+    // If extraction failed but it passed validation, clean and return
+    return providedWebsite.trim().replace(/^https?:\/\//, '').replace(/\/$/, '').toLowerCase();
   }
 
   // Fallback: derive from email domain (if not generic)
   return deriveWebsiteFromEmail(email);
+}
+
+/**
+ * Validate that a lead has required data for analysis
+ * Required: email + name
+ * @param {Object} leadData - Lead data
+ * @returns {{ canAnalyze: boolean, reason?: string }}
+ */
+function canAnalyzeLead(leadData) {
+  if (!leadData.invitee_email && !leadData.inviteeEmail) {
+    return { canAnalyze: false, reason: 'Email is required for analysis' };
+  }
+
+  const name = leadData.invitee_name || leadData.inviteeName;
+  if (!name || name.trim().length === 0) {
+    return { canAnalyze: false, reason: 'Name is required for analysis' };
+  }
+
+  return { canAnalyze: true };
+}
+
+/**
+ * Check if an email domain is generic (gmail, yahoo, etc.)
+ * @param {string} email - Email address
+ * @returns {boolean}
+ */
+function isGenericEmailDomain(email) {
+  const domain = getEmailDomain(email);
+  return domain && FREE_EMAIL_DOMAINS.includes(domain);
 }
 
 /**
@@ -147,17 +255,82 @@ function scoreCompanyStrength(perplexityData) {
 }
 
 /**
+ * Detect if the company IS an affiliate agency (not just has affiliate program)
+ * @param {Object} perplexityData - Research data from Perplexity
+ * @param {Object} calendlyData - Form data from Calendly
+ * @returns {{ isAgency: boolean, reason: string }}
+ */
+function detectAffiliateAgency(perplexityData, calendlyData = {}) {
+  const textSources = [];
+
+  // Check company description from Perplexity
+  if (perplexityData?.company_info?.description) {
+    textSources.push(perplexityData.company_info.description.toLowerCase());
+  }
+
+  // Check company name
+  if (perplexityData?.company_info?.name) {
+    textSources.push(perplexityData.company_info.name.toLowerCase());
+  }
+
+  // Check form responses
+  if (calendlyData.calendly_challenge) {
+    textSources.push(calendlyData.calendly_challenge.toLowerCase());
+  }
+
+  // Parse form responses if available
+  if (calendlyData.calendly_form_responses) {
+    try {
+      const responses = typeof calendlyData.calendly_form_responses === 'string'
+        ? JSON.parse(calendlyData.calendly_form_responses)
+        : calendlyData.calendly_form_responses;
+
+      if (Array.isArray(responses)) {
+        responses.forEach(r => {
+          if (r.answer) textSources.push(r.answer.toLowerCase());
+        });
+      }
+    } catch (e) {
+      // Ignore parse errors
+    }
+  }
+
+  const combinedText = textSources.join(' ');
+
+  // Check for affiliate agency keywords
+  for (const keyword of AFFILIATE_AGENCY_KEYWORDS) {
+    if (combinedText.includes(keyword.toLowerCase())) {
+      return {
+        isAgency: true,
+        reason: `Company is an affiliate agency (detected: "${keyword}")`
+      };
+    }
+  }
+
+  return { isAgency: false, reason: null };
+}
+
+/**
  * Score affiliate readiness (0-3) - MOST IMPORTANT
  * 0 = no affiliate signals
  * 1 = affiliate-adjacent (referral program, partner mentions)
  * 2 = affiliate page exists
- * 3 = active on known affiliate software/network
+ * 3 = active on known affiliate software/network OR company IS an affiliate agency
  *
  * @param {Object} perplexityData - Research data from Perplexity
  * @param {Object} calendlyData - Optional form data with challenge/form responses
  */
 function scoreAffiliateReadiness(perplexityData, calendlyData = {}) {
-  // First check form responses for explicit affiliate software mentions
+  // FIRST: Check if company IS an affiliate agency (automatic 3/3)
+  const agencyCheck = detectAffiliateAgency(perplexityData, calendlyData);
+  if (agencyCheck.isAgency) {
+    return {
+      score: 3,
+      rationale: agencyCheck.reason
+    };
+  }
+
+  // Check form responses for explicit affiliate software mentions
   const formMentionedSoftware = detectAffiliateSoftwareInFormData(calendlyData);
 
   if (!perplexityData?.affiliate_signals && formMentionedSoftware.length === 0) {
@@ -440,8 +613,9 @@ async function analyzeLeadQuality(leadData) {
   const prompt = secretManager.getPerplexityConfig().prompt;
   const promptVersion = prompt ? hashString(prompt.substring(0, 100)) : 'default';
 
-  // Extract LinkedIn URL from person_info if available
+  // Extract LinkedIn URLs from person_info and company_info if available
   const linkedinUrl = perplexityData?.person_info?.linkedin_url || null;
+  const linkedinCompanyUrl = perplexityData?.company_info?.linkedin_url || null;
 
   return {
     perplexityData,
@@ -463,7 +637,8 @@ async function analyzeLeadQuality(leadData) {
     totalScore,
     researchLinks,
     promptVersion,
-    linkedinUrl
+    linkedinUrl,
+    linkedinCompanyUrl
   };
 }
 
@@ -591,26 +766,37 @@ async function syncAndAnalyzeLeads(repEmail, options = {}) {
             lead = await leadQualityDb.createLead(leadData);
             results.synced++;
 
-            // Analyze if requested
-            if (analyzeNew && perplexityService.isConfigured()) {
-              const analysis = await analyzeLeadQuality(leadData);
-              await leadQualityDb.updateLead(lead.id, {
-                perplexity_response_json: JSON.stringify(analysis.perplexityData),
-                enriched_at: new Date().toISOString(),
-                company_strength_score: analysis.companyStrengthScore,
-                company_strength_rationale: analysis.companyStrengthRationale,
-                affiliate_readiness_score: analysis.affiliateReadinessScore,
-                affiliate_readiness_rationale: analysis.affiliateReadinessRationale,
-                buyer_authority_score: analysis.buyerAuthorityScore,
-                buyer_authority_rationale: analysis.buyerAuthorityRationale,
-                inbound_quality_score: analysis.inboundQualityScore,
-                inbound_quality_rationale: analysis.inboundQualityRationale,
-                total_score: analysis.totalScore,
-                research_links: JSON.stringify(analysis.researchLinks),
-                prompt_version: analysis.promptVersion,
-                linkedin_url: analysis.linkedinUrl
-              });
-              results.analyzed++;
+            // Validate lead has required data for analysis (email + name)
+            const validation = canAnalyzeLead(leadData);
+
+            // Analyze if requested and lead is valid
+            if (analyzeNew && validation.canAnalyze && perplexityService.isConfigured()) {
+              try {
+                const analysis = await analyzeLeadQuality(leadData);
+                await leadQualityDb.updateLead(lead.id, {
+                  perplexity_response_json: JSON.stringify(analysis.perplexityData),
+                  enriched_at: new Date().toISOString(),
+                  company_strength_score: analysis.companyStrengthScore,
+                  company_strength_rationale: analysis.companyStrengthRationale,
+                  affiliate_readiness_score: analysis.affiliateReadinessScore,
+                  affiliate_readiness_rationale: analysis.affiliateReadinessRationale,
+                  buyer_authority_score: analysis.buyerAuthorityScore,
+                  buyer_authority_rationale: analysis.buyerAuthorityRationale,
+                  inbound_quality_score: analysis.inboundQualityScore,
+                  inbound_quality_rationale: analysis.inboundQualityRationale,
+                  total_score: analysis.totalScore,
+                  research_links: JSON.stringify(analysis.researchLinks),
+                  prompt_version: analysis.promptVersion,
+                  linkedin_url: analysis.linkedinUrl,
+                  linkedin_company_url: analysis.linkedinCompanyUrl
+                });
+                results.analyzed++;
+              } catch (analysisError) {
+                console.warn(`[LeadQuality] Analysis failed for lead ${lead.id}:`, analysisError.message);
+                results.errors.push(`Analysis for ${invitee.email}: ${analysisError.message}`);
+              }
+            } else if (analyzeNew && !validation.canAnalyze) {
+              console.log(`[LeadQuality] Skipping analysis for ${invitee.email}: ${validation.reason}`);
             }
           } else {
             // Update existing lead with fresh form data (in case it was missing)
@@ -623,32 +809,91 @@ async function syncAndAnalyzeLeads(repEmail, options = {}) {
             if (Object.keys(updateData).length > 0) {
               await leadQualityDb.updateLead(lead.id, updateData);
             }
+
+            // AUTO-ANALYZE UNSCORED EXISTING LEADS
+            // If lead has no score yet and analyzeNew is true, analyze it now
+            const hasNoScore = !lead.totalScore && lead.manualOverride === null;
+            if (hasNoScore && analyzeNew && perplexityService.isConfigured()) {
+              const revalidation = canAnalyzeLead({
+                invitee_email: lead.inviteeEmail,
+                invitee_name: lead.inviteeName
+              });
+
+              if (revalidation.canAnalyze) {
+                try {
+                  console.log(`[LeadQuality] Auto-analyzing unscored existing lead: ${lead.inviteeEmail}`);
+                  const analysis = await analyzeLeadQuality({
+                    invitee_email: lead.inviteeEmail,
+                    invitee_name: lead.inviteeName,
+                    website: lead.website || leadData.website,
+                    company_name: lead.companyName,
+                    calendly_challenge: lead.calendlyChallenge || leadData.calendly_challenge,
+                    calendly_form_responses: lead.calendlyFormResponses || leadData.calendly_form_responses
+                  });
+                  await leadQualityDb.updateLead(lead.id, {
+                    perplexity_response_json: JSON.stringify(analysis.perplexityData),
+                    enriched_at: new Date().toISOString(),
+                    company_strength_score: analysis.companyStrengthScore,
+                    company_strength_rationale: analysis.companyStrengthRationale,
+                    affiliate_readiness_score: analysis.affiliateReadinessScore,
+                    affiliate_readiness_rationale: analysis.affiliateReadinessRationale,
+                    buyer_authority_score: analysis.buyerAuthorityScore,
+                    buyer_authority_rationale: analysis.buyerAuthorityRationale,
+                    inbound_quality_score: analysis.inboundQualityScore,
+                    inbound_quality_rationale: analysis.inboundQualityRationale,
+                    total_score: analysis.totalScore,
+                    research_links: JSON.stringify(analysis.researchLinks),
+                    prompt_version: analysis.promptVersion,
+                    linkedin_url: analysis.linkedinUrl,
+                    linkedin_company_url: analysis.linkedinCompanyUrl
+                  });
+                  results.analyzed++;
+                } catch (analysisError) {
+                  console.warn(`[LeadQuality] Auto-analysis failed for existing lead ${lead.id}:`, analysisError.message);
+                  results.errors.push(`Auto-analysis for ${lead.inviteeEmail}: ${analysisError.message}`);
+                }
+              }
+            }
           }
 
           if (lead && reanalyzeExisting && perplexityService.isConfigured()) {
-            // Re-analyze existing lead
-            const analysis = await analyzeLeadQuality({
-              ...leadData,
+            // Validate lead has required data for re-analysis
+            const revalidation = canAnalyzeLead({
               invitee_email: lead.inviteeEmail,
               invitee_name: lead.inviteeName
             });
-            await leadQualityDb.updateLead(lead.id, {
-              perplexity_response_json: JSON.stringify(analysis.perplexityData),
-              enriched_at: new Date().toISOString(),
-              company_strength_score: analysis.companyStrengthScore,
-              company_strength_rationale: analysis.companyStrengthRationale,
-              affiliate_readiness_score: analysis.affiliateReadinessScore,
-              affiliate_readiness_rationale: analysis.affiliateReadinessRationale,
-              buyer_authority_score: analysis.buyerAuthorityScore,
-              buyer_authority_rationale: analysis.buyerAuthorityRationale,
-              inbound_quality_score: analysis.inboundQualityScore,
-              inbound_quality_rationale: analysis.inboundQualityRationale,
-              total_score: analysis.totalScore,
-              research_links: JSON.stringify(analysis.researchLinks),
-              prompt_version: analysis.promptVersion,
-              linkedin_url: analysis.linkedinUrl
-            });
-            results.analyzed++;
+
+            if (revalidation.canAnalyze) {
+              try {
+                // Re-analyze existing lead
+                const analysis = await analyzeLeadQuality({
+                  ...leadData,
+                  invitee_email: lead.inviteeEmail,
+                  invitee_name: lead.inviteeName
+                });
+                await leadQualityDb.updateLead(lead.id, {
+                  perplexity_response_json: JSON.stringify(analysis.perplexityData),
+                  enriched_at: new Date().toISOString(),
+                  company_strength_score: analysis.companyStrengthScore,
+                  company_strength_rationale: analysis.companyStrengthRationale,
+                  affiliate_readiness_score: analysis.affiliateReadinessScore,
+                  affiliate_readiness_rationale: analysis.affiliateReadinessRationale,
+                  buyer_authority_score: analysis.buyerAuthorityScore,
+                  buyer_authority_rationale: analysis.buyerAuthorityRationale,
+                  inbound_quality_score: analysis.inboundQualityScore,
+                  inbound_quality_rationale: analysis.inboundQualityRationale,
+                  total_score: analysis.totalScore,
+                  research_links: JSON.stringify(analysis.researchLinks),
+                  prompt_version: analysis.promptVersion,
+                  linkedin_url: analysis.linkedinUrl,
+                  linkedin_company_url: analysis.linkedinCompanyUrl
+                });
+                results.analyzed++;
+              } catch (analysisError) {
+                console.warn(`[LeadQuality] Re-analysis failed for lead ${lead.id}:`, analysisError.message);
+                results.errors.push(`Re-analysis for ${lead.inviteeEmail}: ${analysisError.message}`);
+              }
+            }
           }
 
           results.leads.push(lead);
@@ -709,7 +954,8 @@ async function reanalyzeLead(leadId) {
     total_score: analysis.totalScore,
     research_links: JSON.stringify(analysis.researchLinks),
     prompt_version: analysis.promptVersion,
-    linkedin_url: analysis.linkedinUrl
+    linkedin_url: analysis.linkedinUrl,
+    linkedin_company_url: analysis.linkedinCompanyUrl
   });
 }
 
@@ -1110,13 +1356,41 @@ async function fetchAndLinkTranscript(leadId, options = {}) {
 }
 
 /**
- * Link a transcript to a lead
+ * Link a transcript to a lead and optionally auto-analyze
  * @param {string} leadId - Lead ID
  * @param {string} transcriptId - Transcript ID
- * @returns {Promise<Object>} - Updated lead
+ * @param {Object} options - Options
+ * @param {boolean} options.autoAnalyze - Whether to auto-analyze after linking (default: true)
+ * @param {string} options.model - Model to use for analysis (default: 'gpt-5-nano')
+ * @returns {Promise<Object>} - Updated lead (with analysis if auto-analyzed)
  */
-async function linkTranscript(leadId, transcriptId) {
-  return leadQualityDb.updateLead(leadId, { transcript_id: transcriptId });
+async function linkTranscript(leadId, transcriptId, options = {}) {
+  const { autoAnalyze = true, model = 'gpt-5-nano' } = options;
+
+  // First, link the transcript
+  let lead = await leadQualityDb.updateLead(leadId, { transcript_id: transcriptId });
+
+  // Auto-analyze if requested and configured
+  if (autoAnalyze) {
+    const canUseOpenAI = model !== 'perplexity-sonar' && llmService.isConfigured();
+    const canUsePerplexity = model === 'perplexity-sonar' && perplexityService.isConfigured();
+
+    if (canUseOpenAI || canUsePerplexity) {
+      try {
+        console.log(`[LeadQuality] Auto-analyzing transcript for lead ${leadId} with model ${model}`);
+        const result = await analyzeTranscript(leadId, { model });
+        lead = result;
+        console.log(`[LeadQuality] Auto-analysis complete for lead ${leadId}`);
+      } catch (err) {
+        console.warn(`[LeadQuality] Auto-analysis failed for lead ${leadId}:`, err.message);
+        // Don't throw - linking was successful, analysis is optional
+      }
+    } else {
+      console.log(`[LeadQuality] Skipping auto-analysis: ${model === 'perplexity-sonar' ? 'Perplexity' : 'OpenAI'} not configured`);
+    }
+  }
+
+  return lead;
 }
 
 module.exports = {
@@ -1127,6 +1401,7 @@ module.exports = {
   scoreInboundQuality,
   calculateTotalScore,
   detectAffiliateSoftwareInFormData,
+  detectAffiliateAgency,
 
   // Main functions
   analyzeLeadQuality,
@@ -1147,8 +1422,13 @@ module.exports = {
   getEmailDomain,
   deriveWebsiteFromEmail,
   getWebsiteWithFallback,
+  isValidWebsite,
+  extractFirstDomain,
+  canAnalyzeLead,
+  isGenericEmailDomain,
 
   // Constants
   FREE_EMAIL_DOMAINS,
-  AFFILIATE_SOFTWARE
+  AFFILIATE_SOFTWARE,
+  AFFILIATE_AGENCY_KEYWORDS
 };

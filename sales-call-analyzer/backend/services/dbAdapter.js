@@ -543,6 +543,7 @@ async function createTables() {
       post_call_score INTEGER,
       post_call_rationale TEXT,
       linkedin_url TEXT,
+      linkedin_company_url TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
@@ -556,7 +557,8 @@ async function createTables() {
     { name: 'transcript_analyzed_at', type: 'TIMESTAMP' },
     { name: 'post_call_score', type: 'INTEGER' },
     { name: 'post_call_rationale', type: 'TEXT' },
-    { name: 'linkedin_url', type: 'TEXT' }
+    { name: 'linkedin_url', type: 'TEXT' },
+    { name: 'linkedin_company_url', type: 'TEXT' }
   ];
 
   for (const col of columnsToAdd) {
