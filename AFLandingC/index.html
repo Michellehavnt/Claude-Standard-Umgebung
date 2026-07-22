@@ -361,7 +361,7 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .trust-track .tlogo.white{filter:brightness(0);opacity:.72;mix-blend-mode:normal;height:36px}
 
 /* ---------- pinned scrollytelling feature section ---------- */
-.pin-sec{position:relative;height:400vh}
+.pin-sec{position:relative;height:640vh}
 .pin-view{position:sticky;top:0;min-height:100vh;display:flex;align-items:center;overflow:hidden}
 .pin-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;width:100%}
 .pin-progress{display:flex;gap:8px;margin-bottom:30px}
@@ -412,6 +412,58 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .gi4{bottom:13%;left:2%;animation-delay:1.7s}
 .gi5{bottom:0;right:14%;animation-delay:.7s}
 @media(max-width:900px){.glow-icons{min-height:340px}.gi{width:84px;height:84px;border-radius:20px}.gi svg{width:42px;height:42px}}
+
+/* outreach composer mockup */
+.oc-head{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+.oc-head .yt{width:34px;height:34px;border-radius:10px;background:#fff;display:grid;place-items:center}
+.oc-head .yt svg{width:20px;height:20px}
+.oc-head .t{font-size:13.5px;font-weight:700}
+.oc-head .s{display:block;font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4)}
+.oc-subject{border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:9px 13px;font-size:12px;color:rgba(255,255,255,.85);margin-bottom:10px}
+.oc-subject b{color:#fff}
+.oc-body{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:14px 15px;font-size:12.5px;line-height:1.6;color:rgba(255,255,255,.75)}
+.oc-body .hlight{background:linear-gradient(transparent 62%,rgba(10,154,168,.55) 62%);color:#fff}
+.oc-foot{display:flex;align-items:center;gap:8px;margin-top:14px}
+.oc-ghost{font-size:11px;font-weight:600;color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:7px 13px}
+.oc-send{margin-left:auto;font-size:12px;font-weight:700;color:#06252b;background:linear-gradient(90deg,#8ed6de,#0a9aa8);border-radius:999px;padding:8px 18px;box-shadow:0 0 24px rgba(10,154,168,.5)}
+.oc-angle{
+  position:absolute;top:-24px;right:-18px;background:rgba(16,24,32,.92);border:1px solid rgba(255,255,255,.16);
+  border-radius:12px;padding:10px 14px;font-size:11.5px;font-weight:600;color:#fff;display:flex;align-items:center;gap:8px;
+  box-shadow:0 18px 50px rgba(0,0,0,.6),0 0 28px rgba(10,154,168,.25);animation:floaty 7s ease-in-out infinite;
+}
+.oc-angle .tick{width:16px;height:16px;border-radius:50%;background:#12b76a;display:grid;place-items:center;font-size:9px;color:#fff}
+.dvis{position:relative}
+
+/* unified inbox viz */
+.inbox-viz{position:relative;min-height:440px;overflow:hidden;border-radius:24px}
+.inbox-viz .ring{position:absolute;left:50%;transform:translateX(-50%);border-radius:50%;border:1.5px solid rgba(10,154,168,.22);background:radial-gradient(circle,rgba(10,154,168,.10),transparent 70%)}
+.inbox-viz .r1{width:520px;height:520px;top:-300px}
+.inbox-viz .r2{width:760px;height:760px;top:-430px}
+.inbox-viz .hub{position:absolute;top:26px;left:50%;transform:translateX(-50%);width:170px;height:26px}
+.ptile{position:absolute;width:96px;height:96px;border-radius:24px;background:#fff;display:grid;place-items:center;
+  box-shadow:0 24px 55px rgba(0,0,0,.55),0 0 30px rgba(10,154,168,.12);animation:floaty 8s ease-in-out infinite}
+.ptile svg{width:46px;height:46px}
+.ptile .yh{font-size:19px;font-weight:800;font-style:italic;color:#5f01d1;letter-spacing:-.02em}
+.pt1{left:4%;top:22%}
+.pt2{left:27%;bottom:8%;animation-delay:1.3s}
+.pt3{right:30%;top:44%;animation-delay:2.1s}
+.pt4{right:4%;top:16%;animation-delay:.8s}
+@media(max-width:900px){.inbox-viz{min-height:340px}.ptile{width:76px;height:76px;border-radius:18px}.ptile svg{width:36px;height:36px}}
+
+/* kanban pipeline viz */
+.kb{display:flex;gap:12px;overflow:hidden}
+.kb-col{flex:0 0 166px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:10px}
+.kb-head{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;color:rgba(255,255,255,.85);margin-bottom:9px}
+.kb-head .dotc{width:7px;height:7px;border-radius:50%;flex:none}
+.kb-head .n{margin-left:auto;color:rgba(255,255,255,.4);font-weight:600}
+.kb-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:11px;padding:9px;margin-bottom:8px}
+.kb-top{display:flex;align-items:center;gap:7px;font-size:10.5px;font-weight:700}
+.kb-top .avatar{width:22px;height:22px;font-size:8px;flex:none}
+.kb-ring{margin-left:auto;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;flex:none}
+.kb-ring i{font-style:normal;width:17px;height:17px;border-radius:50%;background:#151d26;display:grid;place-items:center;font-size:8px;font-weight:800;color:#fff}
+.kb-chip{display:inline-block;font-size:8.5px;font-weight:600;border-radius:6px;padding:3px 6px;margin-top:6px;margin-right:3px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.08);white-space:nowrap}
+.kb-send{margin-top:7px;font-size:9px;font-weight:700;color:#7ee2a8;border:1px solid rgba(126,226,168,.35);background:rgba(18,183,106,.12);border-radius:8px;padding:5px 0;text-align:center}
+.dvis.xwide{width:min(640px,100%)}
 
 /* dark pinned features */
 .pin-dark{position:relative;background:#0a0f16;color:#fff}
@@ -1171,7 +1223,7 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
   <div class="pin-view">
     <div class="wrap pin-grid">
       <div class="pin-left">
-        <div class="pin-progress" aria-hidden="true"><span class="bar active"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span></div>
+        <div class="pin-progress" aria-hidden="true"><span class="bar active"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span></div>
         <div class="pin-text-stack">
           <div class="pin-text active">
             <span class="dark-pill">Discovery</span>
@@ -1179,14 +1231,29 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
             <p>A single search scans YouTube, Instagram, TikTok, Google, and the blogs linking to your competitors. It surfaces creators who are already talking about products like yours. The average user finds over 1,500 potential affiliates.</p>
           </div>
           <div class="pin-text">
+            <span class="dark-pill">AI Outreach</span>
+            <h2>Outreach that sounds like<br><span class="hl">you've done your research.</span></h2>
+            <p>Every email references the creator's real recent content and follows your saved rules and tone. Edit before it sends, or don't. You approve every message, so nothing leaves your account that you didn't sign off.</p>
+          </div>
+          <div class="pin-text">
             <span class="dark-pill">Email sequences</span>
             <h2>Follow-ups that<br><span class="hl">run themselves.</span></h2>
             <p>Build AI sequences with custom delays between each step. Replies, bounces and unsubscribes get handled for you – and every conversation syncs into one unified inbox across Gmail, Outlook and IMAP.</p>
           </div>
           <div class="pin-text">
+            <span class="dark-pill">Unified Inbox</span>
+            <h2>One inbox<br><span class="hl">for every reply.</span></h2>
+            <p>Gmail, Outlook and IMAP accounts sync into a single unified inbox, with each conversation linked to the affiliate's profile. Reply without leaving the app.</p>
+          </div>
+          <div class="pin-text">
             <span class="dark-pill">Analytics</span>
             <h2>Numbers your<br><span class="hl">boss can read.</span></h2>
             <p>Opens, clicks and replies per email step, daily activity charts and a full outreach funnel. When you need to show the results your program is driving, the numbers are already there.</p>
+          </div>
+          <div class="pin-text">
+            <span class="dark-pill">Recruitment Pipeline</span>
+            <h2>A pipeline that<br><span class="hl">runs itself.</span></h2>
+            <p>Drag affiliates through a kanban board from Saved to In Program. Replies, bounces and no-shows update their status for you, so you always know who to follow up.</p>
           </div>
           <div class="pin-text">
             <span class="dark-pill">Filters + Match Rank</span>
@@ -1203,18 +1270,78 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
           <div class="gi gi4" style="filter:drop-shadow(0 0 28px rgba(66,133,244,.45))"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#fff"/><path fill="#4285F4" d="M21.5 12.2c0-.7-.1-1.3-.2-2H12v3.8h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2a9.6 9.6 0 0 0 2.9-7.3z"/><path fill="#34A853" d="M12 22a9.4 9.4 0 0 0 6.6-2.4l-3.2-2.5c-.9.6-2 1-3.4 1a5.9 5.9 0 0 1-5.5-4H3.2v2.6A9.9 9.9 0 0 0 12 22z"/><path fill="#FBBC05" d="M6.5 14a5.7 5.7 0 0 1 0-3.8V7.6H3.2a9.9 9.9 0 0 0 0 8.9z"/><path fill="#EA4335" d="M12 6a5.4 5.4 0 0 1 3.8 1.5L18.6 5A9.6 9.6 0 0 0 3.2 7.6l3.3 2.6A5.9 5.9 0 0 1 12 6z"/></svg></div>
           <div class="gi gi5" style="filter:drop-shadow(0 0 30px rgba(10,154,168,.55))"><svg viewBox="0 0 24 24" fill="none" stroke="#0a9aa8" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg></div>
         </div></div></div>
+        <div class="pin-vis"><div class="dvis wide"><div class="dark-card" style="position:relative">
+          <div class="oc-angle"><span class="tick">✓</span>Let AI pick the angle</div>
+          <div class="oc-head">
+            <span class="yt"><svg viewBox="0 0 24 24"><path fill="#FF0000" d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8z"/><path fill="#fff" d="M9.6 15.6V8.4l6.2 3.6z"/></svg></span>
+            <span><span class="s">Reach out</span><span class="t">Funnel Scene</span></span>
+          </div>
+          <div class="oc-subject">Subject · <b>A platform your audience hasn't seen yet</b></div>
+          <div class="oc-body">Hi Max,<br><br>Your comparison videos are some of the clearest breakdowns in this space. The way you structure tool comparisons <span class="hlight">(like your ThriveCart alternatives video)</span> makes it easy for people to actually make a decision, which is rare…</div>
+          <div class="oc-foot"><span class="oc-ghost">Regenerate</span><span class="oc-ghost">Edit</span><span class="oc-send">Send email</span></div>
+        </div></div></div>
         <div class="pin-vis"><div class="dvis"><div class="dark-card">
         <div class="dc-row"><span class="glowdot"></span>Step 1 · Intro email<span class="st">sent ✓ · opened</span></div>
         <div class="dc-row"><span class="glowdot"></span>Wait 3 days<span class="st">skipped – reply detected</span></div>
         <div class="dc-row"><span class="mutedot"></span>Step 2 · Follow-up<span class="st">cancelled automatically</span></div>
         <div class="dc-bubble" style="margin-top:14px"><b>Sarah Mitchell replied:</b> "Sounds interesting – what commission are you offering?"</div>
       </div></div></div>
+        <div class="pin-vis"><div class="dvis wide"><div class="inbox-viz">
+          <span class="ring r1"></span><span class="ring r2"></span>
+          <span class="af-logo hub"></span>
+          <div class="ptile pt1"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="13" height="14" rx="3" fill="#0f6cbd"/><rect x="8" y="3" width="13" height="13" rx="3" fill="#28a8ea"/><circle cx="9.5" cy="12" r="4.6" fill="#0f6cbd" stroke="#fff" stroke-width="1.6"/><circle cx="9.5" cy="12" r="2.1" fill="#fff"/></svg></div>
+          <div class="ptile pt2"><svg viewBox="0 0 24 24"><path fill="#EA4335" d="M3 7.5V18a1.5 1.5 0 0 0 1.5 1.5H7V10l5 3.7L17 10v9.5h2.5A1.5 1.5 0 0 0 21 18V7.5L12 14z"/><path fill="#4285F4" d="M21 6.2V7.5L12 14 3 7.5V6.2A1.7 1.7 0 0 1 5.7 4.9L12 9.6l6.3-4.7A1.7 1.7 0 0 1 21 6.2z"/><path fill="#FBBC05" d="M3 7.5v3l4 3V10z" opacity=".8"/><path fill="#34A853" d="M21 7.5v3l-4 3V10z" opacity=".8"/></svg></div>
+          <div class="ptile pt3"><span class="yh">yahoo!</span></div>
+          <div class="ptile pt4"><svg viewBox="0 0 24 24" fill="none" stroke="#8a94a0" stroke-width="1.8"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3.5 7l8.5 6 8.5-6"/></svg></div>
+        </div></div></div>
         <div class="pin-vis"><div class="dvis"><div class="dark-card">
         <div class="statbar"><div class="sb-label"><span>Emails sent</span><b>125</b></div><div class="sb-track"><div class="sb-fill" style="width:100%"></div></div></div>
         <div class="statbar"><div class="sb-label"><span>Open rate</span><b>51.2%</b></div><div class="sb-track"><div class="sb-fill" style="width:51%"></div></div></div>
         <div class="statbar"><div class="sb-label"><span>Reply rate</span><b>29.4%</b></div><div class="sb-track"><div class="sb-fill" style="width:29%"></div></div></div>
         <div class="dc-bubble" style="margin-top:16px"><b>9 deals in progress</b> – pipeline updated 2 minutes ago.</div>
       </div></div></div>
+        <div class="pin-vis"><div class="dvis xwide"><div class="dark-card"><div class="kb">
+          <div class="kb-col">
+            <div class="kb-head"><span class="dotc" style="background:#8a94a0"></span>Saved<span class="n">41</span></div>
+            <div class="kb-card">
+              <div class="kb-top"><span class="avatar" style="background:linear-gradient(135deg,#f3b8a0,#e3a1bd)">LE</span>lena.fit<span class="kb-ring" style="background:conic-gradient(#f5bd4f 56%,rgba(255,255,255,.12) 0)"><i>56</i></span></div>
+              <span class="kb-chip">106.9K followers</span><span class="kb-chip">2.3M avg views</span>
+              <div class="kb-send">▷ Send Email</div>
+            </div>
+            <div class="kb-card">
+              <div class="kb-top"><span class="avatar" style="background:linear-gradient(135deg,#a4c6e8,#c3b6ec)">TL</span>techloop.io<span class="kb-ring" style="background:conic-gradient(#12b76a 62%,rgba(255,255,255,.12) 0)"><i>62</i></span></div>
+              <span class="kb-chip">296K traffic</span>
+            </div>
+          </div>
+          <div class="kb-col">
+            <div class="kb-head"><span class="dotc" style="background:#4a90d9"></span>Contacted<span class="n">1</span></div>
+            <div class="kb-card">
+              <div class="kb-top"><span class="avatar" style="background:linear-gradient(135deg,#e3a1bd,#c3b6ec)">BR</span>Becky R<span class="kb-ring" style="background:conic-gradient(#f5bd4f 35%,rgba(255,255,255,.12) 0)"><i>35</i></span></div>
+              <span class="kb-chip">22.1K followers</span><span class="kb-chip">101.9K avg views</span>
+              <div class="kb-send">▷ Send Email</div>
+            </div>
+          </div>
+          <div class="kb-col">
+            <div class="kb-head"><span class="dotc" style="background:#8b7fd0"></span>Replied<span class="n">3</span></div>
+            <div class="kb-card">
+              <div class="kb-top"><span class="avatar" style="background:linear-gradient(135deg,#a9dcc3,#8fccd4)">NK</span>Nick K.<span class="kb-ring" style="background:conic-gradient(#12b76a 76%,rgba(255,255,255,.12) 0)"><i>76</i></span></div>
+              <span class="kb-chip">56.6K subs</span><span class="kb-chip">23.6K avg views</span>
+              <div class="kb-send">▷ Send Email</div>
+            </div>
+            <div class="kb-card">
+              <div class="kb-top"><span class="avatar" style="background:linear-gradient(135deg,#8fccd4,#7cc6cf)">MO</span>Mike O.<span class="kb-ring" style="background:conic-gradient(#f5bd4f 36%,rgba(255,255,255,.12) 0)"><i>36</i></span></div>
+              <span class="kb-chip">647K subs</span>
+            </div>
+          </div>
+          <div class="kb-col">
+            <div class="kb-head"><span class="dotc" style="background:#e8a14c"></span>Negotiating<span class="n">2</span></div>
+            <div class="kb-card">
+              <div class="kb-top"><span class="avatar" style="background:linear-gradient(135deg,#7cc6cf,#a8dce2)">TN</span>trailnotes.com<span class="kb-ring" style="background:conic-gradient(#12b76a 100%,rgba(255,255,255,.12) 0)"><i>100</i></span></div>
+              <span class="kb-chip">119.9K traffic</span><span class="kb-chip">DR54</span>
+              <div class="kb-send">▷ Send Email</div>
+            </div>
+          </div>
+        </div></div></div></div>
         <div class="pin-vis"><div class="dvis wide"><div class="filter-stack">
         <div class="fpanel back">
           <div class="fp-label">Discovery</div>
