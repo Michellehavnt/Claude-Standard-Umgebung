@@ -133,7 +133,8 @@ This section will be populated with:
 
 **ICP for copy:**
 - Affiliate Managers at big brands that already run affiliate programs (brand side — NOT aspiring affiliates wanting commissions).
-- Research source: CCbrain MCP calls — filter to calls where the customer talks about their own affiliate/partner/influencer program AND has a business (non-gmail) email. CopeCart survey data is mostly aspiring-affiliate side and NOT representative of this ICP.
+- Research source: **AFbrain** — the "Internal Brain – AffiliateFinder.ai" deployment of the `sales-call-analyzer` app in this repo (deployed on Railway via `afbrain-deploy`). NOT CCbrain: CCbrain is the CopeCart deployment of the same software and contains only CopeCart calls; the connected Fireflies workspace (michelle.habenicht@copecart.com) also holds only CopeCart calls.
+- As of 2026-07-22, AFbrain is NOT connected as an MCP server in Claude sessions — it must be added as a connector (like CCbrain) before call analysis can run. Method once connected: search transcripts for affiliate-manager language, EXCLUDE calls whose only customer email is gmail/personal, deep-read full transcripts of ideal-fit calls, quote verbatim.
 
 ## Quick Reference
 
