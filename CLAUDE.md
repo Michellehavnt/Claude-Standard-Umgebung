@@ -117,6 +117,24 @@ This section will be populated with:
 - Architecture decisions
 - Known issues and workarounds
 
+### AffiliateFinder.ai LP Redesign (Variant C) — Key Facts
+
+**Where the current LP lives:**
+- The "Peace LP" for AffiliateFinder.ai is served by the **link-in-bio app deployed on Railway** — its code is NOT in this repository.
+- The exact GitHub repo could not be identified from a Claude session rooted in this repo: `add_repo` cannot add `Endorsely-software/*` repos to a session whose sources are owned by `michellehavnt` (cross-tier adds unsupported). Likely candidates: `Endorsely-software/affiliate-finder` or `Endorsely-software/endorsely-monorepo`.
+- **To find it for sure:** Railway dashboard → the link-in-bio service → Settings → Source shows the connected GitHub repo. To let Claude edit it, start a Claude session from that Endorsely repo.
+- Workaround used: the redesigned page is built as a self-contained HTML file in this repo (see `AFLandingC/`), ready to be dropped into the link-in-bio app.
+
+**Design decisions (July 2026):**
+- Redesign modeled on kinso.ai's premium waitlist LP style (screenshots in project history).
+- Palette: light warm base, **teal as the single accent**, **navy reserved for the dark act-break section** (brand colors from `AFPitch/index.html`: navy `#0c1929`/`#073b55`, teal `#067280`).
+- The new page is a **C variant** — the current Peace LP stays live untouched; this is an additional variant for testing.
+- Product mockups are built as animatable HTML/CSS DOM components (app window, result rows, floating notification cards), not images.
+
+**ICP for copy:**
+- Affiliate Managers at big brands that already run affiliate programs (brand side — NOT aspiring affiliates wanting commissions).
+- Research source: CCbrain MCP calls — filter to calls where the customer talks about their own affiliate/partner/influencer program AND has a business (non-gmail) email. CopeCart survey data is mostly aspiring-affiliate side and NOT representative of this ICP.
+
 ## Quick Reference
 
 | Task | Approach |
