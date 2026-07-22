@@ -106,7 +106,14 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .nav .cta{display:flex;gap:8px;align-items:center}
 .nav .cta .login{font-size:14px;font-weight:600;color:var(--ink);text-decoration:none;padding:10px 18px;border-radius:999px;border:1px solid var(--line);background:#fff}
 .nav .cta .btn{padding:11px 20px;font-size:14px}
-@media(max-width:760px){.nav .links{display:none}}
+@media(max-width:760px){
+  .nav .links{display:none}
+  .nav{padding:8px 8px 8px 14px}
+  .nav .logo .af-logo{width:118px!important;height:18px!important}
+  .nav .cta{gap:6px}
+  .nav .cta .login{padding:9px 12px;font-size:12.5px;white-space:nowrap}
+  .nav .cta .btn{padding:9px 13px;font-size:12.5px;white-space:nowrap}
+}
 
 /* ---------- hero ---------- */
 .hero{position:relative;padding:170px 0 90px;overflow:hidden}
@@ -129,7 +136,7 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .hero h1 .accent{color:var(--teal)}
 .hero .sub{margin:26px 0 0}
 .hero-right{min-width:0}
-.hero-right .platform-row{justify-content:flex-end}
+.hero-right .platform-row{justify-content:center;margin-top:46px}
 .platform-row{display:flex;gap:14px;margin-top:30px;flex-wrap:wrap}
 .platform-row .chip{
   width:52px;height:52px;border-radius:16px;background:#fff;border:1px solid var(--line);
@@ -233,7 +240,7 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 }
 .app-shell img{display:block;width:100%;height:auto}
 .phone-mock{
-  position:absolute;left:3%;bottom:-34px;width:205px;aspect-ratio:9/19;z-index:3;
+  position:absolute;left:-4%;bottom:-58px;width:205px;aspect-ratio:9/19;z-index:3;
   background:#fff;border:1px solid var(--line);border-radius:32px;padding:10px;
   box-shadow:0 34px 80px rgba(16,20,24,.22);
 }
@@ -249,19 +256,35 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .ph-ask{margin-top:12px;display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:11px;color:var(--ink-mute);padding:8px 12px}
 .ph-ask .orb{width:14px;height:14px;border-radius:50%;background:conic-gradient(from 210deg,var(--teal-bright),#f0966e,var(--teal));flex:none}
 /* notification cards: stacked column overlapping the window's right edge */
-.mock-stage .lapcard{width:clamp(250px,46%,370px)}
-.mock-stage .lc1{left:auto;right:-4%;top:-44px}
-.mock-stage .lc2{right:-12%;top:88px}
-.mock-stage .lc3{right:-3%;top:218px}
-.mock-stage .lc4{left:auto;right:-7%;top:348px}
+.mock-stage .lapcard{width:clamp(250px,44%,352px)}
+.mock-stage .lc1{left:auto;right:-6%;top:-36px}
+.mock-stage .lc2{left:auto;right:-6%;top:64px}
+.mock-stage .lc3{left:auto;right:-6%;top:164px}
+.mock-stage .lc4{left:auto;right:-6%;top:264px}
 @media(max-width:980px){
   .app-shell{width:100%}
-  .phone-mock{left:-4px;bottom:-20px;width:160px}
-  .mock-stage .lc1{right:-4px}.mock-stage .lc2{right:-4px}.mock-stage .lc3{right:-4px}.mock-stage .lc4{right:-4px}
+  .phone-mock{left:-4px;bottom:-30px;width:150px}
+  .mock-stage .lc1,.mock-stage .lc2,.mock-stage .lc3,.mock-stage .lc4{right:-4px}
 }
 @media(max-width:767px){
-  .mock-stage{min-height:0}
-  .mock-stage .lc1,.mock-stage .lc2,.mock-stage .lc3,.mock-stage .lc4{right:-4px;left:auto;top:auto;bottom:-14px;width:min(270px,82%)}
+  .hero{padding:130px 0 60px}
+  .hero-grid{gap:30px}
+  .hero-grid>.rv{text-align:center}
+  .hero .sub{margin-left:auto;margin-right:auto}
+  .hero-cta{justify-content:center}
+  .hero-proof{margin-left:auto;margin-right:auto;display:flex;justify-content:center}
+  .mock-stage{min-height:0;margin-top:26px;margin-bottom:16px}
+  .mock-stage .lapcard{width:min(236px,70%)}
+  .mock-stage .lc1{right:-4px;top:-16px}
+  .mock-stage .lc2{right:-4px;top:54px}
+  .mock-stage .lc3{right:-4px;top:124px}
+  .mock-stage .lc4{right:-4px;top:194px}
+  .phone-mock{left:0;bottom:-26px;top:auto;width:116px;padding:6px;border-radius:22px}
+  .phone-screen{border-radius:17px;padding:10px}
+  .ph-greet{font-size:10px;line-height:1.35}
+  .ph-ask{font-size:8.5px;padding:6px 8px;margin-top:8px}
+  .app-shell{margin-bottom:150px}
+  .hero-right .platform-row{justify-content:center;margin-top:0}
 }
 
 /* ---------- hero mockup composition ---------- */
@@ -325,17 +348,17 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .marquee-sec{padding:40px 0 8px}
 .marquee-label{display:flex;align-items:center;gap:18px;justify-content:center;margin-bottom:30px}
 .marquee-label .rule{height:1px;background:var(--line);flex:0 1 220px}
-.marquee-label .pill{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mute);border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 16px}
+.marquee-label .pill{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mute);border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 16px;white-space:nowrap}
 .trust-marquee{overflow:hidden;position:relative;padding:8px 0 46px}
 .trust-marquee::before,.trust-marquee::after{content:'';position:absolute;top:0;bottom:0;width:110px;z-index:2;pointer-events:none}
 .trust-marquee::before{left:0;background:linear-gradient(90deg,var(--cream),transparent)}
 .trust-marquee::after{right:0;background:linear-gradient(-90deg,var(--cream),transparent)}
 .trust-track{display:flex;gap:74px;width:max-content;align-items:center;animation:tscroll 42s linear infinite}
 @keyframes tscroll{to{transform:translateX(-50%)}}
-.trust-track .tlogo{height:32px;width:auto;mix-blend-mode:multiply;opacity:.92}
-.trust-track .tlogo.tall{height:40px}
-.trust-track .tlogo.tile{height:46px;border-radius:12px;mix-blend-mode:normal;box-shadow:0 4px 14px rgba(16,20,24,.08)}
-.trust-track .tlogo.white{filter:brightness(0);opacity:.72;mix-blend-mode:normal}
+.trust-track .tlogo{height:42px;width:auto;mix-blend-mode:multiply;opacity:.92}
+.trust-track .tlogo.tall{height:58px}
+.trust-track .tlogo.tile{height:56px;border-radius:14px;mix-blend-mode:normal;box-shadow:0 4px 14px rgba(16,20,24,.08)}
+.trust-track .tlogo.white{filter:brightness(0);opacity:.72;mix-blend-mode:normal;height:36px}
 
 /* ---------- pinned scrollytelling feature section ---------- */
 .pin-sec{position:relative;height:330vh}
@@ -365,6 +388,31 @@ h2{font-size:clamp(32px,4.4vw,56px)}
   .pin-vis .fvisual{min-height:330px;padding:26px 20px}
   .pin-text h2{font-size:clamp(28px,7vw,38px)}
 }
+
+/* dark divider (kinso FEATURES rule) */
+.dark-divider{position:relative;background:#0a0f16;padding:70px 0 6px}
+.dark-divider::before{content:'';position:absolute;inset:0;opacity:.55;
+  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:22px 22px}
+.dd{position:relative;z-index:1;display:flex;align-items:center;gap:20px;justify-content:center}
+.dd .rule{height:1px;background:rgba(255,255,255,.22);flex:0 1 300px}
+.dd .pill{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.78);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:9px 20px;white-space:nowrap}
+
+/* dark pinned features */
+.pin-dark{position:relative;background:#0a0f16;color:#fff}
+.pin-dark::before{content:'';position:absolute;inset:0;opacity:.55;
+  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:22px 22px}
+.pin-dark .pin-grid{position:relative;z-index:1}
+.pin-dark h2 .hl{background:linear-gradient(100deg,#8ed6de,#0a9aa8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pin-dark .pin-text p{color:rgba(255,255,255,.62);margin-top:22px}
+.pin-dark .pin-progress .bar{background:rgba(255,255,255,.14)}
+.pin-dark .pin-progress .bar.active{background:#0a9aa8}
+.pin-dark .pin-vis{display:flex;align-items:center;justify-content:center}
+.pin-dark .dvis{width:min(440px,100%)}
+.pin-dark .dvis.wide{width:min(540px,100%)}
+.pin-dark .dvis .filter-stack{min-height:460px}
+@media(max-width:900px){.pin-dark .dvis .filter-stack{min-height:0}}
 
 /* feature visuals */
 .fvisual{
@@ -462,12 +510,12 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .deals-stage::after{content:'';position:absolute;inset:0;opacity:.4;pointer-events:none;
   background-image:linear-gradient(rgba(16,20,24,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(16,20,24,.03) 1px,transparent 1px);background-size:26px 26px}
 .deal-scroll{position:relative;z-index:1;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.deal-window{min-width:820px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-card);overflow:hidden;width:86%}
+.deal-window{min-width:880px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-card);overflow:hidden;width:86%}
 @media(max-width:1080px){.deal-window{width:100%}}
 .dw-top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line)}
 .dw-top .t{font-size:13.5px;font-weight:700}
 .dw-chips{display:flex;gap:8px}
-.dw-chip{font-size:11px;font-weight:700;border-radius:999px;padding:5px 11px}
+.dw-chip{font-size:11px;font-weight:700;border-radius:999px;padding:5px 11px;white-space:nowrap}
 .dw-chip.g{background:#eaf6ef;color:#4d9c72}
 .dw-chip.b{background:#eaf3f9;color:#6592b4}
 .dw-chip.r{background:#fbeff4;color:#c288a4}
@@ -479,7 +527,7 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .dr-deal span.nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dr-aud b{display:block;font-size:12.5px}
 .dr-aud small{color:var(--ink-mute);font-size:10.5px}
-.st-chip{display:inline-block;font-size:10.5px;font-weight:700;border-radius:999px;padding:4px 10px}
+.st-chip{display:inline-block;font-size:10.5px;font-weight:700;border-radius:999px;padding:4px 10px;white-space:nowrap}
 .st-chip.replied{background:#f0edfa;color:#8b7fd0}
 .st-chip.nego{background:#faf3e4;color:#bd9556}
 .dr-notes{color:var(--ink-mute);font-size:11.5px;line-height:1.4}
@@ -900,13 +948,13 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
   <div class="trust-marquee">
     <div class="trust-track" id="trustTrack">
       <img class="tlogo" src="img/logos/10x-health.webp" alt="10X Health">
-      <img class="tlogo tall" src="img/logos/amg.png" alt="AMG – affiliate-marketing.group">
+      <img class="tlogo" style="height:68px" src="img/logos/amg.png" alt="AMG – affiliate-marketing.group">
       <img class="tlogo tile" src="img/logos/gains.png" alt="gains">
       <img class="tlogo tall" src="img/logos/keepsolid.png" alt="KeepSolid VPN Unlimited">
       <img class="tlogo" src="img/logos/am-navigator.png" alt="AM Navigator">
       <img class="tlogo tile" src="img/logos/ascendily.jpg" alt="Ascendily">
       <img class="tlogo tall" src="img/logos/calmerceuticals.webp" alt="Calmerceuticals">
-      <img class="tlogo" src="img/logos/aiao.png" alt="AIAO">
+      <img class="tlogo" style="height:48px" src="img/logos/aiao.png" alt="AIAO">
       <img class="tlogo tall" src="img/logos/senja.png" alt="Senja">
       <img class="tlogo white" src="img/logos/partnergap-white.webp" alt="PartnerGap">
       <img class="tlogo" src="img/logos/journofinder.png" alt="journofinder">
@@ -979,70 +1027,6 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
     </div>
   </div>
 </section>
-
-<!-- ============ PINNED FEATURES (scrollytelling) ============ -->
-<section class="pin-sec" id="features">
-  <div class="pin-view">
-    <div class="wrap pin-grid">
-      <div class="pin-left">
-        <div class="pin-progress" aria-hidden="true"><span class="bar active"></span><span class="bar"></span><span class="bar"></span></div>
-        <div class="pin-text-stack">
-          <div class="pin-text active">
-            <div class="eyebrow"><span class="pill">Discovery</span><span class="rule"></span></div>
-            <h2>One search.<br>Five channels.</h2>
-            <p>A single search scans YouTube, Instagram, TikTok, Google, and the blogs linking to your competitors – surfacing creators already talking about products like yours.</p>
-            <p>The average user finds over 1,500 potential affiliates on the first search. No tab-hopping, no spreadsheets, no luck.</p>
-          </div>
-          <div class="pin-text">
-            <div class="eyebrow"><span class="pill">Verified Emails + AI Outreach</span><span class="rule"></span></div>
-            <h2>No more info@<br>dead ends.</h2>
-            <p>A list without contacts leaves you asking "what do I do now?". Around 9 in 10 discovered affiliates come with a verified email – plus name, socials and audience metrics.</p>
-            <p>Then AffiliateFinder writes outreach from their real recent content, in your tone. You approve every message – follow-ups run themselves until they reply.</p>
-          </div>
-          <div class="pin-text">
-            <div class="eyebrow"><span class="pill">Match Score + Pipeline</span><span class="rule"></span></div>
-            <h2>A pipeline that<br>runs itself.</h2>
-            <p>Every affiliate gets a 0–100 fit score you can trust – relevance, audience fit, engagement – so you chase the right people first and skip the rest.</p>
-            <p>Replies land in one unified inbox, and your kanban pipeline updates itself from Saved to In Program. You always know who to follow up.</p>
-          </div>
-        </div>
-      </div>
-      <div class="pin-vis-stack">
-        <div class="pin-vis active">
-          <div class="fvisual tint-warm">
-            <div class="ui-card">
-              <div class="filter-chips"><span class="fch on">Fitness</span><span class="fch on">United States</span><span class="fch on">50K+ traffic</span><span class="fch">+ Add filter</span></div>
-              <div class="row-mini"><span class="favicon" style="width:26px;height:26px;font-size:10px;background:linear-gradient(135deg,#f0966e,#d6688f)">FG</span><span class="nm">fitgearreviews.com</span><span class="st">412K/mo</span></div>
-              <div class="row-mini"><span class="favicon" style="width:26px;height:26px;font-size:10px;background:linear-gradient(135deg,#8f7ad6,#53a0c9)">SL</span><span class="nm">strengthlog.io</span><span class="st">268K/mo</span></div>
-              <div class="row-mini"><span class="favicon" style="width:26px;height:26px;font-size:10px;background:linear-gradient(135deg,#53c98d,#0a9aa8)">HW</span><span class="nm">homeworkouthub.com</span><span class="st">190K/mo</span></div>
-              <div class="tagline">1,284 publishers match your filters</div>
-            </div>
-          </div>
-        </div>
-        <div class="pin-vis">
-          <div class="fvisual tint-cool">
-            <div class="ui-card">
-              <div class="uc-head"><span class="favicon" style="width:30px;height:30px;background:linear-gradient(135deg,#f0966e,#d6688f)">FG</span><span><span class="t">fitgearreviews.com</span><br><span class="s">Fitness · 412K visits/mo · United States</span></span></div>
-              <div class="bubble"><b>Email verified ✓</b> · sarah@fitgearreviews.com<br><b>Draft ready:</b> "Loved your pre-workout comparison – want to earn on the gear you already review?"</div>
-              <div class="tagline">Written from their real content – you approve before it sends</div>
-            </div>
-          </div>
-        </div>
-        <div class="pin-vis">
-          <div class="fvisual tint-warm">
-            <div class="ui-card">
-              <div class="uc-head"><span class="favicon" style="width:30px;height:30px;background:linear-gradient(135deg,#0a9aa8,#067280)">SL</span><span><span class="t">strengthlog.io</span><br><span class="s">AI Match Score · 96/100</span></span></div>
-              <div class="bubble"><b>96/100 fit</b> – relevance 98 · audience fit 95 · engagement 94</div>
-              <div class="net-tags"><span class="nt" style="background:#6b737b">Saved</span><span class="nt" style="background:#0a9aa8">Contacted</span><span class="nt" style="background:#12b76a">In Program ✓</span></div>
-              <div class="bubble" style="margin-top:10px"><b>Reply detected</b> – moved to "In Program" automatically.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 
 <!-- ============ DEAL FLOW ============ -->
 <section class="deals wrap">
@@ -1164,54 +1148,47 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
 </section>
 
 
-<!-- ============ DARK FEATURE: SEQUENCES / INBOX ============ -->
-<section class="dsec">
-  <div class="wrap dsec-grid">
-    <div class="dsec-copy rv">
-      <span class="dark-pill">Email sequences</span>
-      <h2>Follow-ups that<br><span class="hl">run themselves.</span></h2>
-      <p>Build AI sequences with custom delays between each step. Replies, bounces and unsubscribes get handled for you – and every conversation syncs into one unified inbox across Gmail, Outlook and IMAP.</p>
-    </div>
-    <div class="dsec-vis rv">
-      <div class="dark-card">
+<!-- ============ DARK DIVIDER ============ -->
+<section class="dark-divider" aria-hidden="true"><div class="wrap dd"><span class="rule"></span><span class="pill">Features</span><span class="rule"></span></div></section>
+
+<!-- ============ DARK PINNED FEATURES (scrollytelling) ============ -->
+<section class="pin-sec pin-dark" id="features">
+  <div class="pin-view">
+    <div class="wrap pin-grid">
+      <div class="pin-left">
+        <div class="pin-progress" aria-hidden="true"><span class="bar active"></span><span class="bar"></span><span class="bar"></span></div>
+        <div class="pin-text-stack">
+          <div class="pin-text active">
+            <span class="dark-pill">Email sequences</span>
+            <h2>Follow-ups that<br><span class="hl">run themselves.</span></h2>
+            <p>Build AI sequences with custom delays between each step. Replies, bounces and unsubscribes get handled for you – and every conversation syncs into one unified inbox across Gmail, Outlook and IMAP.</p>
+          </div>
+          <div class="pin-text">
+            <span class="dark-pill">Analytics</span>
+            <h2>Numbers your<br><span class="hl">boss can read.</span></h2>
+            <p>Opens, clicks and replies per email step, daily activity charts and a full outreach funnel. When you need to show the results your program is driving, the numbers are already there.</p>
+          </div>
+          <div class="pin-text">
+            <span class="dark-pill">Filters + Match Rank</span>
+            <h2>We do the digging.<br><span class="hl">You see what fits.</span></h2>
+            <p>No scrolling through thousands of profiles. Set your campaign's filters once – audience size, engagement, country, last posted, verified email – and AffiliateFinder only surfaces the affiliates that match your current offer, ranked by fit.</p>
+          </div>
+        </div>
+      </div>
+      <div class="pin-vis-stack">
+        <div class="pin-vis active"><div class="dvis"><div class="dark-card">
         <div class="dc-row"><span class="glowdot"></span>Step 1 · Intro email<span class="st">sent ✓ · opened</span></div>
         <div class="dc-row"><span class="glowdot"></span>Wait 3 days<span class="st">skipped – reply detected</span></div>
         <div class="dc-row"><span class="mutedot"></span>Step 2 · Follow-up<span class="st">cancelled automatically</span></div>
         <div class="dc-bubble" style="margin-top:14px"><b>Sarah Mitchell replied:</b> "Sounds interesting – what commission are you offering?"</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ DARK FEATURE: ANALYTICS / PIPELINE ============ -->
-<section class="dsec alt">
-  <div class="wrap dsec-grid rev">
-    <div class="dsec-copy rv">
-      <span class="dark-pill">Analytics</span>
-      <h2>Numbers your<br><span class="hl">boss can read.</span></h2>
-      <p>Opens, clicks and replies per email step, daily activity charts and a full outreach funnel. When you need to show the results your program is driving, the numbers are already there.</p>
-    </div>
-    <div class="dsec-vis rv">
-      <div class="dark-card">
+      </div></div></div>
+        <div class="pin-vis"><div class="dvis"><div class="dark-card">
         <div class="statbar"><div class="sb-label"><span>Emails sent</span><b>125</b></div><div class="sb-track"><div class="sb-fill" style="width:100%"></div></div></div>
         <div class="statbar"><div class="sb-label"><span>Open rate</span><b>51.2%</b></div><div class="sb-track"><div class="sb-fill" style="width:51%"></div></div></div>
         <div class="statbar"><div class="sb-label"><span>Reply rate</span><b>29.4%</b></div><div class="sb-track"><div class="sb-fill" style="width:29%"></div></div></div>
         <div class="dc-bubble" style="margin-top:16px"><b>9 deals in progress</b> – pipeline updated 2 minutes ago.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ DARK FEATURE: FILTERS ============ -->
-<section class="dsec filters">
-  <div class="wrap dsec-grid">
-    <div class="dsec-copy rv">
-      <span class="dark-pill">Filters + Match Rank</span>
-      <h2>We do the digging.<br><span class="hl">You see what fits.</span></h2>
-      <p>No scrolling through thousands of profiles. Set your campaign's filters once – audience size, engagement, country, last posted, verified email – and AffiliateFinder only surfaces the affiliates that match your current offer, ranked by fit.</p>
-    </div>
-    <div class="dsec-vis rv">
-      <div class="filter-stack">
+      </div></div></div>
+        <div class="pin-vis"><div class="dvis wide"><div class="filter-stack">
         <div class="fpanel back">
           <div class="fp-label">Discovery</div>
           <div class="fp-row on"><span class="cb"><svg width="14" height="11" viewBox="0 0 14 11" fill="none" stroke="#101418" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 5.5l3.6 3.6L12.5 1.5"/></svg></span>Competitor<span class="val">3 selected</span></div>
@@ -1229,6 +1206,7 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
           <div class="fp-row on"><span class="cb"><svg width="14" height="11" viewBox="0 0 14 11" fill="none" stroke="#101418" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 5.5l3.6 3.6L12.5 1.5"/></svg></span>Country<span class="val">United States</span></div>
           <div class="fp-row"><span class="cb"></span>Language</div>
         </div>
+      </div></div></div>
       </div>
     </div>
   </div>
