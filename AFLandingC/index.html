@@ -278,20 +278,16 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .marquee-label{display:flex;align-items:center;gap:18px;justify-content:center;margin-bottom:30px}
 .marquee-label .rule{height:1px;background:var(--line);flex:0 1 220px}
 .marquee-label .pill{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mute);border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 16px}
-.trust-row{display:flex;justify-content:center;align-items:center;gap:64px;flex-wrap:wrap;padding:8px 0 46px}
-.tl{display:flex;align-items:center;opacity:.9;transition:opacity .25s,transform .25s}
-.tl:hover{opacity:1;transform:translateY(-2px)}
-.tl-10x{font-weight:900;font-size:23px;letter-spacing:-.02em;color:#141414;gap:6px}
-.tl-10x .hb{width:26px;height:26px;border-radius:7px;background:#e2231a;display:grid;place-items:center}
-.tl-10x .hb svg{width:18px;height:18px}
-.tl-cope{font-weight:800;font-size:31px;letter-spacing:-.05em;color:#123a5f}
-.tl-gains{background:#1c2a4a;border-radius:12px;padding:7px 18px}
-.tl-gains span{font-style:italic;font-weight:800;font-size:21px;color:#7fd99a;letter-spacing:-.01em}
-.tl-ks{gap:9px}
-.tl-ks .ks-txt{line-height:1.15;color:#29abe2}
-.tl-ks .ks-txt small{display:block;font-size:11px;font-weight:600}
-.tl-ks .ks-txt b{font-size:16px;font-weight:700;letter-spacing:-.01em}
-@media(max-width:700px){.trust-row{gap:34px}}
+.trust-marquee{overflow:hidden;position:relative;padding:8px 0 46px}
+.trust-marquee::before,.trust-marquee::after{content:'';position:absolute;top:0;bottom:0;width:110px;z-index:2;pointer-events:none}
+.trust-marquee::before{left:0;background:linear-gradient(90deg,var(--cream),transparent)}
+.trust-marquee::after{right:0;background:linear-gradient(-90deg,var(--cream),transparent)}
+.trust-track{display:flex;gap:74px;width:max-content;align-items:center;animation:tscroll 42s linear infinite}
+@keyframes tscroll{to{transform:translateX(-50%)}}
+.trust-track .tlogo{height:32px;width:auto;mix-blend-mode:multiply;opacity:.92}
+.trust-track .tlogo.tall{height:40px}
+.trust-track .tlogo.tile{height:46px;border-radius:12px;mix-blend-mode:normal;box-shadow:0 4px 14px rgba(16,20,24,.08)}
+.trust-track .tlogo.white{filter:brightness(0);opacity:.72;mix-blend-mode:normal}
 
 /* ---------- pinned scrollytelling feature section ---------- */
 .pin-sec{position:relative;height:330vh}
@@ -585,7 +581,7 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
       <h1>Qualified affiliates.<br>Verified contacts.<br><span class="accent">In minutes.</span></h1>
       <p class="sub">AffiliateFinder finds the affiliates already promoting products like yours across YouTube, Instagram, TikTok, Google and blogs – verifies their emails, writes the outreach, and follows up until they reply. Affiliate managers save 10 hours a week.</p>
       <div class="platform-row stagger" aria-hidden="true">
-        <span class="chip" title="Instagram"><svg viewBox="0 0 24 24"><defs><radialGradient id="igh" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><rect width="24" height="24" rx="6" fill="url(#igh)"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.4" cy="6.6" r="1.2" fill="#fff"/></svg></span>
+        <span class="chip" title="Instagram"><img src="img/logos/instagram.jpg" alt="Instagram" style="width:26px;height:26px;border-radius:7px"></span>
         <span class="chip" title="TikTok"><svg viewBox="0 0 24 24"><path fill="#010101" d="M12.7 2h3.1c.2 1.7 1.2 3.4 2.7 4.4 1 .8 2.3 1.2 3.5 1.3v3.4c-1.6 0-3.2-.5-4.6-1.3v6.4a7.3 7.3 0 1 1-7.3-7.3c.4 0 .8 0 1.2.1v3.5a3.9 3.9 0 1 0 2.7 3.7z"/></svg></span>
         <span class="chip" title="YouTube"><svg viewBox="0 0 24 24"><path fill="#FF0000" d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8z"/><path fill="#fff" d="M9.6 15.6V8.4l6.2 3.6z"/></svg></span>
         <span class="chip" title="Websites"><svg viewBox="0 0 24 24" fill="none" stroke="#067280" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg></span>
@@ -720,11 +716,20 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
 <!-- NOTE: logos are CSS/SVG approximations – swap for official logo files when provided -->
 <section class="marquee-sec">
   <div class="marquee-label"><span class="rule"></span><span class="pill">Trusted by</span><span class="rule"></span></div>
-  <div class="wrap trust-row stagger">
-    <span class="tl tl-10x">10X<span class="hb"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 12 7 12 10 6 14 18 17 12 22 12"/></svg></span>HEALTH</span>
-    <span class="tl tl-cope">cope</span>
-    <span class="tl tl-gains"><span>gains</span></span>
-    <span class="tl tl-ks"><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path fill="#29abe2" d="M12 2l8 3v6c0 5.2-3.4 9.4-8 11-4.6-1.6-8-5.8-8-11V5z"/><circle cx="12" cy="11" r="4.6" fill="#fff"/><path fill="#29abe2" d="M10 9.4a1.8 1.8 0 0 1 1.6.9h.8a1.8 1.8 0 1 1 0 1.4h-.8A1.8 1.8 0 1 1 10 9.4zm0 1.1a.7.7 0 1 0 .7.7.7.7 0 0 0-.7-.7zm4 0a.7.7 0 1 0 .7.7.7.7 0 0 0-.7-.7z"/></svg><span class="ks-txt"><small>KeepSolid</small><b>VPN Unlimited</b></span></span>
+  <div class="trust-marquee">
+    <div class="trust-track" id="trustTrack">
+      <img class="tlogo" src="img/logos/10x-health.webp" alt="10X Health">
+      <img class="tlogo tall" src="img/logos/amg.png" alt="AMG – affiliate-marketing.group">
+      <img class="tlogo tile" src="img/logos/gains.png" alt="gains">
+      <img class="tlogo tall" src="img/logos/keepsolid.png" alt="KeepSolid VPN Unlimited">
+      <img class="tlogo" src="img/logos/am-navigator.png" alt="AM Navigator">
+      <img class="tlogo tile" src="img/logos/ascendily.jpg" alt="Ascendily">
+      <img class="tlogo tall" src="img/logos/calmerceuticals.webp" alt="Calmerceuticals">
+      <img class="tlogo" src="img/logos/aiao.png" alt="AIAO">
+      <img class="tlogo tall" src="img/logos/senja.png" alt="Senja">
+      <img class="tlogo white" src="img/logos/partnergap-white.webp" alt="PartnerGap">
+      <img class="tlogo" src="img/logos/journofinder.png" alt="journofinder">
+    </div>
   </div>
 </section>
 
@@ -1083,6 +1088,10 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
 </footer>
 
 <script>
+/* ---------- trust marquee loop ---------- */
+const trustTrack=document.getElementById('trustTrack');
+if(trustTrack)trustTrack.innerHTML+=trustTrack.innerHTML;
+
 /* ---------- scroll reveals ---------- */
 const io=new IntersectionObserver(es=>{
   es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}});
