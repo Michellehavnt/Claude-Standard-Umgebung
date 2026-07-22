@@ -732,29 +732,39 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .dark2 p{color:rgba(255,255,255,.6);font-size:15px;max-width:420px;margin-top:20px}
 .glow-field{position:relative;min-height:460px}
 @media(max-width:900px){.glow-field{min-height:400px}}
+.gwrap{position:absolute;will-change:transform}
 .glow-tile{
-  position:absolute;width:172px;height:132px;border-radius:26px;
+  position:relative;width:172px;height:132px;border-radius:26px;
   background:linear-gradient(160deg,rgba(255,255,255,.075),rgba(255,255,255,.02));
   border:1px solid rgba(255,255,255,.1);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
   animation:floaty 8s ease-in-out infinite;
   box-shadow:0 30px 60px rgba(0,0,0,.5);
+  transition:border-color .35s;
 }
 .glow-tile::before{
   content:'';position:absolute;inset:-40px;z-index:-1;border-radius:50%;
   background:radial-gradient(closest-side,rgba(10,154,168,.28),transparent);
-  filter:blur(6px);
+  filter:blur(6px);transition:opacity .35s;
 }
+.glow-tile::after{
+  content:'';position:absolute;inset:0;border-radius:26px;pointer-events:none;
+  background:radial-gradient(150px circle at var(--mx,50%) var(--my,50%),rgba(142,214,222,.17),transparent 65%);
+  opacity:0;transition:opacity .35s;
+}
+.gwrap:hover .glow-tile{border-color:rgba(142,214,222,.45)}
+.gwrap:hover .glow-tile::after{opacity:1}
+.gwrap:hover .glow-tile::before{opacity:1.0}
 .glow-tile .gn{
   font-size:30px;font-weight:800;letter-spacing:-.03em;color:#9fe6ee;
   text-shadow:0 0 18px rgba(10,154,168,.9),0 0 50px rgba(10,154,168,.5);
   font-variant-numeric:tabular-nums;
 }
 .glow-tile .gl{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.55)}
-.g1{top:4%;left:8%;animation-delay:.2s}
-.g2{top:10%;right:6%;animation-delay:1.4s}
-.g3{bottom:26%;left:26%;animation-delay:2.4s}
-.g4{bottom:2%;right:14%;animation-delay:.8s}
+.g1{top:4%;left:8%}.g1 .glow-tile{animation-delay:.2s}
+.g2{top:10%;right:6%}.g2 .glow-tile{animation-delay:1.4s}
+.g3{bottom:26%;left:26%}.g3 .glow-tile{animation-delay:2.4s}
+.g4{bottom:2%;right:14%}.g4 .glow-tile{animation-delay:.8s}
 @media(max-width:560px){.glow-tile{width:146px;height:112px}.glow-tile .gn{font-size:24px}}
 
 /* ---------- customer story ---------- */
@@ -770,6 +780,7 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .story-card .sq{font-size:clamp(20px,2.3vw,26px);font-weight:650;letter-spacing:-.03em;line-height:1.4}
 .story-card .sq .hl{color:var(--teal)}
 .story-card .sbody{margin-top:20px;font-size:14.5px;color:var(--ink-soft);line-height:1.75;max-width:56ch}
+.story-card .sbody mark{background:linear-gradient(transparent 62%,rgba(6,114,128,.24) 0);color:var(--ink);font-weight:600;padding:0 1px}
 .story-author{display:flex;align-items:center;gap:14px;margin-top:30px}
 .story-author img{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:0 2px 8px rgba(16,20,24,.15)}
 .story-author .nm{font-size:14.5px;font-weight:700}
@@ -1425,11 +1436,11 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
       <h2>The busywork,<br><span class="hl">handled.</span></h2>
       <p>From first search to signed affiliate – discovery, verified emails, AI outreach, follow-ups and a self-updating pipeline. You approve, it executes.</p>
     </div>
-    <div class="glow-field rv">
-      <div class="glow-tile g1"><span class="gn">2,600+</span><span class="gl">Brands &amp; agencies</span></div>
-      <div class="glow-tile g2"><span class="gn">1,500+</span><span class="gl">Avg first-search finds</span></div>
-      <div class="glow-tile g3"><span class="gn">~90%</span><span class="gl">Verified email rate</span></div>
-      <div class="glow-tile g4"><span class="gn">10 hrs</span><span class="gl">Saved every week</span></div>
+    <div class="glow-field rv" id="glowField">
+      <div class="gwrap g1" data-depth="14"><div class="glow-tile"><span class="gn" data-target="2600" data-comma="1" data-suffix="+">2,600+</span><span class="gl">Brands &amp; agencies</span></div></div>
+      <div class="gwrap g2" data-depth="28"><div class="glow-tile"><span class="gn" data-target="1500" data-comma="1" data-suffix="+">1,500+</span><span class="gl">Avg first-search finds</span></div></div>
+      <div class="gwrap g3" data-depth="20"><div class="glow-tile"><span class="gn" data-target="90" data-prefix="~" data-suffix="%">~90%</span><span class="gl">Verified email rate</span></div></div>
+      <div class="gwrap g4" data-depth="34"><div class="glow-tile"><span class="gn" data-target="10" data-suffix=" hrs">10 hrs</span><span class="gl">Saved every week</span></div></div>
     </div>
   </div>
 </section>
@@ -1442,7 +1453,7 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
     <div class="story-top">
       <div class="story-quote">
         <div class="sq">"Feeling a bit guilty for getting all the credit from my team lol – <span class="hl">who would have thought that AI emails could get response rates like that?</span>"</div>
-        <div class="sbody">"I have zero experience recruiting affiliates, but as Head of Marketing, finding more partners for CopeCart was one of my tasks. With AffiliateFinder, I just added our website and within minutes I had a list of great affiliates – especially the Instagram and YouTube creators I was looking for. Then I set up my campaign (I LOVED that it wrote the emails for me) and after a week I actually had to pause it, because I had gotten enough deals completed for our launch campaign and couldn't handle any more! Thank you AF team!"</div>
+        <div class="sbody">"I have zero experience recruiting affiliates, but as Head of Marketing, finding more partners for CopeCart was one of my tasks. With AffiliateFinder, I just added our website and within minutes I had a list of great affiliates – especially the Instagram and YouTube creators I was looking for. Then I set up my campaign <mark>(I LOVED that it wrote the emails for me) and after a week I actually had to pause it, because I had gotten enough deals completed for our launch campaign</mark> and couldn't handle any more! Thank you AF team!"</div>
         <div class="story-author">
           <img src="img/testimonial-michelle.jpg" alt="Michelle Habenicht" loading="lazy">
           <span><span class="nm">Michelle Habenicht</span><br><span class="rl">Head of Marketing @ CopeCart</span></span>
@@ -1688,6 +1699,64 @@ requestAnimationFrame(pinFrame);
     cols().forEach(c=>c.classList.remove('dropover'));
     counts();
   });
+})();
+
+/* ---------- glowing stats: count-up + pointer parallax ---------- */
+(function(){
+  const field=document.getElementById('glowField');
+  if(!field)return;
+  const nums=[...field.querySelectorAll('.gn')];
+  const fmt=(el,v)=>{
+    const s=el.dataset.comma?v.toLocaleString('en-US'):String(v);
+    el.textContent=(el.dataset.prefix||'')+s+(el.dataset.suffix||'');
+  };
+  let counted=false;
+  const io=new IntersectionObserver(entries=>{
+    entries.forEach(en=>{
+      if(!en.isIntersecting||counted)return;
+      counted=true;
+      nums.forEach((el,i)=>{
+        const t=+el.dataset.target||0,dur=1400,st=performance.now()+i*170;
+        fmt(el,0);
+        const step=now=>{
+          const p=Math.min(1,Math.max(0,(now-st)/dur));
+          fmt(el,Math.round(t*(1-Math.pow(1-p,3))));
+          if(p<1)requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      });
+      io.disconnect();
+    });
+  },{threshold:.35});
+  io.observe(field);
+  if(matchMedia('(hover:hover) and (pointer:fine)').matches){
+    const wraps=[...field.querySelectorAll('.gwrap')];
+    const sec=field.closest('.dark2');
+    let tx=0,ty=0,cx=0,cy=0,raf=null;
+    const tick=()=>{
+      cx+=(tx-cx)*.08;cy+=(ty-cy)*.08;
+      wraps.forEach(w=>{
+        const d=(+w.dataset.depth||16)/16;
+        w.style.transform=`translate3d(${(cx*d).toFixed(2)}px,${(cy*d).toFixed(2)}px,0)`;
+      });
+      if(Math.abs(tx-cx)+Math.abs(ty-cy)>.2)raf=requestAnimationFrame(tick);else raf=null;
+    };
+    sec.addEventListener('pointermove',e=>{
+      const r=sec.getBoundingClientRect();
+      tx=((e.clientX-r.left)/r.width-.5)*26;
+      ty=((e.clientY-r.top)/r.height-.5)*18;
+      if(!raf)raf=requestAnimationFrame(tick);
+    });
+    sec.addEventListener('pointerleave',()=>{tx=0;ty=0;if(!raf)raf=requestAnimationFrame(tick);});
+    wraps.forEach(w=>{
+      const tile=w.querySelector('.glow-tile');
+      w.addEventListener('pointermove',e=>{
+        const r=tile.getBoundingClientRect();
+        tile.style.setProperty('--mx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%');
+        tile.style.setProperty('--my',((e.clientY-r.top)/r.height*100).toFixed(1)+'%');
+      });
+    });
+  }
 })();
 
 /* ---------- pricing billing toggle ---------- */
