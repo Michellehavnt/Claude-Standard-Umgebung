@@ -245,11 +245,8 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .pin-text p{font-size:15.5px;color:var(--ink-soft);max-width:440px}
 .pin-text p+p{margin-top:14px}
 .pin-vis-stack{position:relative;min-height:460px}
-.pin-vis{
-  position:absolute;inset:0;opacity:0;transform:translateY(28px) scale(.97);pointer-events:none;
-  transition:opacity .55s cubic-bezier(.2,.6,.2,1),transform .55s cubic-bezier(.2,.6,.2,1);
-}
-.pin-vis.active{opacity:1;transform:none;pointer-events:auto}
+.pin-vis{position:absolute;inset:0;opacity:0;pointer-events:none;will-change:transform,opacity}
+.pin-vis.active{pointer-events:auto}
 .pin-vis .fvisual{height:100%;min-height:460px}
 @media(max-width:900px){
   .pin-grid{grid-template-columns:1fr;gap:22px;align-content:center}
@@ -705,23 +702,42 @@ const cio=new IntersectionObserver(es=>{
 },{threshold:.4});
 cio.observe(counter);
 
-/* ---------- pinned scrollytelling (kinso-style) ---------- */
+/* ---------- pinned scrollytelling (kinso-style) ----------
+   Continuous scroll-linked vertical carousel: the visual's translateY is
+   mapped to scroll progress (current slides up/out, next rides in from
+   below) with per-frame lerp smoothing for the Framer/Lenis inertia feel.
+   Copy crossfades at thresholds. */
 const pinSec=document.querySelector('.pin-sec');
 const pinTexts=[...document.querySelectorAll('.pin-text')];
 const pinViss=[...document.querySelectorAll('.pin-vis')];
 const pinBars=[...document.querySelectorAll('.pin-progress .bar')];
-function pinUpdate(){
+let pinTarget=0,pinCur=0;
+function pinScroll(){
   const r=pinSec.getBoundingClientRect();
   const total=r.height-window.innerHeight;
-  const p=Math.min(Math.max(-r.top/total,0),.999);
-  const idx=Math.floor(p*pinTexts.length);
+  pinTarget=Math.min(Math.max(-r.top/total,0),1);
+}
+function pinFrame(){
+  pinCur+=(pinTarget-pinCur)*0.12;                    // inertia
+  const N=pinViss.length;
+  const prog=pinCur*(N-1);                            // 0..N-1 continuous
+  pinViss.forEach((v,i)=>{
+    const d=i-prog;                                   // 0 = centered
+    const y=d*82;                                     // vh offset per slide
+    const fade=Math.min(Math.abs(d)*1.6,1);
+    v.style.transform=`translateY(${y}vh) scale(${1-Math.min(Math.abs(d)*.06,.06)})`;
+    v.style.opacity=String(1-fade);
+  });
+  const idx=Math.min(Math.round(prog),N-1);
   pinTexts.forEach((t,i)=>t.classList.toggle('active',i===idx));
   pinViss.forEach((v,i)=>v.classList.toggle('active',i===idx));
   pinBars.forEach((b,i)=>b.classList.toggle('active',i<=idx));
+  requestAnimationFrame(pinFrame);
 }
-window.addEventListener('scroll',pinUpdate,{passive:true});
-window.addEventListener('resize',pinUpdate);
-pinUpdate();
+window.addEventListener('scroll',pinScroll,{passive:true});
+window.addEventListener('resize',pinScroll);
+pinScroll();
+requestAnimationFrame(pinFrame);
 
 /* ---------- dark section word reveal on scroll ---------- */
 const words=[...document.querySelectorAll('#wordReveal .wr')];
