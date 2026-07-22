@@ -53,7 +53,7 @@ body{
 .eyebrow .pill{border:1px solid var(--line);border-radius:999px;padding:6px 14px;background:#fff;white-space:nowrap}
 .eyebrow .rule{height:1px;background:var(--line);flex:1 1 40px;max-width:180px}
 h1,h2{font-weight:600;letter-spacing:-.045em;line-height:1.04;font-optical-sizing:auto}
-h1{font-size:clamp(46px,6.6vw,88px)}
+h1{font-size:clamp(33px,3.7vw,48px);text-wrap:balance}
 h2{font-size:clamp(32px,4.4vw,56px)}
 .sub{font-size:17px;color:var(--ink-soft);max-width:520px;letter-spacing:-.011em}
 
@@ -662,9 +662,9 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 }
 
 /* ---------- dark act break ---------- */
-.dark{position:relative;background:var(--navy);color:#fff;padding:130px 0;overflow:hidden}
+.dark{position:relative;background:#0a0f16;color:#fff;padding:120px 0 70px;overflow:hidden}
 .dark::before{
-  content:'';position:absolute;inset:0;opacity:.5;
+  content:'';position:absolute;inset:0;opacity:.55;
   background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
   background-size:22px 22px;
 }
@@ -722,10 +722,10 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 }
 
 /* glowing stats section */
-.dark2{position:relative;background:#090d13;color:#fff;padding:130px 0;overflow:hidden}
+.dark2{position:relative;background:#0a0f16;color:#fff;padding:70px 0 130px;overflow:hidden}
 .dark2::before{
-  content:'';position:absolute;inset:0;opacity:.7;
-  background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+  content:'';position:absolute;inset:0;opacity:.55;
+  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
   background-size:20px 20px;
 }
 .dark2 .wrap{position:relative;z-index:1}
@@ -926,8 +926,8 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
 <header class="hero">
   <div class="wrap hero-grid">
     <div class="rv">
-      <h1>Qualified affiliates.<br>Verified contacts.<br><span class="accent">In minutes.</span></h1>
-      <p class="sub">AffiliateFinder finds the affiliates already promoting products like yours across YouTube, Instagram, TikTok, Google and blogs – verifies their emails, writes the outreach, and follows up until they reply. Affiliate managers save 10 hours a week.</p>
+      <h1>Stop hunting affiliates. Sign the ones <span class="accent">already selling products like&nbsp;yours.</span></h1>
+      <p class="sub">One search across YouTube, Instagram, TikTok, Google and the blogs linking to your competitors – with verified owner emails, outreach written for each creator, and follow-ups that run themselves. No more counting on luck. Affiliate managers save 10 hours a week.</p>
       <div class="cta-row hero-cta">
         <a class="btn" href="https://app.affiliatefinder.ai/register?utm_source=landing-page&amp;utm_medium=cta&amp;utm_campaign=af-peace-c&amp;utm_content=hero">Start free trial <span class="arr">→</span></a>
         <a class="btn ghost" href="https://calendly.com/jamie-if/affiliatefinder-ai?utm_source=landing-page&amp;utm_medium=cta&amp;utm_campaign=af-peace-c&amp;utm_content=hero-demo">Book a demo</a>
@@ -1397,7 +1397,7 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
 <section class="dark">
   <div class="wrap dark-grid">
     <div class="rv">
-      <h2 id="wordReveal">Stop hunting. Know <span class="wr dim">exactly</span> <span class="wr dim">who</span> <span class="wr dim">to</span> <span class="wr dim">recruit.</span></h2>
+      <h2 id="wordReveal">Stop guessing. Know <span class="wr dim">exactly</span> <span class="wr dim">who</span> <span class="wr dim">to</span> <span class="wr dim">recruit.</span></h2>
       <p>AffiliateFinder surfaces the creators and publishers already talking about products like yours – vetted, scored and with verified contact details. You spend your time on partners worth recruiting, not on digging.</p>
     </div>
     <div class="rv">
@@ -1439,7 +1439,6 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
         <div class="story-author">
           <img src="img/testimonial-michelle.jpg" alt="Michelle Habenicht" loading="lazy">
           <span><span class="nm">Michelle Habenicht</span><br><span class="rl">Head of Marketing @ CopeCart</span></span>
-          <span class="vf"><i>✓</i>Verified customer</span>
         </div>
       </div>
       <aside class="story-metrics" aria-label="Campaign results">
