@@ -777,6 +777,57 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 }
 @media(max-width:640px){.story-card{padding:36px 24px 32px}}
 
+/* ---------- flywheel ---------- */
+.flywheel{position:relative;background:#0a0f16;color:#fff;padding:120px 0;overflow:hidden}
+.flywheel::before{content:'';position:absolute;inset:0;opacity:.55;
+  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:22px 22px}
+.flywheel .wrap{position:relative;z-index:1}
+.fw-head{text-align:center;max-width:720px;margin:0 auto}
+.fw-head .fw-pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:7px 16px;margin-bottom:26px}
+.fw-head h2{font-size:clamp(26px,3.2vw,40px);letter-spacing:-.03em;line-height:1.15;color:#fff}
+.fw-head h2 .hl{background:linear-gradient(100deg,#8ed6de,#0a9aa8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.fw-head p{margin-top:18px;font-size:15.5px;color:rgba(255,255,255,.6)}
+.fw-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:74px;align-items:center;margin-top:78px}
+@media(max-width:920px){.fw-grid{grid-template-columns:1fr;gap:56px}}
+.fw-ring{position:relative;width:min(400px,84vw);aspect-ratio:1;margin:0 auto}
+.fw-ring::before{content:'';position:absolute;inset:0;border-radius:50%;border:1.5px dashed rgba(255,255,255,.16)}
+.fw-sweep{position:absolute;inset:-2px;border-radius:50%;
+  background:conic-gradient(from 0deg,transparent 0 72%,rgba(10,154,168,.85) 94%,rgba(142,214,222,.9) 99%,transparent 100%);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 5px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 5px));
+  animation:fwspin 11.2s linear infinite}
+@keyframes fwspin{to{transform:rotate(360deg)}}
+.fw-orbit{position:absolute;inset:0;animation:fwspin 11.2s linear infinite;pointer-events:none}
+.fw-comet{position:absolute;top:-7px;left:calc(50% - 7px);width:14px;height:14px;border-radius:50%;background:#8ed6de;
+  box-shadow:0 0 18px rgba(142,214,222,.95),0 0 42px rgba(10,154,168,.6)}
+.fw-node{position:absolute;width:74px;height:74px;border-radius:22px;z-index:2;
+  background:linear-gradient(160deg,rgba(255,255,255,.085),rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.12);display:grid;place-items:center;
+  transition:border-color .45s,box-shadow .45s,transform .45s}
+.fw-node svg{width:30px;height:30px}
+.fw-node.on{border-color:rgba(142,214,222,.75);box-shadow:0 0 34px rgba(10,154,168,.6);transform:scale(1.12)}
+.fw-n1{left:calc(50% - 37px);top:-37px}
+.fw-n2{right:-37px;top:calc(50% - 37px)}
+.fw-n3{left:calc(50% - 37px);bottom:-37px}
+.fw-n4{left:-37px;top:calc(50% - 37px)}
+.fw-hub{position:absolute;inset:0;display:grid;place-items:center;text-align:center;pointer-events:none}
+.fw-hub .inner{position:relative;padding:20px}
+.fw-hub .inner::before{content:'';position:absolute;inset:-26px;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(10,154,168,.28),transparent);filter:blur(6px);animation:fwpulse 3s ease-in-out infinite}
+@keyframes fwpulse{0%,100%{opacity:.55}50%{opacity:1}}
+.fw-hub b{position:relative;display:block;font-size:16px;letter-spacing:-.01em}
+.fw-hub span{position:relative;display:block;margin-top:4px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+.fw-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;counter-reset:fw}
+.fw-steps li{display:flex;gap:16px;align-items:flex-start;padding:18px 20px;border:1px solid rgba(255,255,255,.09);
+  border-radius:16px;background:rgba(255,255,255,.03);cursor:pointer;
+  transition:border-color .4s,background .4s,transform .4s}
+.fw-steps li.on{border-color:rgba(142,214,222,.6);background:rgba(10,154,168,.1);transform:translateX(8px)}
+.fw-steps .num{flex:none;font-size:12px;font-weight:800;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:5px 8px;font-variant-numeric:tabular-nums;transition:color .4s,border-color .4s}
+.fw-steps li.on .num{color:#8ed6de;border-color:rgba(142,214,222,.5)}
+.fw-steps b{display:block;font-size:15px;letter-spacing:-.01em;margin-bottom:5px}
+.fw-steps p{font-size:13px;line-height:1.6;color:rgba(255,255,255,.58);margin:0}
+
 /* ---------- video story (webinar) ---------- */
 .vstory{padding:100px 0 110px}
 .vs-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:64px;align-items:center;max-width:1120px;margin:0 auto}
@@ -1406,6 +1457,36 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
   </div>
 </section>
 
+<!-- ============ FLYWHEEL ============ -->
+<section class="flywheel" id="flywheel">
+  <div class="wrap">
+    <div class="fw-head rv">
+      <span class="fw-pill">The flywheel</span>
+      <h2 data-edit="c-fw-title">Set it spinning once.<br><span class="hl">It keeps recruiting.</span></h2>
+      <p data-edit="c-fw-sub">Four steps to start – then the loop runs itself, and new affiliates arrive every week.</p>
+    </div>
+    <div class="fw-grid">
+      <div class="fw-viz rv" aria-hidden="true">
+        <div class="fw-ring">
+          <span class="fw-sweep"></span>
+          <span class="fw-orbit"><i class="fw-comet"></i></span>
+          <div class="fw-node fw-n1 on"><svg viewBox="0 0 24 24" fill="none" stroke="#8ed6de" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.8-3.8"/></svg></div>
+          <div class="fw-node fw-n2"><svg viewBox="0 0 24 24" fill="none" stroke="#8ed6de" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.5 5.1 5.6.8-4 4 1 5.6-5.1-2.7-5.1 2.7 1-5.6-4-4 5.6-.8z"/></svg></div>
+          <div class="fw-node fw-n3"><svg viewBox="0 0 24 24" fill="none" stroke="#8ed6de" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3 10.5 13.5"/><path d="M21 3l-6.8 18-3.7-7.5L3 9.8z"/></svg></div>
+          <div class="fw-node fw-n4"><svg viewBox="0 0 24 24" fill="none" stroke="#8ed6de" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h5l2 3h4l2-3h5"/><path d="M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/></svg></div>
+          <div class="fw-hub"><div class="inner"><b>On autopilot</b><span>while you work</span></div></div>
+        </div>
+      </div>
+      <ol class="fw-steps rv">
+        <li class="on"><span class="num">01</span><div><b data-edit="c-fw-s1-t">Start your search</b><p data-edit="c-fw-s1-d">Type what you sell. AffiliateFinder scans five channels and returns everyone already talking about products like yours – scored and ranked.</p></div></li>
+        <li><span class="num">02</span><div><b data-edit="c-fw-s2-t">Pick your best matches</b><p data-edit="c-fw-s2-d">Skim the match scores, save the ones worth your time. Verified owner emails come attached – no digging.</p></div></li>
+        <li><span class="num">03</span><div><b data-edit="c-fw-s3-t">Send your campaign in one click</b><p data-edit="c-fw-s3-d">Personal emails and follow-ups go out on autopilot. You approve – it executes.</p></div></li>
+        <li><span class="num">04</span><div><b data-edit="c-fw-s4-t">Watch your inbox fill up</b><p data-edit="c-fw-s4-d">Qualified affiliates reply, move through your pipeline and sign. Then the wheel spins again – new creators arrive every week.</p></div></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
 <!-- ============ WALL OF LOVE ============ -->
 <section class="wall wrap" id="reviews">
   <div class="eyebrow rv" style="justify-content:center"><span class="rule"></span><span class="pill">Wall of love</span><span class="rule"></span></div>
@@ -1644,6 +1725,23 @@ requestAnimationFrame(pinFrame);
     cols().forEach(c=>c.classList.remove('dropover'));
     counts();
   });
+})();
+
+/* ---------- flywheel cycle ---------- */
+(function(){
+  const sec=document.getElementById('flywheel');
+  if(!sec)return;
+  const nodes=[...sec.querySelectorAll('.fw-node')];
+  const steps=[...sec.querySelectorAll('.fw-steps li')];
+  let idx=0,timer=null;
+  const set=i=>{idx=(i+4)%4;
+    nodes.forEach((n,k)=>n.classList.toggle('on',k===idx));
+    steps.forEach((st,k)=>st.classList.toggle('on',k===idx));
+  };
+  const start=()=>{if(!timer)timer=setInterval(()=>set(idx+1),2800)};
+  const stop=()=>{if(timer){clearInterval(timer);timer=null}};
+  steps.forEach((st,k)=>st.addEventListener('click',()=>{stop();set(k);start()}));
+  new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting?start():stop()),{threshold:.25}).observe(sec);
 })();
 
 /* ---------- sequences reply pop + analytics stat animation ---------- */
