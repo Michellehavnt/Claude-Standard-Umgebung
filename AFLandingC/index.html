@@ -770,9 +770,13 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 
 /* ---------- video story (webinar) ---------- */
 .vstory{padding:100px 0 110px}
-.vs-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:56px;align-items:center;max-width:1080px;margin:0 auto}
+.vs-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:64px;align-items:center;max-width:1120px;margin:0 auto}
 @media(max-width:900px){.vs-grid{grid-template-columns:1fr;gap:36px}}
-.vs-player .frame{border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(16,20,24,.13);background:#0c1218}
+.vs-player{position:relative}
+.vs-player::before{content:'';position:absolute;inset:-70px -50px;pointer-events:none;
+  background:radial-gradient(58% 52% at 38% 38%,rgba(10,154,168,.16),transparent 70%),radial-gradient(48% 44% at 78% 72%,rgba(240,150,110,.14),transparent 70%);
+  filter:blur(12px)}
+.vs-player .frame{position:relative;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 42px 90px rgba(16,20,24,.18);background:#0c1218}
 .vs-player .bar{display:flex;align-items:center;gap:7px;background:var(--cream);border-bottom:1px solid var(--line);padding:11px 16px}
 .vs-player .bar i{width:9px;height:9px;border-radius:50%;background:#e3ddd2}
 .vs-player .bar .url{flex:1;text-align:center;font-size:11.5px;font-weight:600;color:var(--ink-mute)}
@@ -784,14 +788,20 @@ h2{font-size:clamp(32px,4.4vw,56px)}
   box-shadow:0 0 44px rgba(10,154,168,.6);display:grid;place-items:center;transition:transform .25s}
 .vplay:hover span{transform:scale(1.07)}
 .vplay span::after{content:'';margin-left:5px;border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff}
+.vplay::after{content:'';position:absolute;left:50%;top:50%;width:74px;height:74px;margin:-37px 0 0 -37px;border-radius:50%;
+  border:2px solid rgba(142,214,222,.55);animation:vring 2.4s ease-out infinite;pointer-events:none}
+@keyframes vring{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.85);opacity:0}}
 .vplay.hide{opacity:0;pointer-events:none}
-.vs-cap{margin-top:12px;text-align:center;font-size:12px;color:var(--ink-mute)}
+.vs-cap{margin-top:14px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:12px;color:var(--ink-mute)}
+.vs-cap::before{content:'';width:7px;height:7px;border-radius:50%;background:#e0483d;box-shadow:0 0 8px rgba(224,72,61,.7);animation:vblink 1.6s ease-in-out infinite;flex:none}
+@keyframes vblink{0%,100%{opacity:1}50%{opacity:.35}}
 .vs-copy h2{font-size:clamp(24px,2.7vw,34px);line-height:1.2}
 .vs-copy h2 .accent{color:var(--teal)}
 .vs-copy>p{margin-top:18px;font-size:14.5px;color:var(--ink-soft);line-height:1.7;max-width:52ch}
 .vs-quotes{margin-top:24px;display:flex;flex-direction:column;gap:12px;list-style:none;padding:0}
-.vs-quotes li{position:relative;padding:13px 16px 13px 42px;background:#fff;border:1px solid var(--line);border-radius:12px;
-  font-size:13.5px;color:var(--ink-soft);line-height:1.55}
+.vs-quotes li{position:relative;padding:15px 18px 15px 46px;background:#fff;border:1px solid var(--line);border-left:3px solid rgba(6,114,128,.4);border-radius:14px;
+  font-size:13.5px;color:var(--ink-soft);line-height:1.6;transition:transform .25s,box-shadow .25s}
+.vs-quotes li:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(16,20,24,.09)}
 .vs-quotes li::before{content:'\201C';position:absolute;left:15px;top:8px;font-size:26px;line-height:1;color:var(--teal);font-weight:800}
 
 /* ---------- wall of love ---------- */
@@ -1232,16 +1242,19 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
           <button class="vplay" id="vsPlay" aria-label="Play video"><span></span></button>
         </div>
       </div>
-      <div class="vs-cap">From a customer's own webinar – unpaid, unscripted, in her own words.</div>
+      <div class="vs-cap">Recorded live on her own webinar – unpaid, unscripted, her own words.</div>
     </div>
     <div class="vs-copy rv">
       <h2>"The amount of time we spent <span class="accent">just building the list</span> was insane."</h2>
       <p>An agency owner showed her webinar audience how she recruits partners for clients – first the spreadsheet her team filled cell by cell through Googling, LinkedIn and Apollo, then how she does it now. We didn't sponsor a second of it.</p>
       <ul class="vs-quotes">
-        <li>I can find the content partners that are promoting my competitors – and recruit all of those partners into my program.</li>
-        <li>If I save this, they're giving me their email addresses.</li>
-        <li>All I have to do is put in what I'm looking for, and within a matter of minutes I have it.</li>
+        <li>I can find the content partners that are promoting my competitors and recruit all of those partners into my program – something that has historically been really challenging to do.</li>
+        <li>If I save this, they're giving me their email addresses. I'm no longer sitting here Googling my clients and finding my partners.</li>
+        <li>This is one of my favorite things that I found recently – it's saving me just a ton of time and headaches.</li>
       </ul>
+      <div class="cta-row" style="justify-content:flex-start;margin-top:28px">
+        <a class="btn" href="https://calendly.com/jamie-if/affiliatefinder-ai?utm_source=landing-page&amp;utm_medium=cta&amp;utm_campaign=af-peace-c&amp;utm_content=webinar-demo">Book your free demo <span class="arr">→</span></a>
+      </div>
     </div>
   </div>
 </section>
@@ -1389,6 +1402,23 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
       </div>
       <figcaption>Michelle's real campaign dashboard – first outreach campaign, unedited numbers.</figcaption>
     </figure>
+    <div class="cta-row" style="position:relative;z-index:1;margin-top:40px">
+      <a class="btn" href="https://calendly.com/jamie-if/affiliatefinder-ai?utm_source=landing-page&amp;utm_medium=cta&amp;utm_campaign=af-peace-c&amp;utm_content=story-demo">Book your free demo <span class="arr">→</span></a>
+      <a class="btn ghost" href="https://app.affiliatefinder.ai/register?utm_source=landing-page&amp;utm_medium=cta&amp;utm_campaign=af-peace-c&amp;utm_content=story">Start free trial</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WALL OF LOVE ============ -->
+<section class="wall wrap">
+  <div class="eyebrow rv" style="justify-content:center"><span class="rule"></span><span class="pill">Wall of love</span><span class="rule"></span></div>
+  <h2 class="rv">Marketers who got<br>their <span class="accent">time back.</span></h2>
+  <div class="senja-wrap rv">
+    <script src="https://widget.senja.io/widget/3e39a871-d75c-4bab-87e1-cf3b3fbb521f/platform.js" type="text/javascript" async></script>
+    <div class="senja-embed" data-id="3e39a871-d75c-4bab-87e1-cf3b3fbb521f" data-mode="shadow" data-lazyload="false" style="display:block;width:100%"></div>
+  </div>
+  <div class="cta-row rv" style="margin-top:44px">
+    <a class="btn" href="https://calendly.com/jamie-if/affiliatefinder-ai?utm_source=landing-page&amp;utm_medium=cta&amp;utm_campaign=af-peace-c&amp;utm_content=wall-demo">Book your free demo <span class="arr">→</span></a>
   </div>
 </section>
 
@@ -1456,16 +1486,6 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
     </div>
   </div>
   <p class="rv" style="text-align:center;margin-top:28px;font-size:13.5px;color:var(--ink-mute)">Not sure which plan fits? Start the free trial and see your affiliate list before you pay a cent.</p>
-</section>
-
-<!-- ============ WALL OF LOVE ============ -->
-<section class="wall wrap">
-  <div class="eyebrow rv" style="justify-content:center"><span class="rule"></span><span class="pill">Wall of love</span><span class="rule"></span></div>
-  <h2 class="rv">Marketers who got<br>their <span class="accent">time back.</span></h2>
-  <div class="senja-wrap rv">
-    <script src="https://widget.senja.io/widget/3e39a871-d75c-4bab-87e1-cf3b3fbb521f/platform.js" type="text/javascript" async></script>
-    <div class="senja-embed" data-id="3e39a871-d75c-4bab-87e1-cf3b3fbb521f" data-mode="shadow" data-lazyload="false" style="display:block;width:100%"></div>
-  </div>
 </section>
 
 <!-- ============ FAQ ============ -->
