@@ -180,43 +180,15 @@ h2{font-size:clamp(32px,4.4vw,56px)}
    replies card holds to 11s; 11–12s everything fades out together.
    Percent of 12s: 2.5 / 6.67 / 26.67 / 30.83 / 53.33 / 57.5 / 91.67. */
 .lapcards{position:absolute;inset:0;pointer-events:none}
-.lapcard{position:absolute;width:clamp(280px,40%,420px);
-  will-change:transform,opacity;opacity:0;transform:translateX(40px)}
+.lapcard{position:absolute;width:clamp(280px,40%,420px)}
 .lapcard svg{display:block;width:100%;height:auto;aspect-ratio:620/180}
-.lc1{left:-16%;top:13%;animation:nfb-c1 10s linear infinite} /* overlaps lid left edge ~40% of card width */
-.lc2{right:-16%;top:49%;animation:nfb-c2 10s linear infinite}
-.lc3{right:-16%;top:60%;animation:nfb-c3 10s linear infinite} /* just below the stat row – the metrics stay readable */
-.lc4{left:-18%;top:68%;animation:nfb-c4 10s linear infinite}
+.lc1{left:-16%;top:13%} /* overlaps lid left edge ~40% of card width */
+.lc2{right:-16%;top:49%}
+.lc3{right:-16%;top:60%} /* just below the stat row – the metrics stay readable */
+.lc4{left:-18%;top:68%}
 .lapcards.nf-paused .lapcard{animation-play-state:paused}
 /* 8s loop, snappy 300ms pops: enters at 0.3s / 1.5s / 2.7s, the replies card
    holds to 7.2s, everything fades out together by 8s. */
-@keyframes nfb-c1{
-  0%,3%{opacity:0;transform:translateX(40px);animation-timing-function:ease-out}
-  6%{opacity:1;transform:none;animation-timing-function:linear}
-  12%{opacity:1;transform:none}
-  15%,90%{opacity:.45;transform:none}
-  100%{opacity:0;transform:none}
-}
-@keyframes nfb-c2{
-  0%,15%{opacity:0;transform:translateX(40px);animation-timing-function:ease-out}
-  18%{opacity:1;transform:none;animation-timing-function:linear}
-  24%{opacity:1;transform:none}
-  27%,90%{opacity:.45;transform:none}
-  100%{opacity:0;transform:none}
-}
-@keyframes nfb-c3{
-  0%,27%{opacity:0;transform:translateX(40px);animation-timing-function:ease-out}
-  30%{opacity:1;transform:none;animation-timing-function:linear}
-  36%{opacity:1;transform:none}
-  39%,90%{opacity:.45;transform:none}
-  100%{opacity:0;transform:none}
-}
-@keyframes nfb-c4{
-  0%,39%{opacity:0;transform:translateX(40px);animation-timing-function:ease-out}
-  42%{opacity:1;transform:none;animation-timing-function:linear}
-  90%{opacity:1;transform:none}
-  100%{opacity:0;transform:none}
-}
 /* tablet: laptop wider, cards floor at 240px */
 @media(max-width:1023px){
   .hb-laptop{width:90%}
@@ -257,10 +229,26 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .ph-ask .orb{width:14px;height:14px;border-radius:50%;background:conic-gradient(from 210deg,var(--teal-bright),#f0966e,var(--teal));flex:none}
 /* notification cards: stacked column overlapping the window's right edge */
 .mock-stage .lapcard{width:clamp(250px,44%,352px)}
-.mock-stage .lc1{left:auto;right:-6%;top:-36px}
-.mock-stage .lc2{left:auto;right:-6%;top:64px}
-.mock-stage .lc3{left:auto;right:-6%;top:164px}
-.mock-stage .lc4{left:auto;right:-6%;top:264px}
+.mock-stage .lc1{left:auto;right:-15%;top:-36px}
+.mock-stage .lc2{left:auto;right:-15%;top:64px}
+.mock-stage .lc3{left:auto;right:-15%;top:164px}
+.mock-stage .lc4{left:auto;right:-15%;top:264px}
+/* travelling glow ring (kinso-style), one card at a time */
+.lapcard::after{
+  content:'';position:absolute;left:2.8%;right:2.8%;top:7.5%;bottom:13.2%;
+  border-radius:20px;padding:2.5px;
+  background:linear-gradient(120deg,#f0966e,#e8590c 40%,#0a9aa8);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  opacity:0;filter:drop-shadow(0 0 16px rgba(240,150,110,.6));
+  animation:cardglow 12s linear infinite;pointer-events:none;
+}
+.lc1::after{animation-delay:0s}
+.lc2::after{animation-delay:3s}
+.lc3::after{animation-delay:6s}
+.lc4::after{animation-delay:9s}
+@keyframes cardglow{0%{opacity:0}4%{opacity:1}23%{opacity:1}28%{opacity:0}100%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.lapcard::after{animation:none;opacity:0}}
 @media(max-width:980px){
   .app-shell{width:100%}
   .phone-mock{left:-4px;bottom:-30px;width:150px}
