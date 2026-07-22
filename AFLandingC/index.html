@@ -417,6 +417,55 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .g4{bottom:2%;right:14%;animation-delay:.8s}
 @media(max-width:560px){.glow-tile{width:146px;height:112px}.glow-tile .gn{font-size:24px}}
 
+/* ---------- customer story ---------- */
+.story{padding:120px 0}
+.story-card{
+  position:relative;max-width:900px;margin:0 auto;background:#fff;border:1px solid var(--line);
+  border-radius:var(--radius-lg);box-shadow:var(--shadow-card);padding:52px 56px;overflow:hidden;
+}
+.story-card::after{content:'';position:absolute;inset:0;opacity:.4;pointer-events:none;
+  background-image:linear-gradient(rgba(16,20,24,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(16,20,24,.03) 1px,transparent 1px);background-size:26px 26px}
+.story-card .sq{font-size:clamp(19px,2.2vw,24px);font-weight:600;letter-spacing:-.025em;line-height:1.45}
+.story-card .sq .hl{color:var(--teal)}
+.story-card .sbody{margin-top:18px;font-size:15px;color:var(--ink-soft);line-height:1.7}
+.story-author{display:flex;align-items:center;gap:14px;margin-top:28px}
+.story-author .avatar{width:44px;height:44px;font-size:15px}
+.story-author .nm{font-size:14.5px;font-weight:700}
+.story-author .rl{font-size:12.5px;color:var(--ink-mute)}
+.story-stats{display:flex;gap:14px;margin-top:30px;flex-wrap:wrap}
+.story-stats .st{flex:1;min-width:130px;border:1px solid var(--line);border-radius:14px;padding:16px 18px;background:var(--cream)}
+.story-stats .st b{display:block;font-size:24px;font-weight:800;letter-spacing:-.03em;color:var(--teal)}
+.story-stats .st span{font-size:12px;color:var(--ink-mute);font-weight:600}
+@media(max-width:640px){.story-card{padding:34px 24px}}
+
+/* ---------- wall of love ---------- */
+.wall{padding:20px 0 90px;text-align:center}
+.wall h2 .accent{color:var(--teal)}
+.senja-wrap{margin:44px auto 0;max-width:1080px}
+
+/* ---------- pricing ---------- */
+.pricing{padding:100px 0}
+.pricing-head{text-align:center;max-width:620px;margin:0 auto 54px}
+.pricing-head .eyebrow{justify-content:center}
+.pricing-head p{margin-top:16px;font-size:15.5px;color:var(--ink-soft)}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:stretch}
+@media(max-width:960px){.price-grid{grid-template-columns:1fr;max-width:460px;margin:0 auto}}
+.price-card{
+  position:relative;background:#fff;border:1px solid var(--line);border-radius:var(--radius-lg);
+  padding:34px 30px;display:flex;flex-direction:column;box-shadow:0 6px 24px rgba(16,20,24,.05);
+}
+.price-card.pop{border:2px solid var(--teal);box-shadow:0 20px 50px rgba(6,114,128,.14)}
+.price-card .badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--teal);color:#fff;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:5px 14px}
+.price-card h3{font-size:20px;font-weight:700;letter-spacing:-.02em}
+.price-card .pdesc{font-size:13px;color:var(--ink-mute);margin-top:6px;min-height:36px}
+.price-card .amount{margin:20px 0 4px;font-size:44px;font-weight:800;letter-spacing:-.04em}
+.price-card .amount small{font-size:15px;font-weight:600;color:var(--ink-mute);letter-spacing:0}
+.price-card .pnote{font-size:12px;color:var(--ink-mute)}
+.price-card ul{list-style:none;margin:22px 0 26px;display:grid;gap:9px}
+.price-card ul li{font-size:13px;color:var(--ink-soft);padding-left:22px;position:relative}
+.price-card ul li::before{content:'✓';position:absolute;left:0;color:var(--teal);font-weight:800}
+.price-card .btn{margin-top:auto;justify-content:center}
+
 /* ---------- FAQ ---------- */
 .faq{padding:110px 0}
 .faq-grid{display:grid;grid-template-columns:minmax(260px,380px) 1fr;gap:60px}
@@ -776,37 +825,128 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
   </div>
 </section>
 
+
+<!-- ============ CUSTOMER STORY ============ -->
+<section class="story wrap">
+  <div class="eyebrow rv" style="justify-content:center"><span class="rule"></span><span class="pill">Customer story</span><span class="rule"></span></div>
+  <div class="story-card rv">
+    <div class="sq">"Feeling a bit guilty for getting all the credit from my team lol – <span class="hl">who would have thought that AI emails could get response rates like that?</span>"</div>
+    <div class="sbody">"I have zero experience recruiting affiliates, but as Head of Marketing, finding more partners for CopeCart was one of my tasks. With AffiliateFinder, I just added our website and within minutes I had a list of great affiliates – especially the Instagram and YouTube creators I was looking for. Then I set up my campaign (I LOVED that it wrote the emails for me) and after a week I actually had to pause it, because I had gotten enough deals completed for our launch campaign and couldn't handle any more! Thank you AF team!"</div>
+    <div class="story-author">
+      <span class="avatar" style="background:linear-gradient(135deg,#0a9aa8,#067280)">MH</span>
+      <span><span class="nm">Michelle Habenicht</span><br><span class="rl">Head of Marketing @ CopeCart</span></span>
+    </div>
+    <div class="story-stats">
+      <div class="st"><b>125</b><span>Emails sent</span></div>
+      <div class="st"><b>51.2%</b><span>Open rate</span></div>
+      <div class="st"><b>29.4%</b><span>Reply rate</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WALL OF LOVE ============ -->
+<section class="wall wrap">
+  <div class="eyebrow rv" style="justify-content:center"><span class="rule"></span><span class="pill">Wall of love</span><span class="rule"></span></div>
+  <h2 class="rv">Marketers who found<br>their <span class="accent">peace.</span></h2>
+  <div class="senja-wrap rv">
+    <script src="https://widget.senja.io/widget/3e39a871-d75c-4bab-87e1-cf3b3fbb521f/platform.js" type="text/javascript" async></script>
+    <div class="senja-embed" data-id="3e39a871-d75c-4bab-87e1-cf3b3fbb521f" data-mode="shadow" data-lazyload="false" style="display:block;width:100%"></div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section class="pricing wrap" id="pricing">
+  <div class="pricing-head rv">
+    <div class="eyebrow"><span class="rule"></span><span class="pill">Pricing</span><span class="rule"></span></div>
+    <h2>Simple, transparent pricing.</h2>
+    <p>Choose a plan that fits your business and budget. No hidden fees, no surprises, no lock-in. Every paid plan starts with a 7-day risk-free trial.</p>
+  </div>
+  <div class="price-grid rv">
+    <div class="price-card">
+      <h3>Pro</h3>
+      <div class="pdesc">For brands ready to scale their affiliate program.</div>
+      <div class="amount">$69<small>/month</small></div>
+      <div class="pnote">billed annually (save $465) · $99 monthly</div>
+      <ul>
+        <li>Unlimited affiliate discovery – avg 1,500+ instantly</li>
+        <li>150 verified email credits per month</li>
+        <li>New affiliates every week (24/7 listening)</li>
+        <li>1 brand · one target country &amp; language</li>
+        <li>150 AI-generated emails per month</li>
+        <li>Email sequences with auto warm-up (1 campaign)</li>
+        <li>Kanban CRM &amp; unified inbox</li>
+        <li>2 team seats · 1 connected email account</li>
+      </ul>
+      <a class="btn" href="https://app.affiliatefinder.ai/register?utm_source=landing-page&amp;utm_medium=cta&amp;utm_campaign=af-peace-c&amp;utm_content=pricing-pro">Try it for free <span class="arr">→</span></a>
+    </div>
+    <div class="price-card pop">
+      <span class="badge">Most popular</span>
+      <h3>Growth</h3>
+      <div class="pdesc">For agencies and companies managing multiple brands.</div>
+      <div class="amount">$174<small>/month</small></div>
+      <div class="pnote">billed annually (save $900) · everything in Pro, plus:</div>
+      <ul>
+        <li>500 verified email credits per month</li>
+        <li>5 brands, or one brand across up to 5 countries</li>
+        <li>Full affiliate network tracking</li>
+        <li>500 AI-generated emails per month</li>
+        <li>Unlimited campaigns &amp; sequences</li>
+        <li>Custom kanban CRM stages</li>
+        <li>5 team seats · 2 connected email accounts</li>
+        <li>White-glove onboarding · API &amp; webhooks</li>
+      </ul>
+      <a class="btn" href="https://app.affiliatefinder.ai/register?utm_source=landing-page&amp;utm_medium=cta&amp;utm_campaign=af-peace-c&amp;utm_content=pricing-growth">Try it for free <span class="arr">→</span></a>
+    </div>
+    <div class="price-card">
+      <h3>Enterprise</h3>
+      <div class="pdesc">For large organizations with custom requirements.</div>
+      <div class="amount">Custom</div>
+      <div class="pnote">a 30-minute walkthrough on your own brand · everything in Growth, plus:</div>
+      <ul>
+        <li>Unlimited verified emails, no monthly caps</li>
+        <li>Unlimited brands, separate dashboards</li>
+        <li>Unlimited team access, no seat limits</li>
+        <li>Unlimited lookalike &amp; topic searches</li>
+        <li>White-glove setup, onboarding and training</li>
+        <li>REST API access (300 req/min)</li>
+      </ul>
+      <a class="btn ghost" href="https://calendly.com/jamie-if/affiliatefinder-ai?utm_source=landing-page&amp;utm_medium=cta&amp;utm_campaign=af-peace-c&amp;utm_content=pricing-enterprise">Let's talk</a>
+    </div>
+  </div>
+  <p class="rv" style="text-align:center;margin-top:28px;font-size:13.5px;color:var(--ink-mute)">Not sure which plan fits? Start the free trial and see your affiliate list before you pay a cent.</p>
+</section>
+
 <!-- ============ FAQ ============ -->
 <section class="faq wrap" id="faq">
   <div class="faq-grid">
     <div class="rv">
-      <div class="eyebrow"><span class="pill">FAQs</span><span class="rule"></span></div>
-      <h2>Questions,<br>answered.</h2>
+      <div class="eyebrow"><span class="pill">Objections, held gently</span><span class="rule"></span></div>
+      <h2>Breathe.<br>We have answers.</h2>
     </div>
     <div class="rv">
       <details class="faq-item" open>
-        <summary>Where do the affiliates come from? <span class="plus">+</span></summary>
-        <div class="a">One search scans five channels – YouTube, Instagram, TikTok, Google and the blogs linking to your competitors – and keeps listening 24/7, so new matching affiliates arrive every week.</div>
-      </details>
-      <details class="faq-item">
-        <summary>Do I get contact details? <span class="plus">+</span></summary>
-        <div class="a">Yes. Around 9 in 10 discovered affiliates come with a verified email, plus name, socials and audience metrics. Bounced addresses stop sequences automatically.</div>
-      </details>
-      <details class="faq-item">
         <summary>How is this different from an influencer database? <span class="plus">+</span></summary>
-        <div class="a">Databases hand you a pile to sort – anyone with a follower count and guessed emails that bounce. AffiliateFinder hands you a ranked shortlist you can email today, writes the outreach, and manages the replies.</div>
+        <div class="a">Databases are static lists that everyone else already bought. AffiliateFinder actively scans YouTube, Instagram, TikTok, Google and the open web for creators currently making content about products like yours. That's proven interest in your category – not a cold row in a CSV.</div>
       </details>
       <details class="faq-item">
-        <summary>How are affiliates qualified? <span class="plus">+</span></summary>
-        <div class="a">We only surface creators already talking about products like yours, then score each one 0–100 for relevance, audience fit and engagement – so you reach out to the right people first and skip the rest.</div>
+        <summary>Where do the email addresses come from? Are they real? <span class="plus">+</span></summary>
+        <div class="a">We enrich every discovered affiliate through multiple contact-data sources and verify the address before you send. Around 90% of affiliates arrive with a verified email, and if one ever bounces, the sequence stops automatically.</div>
       </details>
       <details class="faq-item">
-        <summary>Can I access the data programmatically? <span class="plus">+</span></summary>
-        <div class="a">Yes – besides the platform, we offer programmatic access to the data via API for teams that want to integrate it into their own workflows.</div>
+        <summary>Do the AI emails sound like AI wrote them? <span class="plus">+</span></summary>
+        <div class="a">No – each email references the creator's actual recent video or post and follows your saved rules and tone, which the system learns from how you really reply. You can edit every draft before it sends. Most people stop editing after the first week.</div>
       </details>
       <details class="faq-item">
-        <summary>Can I try it first? <span class="plus">+</span></summary>
-        <div class="a">Yes – every plan starts with a 7-day risk-free trial. Cancel anytime.</div>
+        <summary>Do I stay in control of what gets sent? <span class="plus">+</span></summary>
+        <div class="a">Yes. The AI drafts, you approve. Every email is editable before it goes out, campaigns only start when you launch them, and follow-ups stop the moment someone replies. You set the rules – what to always mention, what never to say – and the AI sticks to them.</div>
+      </details>
+      <details class="faq-item">
+        <summary>What does it cost? <span class="plus">+</span></summary>
+        <div class="a">Plans start at $69/month billed annually ($99 monthly). Every plan begins with a 7-day risk-free trial – see your own affiliate list first, and cancel within the week if it's not for you.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Will this actually get approved by my boss? <span class="plus">+</span></summary>
+        <div class="a">That's what the dashboard is for. Every campaign tracks opens, clicks, replies and signed affiliates, so you can show exactly what was found, who was recruited and what that pipeline is worth – real numbers, ready for the next budget conversation. Book a demo and we'll build your list live on the call, so you walk in with results instead of a pitch.</div>
       </details>
     </div>
   </div>
