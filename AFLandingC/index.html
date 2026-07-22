@@ -495,7 +495,9 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .pin-dark .pin-progress .bar.active{background:#0a9aa8}
 .pin-dark .pin-vis{display:flex;align-items:center;justify-content:center}
 .pin-dark .dvis{width:min(440px,100%)}
-.pin-dark .dvis.wide{width:min(540px,100%)}
+.pin-dark .dvis.wide{width:min(580px,100%)}
+.pin-dark .dvis.mdw{width:min(580px,96%)}
+.mdw .dark-card{padding:26px 28px}
 .pin-dark .dvis .filter-stack{min-height:460px}
 @media(max-width:900px){.pin-dark .dvis .filter-stack{min-height:0}}
 
@@ -813,6 +815,32 @@ h2{font-size:clamp(32px,4.4vw,56px)}
   .story-author .vf{display:none}
 }
 @media(max-width:640px){.story-card{padding:36px 24px 32px}}
+
+/* ---------- video story (webinar) ---------- */
+.vstory{padding:10px 0 120px}
+.vs-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:56px;align-items:center;max-width:1080px;margin:0 auto}
+@media(max-width:900px){.vs-grid{grid-template-columns:1fr;gap:36px}}
+.vs-player .frame{border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(16,20,24,.13);background:#0c1218}
+.vs-player .bar{display:flex;align-items:center;gap:7px;background:var(--cream);border-bottom:1px solid var(--line);padding:11px 16px}
+.vs-player .bar i{width:9px;height:9px;border-radius:50%;background:#e3ddd2}
+.vs-player .bar .url{flex:1;text-align:center;font-size:11.5px;font-weight:600;color:var(--ink-mute)}
+.vwrap{position:relative;aspect-ratio:16/9;background:#0c1218}
+.vwrap video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0c1218}
+.vplay{position:absolute;inset:0;display:grid;place-items:center;border:0;cursor:pointer;
+  background:linear-gradient(160deg,rgba(9,13,19,.2),rgba(9,13,19,.5));transition:opacity .35s}
+.vplay span{width:74px;height:74px;border-radius:50%;background:linear-gradient(135deg,#8ed6de,#067280);
+  box-shadow:0 0 44px rgba(10,154,168,.6);display:grid;place-items:center;transition:transform .25s}
+.vplay:hover span{transform:scale(1.07)}
+.vplay span::after{content:'';margin-left:5px;border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff}
+.vplay.hide{opacity:0;pointer-events:none}
+.vs-cap{margin-top:12px;text-align:center;font-size:12px;color:var(--ink-mute)}
+.vs-copy h2{font-size:clamp(24px,2.7vw,34px);line-height:1.2}
+.vs-copy h2 .accent{color:var(--teal)}
+.vs-copy>p{margin-top:18px;font-size:14.5px;color:var(--ink-soft);line-height:1.7;max-width:52ch}
+.vs-quotes{margin-top:24px;display:flex;flex-direction:column;gap:12px;list-style:none;padding:0}
+.vs-quotes li{position:relative;padding:13px 16px 13px 42px;background:#fff;border:1px solid var(--line);border-radius:12px;
+  font-size:13.5px;color:var(--ink-soft);line-height:1.55}
+.vs-quotes li::before{content:'\201C';position:absolute;left:15px;top:8px;font-size:26px;line-height:1;color:var(--teal);font-weight:800}
 
 /* ---------- wall of love ---------- */
 .wall{padding:20px 0 90px;text-align:center}
@@ -1254,7 +1282,6 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
         <div class="dots"><i></i><i></i><i></i></div>
         <div class="greet">Good Morning, <span class="hl">Jamie</span>.<br>You've got <span class="hl">26 unread replies</span> <span class="mute">– affiliates want to work with you.</span></div>
         <button class="brief-btn">Open inbox →</button>
-        <div class="ask"><span class="orb"></span>Filter by niche, traffic or country…</div>
       </div>
     </div>
   </div>
@@ -1333,7 +1360,7 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
           </div>
           <div class="oc-foot"><span class="oc-ghost">Regenerate</span><span class="oc-ghost">Edit</span><span class="oc-send">Send email</span></div>
         </div></div></div>
-        <div class="pin-vis"><div class="dvis"><div class="dark-card">
+        <div class="pin-vis"><div class="dvis mdw"><div class="dark-card">
         <div class="dc-row"><span class="glowdot"></span>Step 1 · Intro email<span class="st">sent ✓ · opened</span></div>
         <div class="dc-row"><span class="glowdot"></span>Wait 3 days<span class="st">skipped – reply detected</span></div>
         <div class="dc-row"><span class="mutedot"></span>Step 2 · Follow-up<span class="st">cancelled automatically</span></div>
@@ -1357,7 +1384,7 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
             <div class="ib-compose"><span class="ib-input">Reply to Sarah Mitchell – sends from your own address…</span><span class="ib-sendbtn">Send</span></div>
           </div>
         </div></div></div>
-        <div class="pin-vis"><div class="dvis"><div class="dark-card">
+        <div class="pin-vis"><div class="dvis mdw"><div class="dark-card">
         <div class="statbar"><div class="sb-label"><span>Emails sent</span><b>125</b></div><div class="sb-track"><div class="sb-fill" style="width:100%"></div></div></div>
         <div class="statbar"><div class="sb-label"><span>Open rate</span><b>51.2%</b></div><div class="sb-track"><div class="sb-fill" style="width:51%"></div></div></div>
         <div class="statbar"><div class="sb-label"><span>Reply rate</span><b>29.4%</b></div><div class="sb-track"><div class="sb-fill" style="width:29%"></div></div></div>
@@ -1474,6 +1501,32 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
       </div>
       <figcaption>Michelle's real campaign dashboard – first outreach campaign, unedited numbers.</figcaption>
     </figure>
+  </div>
+</section>
+
+<!-- ============ VIDEO STORY (webinar) ============ -->
+<section class="vstory wrap">
+  <div class="eyebrow rv" style="justify-content:center"><span class="rule"></span><span class="pill">Caught on a webinar</span><span class="rule"></span></div>
+  <div class="vs-grid">
+    <div class="vs-player rv">
+      <div class="frame">
+        <div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="url">Customer webinar · recorded live</span></div>
+        <div class="vwrap">
+          <video id="vsVideo" src="video/agency-webinar.mp4" preload="metadata" playsinline controls></video>
+          <button class="vplay" id="vsPlay" aria-label="Play video"><span></span></button>
+        </div>
+      </div>
+      <div class="vs-cap">From a customer's own webinar – unpaid, unscripted, in her own words.</div>
+    </div>
+    <div class="vs-copy rv">
+      <h2>"The amount of time we spent <span class="accent">just building the list</span> was insane."</h2>
+      <p>An agency owner showed her webinar audience how she recruits partners for clients – first the spreadsheet her team filled cell by cell through Googling, LinkedIn and Apollo, then how she does it now. We didn't sponsor a second of it.</p>
+      <ul class="vs-quotes">
+        <li>I can find the content partners that are promoting my competitors – and recruit all of those partners into my program.</li>
+        <li>If I save this, they're giving me their email addresses.</li>
+        <li>All I have to do is put in what I'm looking for, and within a matter of minutes I have it.</li>
+      </ul>
+    </div>
   </div>
 </section>
 
@@ -1699,6 +1752,15 @@ requestAnimationFrame(pinFrame);
     cols().forEach(c=>c.classList.remove('dropover'));
     counts();
   });
+})();
+
+/* ---------- webinar video play overlay ---------- */
+(function(){
+  const v=document.getElementById('vsVideo'),b=document.getElementById('vsPlay');
+  if(!v||!b)return;
+  b.addEventListener('click',()=>v.play());
+  v.addEventListener('play',()=>b.classList.add('hide'));
+  v.addEventListener('ended',()=>b.classList.remove('hide'));
 })();
 
 /* ---------- glowing stats: count-up + pointer parallax ---------- */
