@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AffiliateFinder.ai — The largest database of verified affiliate publishers</title>
-<meta name="description" content="Filter 600,000+ verified affiliate publishers by niche, traffic and country — with verified contact data. The affiliate ecosystem, mapped.">
+<title>AffiliateFinder.ai — Find qualified affiliates on autopilot</title>
+<meta name="description" content="Find the affiliates already promoting products like yours — qualified, verified, outreach-ready. Filter 600,000+ publishers by niche, traffic and country.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..800&display=swap" rel="stylesheet">
@@ -75,6 +75,9 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .btn:hover{transform:translateY(-1px);box-shadow:0 12px 30px rgba(16,20,24,.22)}
 .btn .arr{transition:transform .25s ease}
 .btn:hover .arr{transform:translateX(4px)}
+.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn.ghost:hover{box-shadow:0 12px 30px rgba(16,20,24,.1)}
+.cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 
 /* scroll reveals */
 .rv{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.2,.6,.2,1),transform .8s cubic-bezier(.2,.6,.2,1)}
@@ -198,7 +201,7 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 @media(max-width:980px){.fc1{right:0}.fc2{right:0}.fc3{right:12px}}
 @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
 
-/* waitlist / database strip */
+/* social-proof strip */
 .waitlist{padding:70px 0 90px;text-align:center}
 .waitlist .big{font-size:clamp(20px,2.6vw,28px);font-weight:500}
 .waitlist .num{color:var(--teal);font-weight:800;font-variant-numeric:tabular-nums}
@@ -409,8 +412,9 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
     <a href="#faq">FAQs</a>
   </div>
   <div class="cta">
-    <a class="login" href="#">Login</a>
-    <a class="btn" href="#join">Get Started <span class="arr">→</span></a>
+    <!-- TODO: wire real links — demo = Calendly, trial = signup -->
+    <a class="login" href="#">Book a demo</a>
+    <a class="btn" href="#join">Start free trial <span class="arr">→</span></a>
   </div>
 </nav>
 
@@ -501,8 +505,12 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
   </div>
 
   <div class="wrap waitlist rv" id="join">
-    <div class="big">Search <span class="num" id="counter" data-target="600000">0</span>+ verified affiliate publishers.</div>
-    <a class="btn" href="#">Get Started <span class="arr">→</span></a>
+    <!-- NOTE: 4,218 is a placeholder — replace data-target with the real brand count -->
+    <div class="big">Join <span class="num" id="counter" data-target="4218">0</span> brands finding affiliates on autopilot.</div>
+    <div class="cta-row" style="margin-top:26px">
+      <a class="btn" href="#">Start free trial <span class="arr">→</span></a>
+      <a class="btn ghost" href="#">Book a demo</a>
+    </div>
   </div>
 </header>
 
@@ -526,7 +534,7 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
         <div class="pin-progress" aria-hidden="true"><span class="bar active"></span><span class="bar"></span><span class="bar"></span></div>
         <div class="pin-text-stack">
           <div class="pin-text active">
-            <div class="eyebrow"><span class="pill">Filter the Database</span><span class="rule"></span></div>
+            <div class="eyebrow"><span class="pill">AI Discovery</span><span class="rule"></span></div>
             <h2>Stop hunting.<br>Start filtering.</h2>
             <p>Recruiting affiliates today means networks, spreadsheets and luck — manual research across an ecosystem fragmented over 30,000+ programs.</p>
             <p>AffiliateFinder mapped it for you. Filter 600,000+ verified publishers by niche, traffic and country — and only spend time on the ones worth it.</p>
@@ -637,11 +645,11 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
       </details>
       <details class="faq-item">
         <summary>How are publishers qualified? <span class="plus">+</span></summary>
-        <div class="a">Publishers enter the database through observed affiliate activity across the networks and programs we track. Every profile carries traffic, activity status and network membership — so you can vet quality before you ever reach out.</div>
+        <div class="a">Publishers qualify through observed affiliate activity across the networks and programs we track. Every profile carries traffic, activity status and network membership — so you can vet quality before you ever reach out.</div>
       </details>
       <details class="faq-item">
         <summary>Can I access the data programmatically? <span class="plus">+</span></summary>
-        <div class="a">Yes — besides the platform, we offer programmatic access to the database via API for teams that want to integrate it into their own workflows.</div>
+        <div class="a">Yes — besides the platform, we offer programmatic access to the data via API for teams that want to integrate it into their own workflows.</div>
       </details>
       <details class="faq-item">
         <summary>Can I try it first? <span class="plus">+</span></summary>
@@ -654,9 +662,12 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
 <!-- ============ FINAL CTA ============ -->
 <section class="final">
   <div class="wrap rv">
-    <h2>Your next 100 affiliates<br>are already in the database.</h2>
+    <h2>Your next 100 affiliates<br>are already out there.</h2>
     <p class="sub" style="max-width:460px">Filter, verify, reach out — in minutes, not months.</p>
-    <a class="btn" href="#">Start your free 7-day trial <span class="arr">→</span></a>
+    <div class="cta-row">
+      <a class="btn" href="#">Start your free 7-day trial <span class="arr">→</span></a>
+      <a class="btn ghost" href="#">Book a demo</a>
+    </div>
   </div>
 </section>
 
@@ -676,7 +687,7 @@ const io=new IntersectionObserver(es=>{
 },{threshold:.16});
 document.querySelectorAll('.rv,.stagger').forEach(el=>io.observe(el));
 
-/* ---------- database counter ---------- */
+/* ---------- social-proof counter ---------- */
 const counter=document.getElementById('counter');
 const cio=new IntersectionObserver(es=>{
   es.forEach(e=>{
