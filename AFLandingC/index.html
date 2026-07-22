@@ -176,29 +176,37 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .lapcard{position:absolute;width:clamp(280px,40%,420px);
   will-change:transform,opacity;opacity:0;transform:translateX(40px)}
 .lapcard svg{display:block;width:100%;height:auto;aspect-ratio:620/180}
-.lc1{left:-16%;top:13%;animation:nfb-c1 8s linear infinite} /* overlaps lid left edge ~40% of card width */
-.lc2{right:-16%;top:49%;animation:nfb-c2 8s linear infinite} /* just below the stat row – the metrics stay readable */
-.lc4{left:-18%;top:68%;animation:nfb-c4 8s linear infinite}
+.lc1{left:-16%;top:13%;animation:nfb-c1 10s linear infinite} /* overlaps lid left edge ~40% of card width */
+.lc2{right:-16%;top:49%;animation:nfb-c2 10s linear infinite}
+.lc3{right:-16%;top:60%;animation:nfb-c3 10s linear infinite} /* just below the stat row – the metrics stay readable */
+.lc4{left:-18%;top:68%;animation:nfb-c4 10s linear infinite}
 .lapcards.nf-paused .lapcard{animation-play-state:paused}
 /* 8s loop, snappy 300ms pops: enters at 0.3s / 1.5s / 2.7s, the replies card
    holds to 7.2s, everything fades out together by 8s. */
 @keyframes nfb-c1{
-  0%,3.75%{opacity:0;transform:translateX(40px);animation-timing-function:ease-out}
-  7.5%{opacity:1;transform:none;animation-timing-function:linear}
-  18.75%{opacity:1;transform:none}
-  22.5%,90%{opacity:.45;transform:none}
+  0%,3%{opacity:0;transform:translateX(40px);animation-timing-function:ease-out}
+  6%{opacity:1;transform:none;animation-timing-function:linear}
+  12%{opacity:1;transform:none}
+  15%,90%{opacity:.45;transform:none}
   100%{opacity:0;transform:none}
 }
 @keyframes nfb-c2{
-  0%,18.75%{opacity:0;transform:translateX(40px);animation-timing-function:ease-out}
-  22.5%{opacity:1;transform:none;animation-timing-function:linear}
-  33.75%{opacity:1;transform:none}
-  37.5%,90%{opacity:.45;transform:none}
+  0%,15%{opacity:0;transform:translateX(40px);animation-timing-function:ease-out}
+  18%{opacity:1;transform:none;animation-timing-function:linear}
+  24%{opacity:1;transform:none}
+  27%,90%{opacity:.45;transform:none}
+  100%{opacity:0;transform:none}
+}
+@keyframes nfb-c3{
+  0%,27%{opacity:0;transform:translateX(40px);animation-timing-function:ease-out}
+  30%{opacity:1;transform:none;animation-timing-function:linear}
+  36%{opacity:1;transform:none}
+  39%,90%{opacity:.45;transform:none}
   100%{opacity:0;transform:none}
 }
 @keyframes nfb-c4{
-  0%,33.75%{opacity:0;transform:translateX(40px);animation-timing-function:ease-out}
-  37.5%{opacity:1;transform:none;animation-timing-function:linear}
+  0%,39%{opacity:0;transform:translateX(40px);animation-timing-function:ease-out}
+  42%{opacity:1;transform:none;animation-timing-function:linear}
   90%{opacity:1;transform:none}
   100%{opacity:0;transform:none}
 }
@@ -243,16 +251,17 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 /* notification cards: stacked column overlapping the window's right edge */
 .mock-stage .lapcard{width:clamp(250px,46%,370px)}
 .mock-stage .lc1{left:auto;right:-4%;top:-44px}
-.mock-stage .lc2{right:-12%;top:118px}
-.mock-stage .lc4{left:auto;right:-6%;top:252px}
+.mock-stage .lc2{right:-12%;top:88px}
+.mock-stage .lc3{right:-3%;top:218px}
+.mock-stage .lc4{left:auto;right:-7%;top:348px}
 @media(max-width:980px){
   .app-shell{width:100%}
   .phone-mock{left:-4px;bottom:-20px;width:160px}
-  .mock-stage .lc1{right:-4px}.mock-stage .lc2{right:-4px}.mock-stage .lc4{right:-4px}
+  .mock-stage .lc1{right:-4px}.mock-stage .lc2{right:-4px}.mock-stage .lc3{right:-4px}.mock-stage .lc4{right:-4px}
 }
 @media(max-width:767px){
   .mock-stage{min-height:0}
-  .mock-stage .lc1,.mock-stage .lc2,.mock-stage .lc4{right:-4px;left:auto;top:auto;bottom:-14px;width:min(270px,82%)}
+  .mock-stage .lc1,.mock-stage .lc2,.mock-stage .lc3,.mock-stage .lc4{right:-4px;left:auto;top:auto;bottom:-14px;width:min(270px,82%)}
 }
 
 /* ---------- hero mockup composition ---------- */
@@ -817,6 +826,28 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
         </g>
         <text x="136" y="80" font-family="Inter,-apple-system,'SF Pro Display','Segoe UI',sans-serif" font-size="24" font-weight="700" fill="#1A1A1A"><tspan id="nf-count">1,456</tspan> affiliates found</text>
         <text x="136" y="114" font-family="Inter,-apple-system,'SF Pro Display','Segoe UI',sans-serif" font-size="21" font-weight="400" fill="#1A1A1A">Emails verified and ready</text>
+        <text x="572" y="80" text-anchor="end" font-family="Inter,-apple-system,'SF Pro Display','Segoe UI',sans-serif" font-size="17" font-weight="400" fill="#A6ACB8">now</text>
+      </svg>
+    </div>
+    <div class="lapcard lc3">
+      <svg viewBox="0 0 620 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="nf-s3" x="-15%" y="-15%" width="130%" height="150%">
+            <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#16303E" flood-opacity="0.09"/>
+          </filter>
+          <linearGradient id="nf-nvy" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#33424e"/>
+            <stop offset="1" stop-color="#101d26"/>
+          </linearGradient>
+        </defs>
+        <rect x="20" y="15" width="580" height="140" rx="32" fill="#FFFFFF" filter="url(#nf-s3)"/>
+        <rect x="48" y="53" width="64" height="64" rx="16" fill="url(#nf-nvy)"/>
+        <g stroke="#FFFFFF" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" fill="none">
+          <path d="M97 68 L63 82 L76 88 L82 101 L97 68 Z"/>
+          <path d="M76 88 L97 68"/>
+        </g>
+        <text x="136" y="80" font-family="Inter,-apple-system,'SF Pro Display','Segoe UI',sans-serif" font-size="24" font-weight="700" fill="#1A1A1A">Outreach sent</text>
+        <text x="136" y="114" font-family="Inter,-apple-system,'SF Pro Display','Segoe UI',sans-serif" font-size="21" font-weight="400" fill="#1A1A1A">Follow-ups run automatically</text>
         <text x="572" y="80" text-anchor="end" font-family="Inter,-apple-system,'SF Pro Display','Segoe UI',sans-serif" font-size="17" font-weight="400" fill="#A6ACB8">now</text>
       </svg>
     </div>
