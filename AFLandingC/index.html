@@ -421,6 +421,10 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .fu-row{display:flex;align-items:center;gap:9px;font-size:11.5px;color:rgba(255,255,255,.65);padding:5px 0}
 .fu-row .n{width:18px;height:18px;border-radius:50%;background:rgba(10,154,168,.18);border:1px solid rgba(10,154,168,.45);color:#8ed6de;display:grid;place-items:center;font-size:9px;font-weight:800;flex:none}
 .pin-dark .dvis.ocw{width:min(660px,108%)}
+.ocw .oc-body{min-height:168px}
+.tw-caret{display:inline-block;width:2px;height:1.05em;background:#8ed6de;margin-left:2px;vertical-align:-3px;animation:twblink .8s steps(1) infinite}
+@keyframes twblink{50%{opacity:0}}
+@media(max-width:900px){.ocw .oc-body{min-height:200px}}
 .dvis{position:relative}
 
 /* unified inbox viz (dark) */
@@ -1111,12 +1115,7 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
         <div class="pin-vis"><div class="dvis ocw"><div class="dark-card" style="position:relative">
           <div class="oc-angle"><span class="tick">✓</span>Let AI pick the angle</div>
           <div class="oc-subject">Subject · <b>A platform your audience hasn't seen yet</b></div>
-          <div class="oc-body">Hi Max,<br><br>Your comparison videos are some of the clearest breakdowns in this space. The way you structure tool comparisons <span class="hlight">(like your ThriveCart alternatives video)</span> makes it easy for people to actually make a decision, which is rare…</div>
-          <div class="oc-fups">
-            <div class="fu-head"><span class="tick">✓</span>2 follow-ups drafted for you</div>
-            <div class="fu-row"><span class="n">1</span>Day 3 · Short nudge if no reply</div>
-            <div class="fu-row"><span class="n">2</span>Day 7 · Final check-in</div>
-          </div>
+          <div class="oc-body" id="ocBody">Hi Max,<br><br>Confession: I watched your ThriveCart alternatives video twice – once for research, once because the bit where you called the checkout flow <span class="hlight">"a scavenger hunt with extra steps"</span> genuinely made me laugh.<br><br>You clearly test this stuff properly. Want a free AffiliateFinder account to poke holes in – maybe for your next roundup?</div>
           <div class="oc-foot"><span class="oc-ghost">Regenerate</span><span class="oc-ghost">Edit</span><span class="oc-send">Send email</span></div>
         </div></div></div>
         <div class="pin-vis"><div class="dvis mdw"><div class="dark-card">
@@ -1637,6 +1636,53 @@ requestAnimationFrame(pinFrame);
     cols().forEach(c=>c.classList.remove('dropover'));
     counts();
   });
+})();
+
+/* ---------- outreach email typewriter ---------- */
+(function(){
+  const body=document.getElementById('ocBody');
+  if(!body)return;
+  const slide=body.closest('.pin-vis');
+  if(!slide)return;
+  const SEG=[
+    {t:'Hi Max,\n\n'},
+    {t:'Confession: I watched your ThriveCart alternatives video twice \u2013 once for research, once because the bit where you called the checkout flow '},
+    {t:'"a scavenger hunt with extra steps"',c:'hlight'},
+    {t:' genuinely made me laugh.\n\n'},
+    {t:'You clearly test this stuff properly. Want a free AffiliateFinder account to poke holes in \u2013 maybe for your next roundup?'}
+  ];
+  const esc=x=>x.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const full=()=>{body.innerHTML=SEG.map(sg=>{const t=esc(sg.t).replace(/\n/g,'<br>');return sg.c?('<span class="'+sg.c+'">'+t+'</span>'):t}).join('')};
+  let timer=null;
+  const stop=()=>{if(timer){clearTimeout(timer);timer=null}};
+  function type(){
+    stop();
+    let si=0,ci=0;
+    body.innerHTML='';
+    const caret=document.createElement('span');caret.className='tw-caret';
+    body.appendChild(caret);
+    let cur=null;
+    const step=()=>{
+      if(si>=SEG.length){caret.remove();timer=null;return}
+      const sg=SEG[si];
+      if(!cur){cur=document.createElement('span');if(sg.c)cur.className=sg.c;body.insertBefore(cur,caret)}
+      const ch=sg.t[ci];
+      cur.innerHTML+=(ch==='\n')?'<br>':esc(ch);
+      ci++;
+      if(ci>=sg.t.length){si++;ci=0;cur=null}
+      timer=setTimeout(step,ch==='\n'?120:(8+Math.random()*22));
+    };
+    timer=setTimeout(step,420);
+  }
+  const mo=new MutationObserver(()=>{
+    if(slide.classList.contains('active')){
+      if(!slide.dataset.typed){slide.dataset.typed='1';type()}
+    }else{
+      delete slide.dataset.typed;stop();full();
+    }
+  });
+  mo.observe(slide,{attributes:true,attributeFilter:['class']});
+  if(slide.classList.contains('active')){slide.dataset.typed='1';type()}
 })();
 
 /* ---------- webinar video play overlay ---------- */
