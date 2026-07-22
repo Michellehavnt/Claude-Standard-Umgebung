@@ -210,6 +210,45 @@ h2{font-size:clamp(32px,4.4vw,56px)}
   .lc4{left:-4px;right:auto;top:auto;bottom:-12px}
 }
 
+/* ---------- kinso-style hero composition ---------- */
+.mock-stage{min-height:560px}
+.app-shell{
+  position:relative;width:117%;border-radius:22px;background:#fff;
+  border:1px solid var(--line);overflow:hidden;
+  box-shadow:0 34px 90px rgba(16,20,24,.15);
+}
+.app-shell img{display:block;width:100%;height:auto}
+.phone-mock{
+  position:absolute;left:-9%;bottom:-34px;width:205px;aspect-ratio:9/19;z-index:3;
+  background:#fff;border:1px solid var(--line);border-radius:32px;padding:10px;
+  box-shadow:0 34px 80px rgba(16,20,24,.22);
+}
+.phone-screen{
+  position:relative;height:100%;border-radius:24px;overflow:hidden;
+  background:
+    radial-gradient(130% 90% at 18% 0%,rgba(240,150,110,.28),transparent 60%),
+    radial-gradient(130% 90% at 92% 95%,rgba(10,154,168,.24),transparent 60%),#fdfcfa;
+  display:flex;flex-direction:column;justify-content:flex-end;padding:16px;
+}
+.ph-greet{font-size:13.5px;font-weight:600;line-height:1.45;letter-spacing:-.01em}
+.ph-greet span{color:var(--ink-mute);font-weight:500}
+.ph-ask{margin-top:12px;display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:11px;color:var(--ink-mute);padding:8px 12px}
+.ph-ask .orb{width:14px;height:14px;border-radius:50%;background:conic-gradient(from 210deg,var(--teal-bright),#f0966e,var(--teal));flex:none}
+/* notification cards: stacked column overlapping the window's right edge */
+.mock-stage .lapcard{width:clamp(250px,46%,370px)}
+.mock-stage .lc1{left:auto;right:-7%;top:-30px}
+.mock-stage .lc2{right:-13%;top:96px}
+.mock-stage .lc4{left:auto;right:-5%;top:222px}
+@media(max-width:980px){
+  .app-shell{width:100%}
+  .phone-mock{left:-4px;bottom:-20px;width:160px}
+  .mock-stage .lc1{right:-4px}.mock-stage .lc2{right:-4px}.mock-stage .lc4{right:-4px}
+}
+@media(max-width:767px){
+  .mock-stage{min-height:0}
+  .mock-stage .lc1,.mock-stage .lc2,.mock-stage .lc4{right:-4px;left:auto;top:auto;bottom:-14px;width:min(270px,82%)}
+}
+
 /* ---------- hero mockup composition ---------- */
 .mock-stage{position:relative;min-height:520px}
 @media(max-width:980px){.mock-stage{min-height:460px;margin-top:10px}}
@@ -594,19 +633,16 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
     </div>
 
     <div class="mock-stage rv">
-      <div class="hb-laptop">
-      <div class="lap-unit">
-        <div class="lap-lid">
-          <div class="lap-screen">
-            <img src="img/dashboard-analytics.webp" width="1400" height="885" fetchpriority="high" alt="AffiliateFinder campaign analytics: 125 emails sent, 51.2% open rate, 29.4% reply rate" />
-            <div class="lap-notch" aria-hidden="true"></div>
-          </div>
-        </div>
-        <div class="lap-base" aria-hidden="true"></div>
+      <div class="app-shell">
+        <img src="img/dashboard-analytics.webp" width="1400" height="885" fetchpriority="high" alt="AffiliateFinder campaign analytics – 125 emails sent, 51.2% open rate, 29.4% reply rate">
       </div>
-
-      <!-- Notification cards — decorative (the copy tells the same story),
-           so aria-hidden. SVGs inlined; filter ids namespaced per card. -->
+      <!-- PLACEHOLDER phone — swap .phone-screen content for the real mobile screenshot -->
+      <div class="phone-mock" aria-hidden="true">
+        <div class="phone-screen">
+          <div class="ph-greet">Good morning, <b>Jamie</b>.<br><span>1,456 new affiliates found in your niche.</span></div>
+          <div class="ph-ask"><span class="orb"></span>Search your niche…</div>
+        </div>
+      </div>
       <div class="lapcards" aria-hidden="true">
     <div class="lapcard lc1">
       <svg viewBox="0 0 620 180" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -698,8 +734,7 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
         <text x="572" y="80" text-anchor="end" font-family="Inter,-apple-system,'SF Pro Display','Segoe UI',sans-serif" font-size="17" font-weight="400" fill="#A6ACB8">now</text>
       </svg>
     </div>
-      </div><!-- /.lapcards -->
-    </div>
+      </div>
     </div>
   </div>
 
