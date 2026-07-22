@@ -144,6 +144,72 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 }
 .stat-pills .sp b{color:var(--teal);font-weight:800}
 
+/* ---------- hero laptop (ported from variant B) ---------- */
+/* ---------- CSS laptop (no flat composite: the cards must stay animatable) */
+.hb-laptop{position:relative;width:min(960px,88%);margin:44px auto 0}
+.lap-unit{filter:drop-shadow(0 46px 70px rgba(8,48,76,.20))}
+.lap-lid{background:#1A1C20;border-radius:42px;padding:22px;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.09)} /* subtle edge highlight */
+.lap-screen{position:relative;aspect-ratio:16/10;border-radius:14px;overflow:hidden;background:#fff}
+.lap-screen img{display:block;width:100%;height:auto} /* top-aligned; white bg fills any rest */
+.lap-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:112px;height:20px;
+  background:#1A1C20;border-radius:0 0 11px 11px}
+.lap-base{position:relative;height:32px;margin:0 -4%; /* ~8% wider than the lid */
+  background:linear-gradient(180deg,#F0F2F5 0%,#DDE1E6 46%,#C9CDD3 100%);
+  border-radius:0 0 18px 18px;
+  box-shadow:inset 26px 0 20px -20px rgba(8,48,76,.30), inset -26px 0 20px -20px rgba(8,48,76,.30)}
+.lap-base::after{content:"";position:absolute;left:50%;top:0;transform:translateX(-50%);
+  width:13%;height:46%;background:linear-gradient(180deg,#C6CAD1,#DEE1E6);
+  border-radius:0 0 14px 14px} /* thumb scoop */
+
+/* ---------- notification cards over the laptop (12s loop) ----------
+   Enters at 0.3s / 3.2s / 6.4s; each dims to 45% as the next lands; the
+   replies card holds to 11s; 11–12s everything fades out together.
+   Percent of 12s: 2.5 / 6.67 / 26.67 / 30.83 / 53.33 / 57.5 / 91.67. */
+.lapcards{position:absolute;inset:0;pointer-events:none}
+.lapcard{position:absolute;width:clamp(280px,40%,420px);
+  will-change:transform,opacity;opacity:0;transform:translateX(40px)}
+.lapcard svg{display:block;width:100%;height:auto;aspect-ratio:620/180}
+.lc1{left:-16%;top:13%;animation:nfb-c1 8s linear infinite} /* overlaps lid left edge ~40% of card width */
+.lc2{right:-16%;top:49%;animation:nfb-c2 8s linear infinite} /* just below the stat row — the metrics stay readable */
+.lc4{left:-18%;top:68%;animation:nfb-c4 8s linear infinite}
+.lapcards.nf-paused .lapcard{animation-play-state:paused}
+/* 8s loop, snappy 300ms pops: enters at 0.3s / 1.5s / 2.7s, the replies card
+   holds to 7.2s, everything fades out together by 8s. */
+@keyframes nfb-c1{
+  0%,3.75%{opacity:0;transform:translateX(40px);animation-timing-function:ease-out}
+  7.5%{opacity:1;transform:none;animation-timing-function:linear}
+  18.75%{opacity:1;transform:none}
+  22.5%,90%{opacity:.45;transform:none}
+  100%{opacity:0;transform:none}
+}
+@keyframes nfb-c2{
+  0%,18.75%{opacity:0;transform:translateX(40px);animation-timing-function:ease-out}
+  22.5%{opacity:1;transform:none;animation-timing-function:linear}
+  33.75%{opacity:1;transform:none}
+  37.5%,90%{opacity:.45;transform:none}
+  100%{opacity:0;transform:none}
+}
+@keyframes nfb-c4{
+  0%,33.75%{opacity:0;transform:translateX(40px);animation-timing-function:ease-out}
+  37.5%{opacity:1;transform:none;animation-timing-function:linear}
+  90%{opacity:1;transform:none}
+  100%{opacity:0;transform:none}
+}
+/* tablet: laptop wider, cards floor at 240px */
+@media(max-width:1023px){
+  .hb-laptop{width:90%}
+  .lapcard{width:clamp(240px,40%,420px)}
+}
+
+.mock-stage .hb-laptop{width:100%;margin:0}
+@media(max-width:767px){
+  .lc1,.lc2,.lc4{width:min(260px,78%)}
+  .lc1{left:-4px;right:auto;top:auto;bottom:54%}
+  .lc2{right:-4px;left:auto;top:auto;bottom:28%}
+  .lc4{left:-4px;right:auto;top:auto;bottom:-12px}
+}
+
 /* ---------- hero mockup composition ---------- */
 .mock-stage{position:relative;min-height:520px}
 @media(max-width:980px){.mock-stage{min-height:460px;margin-top:10px}}
@@ -532,69 +598,112 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
     </div>
 
     <div class="mock-stage rv">
-      <div class="app-window">
-        <div class="bar">
-          <div class="dots"><i></i><i></i><i></i></div>
-          <div class="searchbar"><span class="orb"></span><span class="type" id="typed">Fitness · United States · 50K+ monthly traffic</span></div>
-        </div>
-        <div class="app-body">
-          <div class="app-side">
-            <span class="sq active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></span>
-            <span class="sq"><svg viewBox="0 0 24 24" fill="none" stroke="#9aa2aa" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span>
-            <span class="sq"><svg viewBox="0 0 24 24" fill="none" stroke="#9aa2aa" stroke-width="2.2"><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/></svg></span>
-            <span class="sq"><svg viewBox="0 0 24 24" fill="none" stroke="#9aa2aa" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg></span>
-          </div>
-          <div class="app-main">
-            <div class="list-title">Affiliates <span class="count" id="matchCount">1,456 found in your niche</span></div>
-            <div class="result">
-              <span class="favicon" style="background:linear-gradient(135deg,#f0966e,#d6688f)">FG</span>
-              <span class="meta"><span class="name">fitgearreviews.com <span class="vf">✓ Verified</span></span>
-              <span class="info">Fitness · ranks for 2,400 keywords · active this month</span></span>
-              <span class="traffic">412K<small>visits/mo</small></span>
-            </div>
-            <div class="result">
-              <span class="favicon" style="background:linear-gradient(135deg,#0a9aa8,#067280)">SL</span>
-              <span class="meta"><span class="name">strengthlog.io <span class="vf">✓ Verified</span></span>
-              <span class="info">Fitness · on 3 networks · owner email on file</span></span>
-              <span class="traffic">268K<small>visits/mo</small></span>
-            </div>
-            <div class="result">
-              <span class="favicon" style="background:linear-gradient(135deg,#8f7ad6,#d6688f)">HW</span>
-              <span class="meta"><span class="name">homeworkouthub.com <span class="vf">✓ Verified</span></span>
-              <span class="info">Fitness · promotes 12 programs · US audience</span></span>
-              <span class="traffic">190K<small>visits/mo</small></span>
-            </div>
-            <div class="result">
-              <span class="favicon" style="background:linear-gradient(135deg,#f5bd4f,#f0966e)">SN</span>
-              <span class="meta"><span class="name">supplementnerd.com <span class="vf">✓ Verified</span></span>
-              <span class="info">Nutrition · comparison reviews · active this week</span></span>
-              <span class="traffic">154K<small>visits/mo</small></span>
-            </div>
-            <div class="result">
-              <span class="favicon" style="background:linear-gradient(135deg,#53a0c9,#0a9aa8)">RC</span>
-              <span class="meta"><span class="name">runnerscorner.co.uk <span class="vf">✓ Verified</span></span>
-              <span class="info">Running · UK + US traffic · on 2 networks</span></span>
-              <span class="traffic">121K<small>visits/mo</small></span>
-            </div>
+      <div class="hb-laptop">
+      <div class="lap-unit">
+        <div class="lap-lid">
+          <div class="lap-screen">
+            <img src="img/dashboard-analytics.webp" width="1400" height="885" fetchpriority="high" alt="AffiliateFinder campaign analytics: 125 emails sent, 51.2% open rate, 29.4% reply rate" />
+            <div class="lap-notch" aria-hidden="true"></div>
           </div>
         </div>
+        <div class="lap-base" aria-hidden="true"></div>
       </div>
 
-      <div class="float-card fc1">
-        <div class="fc-head"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#067280" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>1,456 affiliates found</div>
-        <p>Scanning your niche: <b>websites</b>, <b>YouTube</b>, <b>Instagram</b>, <b>TikTok</b></p>
-        <div class="time">just now</div>
-      </div>
-      <div class="float-card fc2">
-        <div class="fc-head"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#067280" stroke-width="2.2"><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/></svg>Verified owner email</div>
-        <p><b>fitgearreviews.com</b> – contact data verified &amp; ready to export.</p>
-        <div class="time">2m</div>
-      </div>
-      <div class="float-card fc3">
-        <div class="fc-head"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#067280" stroke-width="2.2"><path d="M12 2l2.4 6.9H21l-5.3 4.1 2 6.9-5.7-4.2L6.3 20l2-6.9L3 8.9h6.6z"/></svg>26 unread replies</div>
-        <p><b>Affiliates want to work with you.</b> Follow-ups run automatically until they reply.</p>
-        <div class="time">14m</div>
-      </div>
+      <!-- Notification cards — decorative (the copy tells the same story),
+           so aria-hidden. SVGs inlined; filter ids namespaced per card. -->
+      <div class="lapcards" aria-hidden="true">
+    <div class="lapcard lc1">
+      <svg viewBox="0 0 620 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="nf-s1" x="-15%" y="-15%" width="130%" height="150%">
+            <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#16303E" flood-opacity="0.09"/>
+          </filter>
+          <linearGradient id="nf-org" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#FF9A4D"/>
+            <stop offset="1" stop-color="#F97316"/>
+          </linearGradient>
+        </defs>
+        <rect x="20" y="15" width="580" height="140" rx="32" fill="#FFFFFF" filter="url(#nf-s1)"/>
+        <rect x="48" y="53" width="64" height="64" rx="16" fill="url(#nf-org)"/>
+        <g stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" fill="none">
+          <circle cx="78" cy="83" r="11"/>
+          <path d="M86.2 91.2 L94 99"/>
+        </g>
+        <text x="136" y="80" font-family="Inter,-apple-system,'SF Pro Display','Segoe UI',sans-serif" font-size="24" font-weight="700" fill="#1A1A1A">Scanning your niche</text>
+        <text x="136" y="114" font-family="Inter,-apple-system,'SF Pro Display','Segoe UI',sans-serif" font-size="21" font-weight="400" fill="#1A1A1A">Websites, YouTube, Instagram, TikTok</text>
+        <text x="572" y="80" text-anchor="end" font-family="Inter,-apple-system,'SF Pro Display','Segoe UI',sans-serif" font-size="17" font-weight="400" fill="#A6ACB8">now</text>
+      </svg>
+    </div>
+    <div class="lapcard lc2">
+      <svg viewBox="0 0 620 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="nf-s2" x="-15%" y="-15%" width="130%" height="150%">
+            <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#16303E" flood-opacity="0.09"/>
+          </filter>
+          <radialGradient id="nf-ig" cx="0.2" cy="1.05" r="1.4">
+            <stop offset="0" stop-color="#FDB146"/>
+            <stop offset="0.45" stop-color="#E1306C"/>
+            <stop offset="1" stop-color="#833AB4"/>
+          </radialGradient>
+        </defs>
+        <rect x="20" y="15" width="580" height="140" rx="32" fill="#FFFFFF" filter="url(#nf-s2)"/>
+        <rect x="48" y="53" width="64" height="64" rx="16" fill="#F5F6F8"/>
+        <g transform="translate(55,60)">
+          <g>
+            <rect x="0" y="2.5" width="24" height="17" rx="5" fill="#FF0000"/>
+            <path d="M9.6 7.2 L16 11 L9.6 14.8 Z" fill="#FFFFFF"/>
+          </g>
+          <g transform="translate(28,0)">
+            <rect x="0" y="0" width="22" height="22" rx="6.5" fill="url(#nf-ig)"/>
+            <rect x="4.4" y="4.4" width="13.2" height="13.2" rx="4.2" stroke="#FFFFFF" stroke-width="1.8" fill="none"/>
+            <circle cx="11" cy="11" r="3.1" stroke="#FFFFFF" stroke-width="1.8" fill="none"/>
+            <circle cx="15.5" cy="6.6" r="1.1" fill="#FFFFFF"/>
+          </g>
+          <g transform="translate(0,28)">
+            <rect x="0" y="0" width="22" height="22" rx="6.5" fill="#010101"/>
+            <path d="M14.9 4.9 a3.9 3.9 0 0 0 2.8 1.2 v2.5 a6.3 6.3 0 0 1-2.8-.7 v4.6 a4.9 4.9 0 1 1-4.9-4.9 c.2 0 .5 0 .7.1 v2.6 a2.4 2.4 0 1 0 1.7 2.3 V3.6 h2.4 c0 .5.1.9.1 1.3 z" fill="#25F4EE" transform="translate(-0.7,0.4)"/>
+            <path d="M14.9 4.9 a3.9 3.9 0 0 0 2.8 1.2 v2.5 a6.3 6.3 0 0 1-2.8-.7 v4.6 a4.9 4.9 0 1 1-4.9-4.9 c.2 0 .5 0 .7.1 v2.6 a2.4 2.4 0 1 0 1.7 2.3 V3.6 h2.4 c0 .5.1.9.1 1.3 z" fill="#FE2C55" transform="translate(0.7,-0.2)"/>
+            <path d="M14.9 4.9 a3.9 3.9 0 0 0 2.8 1.2 v2.5 a6.3 6.3 0 0 1-2.8-.7 v4.6 a4.9 4.9 0 1 1-4.9-4.9 c.2 0 .5 0 .7.1 v2.6 a2.4 2.4 0 1 0 1.7 2.3 V3.6 h2.4 c0 .5.1.9.1 1.3 z" fill="#FFFFFF"/>
+          </g>
+          <g transform="translate(28,28)">
+            <circle cx="11" cy="11" r="10" fill="#3B82F6"/>
+            <g stroke="#FFFFFF" stroke-width="1.5" fill="none">
+              <circle cx="11" cy="11" r="7.6"/>
+              <path d="M3.4 11 H18.6 M11 3.4 C7.6 7.2 7.6 14.8 11 18.6 C14.4 14.8 14.4 7.2 11 3.4"/>
+            </g>
+          </g>
+        </g>
+        <text x="136" y="80" font-family="Inter,-apple-system,'SF Pro Display','Segoe UI',sans-serif" font-size="24" font-weight="700" fill="#1A1A1A"><tspan id="nf-count">1,456</tspan> affiliates found</text>
+        <text x="136" y="114" font-family="Inter,-apple-system,'SF Pro Display','Segoe UI',sans-serif" font-size="21" font-weight="400" fill="#1A1A1A">Emails verified and ready</text>
+        <text x="572" y="80" text-anchor="end" font-family="Inter,-apple-system,'SF Pro Display','Segoe UI',sans-serif" font-size="17" font-weight="400" fill="#A6ACB8">now</text>
+      </svg>
+    </div>
+    <div class="lapcard lc4">
+      <svg viewBox="0 0 620 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="nf-s4" x="-15%" y="-15%" width="130%" height="150%">
+            <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#16303E" flood-opacity="0.09"/>
+          </filter>
+          <linearGradient id="nf-blu" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#5BA0F7"/>
+            <stop offset="1" stop-color="#2563EB"/>
+          </linearGradient>
+        </defs>
+        <rect x="20" y="15" width="580" height="140" rx="32" fill="#FFFFFF" filter="url(#nf-s4)"/>
+        <rect x="48" y="53" width="64" height="64" rx="16" fill="url(#nf-blu)"/>
+        <g stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none">
+          <rect x="63" y="72" width="34" height="26" rx="5"/>
+          <path d="M64 74.5 L80 87 L96 74.5"/>
+        </g>
+        <circle cx="112" cy="55" r="14" fill="#E8482F"/>
+        <text x="112" y="60.5" text-anchor="middle" font-family="Inter,-apple-system,'SF Pro Display','Segoe UI',sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">26</text>
+        <text x="136" y="80" font-family="Inter,-apple-system,'SF Pro Display','Segoe UI',sans-serif" font-size="24" font-weight="700" fill="#1A1A1A">26 unread replies</text>
+        <text x="136" y="114" font-family="Inter,-apple-system,'SF Pro Display','Segoe UI',sans-serif" font-size="21" font-weight="400" fill="#1A1A1A">Affiliates want to work with you</text>
+        <text x="572" y="80" text-anchor="end" font-family="Inter,-apple-system,'SF Pro Display','Segoe UI',sans-serif" font-size="17" font-weight="400" fill="#A6ACB8">now</text>
+      </svg>
+    </div>
+      </div><!-- /.lapcards -->
+    </div>
     </div>
   </div>
 
@@ -1049,21 +1158,7 @@ function wordReveal(){
 window.addEventListener('scroll',wordReveal,{passive:true});
 wordReveal();
 
-/* ---------- hero filter typing loop ---------- */
-const typed=document.getElementById('typed');
-const queries=[
-  'Scanning your niche · websites · YouTube · Instagram · TikTok',
-  'Fitness · United States · verified emails only',
-  'Creators reviewing your competitors · last 30 days',
-  'SaaS reviews · English-speaking · 90+ match score'
-];
-let qi=0;
-setInterval(()=>{
-  qi=(qi+1)%queries.length;
-  typed.style.opacity=0;
-  setTimeout(()=>{typed.textContent=queries[qi];typed.style.opacity=1},350);
-},4200);
-typed.style.transition='opacity .35s';
+
 </script>
 </body>
 </html>
