@@ -635,6 +635,11 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .story-card .sq{font-size:clamp(19px,2.2vw,24px);font-weight:600;letter-spacing:-.025em;line-height:1.45}
 .story-card .sq .hl{color:var(--teal)}
 .story-card .sbody{margin-top:18px;font-size:15px;color:var(--ink-soft);line-height:1.7}
+.story-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center}
+@media(max-width:820px){.story-grid{grid-template-columns:1fr}}
+.story-shot{border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 18px 50px rgba(16,20,24,.12)}
+.story-shot img{display:block;width:100%;height:auto}
+.story-author img{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:0 2px 8px rgba(16,20,24,.15)}
 .story-author{display:flex;align-items:center;gap:14px;margin-top:28px}
 .story-author .avatar{width:44px;height:44px;font-size:15px}
 .story-author .nm{font-size:14.5px;font-weight:700}
@@ -1250,11 +1255,18 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
 <section class="story wrap">
   <div class="eyebrow rv" style="justify-content:center"><span class="rule"></span><span class="pill">Customer story</span><span class="rule"></span></div>
   <div class="story-card rv">
-    <div class="sq">"Feeling a bit guilty for getting all the credit from my team lol – <span class="hl">who would have thought that AI emails could get response rates like that?</span>"</div>
-    <div class="sbody">"I have zero experience recruiting affiliates, but as Head of Marketing, finding more partners for CopeCart was one of my tasks. With AffiliateFinder, I just added our website and within minutes I had a list of great affiliates – especially the Instagram and YouTube creators I was looking for. Then I set up my campaign (I LOVED that it wrote the emails for me) and after a week I actually had to pause it, because I had gotten enough deals completed for our launch campaign and couldn't handle any more! Thank you AF team!"</div>
-    <div class="story-author">
-      <span class="avatar" style="background:linear-gradient(135deg,#0a9aa8,#067280)">MH</span>
-      <span><span class="nm">Michelle Habenicht</span><br><span class="rl">Head of Marketing @ CopeCart</span></span>
+    <div class="story-grid">
+      <div>
+        <div class="sq">"Feeling a bit guilty for getting all the credit from my team lol – <span class="hl">who would have thought that AI emails could get response rates like that?</span>"</div>
+        <div class="sbody">"I have zero experience recruiting affiliates, but as Head of Marketing, finding more partners for CopeCart was one of my tasks. With AffiliateFinder, I just added our website and within minutes I had a list of great affiliates – especially the Instagram and YouTube creators I was looking for. Then I set up my campaign (I LOVED that it wrote the emails for me) and after a week I actually had to pause it, because I had gotten enough deals completed for our launch campaign and couldn't handle any more! Thank you AF team!"</div>
+        <div class="story-author">
+          <img src="img/testimonial-michelle.jpg" alt="Michelle Habenicht" loading="lazy">
+          <span><span class="nm">Michelle Habenicht</span><br><span class="rl">Head of Marketing @ CopeCart</span></span>
+        </div>
+      </div>
+      <div class="story-shot">
+        <img src="img/testimonial-analytics.jpg" alt="Michelle's First Campaign analytics: 125 emails sent, 51.2% open rate, 29.4% reply rate" loading="lazy">
+      </div>
     </div>
     <div class="story-stats">
       <div class="st"><b>125</b><span>Emails sent</span></div>
