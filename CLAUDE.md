@@ -121,8 +121,7 @@ This section will be populated with:
 
 **Where the current LP lives:**
 - The "Peace LP" for AffiliateFinder.ai is served by the **link-in-bio app deployed on Railway** — its code is NOT in this repository.
-- The exact GitHub repo could not be identified from a Claude session rooted in this repo: `add_repo` cannot add `Endorsely-software/*` repos to a session whose sources are owned by `michellehavnt` (cross-tier adds unsupported). Likely candidates: `Endorsely-software/affiliate-finder` or `Endorsely-software/endorsely-monorepo`.
-- **To find it for sure:** Railway dashboard → the link-in-bio service → Settings → Source shows the connected GitHub repo. To let Claude edit it, start a Claude session from that Endorsely repo.
+- The repo is **`Michellehavnt/bio-link`** (confirmed by Michelle, 2026-07-22). As of that date the Claude GitHub App credential could not access it (`add_repo` → "you don't have access") — grant the Claude GitHub App repository access to `bio-link` in GitHub settings, then `add_repo Michellehavnt/bio-link` works from any session rooted in a Michellehavnt repo. The Peace LP's original copy lives in that repo and should be used as product-truth input for copywriting.
 - Workaround used: the redesigned page is built as a self-contained HTML file in this repo (see `AFLandingC/`), ready to be dropped into the link-in-bio app.
 
 **Design decisions (July 2026):**
