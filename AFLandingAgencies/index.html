@@ -777,6 +777,76 @@ h2{font-size:clamp(32px,4.4vw,56px)}
   .cb svg{width:10px;height:8px}
 }
 
+/* ---------- how it works journey ---------- */
+.journey{position:relative;padding:100px 0 40px}
+.jn-head{text-align:center;max-width:740px;margin:0 auto}
+.jn-head .eyebrow{justify-content:center}
+.jn-head p{margin-top:16px;font-size:15.5px;color:var(--ink-soft);line-height:1.7}
+.jn-head p b{font-weight:650;background:linear-gradient(105deg,#12b0bf 0%,#067280 55%,#0a4e58 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.jn-rows{max-width:1040px;margin:14px auto 0}
+.jn-row{display:grid;grid-template-columns:1fr 1.12fr;gap:64px;align-items:center;padding:52px 0}
+.jn-row.flip .jn-copy{order:2}
+.jn-row.flip .jn-vis{order:1}
+.jn-copy .num{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--teal)}
+.jn-copy h3{margin-top:10px;font-size:clamp(20px,2.2vw,26px);font-weight:750;letter-spacing:-.025em}
+.jn-copy p{margin-top:12px;font-size:14.5px;line-height:1.7;color:var(--ink-soft);max-width:44ch}
+.jm{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-card);overflow:hidden}
+.jm-bar{display:flex;gap:6px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--cream)}
+.jm-bar i{width:9px;height:9px;border-radius:50%;background:#e3ddd2}
+.jm-body{padding:18px}
+.jm-input{display:flex;align-items:center;gap:10px;border:1.5px solid rgba(6,114,128,.45);border-radius:12px;padding:12px 14px;font-size:13.5px;font-weight:600;color:var(--ink);min-height:44px}
+.jm-input svg{flex:none;color:var(--teal)}
+.jm-caret{flex:none;width:2px;height:16px;background:var(--teal);animation:jmblink 1s steps(2) infinite}
+@keyframes jmblink{50%{opacity:0}}
+.jm-res{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.jm-r{display:flex;align-items:center;gap:11px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;opacity:0;transform:translateY(10px);transition:opacity .45s ease,transform .45s ease,border-color .3s,background .3s}
+.jm-r.in{opacity:1;transform:none}
+.jm-r>img{width:30px;height:30px;border-radius:9px;object-fit:cover;flex:none}
+.jm-r b{font-size:12.5px;display:block}
+.jm-r small{display:block;font-size:10.5px;color:var(--ink-mute);margin-top:2px}
+.jm-score{margin-left:auto;flex:none;font-size:11px;font-weight:800;color:var(--teal);background:rgba(6,114,128,.09);border:1px solid rgba(6,114,128,.25);border-radius:999px;padding:4px 9px}
+.jm-ck{flex:none;width:20px;height:20px;border-radius:7px;border:1.5px solid rgba(16,20,24,.2);display:grid;place-items:center;color:#fff;transition:background .3s,border-color .3s}
+.jm-ck svg{opacity:0;transition:opacity .2s}
+.jm-r.saved{border-color:rgba(6,114,128,.45);background:rgba(6,114,128,.05)}
+.jm-r.saved .jm-ck{background:var(--teal);border-color:var(--teal)}
+.jm-r.saved .jm-ck svg{opacity:1}
+.jm-vmail{margin-left:auto;flex:none;font-size:9.5px;font-weight:700;color:var(--teal);background:rgba(6,114,128,.08);border-radius:999px;padding:3px 8px;white-space:nowrap}
+.jm-savehead{display:flex;align-items:center;font-size:12.5px;font-weight:800;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.jm-count{margin-left:auto;font-size:10.5px;font-weight:800;color:var(--teal);background:rgba(6,114,128,.09);border-radius:999px;padding:3px 10px;font-variant-numeric:tabular-nums}
+.jm-to{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-mute);border-bottom:1px solid var(--line);padding-bottom:10px}
+.jm-chip{font-size:11px;font-weight:700;color:var(--teal);background:rgba(6,114,128,.09);border-radius:999px;padding:4px 10px}
+.jm-subj{font-size:13px;font-weight:700;padding:10px 0;border-bottom:1px solid var(--line)}
+.jm-lines{padding:14px 0 12px;display:flex;flex-direction:column;gap:9px}
+.jm-lines i{height:8px;border-radius:99px;background:rgba(16,20,24,.07)}
+.jm-lines i:nth-child(1){width:92%}.jm-lines i:nth-child(2){width:78%}.jm-lines i:nth-child(3){width:56%}
+.jm-sendrow{display:flex;align-items:center;gap:14px;margin-top:6px}
+.jm-sendbtn{flex:none;font-size:12.5px;font-weight:700;color:#fff;background:linear-gradient(100deg,#0a9aa8,#067280);border-radius:999px;padding:10px 18px;transition:transform .18s}
+.jm-sendbtn.press{transform:scale(.93)}
+.jm-prog{flex:1;height:6px;border-radius:99px;background:rgba(16,20,24,.07);overflow:hidden}
+.jm-prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#0a9aa8,#12b0bf)}
+.jm-sent{flex:none;font-size:11.5px;font-weight:700;color:var(--teal);min-width:86px;text-align:right;font-variant-numeric:tabular-nums}
+.jm-ihead{display:flex;align-items:center;gap:10px;font-size:12.5px;font-weight:800;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.jm-new{margin-left:auto;font-size:10.5px;font-weight:800;color:#fff;background:linear-gradient(100deg,#0a9aa8,#067280);border-radius:999px;padding:3px 9px;font-variant-numeric:tabular-nums}
+.jm-inb{margin-top:10px;display:flex;flex-direction:column;gap:8px;min-height:208px}
+.jm-msg{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:10px 12px;opacity:0;transform:translateY(-8px);transition:opacity .4s,transform .4s}
+.jm-msg.in{opacity:1;transform:none}
+.jm-msg .dot{flex:none;width:7px;height:7px;border-radius:50%;background:#12b76a;margin-top:6px}
+.jm-msg b{font-size:12px}
+.jm-msg small{display:block;font-size:10.5px;color:var(--ink-mute);margin-top:2px}
+.jm-time{margin-left:auto;flex:none;font-size:9.5px;color:var(--ink-mute)}
+.jn-stats{display:grid;grid-template-columns:repeat(3,1fr);max-width:1040px;margin:26px auto 0;border-top:1px solid var(--line);padding-top:42px}
+.jn-stats .fs{text-align:center;padding:0 24px}
+.jn-stats .fs+.fs{border-left:1px solid var(--line)}
+.jn-stats b{display:block;font-size:clamp(28px,3.2vw,42px);font-weight:800;letter-spacing:-.04em;line-height:1.05;background:linear-gradient(105deg,#12b0bf 0%,#067280 55%,#0a4e58 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.jn-stats span{display:block;margin-top:8px;font-size:12.5px;color:var(--ink-mute);line-height:1.55}
+@media(max-width:900px){
+  .jn-row{grid-template-columns:1fr;gap:22px;padding:34px 0}
+  .jn-row.flip .jn-copy{order:1}
+  .jn-row.flip .jn-vis{order:2}
+  .jn-stats{grid-template-columns:1fr;gap:26px;padding-top:34px}
+  .jn-stats .fs+.fs{border-left:0}
+}
+
 /* ---------- discovery setup ---------- */
 .disc{padding:110px 0 20px}
 .disc-head{text-align:center;max-width:680px;margin:0 auto 46px}
@@ -894,37 +964,6 @@ h2{font-size:clamp(32px,4.4vw,56px)}
   .story-author .vf{display:none}
 }
 @media(max-width:640px){.story-card{padding:36px 24px 32px}}
-
-/* ---------- flywheel ---------- */
-.flywheel{position:relative;background:#0a0f16;color:#fff;padding:120px 0;overflow:hidden}
-.flywheel::before{content:'';position:absolute;inset:0;opacity:.55;
-  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
-  background-size:22px 22px}
-.flywheel .wrap{position:relative;z-index:1}
-.fw-head{text-align:center;max-width:760px;margin:0 auto}
-.fw-head .fw-pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:7px 16px;margin-bottom:26px}
-.fw-head h2{font-size:clamp(26px,3.2vw,40px);letter-spacing:-.03em;line-height:1.15;color:#fff}
-.fw-head h2 .hl{background:linear-gradient(100deg,#8ed6de,#0a9aa8);-webkit-background-clip:text;background-clip:text;color:transparent}
-.fw-head p{margin-top:18px;font-size:15.5px;line-height:1.7;color:rgba(255,255,255,.6)}
-.fw-head p b{font-weight:650;background:linear-gradient(100deg,#8ed6de,#0a9aa8);-webkit-background-clip:text;background-clip:text;color:transparent}
-.fw-flow{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:40px;margin-top:84px}
-.fw-flow::before{content:'';position:absolute;top:18px;left:12.5%;right:12.5%;height:1px;
-  background:linear-gradient(90deg,rgba(142,214,222,0),rgba(142,214,222,.3) 10%,rgba(142,214,222,.3) 90%,rgba(142,214,222,0))}
-.fw-step{text-align:center;padding:0 6px}
-.fw-step .n{position:relative;z-index:1;display:inline-grid;place-items:center;width:36px;height:36px;border-radius:50%;font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;color:#8ed6de;border:1px solid rgba(142,214,222,.4);background:#0a0f16}
-.fw-step h3{margin-top:18px;font-size:15.5px;font-weight:700;letter-spacing:-.01em;color:#fff}
-.fw-step p{margin-top:8px;font-size:13px;line-height:1.65;color:rgba(255,255,255,.55);max-width:26ch;margin-left:auto;margin-right:auto}
-.fw-stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:88px;border-top:1px solid rgba(255,255,255,.1);padding-top:46px}
-.fw-stats .fs{text-align:center;padding:0 26px}
-.fw-stats .fs+.fs{border-left:1px solid rgba(255,255,255,.1)}
-.fw-stats b{display:block;font-size:clamp(30px,3.4vw,44px);font-weight:800;letter-spacing:-.04em;line-height:1.05;background:linear-gradient(100deg,#8ed6de,#0a9aa8);-webkit-background-clip:text;background-clip:text;color:transparent}
-.fw-stats span{display:block;margin-top:9px;font-size:12.5px;color:rgba(255,255,255,.55);line-height:1.55}
-@media(max-width:900px){
-  .fw-flow{grid-template-columns:1fr;gap:38px;margin-top:60px}
-  .fw-flow::before{display:none}
-  .fw-step p{max-width:34ch}
-}
-@media(max-width:720px){.fw-stats{grid-template-columns:1fr;gap:28px;padding-top:36px;margin-top:60px}.fw-stats .fs+.fs{border-left:0}}
 
 /* ---------- video story (webinar) ---------- */
 .vstory{padding:100px 0 110px}
@@ -1228,8 +1267,69 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
   </div>
 </section>
 
+<!-- ============ HOW IT WORKS JOURNEY ============ -->
+<section class="journey" id="how">
+  <div class="wrap">
+    <div class="jn-head rv">
+      <div class="eyebrow"><span class="rule"></span><span class="pill">How it works</span><span class="rule"></span></div>
+      <h2 data-edit="c-jn-title">From your first search<br><span class="accent">to a full inbox.</span></h2>
+      <p data-edit="c-jn-sub">AffiliateFinder.ai is the <b>first</b> software that finds, verifies and recruits affiliates in <b>one workflow</b> – four steps, zero technical setup, for every client you manage.</p>
+    </div>
+    <div class="jn-rows">
+      <div class="jn-row">
+        <div class="jn-copy rv"><div class="num">01</div><h3 data-edit="c-jn-s1-t">Start your search</h3><p data-edit="c-jn-s1-d">Type what your client sells. A ranked list of matching affiliates comes back – scored by fit.</p></div>
+        <div class="jn-vis rv"><div class="jm"><div class="jm-bar" aria-hidden="true"><i></i><i></i><i></i></div><div class="jm-body">
+          <div class="jm-input"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg><span id="jnType"></span><span class="jm-caret"></span></div>
+          <div class="jm-res" id="jnRes">
+            <div class="jm-r"><img src="https://randomuser.me/api/portraits/med/women/44.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><span><b>Mara | Lift Daily</b><small>7.7K followers · Instagram</small></span><span class="jm-score">94% match</span></div>
+            <div class="jm-r"><img src="https://randomuser.me/api/portraits/med/men/32.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><span><b>gearscout.io</b><small>6.6K visits/mo · DR 68</small></span><span class="jm-score">91% match</span></div>
+            <div class="jm-r"><img src="https://randomuser.me/api/portraits/med/men/22.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><span><b>FitStack Reviews</b><small>27.8K subscribers · YouTube</small></span><span class="jm-score">88% match</span></div>
+          </div>
+        </div></div></div>
+      </div>
+      <div class="jn-row flip">
+        <div class="jn-copy rv"><div class="num">02</div><h3 data-edit="c-jn-s2-t">Pick your best matches</h3><p data-edit="c-jn-s2-d">Save the ones worth your time – verified owner emails included.</p></div>
+        <div class="jn-vis rv"><div class="jm"><div class="jm-bar" aria-hidden="true"><i></i><i></i><i></i></div><div class="jm-body">
+          <div class="jm-savehead">Best matches<span class="jm-count" id="jnSaved">0 saved</span></div>
+          <div class="jm-res" id="jnPick">
+            <div class="jm-r in"><span class="jm-ck"><svg width="11" height="9" viewBox="0 0 14 11" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 5.5l3.6 3.6L12.5 1.5"/></svg></span><img src="https://randomuser.me/api/portraits/med/women/44.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><span><b>Mara | Lift Daily</b></span><span class="jm-vmail">✓ Verified email</span></div>
+            <div class="jm-r in"><span class="jm-ck"><svg width="11" height="9" viewBox="0 0 14 11" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 5.5l3.6 3.6L12.5 1.5"/></svg></span><img src="https://randomuser.me/api/portraits/med/men/32.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><span><b>gearscout.io</b></span><span class="jm-vmail">✓ Verified email</span></div>
+            <div class="jm-r in"><span class="jm-ck"><svg width="11" height="9" viewBox="0 0 14 11" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 5.5l3.6 3.6L12.5 1.5"/></svg></span><img src="https://randomuser.me/api/portraits/med/men/22.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><span><b>FitStack Reviews</b></span><span class="jm-vmail">✓ Verified email</span></div>
+          </div>
+        </div></div></div>
+      </div>
+      <div class="jn-row">
+        <div class="jn-copy rv"><div class="num">03</div><h3 data-edit="c-jn-s3-t">Send in one click</h3><p data-edit="c-jn-s3-d">Personal emails and follow-ups go out on autopilot.</p></div>
+        <div class="jn-vis rv"><div class="jm"><div class="jm-bar" aria-hidden="true"><i></i><i></i><i></i></div><div class="jm-body">
+          <div class="jm-to">To <span class="jm-chip">24 saved affiliates</span></div>
+          <div class="jm-subj">Partnership idea for your audience</div>
+          <div class="jm-lines" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="jm-sendrow"><span class="jm-sendbtn" id="jnBtn">Send campaign</span><span class="jm-prog"><i id="jnProg"></i></span><span class="jm-sent" id="jnSent">0/24 sent</span></div>
+        </div></div></div>
+      </div>
+      <div class="jn-row flip">
+        <div class="jn-copy rv"><div class="num">04</div><h3 data-edit="c-jn-s4-t">Watch replies land</h3><p data-edit="c-jn-s4-d">Qualified affiliates reply and sign – new ones arrive every week, for every brand.</p></div>
+        <div class="jn-vis rv"><div class="jm"><div class="jm-bar" aria-hidden="true"><i></i><i></i><i></i></div><div class="jm-body">
+          <div class="jm-ihead">Inbox · Replies<span class="jm-new" id="jnNew">0 new</span></div>
+          <div class="jm-inb" id="jnInb">
+            <div class="jm-msg"><span class="dot"></span><span><b>Mara | Lift Daily</b><small>Love this – what commission are you offering?</small></span><span class="jm-time">2m</span></div>
+            <div class="jm-msg"><span class="dot"></span><span><b>gearscout.io</b><small>Interested. Can you send the details?</small></span><span class="jm-time">9m</span></div>
+            <div class="jm-msg"><span class="dot"></span><span><b>FitStack Reviews</b><small>Let's do it – sending my media kit now.</small></span><span class="jm-time">31m</span></div>
+            <div class="jm-msg"><span class="dot"></span><span><b>Nick K.</b><small>Got a launch coming up – timing is perfect.</small></span><span class="jm-time">1h</span></div>
+          </div>
+        </div></div></div>
+      </div>
+    </div>
+    <div class="jn-stats rv">
+      <div class="fs"><b>38%</b><span data-edit="c-jn-stat1">average response rate across outreach campaigns</span></div>
+      <div class="fs"><b>1 click</b><span data-edit="c-jn-stat2">to launch personal emails and follow-ups</span></div>
+      <div class="fs"><b>0</b><span data-edit="c-jn-stat3">technical setup – just type what your client sells</span></div>
+    </div>
+  </div>
+</section>
+
 <!-- ============ DARK DIVIDER ============ -->
-<section class="dark-divider" id="how">
+<section class="dark-divider">
   <div class="wrap dd" aria-hidden="true"><span class="rule"></span><span class="pill">How it works</span><span class="rule"></span></div>
   <div class="wrap fx-head">
     <h2 class="rv" data-edit="c-how-title">AffiliateFinder does the boring 90% of partner recruitment – <span class="hl">for every brand on your roster.</span></h2>
@@ -1638,27 +1738,6 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
   </div>
 </section>
 
-<!-- ============ FLYWHEEL ============ -->
-<section class="flywheel" id="flywheel">
-  <div class="wrap">
-    <div class="fw-head rv">
-      <span class="fw-pill">The flywheel</span>
-      <h2 data-edit="c-fw-title">Set it spinning once.<br><span class="hl">It keeps recruiting.</span></h2>
-      <p data-edit="c-fw-claim">AffiliateFinder.ai is the <b>first</b> software that finds, verifies and recruits affiliates in <b>one workflow</b> – four steps, zero technical setup, for every client you manage.</p>
-    </div>
-    <div class="fw-flow rv">
-      <div class="fw-step"><span class="n">01</span><h3 data-edit="c-fw-s1-t">Start your search</h3><p data-edit="c-fw-s1-d">Type what your client sells. A ranked list of matching affiliates comes back.</p></div>
-      <div class="fw-step"><span class="n">02</span><h3 data-edit="c-fw-s2-t">Pick your best matches</h3><p data-edit="c-fw-s2-d">Save the ones worth your time – verified owner emails included.</p></div>
-      <div class="fw-step"><span class="n">03</span><h3 data-edit="c-fw-s3-t">Send in one click</h3><p data-edit="c-fw-s3-d">Personal emails and follow-ups go out on autopilot.</p></div>
-      <div class="fw-step"><span class="n">04</span><h3 data-edit="c-fw-s4-t">Watch replies land</h3><p data-edit="c-fw-s4-d">Qualified affiliates reply and sign – new ones arrive every week, for every brand.</p></div>
-    </div>
-    <div class="fw-stats rv">
-      <div class="fs"><b>38%</b><span data-edit="c-fw-stat1">average response rate across outreach campaigns</span></div>
-      <div class="fs"><b>1 click</b><span data-edit="c-fw-stat2">to launch personal emails and follow-ups</span></div>
-      <div class="fs"><b>0</b><span data-edit="c-fw-stat3">technical setup – just type what your client sells</span></div>
-    </div>
-  </div>
-</section>
 
 <!-- ============ WALL OF LOVE ============ -->
 <section class="wall wrap" id="reviews">
@@ -2113,6 +2192,59 @@ wordReveal();
     inp.addEventListener('keydown',function(ev){if(ev.key==='Enter'){ev.preventDefault();commit();}if(ev.key==='Escape')close();});
   });
   upd();
+})();
+</script>
+<script>
+/* ---------- how-it-works journey animations ---------- */
+(function(){
+  var sec=document.getElementById('how');if(!sec||!document.getElementById('jnType'))return;
+  var run=false,timers=new Set();
+  function wait(ms){return new Promise(function(r){var t=setTimeout(function(){timers.delete(t);r()},ms);timers.add(t)})}
+  async function loopSearch(){
+    var el=document.getElementById('jnType'),rows=[].slice.call(document.querySelectorAll('#jnRes .jm-r')),q='home fitness gear';
+    while(run){
+      el.textContent='';rows.forEach(function(r){r.classList.remove('in')});
+      await wait(600);
+      for(var i=0;i<q.length&&run;i++){el.textContent+=q[i];await wait(65)}
+      if(!run)return;await wait(420);
+      for(var j=0;j<rows.length&&run;j++){rows[j].classList.add('in');await wait(300)}
+      await wait(2600);
+    }
+  }
+  async function loopPick(){
+    var rows=[].slice.call(document.querySelectorAll('#jnPick .jm-r')),ct=document.getElementById('jnSaved');
+    while(run){
+      rows.forEach(function(r){r.classList.remove('saved')});ct.textContent='0 saved';
+      await wait(1200);
+      for(var i=0;i<rows.length&&run;i++){rows[i].classList.add('saved');ct.textContent=(i+1)+' saved';await wait(750)}
+      await wait(2600);
+    }
+  }
+  async function loopSend(){
+    var btn=document.getElementById('jnBtn'),bar=document.getElementById('jnProg'),lab=document.getElementById('jnSent');
+    while(run){
+      bar.style.transition='none';bar.style.width='0';lab.textContent='0/24 sent';
+      await wait(1400);if(!run)return;
+      btn.classList.add('press');await wait(200);btn.classList.remove('press');
+      bar.style.transition='width .12s linear';
+      for(var i=1;i<=24&&run;i++){bar.style.width=(i/24*100)+'%';lab.textContent=i+'/24 sent';await wait(110)}
+      if(!run)return;lab.textContent='All sent ✓';
+      await wait(2400);
+    }
+  }
+  async function loopInbox(){
+    var msgs=[].slice.call(document.querySelectorAll('#jnInb .jm-msg')),badge=document.getElementById('jnNew');
+    while(run){
+      msgs.forEach(function(m){m.classList.remove('in')});badge.textContent='0 new';
+      await wait(900);
+      for(var i=0;i<msgs.length&&run;i++){msgs[i].classList.add('in');badge.textContent=(i+1)+' new';await wait(850)}
+      await wait(2800);
+    }
+  }
+  new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting&&!run){run=true;loopSearch();loopPick();loopSend();loopInbox();}
+    else if(!e.isIntersecting&&run){run=false;timers.forEach(clearTimeout);timers.clear();}
+  })},{threshold:.12}).observe(sec);
 })();
 </script>
 </body>
