@@ -844,13 +844,16 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .add-form.filled .af-confirm{background:#14304a}
 .dpanel.hash{margin-top:16px}
 .disc-hint{margin-top:14px;text-align:center;font-size:12px;color:var(--ink-mute)}
-.disc-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:48px}
-.disc-step .num{font-size:10.5px;font-weight:800;letter-spacing:.11em;color:var(--teal);text-transform:uppercase}
-.disc-step h3{font-size:16.5px;font-weight:750;letter-spacing:-.02em;margin-top:8px}
-.disc-step p{margin-top:8px;font-size:13.5px;line-height:1.65;color:var(--ink-soft)}
-.disc-claim{margin-top:44px;text-align:center;border:1px solid rgba(6,114,128,.25);background:rgba(6,114,128,.05);border-radius:16px;padding:20px 28px;font-size:15px;font-weight:650;color:var(--ink);max-width:780px;margin-left:auto;margin-right:auto;line-height:1.6}
+.disc-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:44px;margin-top:68px}
+.disc-step{position:relative;border-top:1px solid var(--line);padding-top:24px}
+.disc-step::before{content:'';position:absolute;top:-1px;left:0;width:44px;height:2px;background:var(--teal)}
+.disc-step .num{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--teal)}
+.disc-step h3{font-size:16px;font-weight:750;letter-spacing:-.02em;margin-top:10px}
+.disc-step p{margin-top:10px;font-size:13.5px;line-height:1.7;color:var(--ink-soft)}
+.disc-claim{margin:68px auto 0;max-width:760px;text-align:center;font-size:clamp(17px,1.9vw,21px);font-weight:650;line-height:1.55;letter-spacing:-.015em;color:var(--ink)}
+.disc-claim::before{content:'';display:block;width:44px;height:2px;background:var(--teal);margin:0 auto 22px}
 .disc-claim b{color:var(--teal)}
-@media(max-width:900px){.disc{padding-top:90px}.disc-steps{grid-template-columns:1fr;gap:22px}}
+@media(max-width:900px){.disc{padding-top:90px}.disc-steps{grid-template-columns:1fr;gap:32px;margin-top:52px}}
 
 /* ---------- customer story ---------- */
 .story{padding:120px 0}
@@ -1462,9 +1465,9 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
   </div>
   <div class="disc-hint rv" data-edit="c-disc-hint">Try it – tap a suggestion, type your own keyword or hashtag, or remove one with ×.</div>
   <div class="disc-steps">
-    <div class="disc-step rv"><div class="num">Step 1</div><h3 data-edit="c-disc-s1t">Start with your brand</h3><p data-edit="c-disc-s1">Enter your brand name and your top competitors. That's it – no tracking scripts, no integrations, no technical setup. We find your high-intent keywords and suggest competitors you missed.</p></div>
-    <div class="disc-step rv"><div class="num">Step 2</div><h3 data-edit="c-disc-s2t">We scan the places affiliates actually are</h3><p data-edit="c-disc-s2">Google, YouTube, Instagram, TikTok and 100+ affiliate networks – scanned every week for the creators and sites in your niche, matched against your keywords and competitor list.</p></div>
-    <div class="disc-step rv"><div class="num">Step 3</div><h3 data-edit="c-disc-s3t">Change anything, anytime</h3><p data-edit="c-disc-s3">Add, swap or remove keywords, hashtags and competitors whenever you like – and drop in your program details and terms, so the AI keeps every outreach hyper-targeted to what you actually offer.</p></div>
+    <div class="disc-step rv"><div class="num">01</div><h3 data-edit="c-disc-s1t">Start with your brand</h3><p data-edit="c-disc-s1">Enter your brand name and your top competitors. That's it – no tracking scripts, no integrations, no technical setup. We find your high-intent keywords and suggest competitors you missed.</p></div>
+    <div class="disc-step rv"><div class="num">02</div><h3 data-edit="c-disc-s2t">We scan the places affiliates actually are</h3><p data-edit="c-disc-s2">Google, YouTube, Instagram, TikTok and 100+ affiliate networks – scanned every week for the creators and sites in your niche – in any country, in any language.</p></div>
+    <div class="disc-step rv"><div class="num">03</div><h3 data-edit="c-disc-s3t">Change anything, anytime</h3><p data-edit="c-disc-s3">Add or remove keywords, hashtags and competitors, filter affiliates by country or language – and drop in your program details and terms, so the AI keeps every outreach hyper-targeted to what you actually offer.</p></div>
   </div>
   <div class="disc-claim rv" data-edit="c-disc-claim">AffiliateFinder.ai is the <b>first</b> software that finds, verifies and recruits affiliates in <b>one workflow</b> – and you stay in control at every step.</div>
 </section>
