@@ -852,7 +852,7 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .disc-step p{margin-top:10px;font-size:13.5px;line-height:1.7;color:var(--ink-soft)}
 .disc-claim{margin:68px auto 0;max-width:760px;text-align:center;font-size:clamp(17px,1.9vw,21px);font-weight:650;line-height:1.55;letter-spacing:-.015em;color:var(--ink)}
 .disc-claim::before{content:'';display:block;width:44px;height:2px;background:var(--teal);margin:0 auto 22px}
-.disc-claim b{color:var(--teal)}
+.disc-claim b,.disc-head h2 .accent,.deals-head h2 .accent{background:linear-gradient(105deg,#12b0bf 0%,#067280 55%,#0a4e58 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
 @media(max-width:900px){.disc{padding-top:90px}.disc-steps{grid-template-columns:1fr;gap:32px;margin-top:52px}}
 
 /* ---------- customer story ---------- */
@@ -866,7 +866,7 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .story-grid{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1.05fr;gap:48px;align-items:center}
 .story-top{position:relative;z-index:1}
 .story-card .sq{font-size:clamp(20px,2.3vw,26px);font-weight:650;letter-spacing:-.03em;line-height:1.4}
-.story-card .sq .hl{color:var(--teal)}
+.story-card .sq .hl{background:linear-gradient(105deg,#12b0bf 0%,#067280 55%,#0a4e58 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
 .story-card .sbody{margin-top:20px;font-size:14.5px;color:var(--ink-soft);line-height:1.75;max-width:56ch}
 .story-card .sbody mark{background:rgba(255,216,74,.5);color:var(--ink);font-weight:600;padding:2px 5px;border-radius:4px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .story-author{display:flex;align-items:center;gap:14px;margin-top:30px}
@@ -976,7 +976,7 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .vs-cap::before{content:'';width:7px;height:7px;border-radius:50%;background:#e0483d;box-shadow:0 0 8px rgba(224,72,61,.7);animation:vblink 1.6s ease-in-out infinite;flex:none}
 @keyframes vblink{0%,100%{opacity:1}50%{opacity:.35}}
 .vs-copy h2{font-size:clamp(24px,2.7vw,34px);line-height:1.2}
-.vs-copy h2 .accent{color:var(--teal)}
+.vs-copy h2 .accent{background:linear-gradient(105deg,#12b0bf 0%,#067280 55%,#0a4e58 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
 .vs-copy>p{margin-top:18px;font-size:14.5px;color:var(--ink-soft);line-height:1.7;max-width:52ch}
 .vs-quotes{margin-top:26px;display:flex;flex-direction:column;list-style:none;padding:0}
 .vs-quotes li{position:relative;padding:13px 0 13px 34px;font-size:14px;color:var(--ink-soft);line-height:1.6}
@@ -986,7 +986,7 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 
 /* ---------- wall of love ---------- */
 .wall{padding:20px 0 90px;text-align:center}
-.wall h2 .accent{color:var(--teal)}
+.wall h2 .accent{background:linear-gradient(105deg,#12b0bf 0%,#067280 55%,#0a4e58 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
 .aq-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:1080px;margin:44px auto 0}
 @media(max-width:960px){.aq-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:620px){.aq-grid{grid-template-columns:1fr}}
@@ -1398,7 +1398,7 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
 <section class="disc wrap" id="discovery">
   <div class="disc-head rv">
     <div class="eyebrow"><span class="rule"></span><span class="pill">Discovery</span><span class="rule"></span></div>
-    <h2 data-edit="c-disc-title">You set the direction.<br>We find your clients' affiliates.</h2>
+    <h2 data-edit="c-disc-title">You set the direction.<br><span class="accent">We find your clients' affiliates.</span></h2>
     <p data-edit="c-disc-sub">Enter each client's brand name and its top competitors. That's it – no technical setup. Everything below stays yours to change, anytime.</p>
   </div>
   <div class="disc-scroll rv">
@@ -1517,7 +1517,7 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
 <section class="deals wrap">
   <div class="deals-head rv">
     <div class="eyebrow"><span class="rule"></span><span class="pill">Deal Flow</span><span class="rule"></span></div>
-    <h2 data-edit="c-deals-title">Every client's deals.<br>One clean view.</h2>
+    <h2 data-edit="c-deals-title">Every client's deals.<br><span class="accent">One clean view.</span></h2>
     <p data-edit="c-deals-sub">No more cluttered sheets. Audience, terms, status and a clear recommendation for every negotiation – so when your client asks, the overview is already there. No back and forth.</p>
   </div>
   <div class="deals-stage rv">
