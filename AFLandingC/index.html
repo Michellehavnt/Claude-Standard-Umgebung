@@ -790,10 +790,6 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .jn-copy .num{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--teal)}
 .jn-copy h3{margin-top:12px;font-size:clamp(26px,3vw,38px);font-weight:750;letter-spacing:-.03em;line-height:1.15}
 .jn-copy p{margin-top:16px;font-size:clamp(15.5px,1.35vw,18px);line-height:1.65;color:var(--ink-soft);max-width:42ch}
-.jm{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-card);overflow:hidden}
-.jm-bar{display:flex;gap:6px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--cream)}
-.jm-bar i{width:9px;height:9px;border-radius:50%;background:#e3ddd2}
-.jm-body{padding:18px}
 .scn-hubwrap{display:flex;justify-content:center;position:relative;z-index:1}
 .sc-hub{font-size:12px;font-weight:700;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 16px;box-shadow:0 10px 24px rgba(16,20,24,.08)}
 .sc-lines{display:block;width:100%;height:80px;margin-top:-4px}
@@ -830,27 +826,35 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .pk-mail.in{opacity:1;transform:none}
 .pk-cursor{position:absolute;z-index:5;top:0;left:0;opacity:0;transition:transform .65s cubic-bezier(.5,.1,.3,1),opacity .3s;pointer-events:none;filter:drop-shadow(0 2px 4px rgba(16,20,24,.3))}
 @media(max-width:560px){.pk-row{flex-wrap:wrap;gap:10px}.pk-next{text-align:left}.pk-id small{font-size:10px}}
-.jm-to{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-mute);border-bottom:1px solid var(--line);padding-bottom:10px}
-.jm-chip{font-size:11px;font-weight:700;color:var(--teal);background:rgba(6,114,128,.09);border-radius:999px;padding:4px 10px}
-.jm-subj{font-size:13px;font-weight:700;padding:10px 0;border-bottom:1px solid var(--line)}
-.jm-lines{padding:14px 0 12px;display:flex;flex-direction:column;gap:9px}
-.jm-lines i{height:8px;border-radius:99px;background:rgba(16,20,24,.07)}
-.jm-lines i:nth-child(1){width:92%}.jm-lines i:nth-child(2){width:78%}.jm-lines i:nth-child(3){width:56%}
-.jm-sendrow{display:flex;align-items:center;gap:14px;margin-top:6px}
-.jm-sendbtn{flex:none;font-size:12.5px;font-weight:700;color:#fff;background:linear-gradient(100deg,#0a9aa8,#067280);border-radius:999px;padding:10px 18px;transition:transform .18s}
-.jm-sendbtn.press{transform:scale(.93)}
-.jm-prog{flex:1;height:6px;border-radius:99px;background:rgba(16,20,24,.07);overflow:hidden}
-.jm-prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#0a9aa8,#12b0bf)}
-.jm-sent{flex:none;font-size:11.5px;font-weight:700;color:var(--teal);min-width:86px;text-align:right;font-variant-numeric:tabular-nums}
-.jm-ihead{display:flex;align-items:center;gap:10px;font-size:12.5px;font-weight:800;padding-bottom:10px;border-bottom:1px solid var(--line)}
-.jm-new{margin-left:auto;font-size:10.5px;font-weight:800;color:#fff;background:linear-gradient(100deg,#0a9aa8,#067280);border-radius:999px;padding:3px 9px;font-variant-numeric:tabular-nums}
-.jm-inb{margin-top:10px;display:flex;flex-direction:column;gap:8px;min-height:208px}
-.jm-msg{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:10px 12px;opacity:0;transform:translateY(-8px);transition:opacity .4s,transform .4s}
-.jm-msg.in{opacity:1;transform:none}
-.jm-msg .dot{flex:none;width:7px;height:7px;border-radius:50%;background:#12b76a;margin-top:6px}
-.jm-msg b{font-size:12px}
-.jm-msg small{display:block;font-size:10.5px;color:var(--ink-mute);margin-top:2px}
-.jm-time{margin-left:auto;flex:none;font-size:9.5px;color:var(--ink-mute)}
+.sd-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px 22px;box-shadow:0 14px 34px rgba(16,20,24,.08)}
+.sd-to{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-mute);border-bottom:1px solid var(--line);padding-bottom:11px}
+.sd-chip{font-size:11px;font-weight:700;color:var(--teal);background:rgba(6,114,128,.09);border-radius:999px;padding:4px 10px}
+.sd-subj{font-size:13.5px;font-weight:700;padding:11px 0;border-bottom:1px solid var(--line)}
+.sd-lines{padding:15px 0 13px;display:flex;flex-direction:column;gap:9px}
+.sd-lines i{height:8px;border-radius:99px;background:rgba(16,20,24,.06)}
+.sd-lines i:nth-child(1){width:92%}.sd-lines i:nth-child(2){width:78%}.sd-lines i:nth-child(3){width:56%}
+.sd-row{display:flex;align-items:center;gap:14px;margin-top:6px}
+.sd-btn{flex:none;display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:#fff;background:#0c2733;border-radius:999px;padding:10px 18px;transition:transform .18s}
+.sd-btn svg{flex:none}
+.sd-btn.press{transform:scale(.93)}
+.sd-prog{flex:1;height:5px;border-radius:99px;background:rgba(16,20,24,.07);overflow:hidden}
+.sd-prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#0a9aa8,#12b0bf)}
+.sd-sent{flex:none;font-size:11.5px;font-weight:700;color:var(--teal);min-width:86px;text-align:right;font-variant-numeric:tabular-nums}
+.sd-fups{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.sd-fup{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:650;color:var(--ink-soft);background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px;box-shadow:0 6px 16px rgba(16,20,24,.06);opacity:0;transform:translateY(6px);transition:opacity .4s,transform .4s}
+.sd-fup.in{opacity:1;transform:none}
+.sd-fup svg{color:var(--teal);flex:none}
+.jb-head{display:flex;align-items:center;margin-bottom:12px}
+.jb-head b{font-size:13.5px;letter-spacing:-.01em}
+.jb-new{margin-left:auto;font-size:10.5px;font-weight:800;color:#fff;background:linear-gradient(100deg,#0a9aa8,#067280);border-radius:999px;padding:4px 11px;font-variant-numeric:tabular-nums}
+.jb-list{display:flex;flex-direction:column;gap:10px;min-height:236px}
+.jb-msg{display:flex;gap:11px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:0 10px 24px rgba(16,20,24,.06);opacity:0;transform:translateY(-10px) scale(.97);transition:opacity .45s,transform .45s}
+.jb-msg.in{opacity:1;transform:none}
+.jb-msg>img{width:30px;height:30px;border-radius:50%;object-fit:cover;flex:none}
+.jb-msg b{font-size:12.5px;display:block}
+.jb-msg small{display:block;font-size:10.5px;color:var(--ink-mute);margin-top:2px}
+.jb-msg .dot{flex:none;width:7px;height:7px;border-radius:50%;background:#12b76a;margin-left:auto}
+.jb-time{flex:none;font-size:9.5px;color:var(--ink-mute)}
 .jn-stats{display:grid;grid-template-columns:repeat(3,1fr);max-width:1040px;margin:26px auto 0;border-top:1px solid var(--line);padding-top:42px}
 .jn-stats .fs{text-align:center;padding:0 24px}
 .jn-stats .fs+.fs{border-left:1px solid var(--line)}
@@ -1325,24 +1329,30 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
       </div>
       <div class="jn-row">
         <div class="jn-copy rv"><div class="num">03</div><h3 data-edit="c-jn-s3-t">Send in one click</h3><p data-edit="c-jn-s3-d">Personal emails and follow-ups go out on autopilot.</p></div>
-        <div class="jn-vis rv"><div class="jm"><div class="jm-bar" aria-hidden="true"><i></i><i></i><i></i></div><div class="jm-body">
-          <div class="jm-to">To <span class="jm-chip">24 saved affiliates</span></div>
-          <div class="jm-subj">Partnership idea for your audience</div>
-          <div class="jm-lines" aria-hidden="true"><i></i><i></i><i></i></div>
-          <div class="jm-sendrow"><span class="jm-sendbtn" id="jnBtn">Send campaign</span><span class="jm-prog"><i id="jnProg"></i></span><span class="jm-sent" id="jnSent">0/24 sent</span></div>
-        </div></div></div>
+        <div class="jn-vis rv"><div class="sd">
+          <div class="sd-card">
+            <div class="sd-to">To <span class="sd-chip">24 saved affiliates</span></div>
+            <div class="sd-subj">Partnership idea for your audience</div>
+            <div class="sd-lines" aria-hidden="true"><i></i><i></i><i></i></div>
+            <div class="sd-row"><span class="sd-btn" id="jnBtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg>Send campaign</span><span class="sd-prog"><i id="jnProg"></i></span><span class="sd-sent" id="jnSent">0/24 sent</span></div>
+          </div>
+          <div class="sd-fups">
+            <span class="sd-fup"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>Follow-up 1 · day 3</span>
+            <span class="sd-fup"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>Follow-up 2 · day 7</span>
+          </div>
+        </div></div>
       </div>
       <div class="jn-row flip">
         <div class="jn-copy rv"><div class="num">04</div><h3 data-edit="c-jn-s4-t">Watch replies land</h3><p data-edit="c-jn-s4-d">Qualified affiliates reply and sign – new ones arrive every week.</p></div>
-        <div class="jn-vis rv"><div class="jm"><div class="jm-bar" aria-hidden="true"><i></i><i></i><i></i></div><div class="jm-body">
-          <div class="jm-ihead">Inbox · Replies<span class="jm-new" id="jnNew">0 new</span></div>
-          <div class="jm-inb" id="jnInb">
-            <div class="jm-msg"><span class="dot"></span><span><b>Mara | Lift Daily</b><small>Love this – what commission are you offering?</small></span><span class="jm-time">2m</span></div>
-            <div class="jm-msg"><span class="dot"></span><span><b>gearscout.io</b><small>Interested. Can you send the details?</small></span><span class="jm-time">9m</span></div>
-            <div class="jm-msg"><span class="dot"></span><span><b>FitStack Reviews</b><small>Let's do it – sending my media kit now.</small></span><span class="jm-time">31m</span></div>
-            <div class="jm-msg"><span class="dot"></span><span><b>Nick K.</b><small>Got a launch coming up – timing is perfect.</small></span><span class="jm-time">1h</span></div>
+        <div class="jn-vis rv"><div class="jb">
+          <div class="jb-head"><b>Inbox</b><span class="jb-new" id="jnNew">0 new</span></div>
+          <div class="jb-list" id="jnInb">
+            <div class="jb-msg"><img src="https://randomuser.me/api/portraits/med/women/44.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><span><b>Mara | Lift Daily</b><small>Love this – what commission are you offering?</small></span><span class="dot"></span><span class="jb-time">2m</span></div>
+            <div class="jb-msg"><img src="https://randomuser.me/api/portraits/med/men/32.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><span><b>gearscout.io</b><small>Interested. Can you send the details?</small></span><span class="dot"></span><span class="jb-time">9m</span></div>
+            <div class="jb-msg"><img src="https://randomuser.me/api/portraits/med/men/22.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><span><b>FitStack Reviews</b><small>Let's do it – sending my media kit now.</small></span><span class="dot"></span><span class="jb-time">31m</span></div>
+            <div class="jb-msg"><img src="https://randomuser.me/api/portraits/med/men/36.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><span><b>Nick K.</b><small>Got a launch coming up – timing is perfect.</small></span><span class="dot"></span><span class="jb-time">1h</span></div>
           </div>
-        </div></div></div>
+        </div></div>
       </div>
     </div>
     <div class="jn-stats rv">
@@ -2260,18 +2270,21 @@ wordReveal();
   }
   async function loopSend(){
     var btn=document.getElementById('jnBtn'),bar=document.getElementById('jnProg'),lab=document.getElementById('jnSent');
+    var fups=[].slice.call(document.querySelectorAll('.sd-fup'));
     while(run){
       bar.style.transition='none';bar.style.width='0';lab.textContent='0/24 sent';
+      fups.forEach(function(f){f.classList.remove('in')});
       await wait(1400);if(!run)return;
       btn.classList.add('press');await wait(200);btn.classList.remove('press');
       bar.style.transition='width .12s linear';
       for(var i=1;i<=24&&run;i++){bar.style.width=(i/24*100)+'%';lab.textContent=i+'/24 sent';await wait(110)}
-      if(!run)return;lab.textContent='All sent ✓';
-      await wait(2400);
+      if(!run)return;lab.textContent='All sent \u2713';
+      for(var j=0;j<fups.length&&run;j++){fups[j].classList.add('in');await wait(380)}
+      await wait(2600);
     }
   }
   async function loopInbox(){
-    var msgs=[].slice.call(document.querySelectorAll('#jnInb .jm-msg')),badge=document.getElementById('jnNew');
+    var msgs=[].slice.call(document.querySelectorAll('#jnInb .jb-msg')),badge=document.getElementById('jnNew');
     while(run){
       msgs.forEach(function(m){m.classList.remove('in')});badge.textContent='0 new';
       await wait(900);
