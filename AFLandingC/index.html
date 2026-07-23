@@ -759,9 +759,16 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .fp-row.on .cb{background:#fff;border-color:#fff;box-shadow:0 0 24px rgba(255,255,255,.55),0 0 60px rgba(255,255,255,.25)}
 .fp-row.on .cb svg{stroke:#101418}
 @media(max-width:900px){
-  .filter-stack{min-height:0}
-  .fpanel{position:static;width:100%}
-  .fpanel.back{margin-top:14px;opacity:1}
+  /* mirror the desktop side-by-side composition, scaled down */
+  .filter-stack{min-height:0;display:flex;gap:10px;align-items:flex-start}
+  .fpanel{position:static;border-radius:16px;padding:14px 12px}
+  .fpanel.back{width:48%;margin-top:22px;opacity:1}
+  .fpanel.front{width:52%}
+  .fp-label{font-size:9px;letter-spacing:.1em;margin:4px 0 2px}
+  .fp-row{gap:8px;padding:7px 0;font-size:12px}
+  .fp-row .val{font-size:9.5px;text-align:right}
+  .cb{width:18px;height:18px;border-radius:6px}
+  .cb svg{width:10px;height:8px}
 }
 
 /* ---------- customer story ---------- */
