@@ -785,7 +785,7 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .disc-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .disc-window{min-width:880px;display:grid;grid-template-columns:180px 1fr;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-card);overflow:hidden;text-align:left}
 .disc-side{border-right:1px solid var(--line);background:#fff;padding:18px 12px}
-.disc-side .grp{font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mute);margin:16px 10px 6px}
+.disc-side .grp{font-size:11px;font-weight:600;color:#8a949e;margin:16px 10px 8px}
 .disc-side .grp:first-child{margin-top:0}
 .disc-side .it{display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:600;color:#33475b;padding:7px 10px;border-radius:9px}
 .disc-side .it svg{flex:none;opacity:.7}
@@ -798,7 +798,8 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .disc-main .dm-sub{font-size:12px;color:var(--ink-mute);margin:8px 0 16px;max-width:60ch}
 .disc-cols{display:grid;grid-template-columns:1.08fr .92fr;gap:16px;align-items:start}
 .dpanel{border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:#fff}
-.dpanel .dp-head{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.dpanel .dp-head{display:flex;align-items:center;gap:9px;padding-bottom:12px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.dpanel .dp-head svg{flex:none;color:var(--ink-soft)}
 .dpanel .dp-head b{font-size:13px;font-weight:800}
 .dpanel .dp-used{margin-left:auto;font-size:10.5px;font-weight:700;color:#0e7c8a;background:#e6f3f6;border-radius:999px;padding:4px 10px}
 .kw-chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -808,10 +809,10 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .kw-chip .x:hover{color:#a3591d}
 .kw-chip.new,.cmp-row.new{animation:chipIn .35s ease}
 @keyframes chipIn{from{transform:scale(.75);opacity:0}to{transform:scale(1);opacity:1}}
-.dp-reco{margin-top:14px;border:1px solid rgba(236,111,31,.16);border-radius:14px;padding:10px 12px;background:#fdf6ee}
-.dp-reco .rl{font-size:10.5px;font-weight:700;color:#a3591d;margin-bottom:8px}
-.dp-reco.cmp{border-color:rgba(20,48,74,.12);background:#f4f7f9}
-.dp-reco.cmp .rl{color:#14304a}
+.dp-reco{margin-top:14px;border:1.5px dashed rgba(176,120,60,.4);border-radius:14px;padding:10px 12px;background:#fffdf8}
+.dp-reco .rl{font-size:10.5px;font-weight:700;color:#33404d;margin-bottom:8px}
+.dp-reco.cmp{border-color:rgba(16,20,24,.22);background:#fff}
+.dp-reco.cmp .rl{color:#33404d}
 .reco-chip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:#a3591d;background:#fff;border:1px solid rgba(236,111,31,.3);border-radius:999px;padding:6px 11px;margin:0 6px 4px 0;cursor:pointer;transition:transform .12s ease,box-shadow .12s ease}
 .reco-chip:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(16,20,24,.12)}
 .reco-chip.cmp{color:#14304a;border-color:rgba(20,48,74,.2)}
@@ -826,7 +827,11 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .cmp-row .aff{margin-left:auto;font-size:10.5px;font-weight:700;color:var(--ink-soft);background:rgba(16,20,24,.05);border-radius:999px;padding:4px 9px;white-space:nowrap}
 .cmp-row .socials{display:flex;gap:6px;color:var(--ink-mute);flex:none}
 .dp-add{margin-top:14px;display:flex;justify-content:center}
-.dp-add span{font-size:11.5px;font-weight:700;color:var(--teal);border:1px solid rgba(6,114,128,.3);border-radius:999px;padding:7px 16px}
+.dp-add span{display:inline-flex;align-items:center;font-size:11.5px;font-weight:700;color:#14304a;border:1px solid rgba(16,20,24,.2);border-radius:999px;padding:7px 16px}
+.dp-add span[data-add]{cursor:pointer}
+.dp-add.dashed span{border-style:dashed}
+.dp-add input{border:0;outline:0;font:inherit;font-size:11.5px;font-weight:600;width:180px;background:transparent;color:var(--ink)}
+.dpanel.hash{margin-top:16px}
 .disc-hint{margin-top:14px;text-align:center;font-size:12px;color:var(--ink-mute)}
 .disc-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:48px}
 .disc-step .num{font-size:10.5px;font-weight:800;letter-spacing:.11em;color:var(--teal);text-transform:uppercase}
@@ -1380,10 +1385,10 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
       </aside>
       <div class="disc-main">
         <div class="dm-top"><h4>Search</h4><span class="dm-brand">🇺🇸 yourbrand.com</span></div>
-        <div class="dm-sub">Choose the competitors and keywords we scan every week. We use them to surface affiliates already promoting brands and topics like yours.</div>
+        <div class="dm-sub">Choose the competitors and keywords we scan every week. We use them to surface affiliates already promoting brands and topics like yours – add at least 5 competitors and 5 keywords for the strongest matches.</div>
         <div class="disc-cols">
           <div class="dpanel">
-            <div class="dp-head"><b>Keywords</b><span class="dp-used" id="kwUsed">🚀 13/20 used</span></div>
+            <div class="dp-head"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg><b>Keywords</b><span class="dp-used" id="kwUsed">🚀 13/20 used</span></div>
             <div class="kw-chips" id="kwChips">
             <span class="kw-chip">best resistance bands<span class="vol">410</span><span class="x" role="button" aria-label="Remove">×</span></span>
             <span class="kw-chip">home gym for small spaces<span class="vol">330</span><span class="x" role="button" aria-label="Remove">×</span></span>
@@ -1396,10 +1401,10 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
               <div class="rl">✦ Recommended for you. Tap to add</div>
               <span class="reco-chip" data-kw="marathon fueling guide" data-vol="162">+ marathon fueling guide</span><span class="reco-chip" data-kw="adjustable dumbbells review" data-vol="154">+ adjustable dumbbells review</span><span class="reco-chip" data-kw="pre-workout for women" data-vol="149">+ pre-workout for women</span>
             </div>
-            <div class="dp-add"><span>+ Add Keyword</span></div>
+            <div class="dp-add"><span data-add="kw">+ Add Keyword</span></div>
           </div>
           <div class="dpanel">
-            <div class="dp-head"><b>Competitors</b><span class="dp-used" id="cmpUsed">🚀 4/10 used</span></div>
+            <div class="dp-head"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V5a1 1 0 0 1 1-1h6v17M12 9h6a1 1 0 0 1 1 1v11"/><path d="M8 8h1.5M8 12h1.5M8 16h1.5M15.5 13h1.5M15.5 17h1.5"/></svg><b>Competitors</b><span class="dp-used" id="cmpUsed">🚀 4/10 used</span></div>
             <div id="cmpRows">
           <div class="cmp-row"><span class="favicon" style="background:linear-gradient(135deg,#f3b8a0,#e3a1bd)">FF</span><span><b>FlexFuel</b> <span class="dom">flexfuel.com</span></span><span class="socials"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 3c.4 2.3 1.9 3.9 4.2 4.2v3.1c-1.6 0-3-.5-4.2-1.3v6.3c0 3.7-2.6 6-5.9 6-3.2 0-5.5-2.2-5.5-5.2 0-3.1 2.4-5.3 5.7-5.3.3 0 .7 0 1 .1v3.2a2.6 2.6 0 0 0-1-.2c-1.5 0-2.5.9-2.5 2.2 0 1.2 1 2.1 2.4 2.1 1.6 0 2.7-1.1 2.7-3V3h3.1z"/></svg></span><span class="aff">412 affiliates</span><svg class="chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
           <div class="cmp-row"><span class="favicon" style="background:linear-gradient(135deg,#a4c6e8,#c3b6ec)">IP</span><span><b>IronPeak</b> <span class="dom">ironpeak.fit</span></span><span class="socials"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 3c.4 2.3 1.9 3.9 4.2 4.2v3.1c-1.6 0-3-.5-4.2-1.3v6.3c0 3.7-2.6 6-5.9 6-3.2 0-5.5-2.2-5.5-5.2 0-3.1 2.4-5.3 5.7-5.3.3 0 .7 0 1 .1v3.2a2.6 2.6 0 0 0-1-.2c-1.5 0-2.5.9-2.5 2.2 0 1.2 1 2.1 2.4 2.1 1.6 0 2.7-1.1 2.7-3V3h3.1z"/></svg></span><span class="aff">286 affiliates</span><svg class="chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
@@ -1411,17 +1416,33 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
               <div class="rl">✦ Recommended for you. Tap to add</div>
               <span class="reco-chip cmp" data-name="PulseWear" data-dom="pulsewear.co" data-ini="PW"><span class="favicon" style="background:linear-gradient(135deg,#8fccd4,#067280)">PW</span>PulseWear <b>+</b></span><span class="reco-chip cmp" data-name="TrailForm" data-dom="trailform.com" data-ini="TF"><span class="favicon" style="background:linear-gradient(135deg,#c3b6ec,#a4c6e8)">TF</span>TrailForm <b>+</b></span>
             </div>
-            <div class="dp-add"><span>+ Add Competitor</span></div>
+            <div class="dp-add dashed"><span>+ Add Competitor</span></div>
           </div>
+        </div>
+        <div class="dpanel hash">
+          <div class="dp-head"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg><b>Hashtags</b><span class="dp-used" id="tagUsed">🚀 10/20 used</span></div>
+          <div class="kw-chips" id="tagChips">
+            <span class="kw-chip">#homeworkout<span class="x" role="button" aria-label="Remove">×</span></span>
+            <span class="kw-chip">#fitnessgear<span class="x" role="button" aria-label="Remove">×</span></span>
+            <span class="kw-chip">#strengthtraining<span class="x" role="button" aria-label="Remove">×</span></span>
+            <span class="kw-chip">#homegym<span class="x" role="button" aria-label="Remove">×</span></span>
+            <span class="kw-chip">#runningcommunity<span class="x" role="button" aria-label="Remove">×</span></span>
+            <span class="kw-chip">#gymsetup<span class="x" role="button" aria-label="Remove">×</span></span>
+            <span class="kw-chip">#fitnessmotivation<span class="x" role="button" aria-label="Remove">×</span></span>
+            <span class="kw-chip">#resistancetraining<span class="x" role="button" aria-label="Remove">×</span></span>
+            <span class="kw-chip">#marathontraining<span class="x" role="button" aria-label="Remove">×</span></span>
+            <span class="kw-chip">#supplementreview<span class="x" role="button" aria-label="Remove">×</span></span>
+          </div>
+          <div class="dp-add"><span data-add="tag">+ Add Hashtag</span></div>
         </div>
       </div>
     </div>
   </div>
-  <div class="disc-hint rv" data-edit="c-disc-hint">Try it – tap a suggestion to add it, or remove a keyword with ×.</div>
+  <div class="disc-hint rv" data-edit="c-disc-hint">Try it – tap a suggestion, type your own keyword or hashtag, or remove one with ×.</div>
   <div class="disc-steps">
     <div class="disc-step rv"><div class="num">Step 1</div><h3 data-edit="c-disc-s1t">Start with your brand</h3><p data-edit="c-disc-s1">Enter your brand name and your top competitors. That's it – no tracking scripts, no integrations, no technical setup. We find your high-intent keywords and suggest competitors you missed.</p></div>
     <div class="disc-step rv"><div class="num">Step 2</div><h3 data-edit="c-disc-s2t">We scan the places affiliates actually are</h3><p data-edit="c-disc-s2">Google, YouTube, Instagram, TikTok and 100+ affiliate networks – scanned every week for the creators and sites in your niche, matched against your keywords and competitor list.</p></div>
-    <div class="disc-step rv"><div class="num">Step 3</div><h3 data-edit="c-disc-s3t">Change anything, anytime</h3><p data-edit="c-disc-s3">Add, swap or remove keywords and competitors whenever you like – and drop in your program details and terms, so the AI keeps every outreach hyper-targeted to what you actually offer.</p></div>
+    <div class="disc-step rv"><div class="num">Step 3</div><h3 data-edit="c-disc-s3t">Change anything, anytime</h3><p data-edit="c-disc-s3">Add, swap or remove keywords, hashtags and competitors whenever you like – and drop in your program details and terms, so the AI keeps every outreach hyper-targeted to what you actually offer.</p></div>
   </div>
   <div class="disc-claim rv" data-edit="c-disc-claim">AffiliateFinder.ai is the <b>first</b> software that finds, verifies and recruits affiliates in <b>one workflow</b> – and you stay in control at every step.</div>
 </section>
@@ -2038,28 +2059,53 @@ wordReveal();
 <script>
 (function(){
   var win=document.getElementById('discWindow');if(!win)return;
-  var kwUsed=document.getElementById('kwUsed'),cmpUsed=document.getElementById('cmpUsed');
-  var kc=13,cc=4;
-  function upd(){kwUsed.textContent='\ud83d\ude80 '+kc+'/20 used';cmpUsed.textContent='\ud83d\ude80 '+cc+'/10 used';}
+  var counts={kw:13,cmp:4,tag:10},max={kw:20,cmp:10,tag:20},badges={kw:'kwUsed',cmp:'cmpUsed',tag:'tagUsed'};
+  function upd(){for(var k in badges){var el=document.getElementById(badges[k]);if(el)el.textContent='\ud83d\ude80 '+counts[k]+'/'+max[k]+' used';}}
+  function chip(text,vol){var s=document.createElement('span');s.className='kw-chip new';s.innerHTML=text+(vol?'<span class="vol">'+vol+'</span>':'')+'<span class="x" role="button" aria-label="Remove">×</span>';return s;}
   win.querySelectorAll('.reco-chip').forEach(function(ch){
     ch.addEventListener('click',function(){
       if(ch.classList.contains('cmp')){
-        if(cc>=10)return;
+        if(counts.cmp>=max.cmp)return;
         var div=document.createElement('div');div.className='cmp-row new';
         div.innerHTML='<span class="favicon" style="background:linear-gradient(135deg,#7cc6cf,#067280)">'+ch.dataset.ini+'</span><span><b>'+ch.dataset.name+'</b> <span class="dom">'+ch.dataset.dom+'</span></span><span class="aff">scanning…</span><svg class="chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
-        document.getElementById('cmpRows').appendChild(div);cc++;
+        document.getElementById('cmpRows').appendChild(div);counts.cmp++;
       }else{
-        if(kc>=20)return;
-        var s=document.createElement('span');s.className='kw-chip new';
-        s.innerHTML=ch.dataset.kw+'<span class="vol">'+ch.dataset.vol+'</span><span class="x" role="button" aria-label="Remove">×</span>';
-        document.getElementById('kwChips').appendChild(s);kc++;
+        if(counts.kw>=max.kw)return;
+        document.getElementById('kwChips').appendChild(chip(ch.dataset.kw,ch.dataset.vol));counts.kw++;
       }
       ch.remove();upd();
     });
   });
-  document.getElementById('kwChips').addEventListener('click',function(e){
-    if(e.target.classList.contains('x')){e.target.closest('.kw-chip').remove();kc--;upd();}
+  [['kwChips','kw'],['tagChips','tag']].forEach(function(p){
+    var wrap=document.getElementById(p[0]);if(!wrap)return;
+    wrap.addEventListener('click',function(e){
+      if(e.target.classList.contains('x')){e.target.closest('.kw-chip').remove();counts[p[1]]--;upd();}
+    });
   });
+  win.querySelectorAll('[data-add]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      if(btn.querySelector('input'))return;
+      var kind=btn.dataset.add,label=btn.textContent;
+      btn.innerHTML='';
+      var inp=document.createElement('input');
+      inp.type='text';inp.maxLength=40;inp.placeholder=kind==='tag'?'#yourhashtag':'Type a keyword\u2026';
+      btn.appendChild(inp);inp.focus();
+      var fin=false;
+      function done(commit){
+        if(fin)return;fin=true;
+        var v=inp.value.trim();
+        if(commit&&v&&counts[kind]<max[kind]){
+          if(kind==='tag'){if(v[0]!=='#')v='#'+v.replace(/\s+/g,'');document.getElementById('tagChips').appendChild(chip(v));counts.tag++;}
+          else{document.getElementById('kwChips').appendChild(chip(v));counts.kw++;}
+          upd();
+        }
+        btn.innerHTML='';btn.textContent=label;
+      }
+      inp.addEventListener('keydown',function(ev){if(ev.key==='Enter'){ev.preventDefault();done(true);}if(ev.key==='Escape')done(false);});
+      inp.addEventListener('blur',function(){done(true);});
+    });
+  });
+  upd();
 })();
 </script>
 </body>
