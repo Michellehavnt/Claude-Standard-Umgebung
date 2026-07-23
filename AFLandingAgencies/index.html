@@ -788,16 +788,35 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .jn-row.flip .jn-copy{order:2}
 .jn-row.flip .jn-vis{order:1}
 .jn-copy .num{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--teal)}
-.jn-copy h3{margin-top:10px;font-size:clamp(20px,2.2vw,26px);font-weight:750;letter-spacing:-.025em}
-.jn-copy p{margin-top:12px;font-size:14.5px;line-height:1.7;color:var(--ink-soft);max-width:44ch}
+.jn-copy h3{margin-top:12px;font-size:clamp(26px,3vw,38px);font-weight:750;letter-spacing:-.03em;line-height:1.15}
+.jn-copy p{margin-top:16px;font-size:clamp(15.5px,1.35vw,18px);line-height:1.65;color:var(--ink-soft);max-width:42ch}
 .jm{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-card);overflow:hidden}
 .jm-bar{display:flex;gap:6px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--cream)}
 .jm-bar i{width:9px;height:9px;border-radius:50%;background:#e3ddd2}
 .jm-body{padding:18px}
-.jm-input{display:flex;align-items:center;gap:10px;border:1.5px solid rgba(6,114,128,.45);border-radius:12px;padding:12px 14px;font-size:13.5px;font-weight:600;color:var(--ink);min-height:44px}
-.jm-input svg{flex:none;color:var(--teal)}
-.jm-caret{flex:none;width:2px;height:16px;background:var(--teal);animation:jmblink 1s steps(2) infinite}
-@keyframes jmblink{50%{opacity:0}}
+.sc-inputs{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}
+.sc-col small{display:block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-mute);margin-bottom:8px}
+.sc-chips{display:flex;flex-wrap:wrap;gap:6px;min-height:56px;align-content:flex-start}
+.sc-chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:#a3591d;background:rgba(236,111,31,.05);border:1px solid rgba(236,111,31,.28);border-radius:999px;padding:5px 10px;opacity:0;transform:scale(.7);transition:opacity .35s,transform .35s}
+.sc-chip.in{opacity:1;transform:none}
+.sc-chip.cmp{color:#14304a;border-color:rgba(20,48,74,.25);background:#fff}
+.sc-chip.cmp img{width:14px;height:14px;border-radius:4px;object-fit:contain}
+.sc-viz{position:relative;margin-top:6px}
+.sc-hub{display:table;margin:0 auto;position:relative;z-index:1;font-size:11px;font-weight:700;color:var(--ink-soft);border:1px solid var(--line);background:var(--cream);border-radius:999px;padding:6px 14px}
+.sc-lines{display:block;width:100%;height:78px;margin-top:-4px}
+.sc-lines path{fill:none;stroke:rgba(6,114,128,.2);stroke-width:1.5}
+.sc-tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.sc-tile{display:flex;flex-direction:column;align-items:center;gap:6px;border:1px solid var(--line);border-radius:12px;padding:10px 4px 8px;color:var(--ink-soft);transition:border-color .35s,box-shadow .35s,color .35s,background .35s}
+.sc-tile .ic{height:18px;display:grid;place-items:center;font-size:14px;font-weight:800}
+.sc-tile svg{width:18px;height:18px}
+.sc-tile .lb{font-size:9px;font-weight:700;color:var(--ink-mute);white-space:nowrap}
+.sc-tile.on{border-color:rgba(6,114,128,.5);background:rgba(6,114,128,.05);color:var(--teal);box-shadow:0 0 18px rgba(10,154,168,.25)}
+.sc-tile.on .lb{color:var(--teal)}
+.sc-status{display:flex;align-items:center;gap:9px;margin-top:14px;border-top:1px solid var(--line);padding-top:12px;font-size:11.5px;font-weight:600;color:var(--ink-soft)}
+.sc-dot{flex:none;width:8px;height:8px;border-radius:50%;background:#12b76a;animation:scpulse 1.4s ease-in-out infinite}
+@keyframes scpulse{50%{opacity:.35}}
+.sc-found{margin-left:auto;font-size:11px;font-weight:800;color:var(--teal);font-variant-numeric:tabular-nums}
+@media(max-width:520px){.sc-inputs{grid-template-columns:1fr}.sc-chips{min-height:0}}
 .jm-res{margin-top:12px;display:flex;flex-direction:column;gap:8px}
 .jm-r{display:flex;align-items:center;gap:11px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;opacity:0;transform:translateY(10px);transition:opacity .45s ease,transform .45s ease,border-color .3s,background .3s}
 .jm-r.in{opacity:1;transform:none}
@@ -1277,14 +1296,28 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
     </div>
     <div class="jn-rows">
       <div class="jn-row">
-        <div class="jn-copy rv"><div class="num">01</div><h3 data-edit="c-jn-s1-t">Start your search</h3><p data-edit="c-jn-s1-d">Type what your client sells. A ranked list of matching affiliates comes back – scored by fit.</p></div>
+        <div class="jn-copy rv"><div class="num">01</div><h3 data-edit="c-jn-s1-t">Start your search</h3><p data-edit="c-jn-s1-d">Add your client's keywords and competitors – we scan Google, YouTube, Instagram, TikTok and 100+ affiliate networks every week.</p></div>
         <div class="jn-vis rv"><div class="jm"><div class="jm-bar" aria-hidden="true"><i></i><i></i><i></i></div><div class="jm-body">
-          <div class="jm-input"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg><span id="jnType"></span><span class="jm-caret"></span></div>
-          <div class="jm-res" id="jnRes">
-            <div class="jm-r"><img src="https://randomuser.me/api/portraits/med/women/44.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><span><b>Mara | Lift Daily</b><small>7.7K followers · Instagram</small></span><span class="jm-score">94% match</span></div>
-            <div class="jm-r"><img src="https://randomuser.me/api/portraits/med/men/32.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><span><b>gearscout.io</b><small>6.6K visits/mo · DR 68</small></span><span class="jm-score">91% match</span></div>
-            <div class="jm-r"><img src="https://randomuser.me/api/portraits/med/men/22.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><span><b>FitStack Reviews</b><small>27.8K subscribers · YouTube</small></span><span class="jm-score">88% match</span></div>
+          <div class="sc-inputs">
+            <div class="sc-col"><small>Keywords</small><div class="sc-chips" id="scKw">
+              <span class="sc-chip">best resistance bands</span><span class="sc-chip">home gym setup</span><span class="sc-chip">protein powder review</span>
+            </div></div>
+            <div class="sc-col"><small>Competitors</small><div class="sc-chips" id="scCmp">
+              <span class="sc-chip cmp"><img src="https://www.google.com/s2/favicons?domain=gymshark.com&sz=64" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">Gymshark</span><span class="sc-chip cmp"><img src="https://www.google.com/s2/favicons?domain=myprotein.com&sz=64" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">MyProtein</span>
+            </div></div>
           </div>
+          <div class="sc-viz">
+            <span class="sc-hub">🇺🇸 yourclient.com</span>
+            <svg class="sc-lines" viewBox="0 0 520 84" preserveAspectRatio="none" aria-hidden="true"><path d="M260,6 C260,46 52,40 52,78"/><path d="M260,6 C260,46 156,42 156,78"/><path d="M260,6 C260,48 260,48 260,78"/><path d="M260,6 C260,46 364,42 364,78"/><path d="M260,6 C260,46 468,40 468,78"/><circle r="3" fill="#0a9aa8" opacity=".85"><animateMotion dur="2.4s" begin="0.0s" repeatCount="indefinite" path="M260,6 C260,46 52,40 52,78"/></circle><circle r="3" fill="#0a9aa8" opacity=".85"><animateMotion dur="2.4s" begin="0.45s" repeatCount="indefinite" path="M260,6 C260,46 156,42 156,78"/></circle><circle r="3" fill="#0a9aa8" opacity=".85"><animateMotion dur="2.4s" begin="0.9s" repeatCount="indefinite" path="M260,6 C260,48 260,48 260,78"/></circle><circle r="3" fill="#0a9aa8" opacity=".85"><animateMotion dur="2.4s" begin="1.35s" repeatCount="indefinite" path="M260,6 C260,46 364,42 364,78"/></circle><circle r="3" fill="#0a9aa8" opacity=".85"><animateMotion dur="2.4s" begin="1.8s" repeatCount="indefinite" path="M260,6 C260,46 468,40 468,78"/></circle></svg>
+            <div class="sc-tiles">
+              <div class="sc-tile"><span class="ic">G</span><span class="lb">Google</span></div>
+              <div class="sc-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="13" rx="4"/><path d="M10.2 9.6v5.8l5-2.9z" fill="currentColor" stroke="none"/></svg><span class="lb">YouTube</span></div>
+              <div class="sc-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1.1" fill="currentColor" stroke="none"/></svg><span class="lb">Instagram</span></div>
+              <div class="sc-tile"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 3c.4 2.3 1.9 3.9 4.2 4.2v3.1c-1.6 0-3-.5-4.2-1.3v6.3c0 3.7-2.6 6-5.9 6-3.2 0-5.5-2.2-5.5-5.2 0-3.1 2.4-5.3 5.7-5.3.3 0 .7 0 1 .1v3.2a2.6 2.6 0 0 0-1-.2c-1.5 0-2.5.9-2.5 2.2 0 1.2 1 2.1 2.4 2.1 1.6 0 2.7-1.1 2.7-3V3h3.1z"/></svg><span class="lb">TikTok</span></div>
+              <div class="sc-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.6 2.4 3.9 5.2 3.9 8.5s-1.3 6.1-3.9 8.5c-2.6-2.4-3.9-5.2-3.9-8.5s1.3-6.1 3.9-8.5z"/></svg><span class="lb">100+ networks</span></div>
+            </div>
+          </div>
+          <div class="sc-status"><span class="sc-dot"></span><span id="scLabel">Setting up your search…</span><span class="sc-found" id="scFound"></span></div>
         </div></div></div>
       </div>
       <div class="jn-row flip">
@@ -1324,6 +1357,136 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
       <div class="fs"><b>38%</b><span data-edit="c-jn-stat1">average response rate across outreach campaigns</span></div>
       <div class="fs"><b>1 click</b><span data-edit="c-jn-stat2">to launch personal emails and follow-ups</span></div>
       <div class="fs"><b>0</b><span data-edit="c-jn-stat3">technical setup – just type what your client sells</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DEAL FLOW ============ -->
+<section class="deals wrap">
+  <div class="deals-head rv">
+    <div class="eyebrow"><span class="rule"></span><span class="pill">Deal Flow</span><span class="rule"></span></div>
+    <h2 data-edit="c-deals-title">Every client's deals.<br><span class="accent">One clean view.</span></h2>
+    <p data-edit="c-deals-sub">No more cluttered sheets. Audience, terms, status and a clear recommendation for every negotiation – so when your client asks, the overview is already there. No back and forth.</p>
+  </div>
+  <div class="deals-stage rv">
+    <div class="deal-scroll">
+      <div class="deal-window">
+        <div class="dw-top">
+          <span class="t">6 deals under review</span>
+          <span class="dw-chips"><span class="dw-chip g">4 Recommended</span><span class="dw-chip b">1 Expensive</span><span class="dw-chip r">1 Not recommended</span></span>
+        </div>
+        <div class="deal-row head"><span>Deal</span><span>Audience</span><span>Price / Terms</span><span>Status</span><span>Recommendation</span><span>Notes</span></div>
+        <div class="deal-row">
+          <span class="dr-deal"><span class="favicon" style="background:linear-gradient(135deg,#f3b8a0,#e3a1bd)">ML<img src="https://randomuser.me/api/portraits/med/women/44.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></span><span class="nm">Mara | Lift Daily</span></span>
+          <span class="dr-aud"><b>7.7K followers</b><small>6.8K avg views</small></span>
+          <span>25% affiliate commission</span>
+          <span><span class="st-chip replied">Replied</span></span>
+          <span><span class="dw-chip g">Recommended</span></span>
+          <span class="dr-notes">Strong niche fit, asked for a demo account</span>
+        </div>
+        <div class="deal-row">
+          <span class="dr-deal"><span class="favicon" style="background:linear-gradient(135deg,#f2d3a0,#f3b8a0)">GS<img src="https://randomuser.me/api/portraits/med/men/32.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></span><span class="nm">gearscout.io</span></span>
+          <span class="dr-aud"><b>6.6K visits/mo</b><small>DR 68</small></span>
+          <span>$450 per review post + 20%</span>
+          <span><span class="st-chip replied">Replied</span></span>
+          <span><span class="dw-chip g">Recommended</span></span>
+          <span class="dr-notes">High DR, wants Q3 slot</span>
+        </div>
+        <div class="deal-row">
+          <span class="dr-deal"><span class="favicon" style="background:linear-gradient(135deg,#c3b6ec,#a4c6e8)">TT<img src="https://randomuser.me/api/portraits/med/women/65.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></span><span class="nm">The Trail Letter</span></span>
+          <span class="dr-aud"><b>541 subscribers</b><small>189 avg views</small></span>
+          <span>30% affiliate + free annual plan</span>
+          <span><span class="st-chip replied">Replied</span></span>
+          <span><span class="dw-chip g">Recommended</span></span>
+          <span class="dr-notes">Small list but 35% open rate</span>
+        </div>
+        <div class="deal-row">
+          <span class="dr-deal"><span class="favicon" style="background:linear-gradient(135deg,#a9dcc3,#8fccd4)">FS<img src="https://randomuser.me/api/portraits/med/men/22.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></span><span class="nm">FitStack Reviews</span></span>
+          <span class="dr-aud"><b>27.8K subscribers</b><small>12K avg views</small></span>
+          <span>40% affiliate commission</span>
+          <span><span class="st-chip nego">Negotiating</span></span>
+          <span><span class="dw-chip g">Recommended</span></span>
+          <span class="dr-notes">Above standard rate – approved, high-intent audience</span>
+        </div>
+        <div class="deal-row">
+          <span class="dr-deal"><span class="favicon" style="background:linear-gradient(135deg,#e3a1bd,#c3b6ec)">BB<img src="https://randomuser.me/api/portraits/med/women/68.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></span><span class="nm">Budget &amp; Beyond</span></span>
+          <span class="dr-aud"><b>23.6K subscribers</b><small>369 avg views</small></span>
+          <span>30% affiliate commission</span>
+          <span><span class="st-chip nego">Negotiating</span></span>
+          <span><span class="dw-chip r">Not recommended</span></span>
+          <span class="dr-notes">Audience skews off-ICP, low conversion on similar deals</span>
+        </div>
+        <div class="deal-row">
+          <span class="dr-deal"><span class="favicon" style="background:linear-gradient(135deg,#8fccd4,#7cc6cf)">LH<img src="https://randomuser.me/api/portraits/med/men/85.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></span><span class="nm">LearnHub Weekly</span></span>
+          <span class="dr-aud"><b>21K subscribers</b><small>372 avg views</small></span>
+          <span>$2000 placement + 15%</span>
+          <span><span class="st-chip replied">Replied</span></span>
+          <span><span class="dw-chip b">Yes, but expensive</span></span>
+          <span class="dr-notes">Great reach, ask if flat fee can drop to $1200</span>
+        </div>
+      </div>
+    </div>
+    <div class="profile-card" aria-hidden="true">
+      <div class="pc-head">
+        <span class="favicon" style="background:linear-gradient(135deg,#f2d3a0,#f3b8a0)">GS<img src="https://randomuser.me/api/portraits/med/men/32.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></span>
+        <span class="nm">gearscout.io</span>
+        <span class="score"><b>89</b><small>Excellent match</small></span>
+      </div>
+      <div class="pc-sec">About this website</div>
+      <div class="pc-about">Hands-on reviews of training gear and fitness tech – buying guides, comparisons and deal roundups.</div>
+      <span class="pc-cat">Health &amp; Fitness</span>
+      <div class="pc-tiles">
+        <div class="pc-tile"><small>Global rank</small><b>#961,707</b></div>
+        <div class="pc-tile"><small>🇺🇸 US rank</small><b>#187,530</b></div>
+        <div class="pc-tile"><small>Category</small><b>#2,878</b></div>
+        <div class="pc-tile"><small>Pages/visit</small><b>1.9</b></div>
+        <div class="pc-tile"><small>Visit time</small><b>0m 46s</b></div>
+        <div class="pc-tile"><small>Bounce</small><b>39.3%</b></div>
+      </div>
+      <div class="pc-sec" style="margin-top:12px">Traffic split</div>
+      <div class="pc-row"><span>🇺🇸</span><span class="bar"><i style="width:70%"></i></span><b>34.6%</b></div>
+      <div class="pc-row"><span>🇨🇦</span><span class="bar"><i style="width:32%"></i></span><b>15.1%</b></div>
+      <div class="pc-row"><span>🇬🇧</span><span class="bar"><i style="width:26%"></i></span><b>12.6%</b></div>
+      <div class="pc-value">↗ $300/mo keyword traffic value</div>
+    </div>
+    <div class="yt-card" aria-hidden="true">
+      <div class="yt-head"><span class="favicon" style="background:linear-gradient(135deg,#a9dcc3,#8fccd4)">FS<img src="https://randomuser.me/api/portraits/med/men/22.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></span>FitStack Reviews<svg style="margin-left:auto" width="18" height="13" viewBox="0 0 24 17"><rect width="24" height="17" rx="4" fill="#f3b1a8"/><path d="M9.6 12.2V4.8L16 8.5z" fill="#fff"/></svg></div>
+      <div class="km-row">Subscribers<b>27,800</b><span class="km-badge peach">Mid</span></div>
+      <div class="km-row">Avg views<b>12K</b><span class="km-badge green">High</span></div>
+      <div class="km-row">Engagement<b>8%</b><span class="km-badge green">High</span></div>
+      <div class="km-row">Posts<b>1/week</b><span class="km-badge blue">Active</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CUSTOMER STORY ============ -->
+<section class="story wrap">
+  <div class="eyebrow rv" style="justify-content:center"><span class="rule"></span><span class="pill">Customer story</span><span class="rule"></span></div>
+  <div class="story-card rv">
+    <div class="story-grid">
+    <div class="story-top">
+        <div class="sq" data-edit="c-story-quote">"Feeling a bit guilty for getting all the credit from my team lol"</div>
+        <div class="sbody" data-edit="c-story-body">"I have zero experience recruiting affiliates, but as Head of Marketing, finding more partners for CopeCart was one of my tasks. With AffiliateFinder, I just added our website and within minutes I had a list of great affiliates – especially the Instagram and YouTube creators I was looking for. Then I set up my campaign <mark>(I LOVED that it wrote the emails for me) and after a week I actually had to pause it, because I had gotten enough deals completed for our launch campaign</mark> and couldn't handle any more! Thank you AF team!"</div>
+        <div class="story-author">
+          <img src="/peace-af/img/testimonial-michelle.jpg" alt="Michelle Habenicht" loading="lazy">
+          <span><span class="nm" data-edit="c-story-name">Michelle Habenicht</span><br><span class="rl" data-edit="c-story-role">Head of Marketing @ CopeCart</span></span>
+        </div>
+    </div>
+    <figure class="story-proof">
+      <div class="frame">
+        <div class="bar" aria-hidden="true"><i></i><i></i><i></i></div>
+        <img src="/peace-af/img/testimonial-analytics.jpg" alt="Michelle's First Campaign analytics: 125 emails sent, 51.2% open rate, 29.4% reply rate" loading="lazy">
+      </div>
+      <figcaption data-edit="c-story-cap">Michelle's first outreach campaign, unedited numbers – paused after a week with enough signed deals for the whole launch.</figcaption>
+      <div class="proof-stats" aria-label="Campaign results">
+        <div class="m"><b>125</b><span>Emails sent</span></div>
+        <div class="m"><b>51.2%</b><span>Open rate</span></div>
+        <div class="m"><b>29.4%</b><span>Reply rate</span></div>
+      </div>
+    </figure>
+    </div>
+    <div class="cta-row" style="position:relative;z-index:1;margin-top:40px">
+      <a class="btn" data-track-id="cta-story" href="https://app.affiliatefinder.ai/register?cta=story">Try it for free <span class="arr">→</span></a>
     </div>
   </div>
 </section>
@@ -1590,103 +1753,6 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
   </div>
 </section>
 
-<!-- ============ DEAL FLOW ============ -->
-<section class="deals wrap">
-  <div class="deals-head rv">
-    <div class="eyebrow"><span class="rule"></span><span class="pill">Deal Flow</span><span class="rule"></span></div>
-    <h2 data-edit="c-deals-title">Every client's deals.<br><span class="accent">One clean view.</span></h2>
-    <p data-edit="c-deals-sub">No more cluttered sheets. Audience, terms, status and a clear recommendation for every negotiation – so when your client asks, the overview is already there. No back and forth.</p>
-  </div>
-  <div class="deals-stage rv">
-    <div class="deal-scroll">
-      <div class="deal-window">
-        <div class="dw-top">
-          <span class="t">6 deals under review</span>
-          <span class="dw-chips"><span class="dw-chip g">4 Recommended</span><span class="dw-chip b">1 Expensive</span><span class="dw-chip r">1 Not recommended</span></span>
-        </div>
-        <div class="deal-row head"><span>Deal</span><span>Audience</span><span>Price / Terms</span><span>Status</span><span>Recommendation</span><span>Notes</span></div>
-        <div class="deal-row">
-          <span class="dr-deal"><span class="favicon" style="background:linear-gradient(135deg,#f3b8a0,#e3a1bd)">ML<img src="https://randomuser.me/api/portraits/med/women/44.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></span><span class="nm">Mara | Lift Daily</span></span>
-          <span class="dr-aud"><b>7.7K followers</b><small>6.8K avg views</small></span>
-          <span>25% affiliate commission</span>
-          <span><span class="st-chip replied">Replied</span></span>
-          <span><span class="dw-chip g">Recommended</span></span>
-          <span class="dr-notes">Strong niche fit, asked for a demo account</span>
-        </div>
-        <div class="deal-row">
-          <span class="dr-deal"><span class="favicon" style="background:linear-gradient(135deg,#f2d3a0,#f3b8a0)">GS<img src="https://randomuser.me/api/portraits/med/men/32.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></span><span class="nm">gearscout.io</span></span>
-          <span class="dr-aud"><b>6.6K visits/mo</b><small>DR 68</small></span>
-          <span>$450 per review post + 20%</span>
-          <span><span class="st-chip replied">Replied</span></span>
-          <span><span class="dw-chip g">Recommended</span></span>
-          <span class="dr-notes">High DR, wants Q3 slot</span>
-        </div>
-        <div class="deal-row">
-          <span class="dr-deal"><span class="favicon" style="background:linear-gradient(135deg,#c3b6ec,#a4c6e8)">TT<img src="https://randomuser.me/api/portraits/med/women/65.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></span><span class="nm">The Trail Letter</span></span>
-          <span class="dr-aud"><b>541 subscribers</b><small>189 avg views</small></span>
-          <span>30% affiliate + free annual plan</span>
-          <span><span class="st-chip replied">Replied</span></span>
-          <span><span class="dw-chip g">Recommended</span></span>
-          <span class="dr-notes">Small list but 35% open rate</span>
-        </div>
-        <div class="deal-row">
-          <span class="dr-deal"><span class="favicon" style="background:linear-gradient(135deg,#a9dcc3,#8fccd4)">FS<img src="https://randomuser.me/api/portraits/med/men/22.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></span><span class="nm">FitStack Reviews</span></span>
-          <span class="dr-aud"><b>27.8K subscribers</b><small>12K avg views</small></span>
-          <span>40% affiliate commission</span>
-          <span><span class="st-chip nego">Negotiating</span></span>
-          <span><span class="dw-chip g">Recommended</span></span>
-          <span class="dr-notes">Above standard rate – approved, high-intent audience</span>
-        </div>
-        <div class="deal-row">
-          <span class="dr-deal"><span class="favicon" style="background:linear-gradient(135deg,#e3a1bd,#c3b6ec)">BB<img src="https://randomuser.me/api/portraits/med/women/68.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></span><span class="nm">Budget &amp; Beyond</span></span>
-          <span class="dr-aud"><b>23.6K subscribers</b><small>369 avg views</small></span>
-          <span>30% affiliate commission</span>
-          <span><span class="st-chip nego">Negotiating</span></span>
-          <span><span class="dw-chip r">Not recommended</span></span>
-          <span class="dr-notes">Audience skews off-ICP, low conversion on similar deals</span>
-        </div>
-        <div class="deal-row">
-          <span class="dr-deal"><span class="favicon" style="background:linear-gradient(135deg,#8fccd4,#7cc6cf)">LH<img src="https://randomuser.me/api/portraits/med/men/85.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></span><span class="nm">LearnHub Weekly</span></span>
-          <span class="dr-aud"><b>21K subscribers</b><small>372 avg views</small></span>
-          <span>$2000 placement + 15%</span>
-          <span><span class="st-chip replied">Replied</span></span>
-          <span><span class="dw-chip b">Yes, but expensive</span></span>
-          <span class="dr-notes">Great reach, ask if flat fee can drop to $1200</span>
-        </div>
-      </div>
-    </div>
-    <div class="profile-card" aria-hidden="true">
-      <div class="pc-head">
-        <span class="favicon" style="background:linear-gradient(135deg,#f2d3a0,#f3b8a0)">GS<img src="https://randomuser.me/api/portraits/med/men/32.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></span>
-        <span class="nm">gearscout.io</span>
-        <span class="score"><b>89</b><small>Excellent match</small></span>
-      </div>
-      <div class="pc-sec">About this website</div>
-      <div class="pc-about">Hands-on reviews of training gear and fitness tech – buying guides, comparisons and deal roundups.</div>
-      <span class="pc-cat">Health &amp; Fitness</span>
-      <div class="pc-tiles">
-        <div class="pc-tile"><small>Global rank</small><b>#961,707</b></div>
-        <div class="pc-tile"><small>🇺🇸 US rank</small><b>#187,530</b></div>
-        <div class="pc-tile"><small>Category</small><b>#2,878</b></div>
-        <div class="pc-tile"><small>Pages/visit</small><b>1.9</b></div>
-        <div class="pc-tile"><small>Visit time</small><b>0m 46s</b></div>
-        <div class="pc-tile"><small>Bounce</small><b>39.3%</b></div>
-      </div>
-      <div class="pc-sec" style="margin-top:12px">Traffic split</div>
-      <div class="pc-row"><span>🇺🇸</span><span class="bar"><i style="width:70%"></i></span><b>34.6%</b></div>
-      <div class="pc-row"><span>🇨🇦</span><span class="bar"><i style="width:32%"></i></span><b>15.1%</b></div>
-      <div class="pc-row"><span>🇬🇧</span><span class="bar"><i style="width:26%"></i></span><b>12.6%</b></div>
-      <div class="pc-value">↗ $300/mo keyword traffic value</div>
-    </div>
-    <div class="yt-card" aria-hidden="true">
-      <div class="yt-head"><span class="favicon" style="background:linear-gradient(135deg,#a9dcc3,#8fccd4)">FS<img src="https://randomuser.me/api/portraits/med/men/22.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></span>FitStack Reviews<svg style="margin-left:auto" width="18" height="13" viewBox="0 0 24 17"><rect width="24" height="17" rx="4" fill="#f3b1a8"/><path d="M9.6 12.2V4.8L16 8.5z" fill="#fff"/></svg></div>
-      <div class="km-row">Subscribers<b>27,800</b><span class="km-badge peach">Mid</span></div>
-      <div class="km-row">Avg views<b>12K</b><span class="km-badge green">High</span></div>
-      <div class="km-row">Engagement<b>8%</b><span class="km-badge green">High</span></div>
-      <div class="km-row">Posts<b>1/week</b><span class="km-badge blue">Active</span></div>
-    </div>
-  </div>
-</section>
 
 <!-- ============ DARK ACT BREAK ============ -->
 <section class="dark">
@@ -1706,37 +1772,6 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
 </section>
 
 
-<!-- ============ CUSTOMER STORY ============ -->
-<section class="story wrap">
-  <div class="eyebrow rv" style="justify-content:center"><span class="rule"></span><span class="pill">Customer story</span><span class="rule"></span></div>
-  <div class="story-card rv">
-    <div class="story-grid">
-    <div class="story-top">
-        <div class="sq" data-edit="c-story-quote">"Feeling a bit guilty for getting all the credit from my team lol"</div>
-        <div class="sbody" data-edit="c-story-body">"I have zero experience recruiting affiliates, but as Head of Marketing, finding more partners for CopeCart was one of my tasks. With AffiliateFinder, I just added our website and within minutes I had a list of great affiliates – especially the Instagram and YouTube creators I was looking for. Then I set up my campaign <mark>(I LOVED that it wrote the emails for me) and after a week I actually had to pause it, because I had gotten enough deals completed for our launch campaign</mark> and couldn't handle any more! Thank you AF team!"</div>
-        <div class="story-author">
-          <img src="/peace-af/img/testimonial-michelle.jpg" alt="Michelle Habenicht" loading="lazy">
-          <span><span class="nm" data-edit="c-story-name">Michelle Habenicht</span><br><span class="rl" data-edit="c-story-role">Head of Marketing @ CopeCart</span></span>
-        </div>
-    </div>
-    <figure class="story-proof">
-      <div class="frame">
-        <div class="bar" aria-hidden="true"><i></i><i></i><i></i></div>
-        <img src="/peace-af/img/testimonial-analytics.jpg" alt="Michelle's First Campaign analytics: 125 emails sent, 51.2% open rate, 29.4% reply rate" loading="lazy">
-      </div>
-      <figcaption data-edit="c-story-cap">Michelle's first outreach campaign, unedited numbers – paused after a week with enough signed deals for the whole launch.</figcaption>
-      <div class="proof-stats" aria-label="Campaign results">
-        <div class="m"><b>125</b><span>Emails sent</span></div>
-        <div class="m"><b>51.2%</b><span>Open rate</span></div>
-        <div class="m"><b>29.4%</b><span>Reply rate</span></div>
-      </div>
-    </figure>
-    </div>
-    <div class="cta-row" style="position:relative;z-index:1;margin-top:40px">
-      <a class="btn" data-track-id="cta-story" href="https://app.affiliatefinder.ai/register?cta=story">Try it for free <span class="arr">→</span></a>
-    </div>
-  </div>
-</section>
 
 
 <!-- ============ WALL OF LOVE ============ -->
@@ -2197,18 +2232,34 @@ wordReveal();
 <script>
 /* ---------- how-it-works journey animations ---------- */
 (function(){
-  var sec=document.getElementById('how');if(!sec||!document.getElementById('jnType'))return;
+  var sec=document.getElementById('how');if(!sec||!document.getElementById('scLabel'))return;
   var run=false,timers=new Set();
   function wait(ms){return new Promise(function(r){var t=setTimeout(function(){timers.delete(t);r()},ms);timers.add(t)})}
-  async function loopSearch(){
-    var el=document.getElementById('jnType'),rows=[].slice.call(document.querySelectorAll('#jnRes .jm-r')),q='home fitness gear';
+  async function loopScan(){
+    var kw=[].slice.call(document.querySelectorAll('#scKw .sc-chip'));
+    var cmp=[].slice.call(document.querySelectorAll('#scCmp .sc-chip'));
+    var tiles=[].slice.call(document.querySelectorAll('.sc-tile'));
+    var label=document.getElementById('scLabel'),found=document.getElementById('scFound');
+    var names=['Google','YouTube','Instagram','TikTok','100+ affiliate networks'];
+    var adds=[9,12,8,11,7];
     while(run){
-      el.textContent='';rows.forEach(function(r){r.classList.remove('in')});
-      await wait(600);
-      for(var i=0;i<q.length&&run;i++){el.textContent+=q[i];await wait(65)}
-      if(!run)return;await wait(420);
-      for(var j=0;j<rows.length&&run;j++){rows[j].classList.add('in');await wait(300)}
-      await wait(2600);
+      kw.concat(cmp).forEach(function(c){c.classList.remove('in')});
+      tiles.forEach(function(t){t.classList.remove('on')});
+      label.textContent='Setting up your search\u2026';found.textContent='';
+      await wait(700);
+      for(var a=0;a<kw.length&&run;a++){kw[a].classList.add('in');await wait(340)}
+      for(var b=0;b<cmp.length&&run;b++){cmp[b].classList.add('in');await wait(340)}
+      if(!run)return;await wait(500);
+      var total=0;
+      for(var i=0;i<tiles.length&&run;i++){
+        tiles[i].classList.add('on');
+        label.textContent='Scanning '+names[i]+'\u2026';
+        for(var k=1;k<=adds[i]&&run;k++){total++;found.textContent=total+' matches';await wait(65)}
+        await wait(320);
+      }
+      if(!run)return;
+      label.textContent='Scan complete \u2013 new matches every week';
+      await wait(3200);
     }
   }
   async function loopPick(){
@@ -2242,7 +2293,7 @@ wordReveal();
     }
   }
   new IntersectionObserver(function(es){es.forEach(function(e){
-    if(e.isIntersecting&&!run){run=true;loopSearch();loopPick();loopSend();loopInbox();}
+    if(e.isIntersecting&&!run){run=true;loopScan();loopPick();loopSend();loopInbox();}
     else if(!e.isIntersecting&&run){run=false;timers.forEach(clearTimeout);timers.clear();}
   })},{threshold:.12}).observe(sec);
 })();
