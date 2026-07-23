@@ -785,8 +785,10 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 }
 .story-card::after{content:'';position:absolute;inset:0;opacity:.32;pointer-events:none;
   background-image:linear-gradient(rgba(16,20,24,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(16,20,24,.03) 1px,transparent 1px);background-size:26px 26px}
-.story-top{position:relative;z-index:1}
-.story-quote{max-width:660px}
+.story-top{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;grid-template-areas:'sq sbody' 'author sbody';column-gap:56px;align-items:start}
+.story-top .sq{grid-area:sq}
+.story-top .sbody{grid-area:sbody;margin-top:0}
+.story-top .story-author{grid-area:author;align-self:end}
 .story-card .sq{font-size:clamp(20px,2.3vw,26px);font-weight:650;letter-spacing:-.03em;line-height:1.4}
 .story-card .sq .hl{color:var(--teal)}
 .story-card .sbody{margin-top:20px;font-size:14.5px;color:var(--ink-soft);line-height:1.75;max-width:56ch}
@@ -798,7 +800,7 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .story-author .vf{display:inline-flex;align-items:center;gap:6px;margin-left:auto;font-size:11.5px;font-weight:600;color:var(--teal);
   border:1px solid rgba(6,114,128,.3);background:rgba(6,114,128,.06);border-radius:999px;padding:6px 12px;white-space:nowrap}
 .story-author .vf i{font-style:normal;width:14px;height:14px;border-radius:50%;background:var(--teal);color:#fff;display:grid;place-items:center;font-size:8.5px;font-weight:800}
-.story-proof .proof-stats{position:relative;z-index:1;display:flex;justify-content:center;margin-top:26px}
+.story-proof .proof-stats{position:relative;z-index:1;display:flex;justify-content:center;margin-top:22px}
 .story-proof .proof-stats .m{padding:2px 32px;text-align:center}
 .story-proof .proof-stats .m+.m{border-left:1px solid var(--line)}
 .story-proof .proof-stats .m b{display:block;font-size:clamp(26px,2.8vw,34px);font-weight:800;letter-spacing:-.04em;color:var(--teal);line-height:1.05}
@@ -811,6 +813,8 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .story-proof img{display:block;width:100%;height:auto}
 .story-proof figcaption{margin-top:14px;text-align:center;font-size:12px;color:var(--ink-mute)}
 @media(max-width:820px){
+  .story-top{grid-template-columns:1fr;grid-template-areas:'sq' 'sbody' 'author'}
+  .story-top .sbody{margin-top:20px}
   .story-proof .proof-stats .m{padding:2px 14px}
   .story-proof .proof-stats .m b{font-size:22px}
   .story-author .vf{display:none}
@@ -1436,7 +1440,7 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
     </div>
     <div class="yt-card" aria-hidden="true">
       <div class="yt-head"><span class="favicon" style="background:linear-gradient(135deg,#a9dcc3,#8fccd4)">FS<img src="https://randomuser.me/api/portraits/med/men/22.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></span>FitStack Reviews<svg style="margin-left:auto" width="18" height="13" viewBox="0 0 24 17"><rect width="24" height="17" rx="4" fill="#f3b1a8"/><path d="M9.6 12.2V4.8L16 8.5z" fill="#fff"/></svg></div>
-      <div class="km-row">Subscribers<b>27,800</b><span class="km-badge peach">Micro</span></div>
+      <div class="km-row">Subscribers<b>27,800</b><span class="km-badge peach">Mid</span></div>
       <div class="km-row">Avg views<b>12K</b><span class="km-badge green">High</span></div>
       <div class="km-row">Engagement<b>8%</b><span class="km-badge green">High</span></div>
       <div class="km-row">Posts<b>1/week</b><span class="km-badge blue">Active</span></div>
@@ -1467,26 +1471,24 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
   <div class="eyebrow rv" style="justify-content:center"><span class="rule"></span><span class="pill">Customer story</span><span class="rule"></span></div>
   <div class="story-card rv">
     <div class="story-top">
-      <div class="story-quote">
         <div class="sq" data-edit="c-story-quote">"Feeling a bit guilty for getting all the credit from my team lol – <span class="hl">who would have thought that AI emails could get response rates like that?</span>"</div>
         <div class="sbody" data-edit="c-story-body">"I have zero experience recruiting affiliates, but as Head of Marketing, finding more partners for CopeCart was one of my tasks. With AffiliateFinder, I just added our website and within minutes I had a list of great affiliates – especially the Instagram and YouTube creators I was looking for. Then I set up my campaign <mark>(I LOVED that it wrote the emails for me) and after a week I actually had to pause it, because I had gotten enough deals completed for our launch campaign</mark> and couldn't handle any more! Thank you AF team!"</div>
         <div class="story-author">
           <img src="/peace-af/img/testimonial-michelle.jpg" alt="Michelle Habenicht" loading="lazy">
           <span><span class="nm" data-edit="c-story-name">Michelle Habenicht</span><br><span class="rl" data-edit="c-story-role">Head of Marketing @ CopeCart</span></span>
         </div>
-      </div>
     </div>
     <figure class="story-proof">
       <div class="frame">
         <div class="bar" aria-hidden="true"><i></i><i></i><i></i></div>
         <img src="/peace-af/img/testimonial-analytics.jpg" alt="Michelle's First Campaign analytics: 125 emails sent, 51.2% open rate, 29.4% reply rate" loading="lazy">
       </div>
+      <figcaption data-edit="c-story-cap">Michelle's first outreach campaign, unedited numbers – paused after a week with enough signed deals for the whole launch.</figcaption>
       <div class="proof-stats" aria-label="Campaign results">
         <div class="m"><b>125</b><span>Emails sent</span></div>
         <div class="m"><b>51.2%</b><span>Open rate</span></div>
         <div class="m"><b>29.4%</b><span>Reply rate</span></div>
       </div>
-      <figcaption data-edit="c-story-cap">Michelle's first outreach campaign, unedited numbers – paused after a week with enough signed deals for the whole launch.</figcaption>
     </figure>
     <div class="cta-row" style="position:relative;z-index:1;margin-top:40px">
       <a class="btn" data-track-id="cta-story" href="https://app.affiliatefinder.ai/register?cta=story">Try it for free <span class="arr">→</span></a>
