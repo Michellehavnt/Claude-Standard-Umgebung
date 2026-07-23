@@ -888,18 +888,7 @@ h2{font-size:clamp(32px,4.4vw,56px)}
   .deals-head{margin-bottom:26px}
   .deals-stage{padding:12px 10px 14px}
   .profile-card,.yt-card{display:none}
-  .deal-window{min-width:0;width:100%}
-  .dw-top{padding:11px 13px}
-  .dw-top .t{font-size:12px}
-  .dw-chips{display:none}
-  .deal-row{grid-template-columns:1.7fr 1fr 1.15fr;gap:8px;padding:10px 12px;font-size:11.5px}
-  .deal-row.head{padding:8px 12px;font-size:8.5px;letter-spacing:.06em}
-  .deal-row>span:nth-child(3),.deal-row>span:nth-child(4),.deal-row>span:nth-child(6){display:none}
-  .dr-deal{gap:7px}
-  .dr-deal .favicon{width:22px;height:22px;border-radius:6px;font-size:8px}
-  .dr-aud b{font-size:11px}
-  .dr-aud small{display:none}
-  .dw-chip{font-size:9px;padding:3px 8px}
+  .deal-scroll{overflow:visible}
 }
 
 /* ---------- discovery setup ---------- */
@@ -1125,6 +1114,13 @@ footer{background:#0a0f16;border-top:1px solid rgba(255,255,255,.08);padding:38p
 footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
 footer a{color:rgba(255,255,255,.65);text-decoration:none;margin-left:22px}
 footer .af-logo{filter:brightness(0) invert(1);opacity:.9!important}
+@media(max-width:600px){
+  footer{font-size:11.5px;padding:28px 0}
+  footer .wrap{flex-wrap:nowrap;gap:10px}
+  footer .af-logo{width:92px!important;height:14px!important}
+  footer .wrap>span:first-child{gap:8px!important}
+  footer a{margin-left:12px;white-space:nowrap}
+}
 </style>
 </head>
 <body>
@@ -2326,6 +2322,23 @@ wordReveal();
     if(e.isIntersecting&&!run){run=true;loopScan();loopPick();loopInbox();}
     else if(!e.isIntersecting&&run){run=false;timers.forEach(clearTimeout);timers.clear();}
   })},{threshold:.12}).observe(sec);
+})();
+</script>
+<script>
+/* mobile: show the full deal sheet scaled to fit */
+(function(){
+  var sc=document.querySelector('.deal-scroll'),w=document.querySelector('.deal-window');
+  if(!sc||!w)return;
+  function fit(){
+    if(window.innerWidth>700){w.style.transform='';w.style.width='';sc.style.height='';return;}
+    w.style.width='880px';
+    var scale=sc.clientWidth/880;
+    w.style.transformOrigin='top left';
+    w.style.transform='scale('+scale+')';
+    sc.style.height=(w.offsetHeight*scale)+'px';
+  }
+  window.addEventListener('resize',fit);
+  fit();setTimeout(fit,400);
 })();
 </script>
 </body>
