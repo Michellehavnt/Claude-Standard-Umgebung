@@ -855,17 +855,10 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .jb-msg small{display:block;font-size:10.5px;color:var(--ink-mute);margin-top:2px}
 .jb-msg .dot{flex:none;width:7px;height:7px;border-radius:50%;background:#12b76a;margin-left:auto}
 .jb-time{flex:none;font-size:9.5px;color:var(--ink-mute)}
-.jn-stats{display:grid;grid-template-columns:repeat(3,1fr);max-width:1040px;margin:26px auto 0;border-top:1px solid var(--line);padding-top:42px}
-.jn-stats .fs{text-align:center;padding:0 24px}
-.jn-stats .fs+.fs{border-left:1px solid var(--line)}
-.jn-stats b{display:block;font-size:clamp(28px,3.2vw,42px);font-weight:800;letter-spacing:-.04em;line-height:1.05;background:linear-gradient(105deg,#12b0bf 0%,#067280 55%,#0a4e58 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
-.jn-stats span{display:block;margin-top:8px;font-size:12.5px;color:var(--ink-mute);line-height:1.55}
 @media(max-width:900px){
   .jn-row{grid-template-columns:1fr;gap:22px;padding:34px 0}
   .jn-row.flip .jn-copy{order:1}
   .jn-row.flip .jn-vis{order:2}
-  .jn-stats{grid-template-columns:1fr;gap:26px;padding-top:34px}
-  .jn-stats .fs+.fs{border-left:0}
 }
 
 /* ---------- discovery setup ---------- */
@@ -1364,10 +1357,6 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
         </div></div>
       </div>
     </div>
-    <div class="jn-stats rv">
-      <div class="fs"><b>38%</b><span data-edit="c-jn-stat1">average response rate across outreach campaigns</span></div>
-      <div class="fs"><b>1 click</b><span data-edit="c-jn-stat2">to launch personal emails and follow-ups</span></div>
-      <div class="fs"><b>0</b><span data-edit="c-jn-stat3">technical setup – just type what your client sells</span></div>
     </div>
   </div>
 </section>
