@@ -849,7 +849,8 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 }
 .story-card::after{content:'';position:absolute;inset:0;opacity:.32;pointer-events:none;
   background-image:linear-gradient(rgba(16,20,24,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(16,20,24,.03) 1px,transparent 1px);background-size:26px 26px}
-.story-top{position:relative;z-index:1;max-width:780px}
+.story-grid{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1.05fr;gap:48px;align-items:center}
+.story-top{position:relative;z-index:1}
 .story-card .sq{font-size:clamp(20px,2.3vw,26px);font-weight:650;letter-spacing:-.03em;line-height:1.4}
 .story-card .sq .hl{color:var(--teal)}
 .story-card .sbody{margin-top:20px;font-size:14.5px;color:var(--ink-soft);line-height:1.75;max-width:56ch}
@@ -866,7 +867,7 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .story-proof .proof-stats .m+.m{border-left:1px solid var(--line)}
 .story-proof .proof-stats .m b{display:block;font-size:clamp(26px,2.8vw,34px);font-weight:800;letter-spacing:-.04em;color:var(--teal);line-height:1.05}
 .story-proof .proof-stats .m span{display:block;margin-top:6px;font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-mute)}
-.story-proof{position:relative;z-index:1;margin:44px 0 0}
+.story-proof{position:relative;z-index:1;margin:0}
 .story-proof .frame{border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(16,20,24,.13)}
 .story-proof .bar{display:flex;align-items:center;gap:7px;background:var(--cream);border-bottom:1px solid var(--line);padding:11px 16px}
 .story-proof .bar i{width:9px;height:9px;border-radius:50%;background:#e3ddd2}
@@ -874,6 +875,8 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .story-proof img{display:block;width:100%;height:auto}
 .story-proof figcaption{margin-top:14px;text-align:center;font-size:12px;color:var(--ink-mute)}
 @media(max-width:820px){
+  .story-grid{grid-template-columns:1fr}
+  .story-proof{margin-top:36px}
   .story-proof .proof-stats .m{padding:2px 14px}
   .story-proof .proof-stats .m b{font-size:22px}
   .story-author .vf{display:none}
@@ -1608,6 +1611,7 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
 <section class="story wrap">
   <div class="eyebrow rv" style="justify-content:center"><span class="rule"></span><span class="pill">Customer story</span><span class="rule"></span></div>
   <div class="story-card rv">
+    <div class="story-grid">
     <div class="story-top">
         <div class="sq" data-edit="c-story-quote">"Feeling a bit guilty for getting all the credit from my team lol"</div>
         <div class="sbody" data-edit="c-story-body">"I have zero experience recruiting affiliates, but as Head of Marketing, finding more partners for CopeCart was one of my tasks. With AffiliateFinder, I just added our website and within minutes I had a list of great affiliates – especially the Instagram and YouTube creators I was looking for. Then I set up my campaign <mark>(I LOVED that it wrote the emails for me) and after a week I actually had to pause it, because I had gotten enough deals completed for our launch campaign</mark> and couldn't handle any more! Thank you AF team!"</div>
@@ -1628,6 +1632,7 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
         <div class="m"><b>29.4%</b><span>Reply rate</span></div>
       </div>
     </figure>
+    </div>
     <div class="cta-row" style="position:relative;z-index:1;margin-top:40px">
       <a class="btn" data-track-id="cta-story" href="https://app.affiliatefinder.ai/register?cta=story">Try it for free <span class="arr">→</span></a>
     </div>
