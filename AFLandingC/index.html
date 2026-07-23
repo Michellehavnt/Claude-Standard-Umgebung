@@ -839,10 +839,7 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 }
 .story-card::after{content:'';position:absolute;inset:0;opacity:.32;pointer-events:none;
   background-image:linear-gradient(rgba(16,20,24,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(16,20,24,.03) 1px,transparent 1px);background-size:26px 26px}
-.story-top{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;grid-template-areas:'sq sbody' 'author sbody';column-gap:56px;align-items:start}
-.story-top .sq{grid-area:sq}
-.story-top .sbody{grid-area:sbody;margin-top:0}
-.story-top .story-author{grid-area:author;align-self:end}
+.story-top{position:relative;z-index:1;max-width:780px}
 .story-card .sq{font-size:clamp(20px,2.3vw,26px);font-weight:650;letter-spacing:-.03em;line-height:1.4}
 .story-card .sq .hl{color:var(--teal)}
 .story-card .sbody{margin-top:20px;font-size:14.5px;color:var(--ink-soft);line-height:1.75;max-width:56ch}
@@ -867,8 +864,6 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .story-proof img{display:block;width:100%;height:auto}
 .story-proof figcaption{margin-top:14px;text-align:center;font-size:12px;color:var(--ink-mute)}
 @media(max-width:820px){
-  .story-top{grid-template-columns:1fr;grid-template-areas:'sq' 'sbody' 'author'}
-  .story-top .sbody{margin-top:20px}
   .story-proof .proof-stats .m{padding:2px 14px}
   .story-proof .proof-stats .m b{font-size:22px}
   .story-author .vf{display:none}
@@ -1577,7 +1572,7 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
   <div class="eyebrow rv" style="justify-content:center"><span class="rule"></span><span class="pill">Customer story</span><span class="rule"></span></div>
   <div class="story-card rv">
     <div class="story-top">
-        <div class="sq" data-edit="c-story-quote">"Feeling a bit guilty for getting all the credit from my team lol – <span class="hl">who would have thought that AI emails could get response rates like that?</span>"</div>
+        <div class="sq" data-edit="c-story-quote">"Feeling a bit guilty for getting all the credit from my team lol"</div>
         <div class="sbody" data-edit="c-story-body">"I have zero experience recruiting affiliates, but as Head of Marketing, finding more partners for CopeCart was one of my tasks. With AffiliateFinder, I just added our website and within minutes I had a list of great affiliates – especially the Instagram and YouTube creators I was looking for. Then I set up my campaign <mark>(I LOVED that it wrote the emails for me) and after a week I actually had to pause it, because I had gotten enough deals completed for our launch campaign</mark> and couldn't handle any more! Thank you AF team!"</div>
         <div class="story-author">
           <img src="img/testimonial-michelle.jpg" alt="Michelle Habenicht" loading="lazy">
