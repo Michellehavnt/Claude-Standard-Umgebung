@@ -794,27 +794,22 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .jm-bar{display:flex;gap:6px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--cream)}
 .jm-bar i{width:9px;height:9px;border-radius:50%;background:#e3ddd2}
 .jm-body{padding:18px}
-.scn-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:20px}
-.sc-chip{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:650;color:var(--ink-soft);background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px;box-shadow:0 6px 16px rgba(16,20,24,.06);opacity:0;transform:scale(.7);transition:opacity .35s,transform .35s}
-.sc-chip.in{opacity:1;transform:none}
-.sc-chip .cdot{width:7px;height:7px;border-radius:50%;background:linear-gradient(120deg,#f59a5b,#ec6f1f)}
-.sc-chip img{width:15px;height:15px;border-radius:4px;object-fit:contain}
 .scn-hubwrap{display:flex;justify-content:center;position:relative;z-index:1}
 .sc-hub{font-size:12px;font-weight:700;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 16px;box-shadow:0 10px 24px rgba(16,20,24,.08)}
 .sc-lines{display:block;width:100%;height:80px;margin-top:-4px}
 .sc-lines path{fill:none;stroke:rgba(6,114,128,.18);stroke-width:1.5}
 .scn-tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
 .sc-tile{display:flex;flex-direction:column;align-items:center;gap:8px}
-.sc-tile .bx{width:54px;height:54px;border-radius:16px;background:#fff;border:1px solid var(--line);box-shadow:0 10px 26px rgba(16,20,24,.07);display:grid;place-items:center;transition:transform .35s,box-shadow .35s,border-color .35s}
-.sc-tile .bx svg{width:26px;height:26px}
+.sc-tile .bx{width:44px;height:44px;display:grid;place-items:center;transition:transform .35s,filter .35s}
+.sc-tile .bx svg{width:34px;height:34px}
 .sc-tile .lb{font-size:10.5px;font-weight:700;color:var(--ink-mute);white-space:nowrap;transition:color .35s}
-.sc-tile.on .bx{transform:translateY(-4px) scale(1.07);border-color:rgba(6,114,128,.35);box-shadow:0 16px 34px rgba(10,154,168,.22)}
+.sc-tile.on .bx{transform:translateY(-5px) scale(1.12);filter:drop-shadow(0 10px 18px rgba(10,154,168,.35))}
 .sc-tile.on .lb{color:var(--teal)}
-.scn-status{display:flex;align-items:center;gap:9px;width:fit-content;margin:22px auto 0;background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 18px;box-shadow:0 8px 20px rgba(16,20,24,.06);font-size:12px;font-weight:600;color:var(--ink-soft)}
+.scn-status{display:flex;align-items:center;gap:9px;width:fit-content;margin:28px auto 0;font-size:13px;font-weight:600;color:var(--ink-soft);letter-spacing:-.01em}
 .sc-dot{flex:none;width:8px;height:8px;border-radius:50%;background:#12b76a;animation:scpulse 1.4s ease-in-out infinite}
 @keyframes scpulse{50%{opacity:.35}}
-.sc-found{font-size:12px;font-weight:800;color:var(--teal);font-variant-numeric:tabular-nums;margin-left:2px}
-@media(max-width:520px){.sc-tile .bx{width:44px;height:44px;border-radius:13px}.sc-tile .bx svg{width:21px;height:21px}.sc-tile .lb{font-size:8.5px}}
+.sc-found{font-size:13px;font-weight:800;color:var(--teal);font-variant-numeric:tabular-nums;margin-left:2px}
+@media(max-width:520px){.sc-tile .bx{width:36px;height:36px}.sc-tile .bx svg{width:27px;height:27px}.sc-tile .lb{font-size:8.5px}}
 .jm-res{margin-top:12px;display:flex;flex-direction:column;gap:8px}
 .jm-r{display:flex;align-items:center;gap:11px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;opacity:0;transform:translateY(10px);transition:opacity .45s ease,transform .45s ease,border-color .3s,background .3s}
 .jm-r.in{opacity:1;transform:none}
@@ -1285,20 +1280,9 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
     </div>
     <div class="jn-rows">
       <div class="jn-row">
-        <div class="jn-copy rv"><div class="num">01</div><h3 data-edit="c-jn-s1-t">Start your search</h3><p data-edit="c-jn-s1-d">Add your keywords and competitors – we scan Google, YouTube, Instagram, TikTok and 100+ affiliate networks every week.</p></div>
+        <div class="jn-copy rv"><div class="num">01</div><h3 data-edit="c-jn-s1-t">Start your search</h3><p data-edit="c-jn-s1-d">Add your brand – we scan Google, YouTube, Instagram, TikTok and 100+ affiliate networks every week.</p></div>
         <div class="jn-vis rv"><div class="scn">
-          <div class="scn-chips">
-            <span id="scKw" style="display:contents">
-              <span class="sc-chip"><i class="cdot"></i>best resistance bands</span>
-              <span class="sc-chip"><i class="cdot"></i>home gym setup</span>
-              <span class="sc-chip"><i class="cdot"></i>protein powder review</span>
-            </span>
-            <span id="scCmp" style="display:contents">
-              <span class="sc-chip"><img src="https://www.google.com/s2/favicons?domain=gymshark.com&sz=64" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">Gymshark</span>
-              <span class="sc-chip"><img src="https://www.google.com/s2/favicons?domain=myprotein.com&sz=64" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">MyProtein</span>
-            </span>
-          </div>
-          <div class="scn-hubwrap"><span class="sc-hub">🇺🇸 yourbrand.com</span></div>
+                    <div class="scn-hubwrap"><span class="sc-hub">🇺🇸 yourbrand.com</span></div>
           <svg class="sc-lines" viewBox="0 0 520 84" preserveAspectRatio="none" aria-hidden="true"><path d="M260,6 C260,46 52,40 52,78"/><path d="M260,6 C260,46 156,42 156,78"/><path d="M260,6 C260,48 260,48 260,78"/><path d="M260,6 C260,46 364,42 364,78"/><path d="M260,6 C260,46 468,40 468,78"/><circle r="3" fill="#0a9aa8" opacity=".85"><animateMotion dur="2.4s" begin="0.0s" repeatCount="indefinite" path="M260,6 C260,46 52,40 52,78"/></circle><circle r="3" fill="#0a9aa8" opacity=".85"><animateMotion dur="2.4s" begin="0.45s" repeatCount="indefinite" path="M260,6 C260,46 156,42 156,78"/></circle><circle r="3" fill="#0a9aa8" opacity=".85"><animateMotion dur="2.4s" begin="0.9s" repeatCount="indefinite" path="M260,6 C260,48 260,48 260,78"/></circle><circle r="3" fill="#0a9aa8" opacity=".85"><animateMotion dur="2.4s" begin="1.35s" repeatCount="indefinite" path="M260,6 C260,46 364,42 364,78"/></circle><circle r="3" fill="#0a9aa8" opacity=".85"><animateMotion dur="2.4s" begin="1.8s" repeatCount="indefinite" path="M260,6 C260,46 468,40 468,78"/></circle></svg>
           <div class="scn-tiles">
             <div class="sc-tile"><span class="bx"><svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></span><span class="lb">Google</span></div>
@@ -1307,7 +1291,7 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
             <div class="sc-tile"><span class="bx"><svg viewBox="0 0 24 24"><path fill="#25F4EE" transform="translate(-0.7,-0.4)" d="M16.6 3c.4 2.3 1.9 3.9 4.2 4.2v3.1c-1.6 0-3-.5-4.2-1.3v6.3c0 3.7-2.6 6-5.9 6-3.2 0-5.5-2.2-5.5-5.2 0-3.1 2.4-5.3 5.7-5.3.3 0 .7 0 1 .1v3.2a2.6 2.6 0 0 0-1-.2c-1.5 0-2.5.9-2.5 2.2 0 1.2 1 2.1 2.4 2.1 1.6 0 2.7-1.1 2.7-3V3h3.1z"/><path fill="#FE2C55" transform="translate(0.7,0.4)" d="M16.6 3c.4 2.3 1.9 3.9 4.2 4.2v3.1c-1.6 0-3-.5-4.2-1.3v6.3c0 3.7-2.6 6-5.9 6-3.2 0-5.5-2.2-5.5-5.2 0-3.1 2.4-5.3 5.7-5.3.3 0 .7 0 1 .1v3.2a2.6 2.6 0 0 0-1-.2c-1.5 0-2.5.9-2.5 2.2 0 1.2 1 2.1 2.4 2.1 1.6 0 2.7-1.1 2.7-3V3h3.1z"/><path fill="#0a0f16" d="M16.6 3c.4 2.3 1.9 3.9 4.2 4.2v3.1c-1.6 0-3-.5-4.2-1.3v6.3c0 3.7-2.6 6-5.9 6-3.2 0-5.5-2.2-5.5-5.2 0-3.1 2.4-5.3 5.7-5.3.3 0 .7 0 1 .1v3.2a2.6 2.6 0 0 0-1-.2c-1.5 0-2.5.9-2.5 2.2 0 1.2 1 2.1 2.4 2.1 1.6 0 2.7-1.1 2.7-3V3h3.1z"/></svg></span><span class="lb">TikTok</span></div>
             <div class="sc-tile"><span class="bx"><svg viewBox="0 0 24 24" fill="none" stroke="#067280" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.6 2.4 3.9 5.2 3.9 8.5s-1.3 6.1-3.9 8.5c-2.6-2.4-3.9-5.2-3.9-8.5s1.3-6.1 3.9-8.5z"/></svg></span><span class="lb">100+ networks</span></div>
           </div>
-          <div class="scn-status"><span class="sc-dot"></span><span id="scLabel">Setting up your search…</span><span class="sc-found" id="scFound"></span></div>
+          <div class="scn-status"><span class="sc-dot"></span><span id="scLabel">Starting your first scan…</span><span class="sc-found" id="scFound"></span></div>
         </div></div>
       </div>
       <div class="jn-row flip">
@@ -2205,30 +2189,30 @@ wordReveal();
   var run=false,timers=new Set();
   function wait(ms){return new Promise(function(r){var t=setTimeout(function(){timers.delete(t);r()},ms);timers.add(t)})}
   async function loopScan(){
-    var kw=[].slice.call(document.querySelectorAll('#scKw .sc-chip'));
-    var cmp=[].slice.call(document.querySelectorAll('#scCmp .sc-chip'));
     var tiles=[].slice.call(document.querySelectorAll('.sc-tile'));
     var label=document.getElementById('scLabel'),found=document.getElementById('scFound');
     var names=['Google','YouTube','Instagram','TikTok','100+ affiliate networks'];
-    var adds=[9,12,8,11,7];
+    var cums=[312,601,842,1198,1345];
     while(run){
-      kw.concat(cmp).forEach(function(c){c.classList.remove('in')});
       tiles.forEach(function(t){t.classList.remove('on')});
-      label.textContent='Setting up your search\u2026';found.textContent='';
-      await wait(700);
-      for(var a=0;a<kw.length&&run;a++){kw[a].classList.add('in');await wait(340)}
-      for(var b=0;b<cmp.length&&run;b++){cmp[b].classList.add('in');await wait(340)}
-      if(!run)return;await wait(500);
+      label.textContent='Starting your first scan\u2026';found.textContent='';
+      await wait(1000);
       var total=0;
       for(var i=0;i<tiles.length&&run;i++){
         tiles[i].classList.add('on');
         label.textContent='Scanning '+names[i]+'\u2026';
-        for(var k=1;k<=adds[i]&&run;k++){total++;found.textContent=total+' matches';await wait(65)}
-        await wait(320);
+        var target=cums[i],steps=14,from=total;
+        for(var k=1;k<=steps&&run;k++){
+          total=Math.round(from+(target-from)*k/steps);
+          found.textContent=total.toLocaleString('en-US')+' matches';
+          await wait(72);
+        }
+        await wait(260);
       }
       if(!run)return;
-      label.textContent='Scan complete \u2013 new matches every week';
-      await wait(3200);
+      label.textContent='Scan complete \u2013 we found';
+      found.textContent='1,345 matches';
+      await wait(3600);
     }
   }
   async function loopPick(){
