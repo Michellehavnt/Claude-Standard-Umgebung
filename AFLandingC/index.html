@@ -845,8 +845,8 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .cp2-btn{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#fff;background:#0c2733;border-radius:999px;padding:12px 22px;box-shadow:0 12px 26px rgba(12,39,51,.22);transition:transform .18s}
 .cp2-btn svg{flex:none}
 .cp2-btn.press{transform:scale(.93)}
-.cp2-status{font-size:12px;font-weight:700;color:var(--teal);font-variant-numeric:tabular-nums}
-.cp2-meta{display:block;text-align:center;margin-top:12px;font-size:11px;color:var(--ink-mute)}
+.cp2-status{font-size:12px;font-weight:600;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.cp2-status b{font-weight:800;color:var(--teal)}
 .jb-head{display:flex;align-items:center;margin-bottom:12px}
 .jb-head b{font-size:13.5px;letter-spacing:-.01em}
 .jb-new{margin-left:auto;font-size:10.5px;font-weight:800;color:#fff;background:linear-gradient(100deg,#0a9aa8,#067280);border-radius:999px;padding:4px 11px;font-variant-numeric:tabular-nums}
@@ -1336,7 +1336,6 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
             </div>
           </div>
           <div class="cp2-action"><span class="cp2-btn" id="cpLaunch"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg>Send campaign</span><span class="cp2-status" id="cpStat"></span></div>
-          <small class="cp2-meta">Auto warm-up on · sending Mon–Fri, 9 AM – 5 PM</small>
         </div></div>
       </div>
       <div class="jn-row flip">
@@ -2282,7 +2281,7 @@ wordReveal();
         set(k,k+1);mail.classList.remove('fly');await wait(600);
       }
       if(!run)return;
-      stat.textContent='All sent \u2713 landing in inboxes';
+      stat.innerHTML='<b>51.2%</b> open rate \u00b7 <b>29.4%</b> reply rate';
       await wait(3000);
     }
   }
