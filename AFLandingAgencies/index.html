@@ -56,6 +56,10 @@ body{
 
 /* ---------- shared ---------- */
 .wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+/* sections that carry .wrap themselves also set their own vertical padding
+   (e.g. .vstory{padding:100px 0}) which zeroes the horizontal padding by
+   shorthand - this higher-specificity rule keeps the gutters in all cases */
+section.wrap{padding-left:24px;padding-right:24px}
 .eyebrow{
   display:flex;align-items:center;gap:16px;
   font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
