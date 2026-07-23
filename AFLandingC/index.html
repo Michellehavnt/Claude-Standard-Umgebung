@@ -850,14 +850,15 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .jb-head{display:flex;align-items:center;margin-bottom:12px}
 .jb-head b{font-size:13.5px;letter-spacing:-.01em}
 .jb-new{margin-left:auto;font-size:10.5px;font-weight:800;color:#fff;background:linear-gradient(100deg,#0a9aa8,#067280);border-radius:999px;padding:4px 11px;font-variant-numeric:tabular-nums}
-.jb-list{display:flex;flex-direction:column;gap:10px;min-height:236px}
-.jb-msg{display:flex;gap:11px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:0 10px 24px rgba(16,20,24,.06);opacity:0;transform:translateY(-10px) scale(.97);transition:opacity .45s,transform .45s}
+.jb-list{display:flex;flex-direction:column;gap:11px;min-height:248px}
+.jb-msg{display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,.86);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(16,20,24,.05);border-radius:20px;padding:12px 14px;box-shadow:0 10px 28px rgba(16,20,24,.1);opacity:0;transform:translateY(-18px) scale(.93);transition:opacity .5s cubic-bezier(.3,1.35,.4,1),transform .5s cubic-bezier(.3,1.35,.4,1)}
 .jb-msg.in{opacity:1;transform:none}
-.jb-msg>img{width:30px;height:30px;border-radius:50%;object-fit:cover;flex:none}
-.jb-msg b{font-size:12.5px;display:block}
-.jb-msg small{display:block;font-size:10.5px;color:var(--ink-mute);margin-top:2px}
-.jb-msg .dot{flex:none;width:7px;height:7px;border-radius:50%;background:#12b76a;margin-left:auto}
-.jb-time{flex:none;font-size:9.5px;color:var(--ink-mute)}
+.jb-appicon{flex:none;width:38px;height:38px;border-radius:9.5px;background:linear-gradient(135deg,#0fa5b2,#067280);display:grid;place-items:center;color:#fff;box-shadow:inset 0 -1px 2px rgba(0,0,0,.14)}
+.jb-body{min-width:0;flex:1}
+.jb-top{display:flex;align-items:baseline;gap:10px}
+.jb-top b{font-size:13px;letter-spacing:-.01em}
+.jb-time{margin-left:auto;flex:none;font-size:10.5px;color:var(--ink-mute)}
+.jb-msg small{display:block;font-size:12px;color:var(--ink-soft);margin-top:2px;line-height:1.45}
 @media(max-width:900px){
   .jn-row{grid-template-columns:1fr;gap:22px;padding:34px 0}
   .jn-row.flip .jn-copy{order:1}
@@ -1343,10 +1344,10 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
         <div class="jn-vis rv"><div class="jb">
           <div class="jb-head"><b>Your inbox</b><span class="jb-new" id="jnNew">0 new</span></div>
           <div class="jb-list" id="jnInb">
-            <div class="jb-msg"><img src="https://randomuser.me/api/portraits/med/women/44.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><span><b>Mara | Lift Daily</b><small>Love this – what commission are you offering?</small></span><span class="dot"></span><span class="jb-time">2m</span></div>
-            <div class="jb-msg"><img src="https://randomuser.me/api/portraits/med/men/32.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><span><b>gearscout.io</b><small>Interested. Can you send the details?</small></span><span class="dot"></span><span class="jb-time">9m</span></div>
-            <div class="jb-msg"><img src="https://randomuser.me/api/portraits/med/men/22.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><span><b>FitStack Reviews</b><small>Let's do it – sending my media kit now.</small></span><span class="dot"></span><span class="jb-time">31m</span></div>
-            <div class="jb-msg"><img src="https://randomuser.me/api/portraits/med/men/36.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><span><b>Nick K.</b><small>Got a launch coming up – timing is perfect.</small></span><span class="dot"></span><span class="jb-time">1h</span></div>
+            <div class="jb-msg"><span class="jb-appicon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="3.5"/><path d="M3.5 7l8.5 6 8.5-6"/></svg></span><span class="jb-body"><span class="jb-top"><b>Mara | Lift Daily</b><span class="jb-time">2m ago</span></span><small>Love this – what commission are you offering?</small></span></div>
+            <div class="jb-msg"><span class="jb-appicon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="3.5"/><path d="M3.5 7l8.5 6 8.5-6"/></svg></span><span class="jb-body"><span class="jb-top"><b>gearscout.io</b><span class="jb-time">9m ago</span></span><small>Interested. Can you send the details?</small></span></div>
+            <div class="jb-msg"><span class="jb-appicon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="3.5"/><path d="M3.5 7l8.5 6 8.5-6"/></svg></span><span class="jb-body"><span class="jb-top"><b>FitStack Reviews</b><span class="jb-time">31m ago</span></span><small>Let's do it – sending my media kit now.</small></span></div>
+            <div class="jb-msg"><span class="jb-appicon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="3.5"/><path d="M3.5 7l8.5 6 8.5-6"/></svg></span><span class="jb-body"><span class="jb-top"><b>Nick K.</b><span class="jb-time">1h ago</span></span><small>Got a launch coming up – timing is perfect.</small></span></div>
           </div>
         </div></div>
       </div>
