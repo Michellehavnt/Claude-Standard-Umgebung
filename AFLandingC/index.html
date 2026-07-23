@@ -901,66 +901,30 @@ h2{font-size:clamp(32px,4.4vw,56px)}
   background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
   background-size:22px 22px}
 .flywheel .wrap{position:relative;z-index:1}
-.fw-head{text-align:center;max-width:720px;margin:0 auto}
+.fw-head{text-align:center;max-width:760px;margin:0 auto}
 .fw-head .fw-pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:7px 16px;margin-bottom:26px}
 .fw-head h2{font-size:clamp(26px,3.2vw,40px);letter-spacing:-.03em;line-height:1.15;color:#fff}
 .fw-head h2 .hl{background:linear-gradient(100deg,#8ed6de,#0a9aa8);-webkit-background-clip:text;background-clip:text;color:transparent}
-.fw-head p{margin-top:18px;font-size:15.5px;color:rgba(255,255,255,.6)}
-.fw-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:74px;align-items:center;margin-top:78px}
-@media(max-width:920px){.fw-grid{grid-template-columns:1fr;gap:56px}}
-.fw-ring{position:relative;width:min(400px,84vw);aspect-ratio:1;margin:0 auto}
-.fw-ring::before{content:'';position:absolute;inset:0;border-radius:50%;border:1.5px dashed rgba(255,255,255,.16)}
-.fw-sweep{position:absolute;inset:-2px;border-radius:50%;
-  background:conic-gradient(from 0deg,transparent 0 72%,rgba(10,154,168,.85) 94%,rgba(142,214,222,.9) 99%,transparent 100%);
-  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 5px));
-  mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 5px));
-  animation:fwspin 11.2s linear infinite}
-@keyframes fwspin{to{transform:rotate(360deg)}}
-.fw-orbit{position:absolute;inset:0;animation:fwspin 11.2s linear infinite;pointer-events:none}
-.fw-comet{position:absolute;top:-7px;left:calc(50% - 7px);width:14px;height:14px;border-radius:50%;background:#8ed6de;
-  box-shadow:0 0 18px rgba(142,214,222,.95),0 0 42px rgba(10,154,168,.6)}
-.fw-node{position:absolute;width:74px;height:74px;border-radius:22px;z-index:2;
-  background:linear-gradient(160deg,rgba(255,255,255,.085),rgba(255,255,255,.02));
-  border:1px solid rgba(255,255,255,.12);display:grid;place-items:center;
-  transition:border-color .45s,box-shadow .45s,transform .45s}
-.fw-node svg{width:30px;height:30px}
-.fw-node.on{border-color:rgba(142,214,222,.75);box-shadow:0 0 34px rgba(10,154,168,.6);transform:scale(1.12)}
-.fw-n1{left:calc(50% - 37px);top:-37px}
-.fw-n2{right:-37px;top:calc(50% - 37px)}
-.fw-n3{left:calc(50% - 37px);bottom:-37px}
-.fw-n4{left:-37px;top:calc(50% - 37px)}
-.fw-hub{position:absolute;inset:0;display:grid;place-items:center;text-align:center;pointer-events:none}
-.fw-hub .inner{position:relative;padding:20px}
-.fw-hub .inner::before{content:'';position:absolute;inset:-26px;border-radius:50%;
-  background:radial-gradient(closest-side,rgba(10,154,168,.28),transparent);filter:blur(6px);animation:fwpulse 3s ease-in-out infinite}
-@keyframes fwpulse{0%,100%{opacity:.55}50%{opacity:1}}
-.fw-hub b{position:relative;display:block;font-size:16px;letter-spacing:-.01em}
-.fw-hub span{position:relative;display:block;margin-top:4px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5)}
-.fw-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;counter-reset:fw}
-.fw-steps li{position:relative;overflow:hidden;display:flex;gap:16px;align-items:flex-start;padding:20px 22px;border:1px solid rgba(255,255,255,.09);
-  border-radius:18px;background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.015));cursor:pointer;
-  transition:border-color .45s,background .45s,transform .45s,box-shadow .45s}
-.fw-steps li::before{content:'';position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent)}
-.fw-steps li.on{border-color:rgba(142,214,222,.5);background:linear-gradient(160deg,rgba(10,154,168,.17),rgba(10,154,168,.04));transform:translateX(6px);box-shadow:0 20px 44px rgba(0,0,0,.35)}
-.fw-steps li .bar{position:absolute;left:0;bottom:0;height:2px;width:100%;transform:scaleX(0);transform-origin:left;background:linear-gradient(90deg,#0a9aa8,#8ed6de);opacity:0}
-.fw-steps li.on .bar{opacity:1;animation:fwbar 2.8s linear forwards}
-@keyframes fwbar{to{transform:scaleX(1)}}
-.fw-steps .num{flex:none;font-size:12px;font-weight:800;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:5px 8px;font-variant-numeric:tabular-nums;transition:color .4s,border-color .4s}
-.fw-steps li.on .num{color:#8ed6de;border-color:rgba(142,214,222,.5)}
-.fw-steps b{display:block;font-size:15px;letter-spacing:-.01em;margin-bottom:5px}
-.fw-steps p{font-size:13px;line-height:1.6;color:rgba(255,255,255,.58);margin:0}
-.fw-steps .fw-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:5px}
-.fw-steps .fw-row b{margin-bottom:0}
-.fw-steps .tag{flex:none;font-size:9.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#8ed6de;background:rgba(10,154,168,.14);border:1px solid rgba(142,214,222,.28);border-radius:999px;padding:4px 10px}
-.fw-stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:56px;border-top:1px solid rgba(255,255,255,.1);padding-top:44px}
-.fw-claim{margin:76px auto 0;max-width:760px;text-align:center;font-size:clamp(17px,1.9vw,21px);font-weight:650;line-height:1.55;letter-spacing:-.015em;color:#fff}
-.fw-claim::before{content:'';display:block;width:44px;height:2px;background:linear-gradient(90deg,#0a9aa8,#8ed6de);margin:0 auto 22px}
-.fw-claim b{background:linear-gradient(100deg,#8ed6de,#0a9aa8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.fw-head p{margin-top:18px;font-size:15.5px;line-height:1.7;color:rgba(255,255,255,.6)}
+.fw-head p b{font-weight:650;background:linear-gradient(100deg,#8ed6de,#0a9aa8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.fw-flow{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:40px;margin-top:84px}
+.fw-flow::before{content:'';position:absolute;top:18px;left:12.5%;right:12.5%;height:1px;
+  background:linear-gradient(90deg,rgba(142,214,222,0),rgba(142,214,222,.3) 10%,rgba(142,214,222,.3) 90%,rgba(142,214,222,0))}
+.fw-step{text-align:center;padding:0 6px}
+.fw-step .n{position:relative;z-index:1;display:inline-grid;place-items:center;width:36px;height:36px;border-radius:50%;font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;color:#8ed6de;border:1px solid rgba(142,214,222,.4);background:#0a0f16}
+.fw-step h3{margin-top:18px;font-size:15.5px;font-weight:700;letter-spacing:-.01em;color:#fff}
+.fw-step p{margin-top:8px;font-size:13px;line-height:1.65;color:rgba(255,255,255,.55);max-width:26ch;margin-left:auto;margin-right:auto}
+.fw-stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:88px;border-top:1px solid rgba(255,255,255,.1);padding-top:46px}
 .fw-stats .fs{text-align:center;padding:0 26px}
 .fw-stats .fs+.fs{border-left:1px solid rgba(255,255,255,.1)}
 .fw-stats b{display:block;font-size:clamp(30px,3.4vw,44px);font-weight:800;letter-spacing:-.04em;line-height:1.05;background:linear-gradient(100deg,#8ed6de,#0a9aa8);-webkit-background-clip:text;background-clip:text;color:transparent}
 .fw-stats span{display:block;margin-top:9px;font-size:12.5px;color:rgba(255,255,255,.55);line-height:1.55}
-@media(max-width:720px){.fw-stats{grid-template-columns:1fr;gap:28px;padding-top:36px;margin-top:56px}.fw-stats .fs+.fs{border-left:0}}
+@media(max-width:900px){
+  .fw-flow{grid-template-columns:1fr;gap:38px;margin-top:60px}
+  .fw-flow::before{display:none}
+  .fw-step p{max-width:34ch}
+}
+@media(max-width:720px){.fw-stats{grid-template-columns:1fr;gap:28px;padding-top:36px;margin-top:60px}.fw-stats .fs+.fs{border-left:0}}
 
 /* ---------- video story (webinar) ---------- */
 .vstory{padding:100px 0 110px}
@@ -1671,28 +1635,14 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
     <div class="fw-head rv">
       <span class="fw-pill">The flywheel</span>
       <h2 data-edit="c-fw-title">Set it spinning once.<br><span class="hl">It keeps recruiting.</span></h2>
-      <p data-edit="c-fw-sub">Four steps, zero technical setup – then the loop runs itself and new affiliates arrive every week.</p>
+      <p data-edit="c-fw-claim">AffiliateFinder.ai is the <b>first</b> software that finds, verifies and recruits affiliates in <b>one workflow</b> – four steps, zero technical setup.</p>
     </div>
-    <div class="fw-grid">
-      <div class="fw-viz rv" aria-hidden="true">
-        <div class="fw-ring">
-          <span class="fw-sweep"></span>
-          <span class="fw-orbit"><i class="fw-comet"></i></span>
-          <div class="fw-node fw-n1 on"><svg viewBox="0 0 24 24" fill="none" stroke="#8ed6de" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.8-3.8"/></svg></div>
-          <div class="fw-node fw-n2"><svg viewBox="0 0 24 24" fill="none" stroke="#8ed6de" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.5 5.1 5.6.8-4 4 1 5.6-5.1-2.7-5.1 2.7 1-5.6-4-4 5.6-.8z"/></svg></div>
-          <div class="fw-node fw-n3"><svg viewBox="0 0 24 24" fill="none" stroke="#8ed6de" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3 10.5 13.5"/><path d="M21 3l-6.8 18-3.7-7.5L3 9.8z"/></svg></div>
-          <div class="fw-node fw-n4"><svg viewBox="0 0 24 24" fill="none" stroke="#8ed6de" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h5l2 3h4l2-3h5"/><path d="M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/></svg></div>
-          <div class="fw-hub"><div class="inner"><b>On autopilot</b><span>while you work</span></div></div>
-        </div>
-      </div>
-      <ol class="fw-steps rv">
-        <li class="on"><span class="num">01</span><div><div class="fw-row"><b data-edit="c-fw-s1-t">Start your search</b><span class="tag">Just type</span></div><p data-edit="c-fw-s1-d">Type what you sell. AffiliateFinder scans five channels and returns everyone already talking about products like yours – scored and ranked.</p></div><i class="bar" aria-hidden="true"></i></li>
-        <li><span class="num">02</span><div><div class="fw-row"><b data-edit="c-fw-s2-t">Pick your best matches</b><span class="tag">Emails included</span></div><p data-edit="c-fw-s2-d">Skim the match scores, save the ones worth your time. Verified owner emails come attached – no digging.</p></div><i class="bar" aria-hidden="true"></i></li>
-        <li><span class="num">03</span><div><div class="fw-row"><b data-edit="c-fw-s3-t">Send your campaign in one click</b><span class="tag">One click</span></div><p data-edit="c-fw-s3-d">Personal emails and follow-ups go out on autopilot. You approve – it executes.</p></div><i class="bar" aria-hidden="true"></i></li>
-        <li><span class="num">04</span><div><div class="fw-row"><b data-edit="c-fw-s4-t">Watch your inbox fill up</b><span class="tag">Every week</span></div><p data-edit="c-fw-s4-d">Qualified affiliates reply, move through your pipeline and sign. Then the wheel spins again – new creators arrive every week.</p></div><i class="bar" aria-hidden="true"></i></li>
-      </ol>
+    <div class="fw-flow rv">
+      <div class="fw-step"><span class="n">01</span><h3 data-edit="c-fw-s1-t">Start your search</h3><p data-edit="c-fw-s1-d">Type what you sell. A ranked list of matching affiliates comes back.</p></div>
+      <div class="fw-step"><span class="n">02</span><h3 data-edit="c-fw-s2-t">Pick your best matches</h3><p data-edit="c-fw-s2-d">Save the ones worth your time – verified owner emails included.</p></div>
+      <div class="fw-step"><span class="n">03</span><h3 data-edit="c-fw-s3-t">Send in one click</h3><p data-edit="c-fw-s3-d">Personal emails and follow-ups go out on autopilot.</p></div>
+      <div class="fw-step"><span class="n">04</span><h3 data-edit="c-fw-s4-t">Watch replies land</h3><p data-edit="c-fw-s4-d">Qualified affiliates reply and sign – new ones arrive every week.</p></div>
     </div>
-    <div class="fw-claim rv" data-edit="c-fw-claim">AffiliateFinder.ai is the <b>first</b> software that finds, verifies and recruits affiliates in <b>one workflow</b>.</div>
     <div class="fw-stats rv">
       <div class="fs"><b>38%</b><span data-edit="c-fw-stat1">average response rate across outreach campaigns</span></div>
       <div class="fs"><b>1 click</b><span data-edit="c-fw-stat2">to launch personal emails and follow-ups</span></div>
@@ -1954,22 +1904,6 @@ requestAnimationFrame(pinFrame);
   });
 })();
 
-/* ---------- flywheel cycle ---------- */
-(function(){
-  const sec=document.getElementById('flywheel');
-  if(!sec)return;
-  const nodes=[...sec.querySelectorAll('.fw-node')];
-  const steps=[...sec.querySelectorAll('.fw-steps li')];
-  let idx=0,timer=null;
-  const set=i=>{idx=(i+4)%4;
-    nodes.forEach((n,k)=>n.classList.toggle('on',k===idx));
-    steps.forEach((st,k)=>st.classList.toggle('on',k===idx));
-  };
-  const start=()=>{if(!timer)timer=setInterval(()=>set(idx+1),2800)};
-  const stop=()=>{if(timer){clearInterval(timer);timer=null}};
-  steps.forEach((st,k)=>st.addEventListener('click',()=>{stop();set(k);start()}));
-  new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting?start():stop()),{threshold:.25}).observe(sec);
-})();
 
 /* ---------- sequences reply pop + analytics stat animation ---------- */
 (function(){
