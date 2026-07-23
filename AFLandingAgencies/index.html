@@ -777,6 +777,60 @@ h2{font-size:clamp(32px,4.4vw,56px)}
   .cb svg{width:10px;height:8px}
 }
 
+/* ---------- discovery setup ---------- */
+.disc{padding:110px 0 20px}
+.disc-head{text-align:center;max-width:680px;margin:0 auto 46px}
+.disc-head .eyebrow{justify-content:center}
+.disc-head p{margin-top:16px;font-size:15.5px;color:var(--ink-soft)}
+.disc-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.disc-window{min-width:880px;display:grid;grid-template-columns:180px 1fr;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-card);overflow:hidden;text-align:left}
+.disc-side{border-right:1px solid var(--line);background:var(--cream);padding:18px 12px}
+.disc-side .grp{font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mute);margin:16px 10px 6px}
+.disc-side .grp:first-child{margin-top:0}
+.disc-side .it{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);padding:7px 10px;border-radius:8px}
+.disc-side .it.on{background:rgba(6,114,128,.1);color:var(--teal);font-weight:700}
+.disc-main{padding:22px 24px 26px}
+.disc-main .dm-top{display:flex;align-items:center;gap:12px}
+.disc-main .dm-top h4{font-size:16px;font-weight:800;letter-spacing:-.02em}
+.disc-main .dm-brand{margin-left:auto;font-size:11.5px;font-weight:700;color:var(--ink-soft);border:1px solid var(--line);border-radius:999px;padding:5px 12px;background:var(--cream)}
+.disc-main .dm-sub{font-size:12px;color:var(--ink-mute);margin:8px 0 16px;max-width:60ch}
+.disc-cols{display:grid;grid-template-columns:1.08fr .92fr;gap:16px;align-items:start}
+.dpanel{border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:#fff}
+.dpanel .dp-head{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.dpanel .dp-head b{font-size:13px;font-weight:800}
+.dpanel .dp-used{margin-left:auto;font-size:10.5px;font-weight:700;color:var(--teal);background:rgba(6,114,128,.08);border-radius:999px;padding:4px 10px}
+.kw-chips{display:flex;flex-wrap:wrap;gap:8px}
+.kw-chip{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:600;color:#a3591d;background:rgba(236,111,31,.05);border:1px solid rgba(236,111,31,.28);border-radius:999px;padding:6px 11px}
+.kw-chip .vol{font-size:9.5px;font-weight:700;color:var(--ink-mute);background:rgba(16,20,24,.06);border-radius:999px;padding:2px 7px}
+.kw-chip .x{cursor:pointer;color:rgba(163,89,29,.5);font-weight:700;font-size:13px;line-height:1;padding:0 2px}
+.kw-chip .x:hover{color:#a3591d}
+.kw-chip.new,.cmp-row.new{animation:chipIn .35s ease}
+@keyframes chipIn{from{transform:scale(.75);opacity:0}to{transform:scale(1);opacity:1}}
+.dp-reco{margin-top:14px;border:1px dashed rgba(236,111,31,.35);border-radius:12px;padding:10px 12px;background:rgba(236,111,31,.03)}
+.dp-reco .rl{font-size:10.5px;font-weight:700;color:#a3591d;margin-bottom:8px}
+.dp-reco.cmp{border-color:rgba(6,114,128,.35);background:rgba(6,114,128,.03)}
+.dp-reco.cmp .rl{color:var(--teal)}
+.reco-chip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:#a3591d;background:#fff;border:1px solid rgba(236,111,31,.3);border-radius:999px;padding:6px 11px;margin:0 6px 4px 0;cursor:pointer;transition:transform .12s ease,box-shadow .12s ease}
+.reco-chip:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(16,20,24,.12)}
+.reco-chip.cmp{color:var(--teal);border-color:rgba(6,114,128,.3)}
+.cmp-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:12.5px}
+.cmp-row:last-child{border-bottom:0}
+.cmp-row .favicon{width:26px;height:26px;border-radius:8px;font-size:9px}
+.cmp-row b{font-weight:700}
+.cmp-row .dom{color:var(--ink-mute);font-size:11px}
+.cmp-row .aff{margin-left:auto;font-size:10.5px;font-weight:700;color:var(--ink-soft);background:rgba(16,20,24,.05);border-radius:999px;padding:4px 9px;white-space:nowrap}
+.cmp-row .socials{display:flex;gap:6px;color:var(--ink-mute);flex:none}
+.dp-add{margin-top:14px;display:flex;justify-content:center}
+.dp-add span{font-size:11.5px;font-weight:700;color:var(--teal);border:1px solid rgba(6,114,128,.3);border-radius:999px;padding:7px 16px}
+.disc-hint{margin-top:14px;text-align:center;font-size:12px;color:var(--ink-mute)}
+.disc-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:48px}
+.disc-step .num{font-size:10.5px;font-weight:800;letter-spacing:.11em;color:var(--teal);text-transform:uppercase}
+.disc-step h3{font-size:16.5px;font-weight:750;letter-spacing:-.02em;margin-top:8px}
+.disc-step p{margin-top:8px;font-size:13.5px;line-height:1.65;color:var(--ink-soft)}
+.disc-claim{margin-top:44px;text-align:center;border:1px solid rgba(6,114,128,.25);background:rgba(6,114,128,.05);border-radius:16px;padding:20px 28px;font-size:15px;font-weight:650;color:var(--ink);max-width:780px;margin-left:auto;margin-right:auto;line-height:1.6}
+.disc-claim b{color:var(--teal)}
+@media(max-width:900px){.disc{padding-top:90px}.disc-steps{grid-template-columns:1fr;gap:22px}}
+
 /* ---------- customer story ---------- */
 .story{padding:120px 0}
 .story-card{
@@ -1316,6 +1370,67 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
       </div>
     </div>
   </div>
+</section>
+
+<!-- ============ DISCOVERY SETUP ============ -->
+<section class="disc wrap" id="discovery">
+  <div class="disc-head rv">
+    <div class="eyebrow"><span class="rule"></span><span class="pill">Discovery</span><span class="rule"></span></div>
+    <h2 data-edit="c-disc-title">You set the direction.<br>We find your clients' affiliates.</h2>
+    <p data-edit="c-disc-sub">Enter each client's brand name and its top competitors. That's it – no technical setup. Everything below stays yours to change, anytime.</p>
+  </div>
+  <div class="disc-scroll rv">
+    <div class="disc-window" id="discWindow">
+      <aside class="disc-side" aria-hidden="true">
+        <div class="grp">Discovery</div>
+        <span class="it">Overview</span><span class="it on">Search</span><span class="it">Targeting</span><span class="it">Revenue</span><span class="it">Exclusions</span>
+        <div class="grp">Outreach</div>
+        <span class="it">Offer</span><span class="it">Brand Context</span><span class="it">Voice</span><span class="it">Sending</span><span class="it">Templates</span>
+      </aside>
+      <div class="disc-main">
+        <div class="dm-top"><h4>Search</h4><span class="dm-brand">yourclient.com</span></div>
+        <div class="dm-sub">Choose the competitors and keywords we scan every week. We use them to surface affiliates already promoting brands and topics like your client's.</div>
+        <div class="disc-cols">
+          <div class="dpanel">
+            <div class="dp-head"><b>Keywords</b><span class="dp-used" id="kwUsed">13/20 used</span></div>
+            <div class="kw-chips" id="kwChips">
+            <span class="kw-chip">best resistance bands<span class="vol">410</span><span class="x" role="button" aria-label="Remove">×</span></span>
+            <span class="kw-chip">home gym for small spaces<span class="vol">330</span><span class="x" role="button" aria-label="Remove">×</span></span>
+            <span class="kw-chip">protein powder review<span class="vol">298</span><span class="x" role="button" aria-label="Remove">×</span></span>
+            <span class="kw-chip">12-week strength plan<span class="vol">240</span><span class="x" role="button" aria-label="Remove">×</span></span>
+            <span class="kw-chip">mobility routine for runners<span class="vol">215</span><span class="x" role="button" aria-label="Remove">×</span></span>
+            <span class="kw-chip">budget home gym setup<span class="vol">188</span><span class="x" role="button" aria-label="Remove">×</span></span>
+            </div>
+            <div class="dp-reco">
+              <div class="rl">✦ Recommended for you. Tap to add</div>
+              <span class="reco-chip" data-kw="marathon fueling guide" data-vol="162">+ marathon fueling guide</span><span class="reco-chip" data-kw="adjustable dumbbells review" data-vol="154">+ adjustable dumbbells review</span><span class="reco-chip" data-kw="pre-workout for women" data-vol="149">+ pre-workout for women</span>
+            </div>
+          </div>
+          <div class="dpanel">
+            <div class="dp-head"><b>Competitors</b><span class="dp-used" id="cmpUsed">4/10 used</span></div>
+            <div id="cmpRows">
+          <div class="cmp-row"><span class="favicon" style="background:linear-gradient(135deg,#f3b8a0,#e3a1bd)">FF</span><span><b>FlexFuel</b> <span class="dom">flexfuel.com</span></span><span class="socials"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 3c.4 2.3 1.9 3.9 4.2 4.2v3.1c-1.6 0-3-.5-4.2-1.3v6.3c0 3.7-2.6 6-5.9 6-3.2 0-5.5-2.2-5.5-5.2 0-3.1 2.4-5.3 5.7-5.3.3 0 .7 0 1 .1v3.2a2.6 2.6 0 0 0-1-.2c-1.5 0-2.5.9-2.5 2.2 0 1.2 1 2.1 2.4 2.1 1.6 0 2.7-1.1 2.7-3V3h3.1z"/></svg></span><span class="aff">412 affiliates</span></div>
+          <div class="cmp-row"><span class="favicon" style="background:linear-gradient(135deg,#a4c6e8,#c3b6ec)">IP</span><span><b>IronPeak</b> <span class="dom">ironpeak.fit</span></span><span class="socials"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 3c.4 2.3 1.9 3.9 4.2 4.2v3.1c-1.6 0-3-.5-4.2-1.3v6.3c0 3.7-2.6 6-5.9 6-3.2 0-5.5-2.2-5.5-5.2 0-3.1 2.4-5.3 5.7-5.3.3 0 .7 0 1 .1v3.2a2.6 2.6 0 0 0-1-.2c-1.5 0-2.5.9-2.5 2.2 0 1.2 1 2.1 2.4 2.1 1.6 0 2.7-1.1 2.7-3V3h3.1z"/></svg></span><span class="aff">286 affiliates</span></div>
+          <div class="cmp-row"><span class="favicon" style="background:linear-gradient(135deg,#a9dcc3,#8fccd4)">SL</span><span><b>StrideLab</b> <span class="dom">stridelab.com</span></span><span class="socials"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 3c.4 2.3 1.9 3.9 4.2 4.2v3.1c-1.6 0-3-.5-4.2-1.3v6.3c0 3.7-2.6 6-5.9 6-3.2 0-5.5-2.2-5.5-5.2 0-3.1 2.4-5.3 5.7-5.3.3 0 .7 0 1 .1v3.2a2.6 2.6 0 0 0-1-.2c-1.5 0-2.5.9-2.5 2.2 0 1.2 1 2.1 2.4 2.1 1.6 0 2.7-1.1 2.7-3V3h3.1z"/></svg></span><span class="aff">197 affiliates</span></div>
+          <div class="cmp-row"><span class="favicon" style="background:linear-gradient(135deg,#f2d3a0,#f3b8a0)">CK</span><span><b>CoreKit</b> <span class="dom">corekit.co</span></span><span class="socials"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 3c.4 2.3 1.9 3.9 4.2 4.2v3.1c-1.6 0-3-.5-4.2-1.3v6.3c0 3.7-2.6 6-5.9 6-3.2 0-5.5-2.2-5.5-5.2 0-3.1 2.4-5.3 5.7-5.3.3 0 .7 0 1 .1v3.2a2.6 2.6 0 0 0-1-.2c-1.5 0-2.5.9-2.5 2.2 0 1.2 1 2.1 2.4 2.1 1.6 0 2.7-1.1 2.7-3V3h3.1z"/></svg></span><span class="aff">88 affiliates</span></div>
+            </div>
+            <div class="dp-reco cmp">
+              <div class="rl">✦ Recommended for you. Tap to add</div>
+              <span class="reco-chip cmp" data-name="PulseWear" data-dom="pulsewear.co" data-ini="PW">+ PulseWear</span><span class="reco-chip cmp" data-name="TrailForm" data-dom="trailform.com" data-ini="TF">+ TrailForm</span>
+            </div>
+            <div class="dp-add"><span>+ Add Competitor</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="disc-hint rv" data-edit="c-disc-hint">Try it – tap a suggestion to add it, or remove a keyword with ×.</div>
+  <div class="disc-steps">
+    <div class="disc-step rv"><div class="num">Step 1</div><h3 data-edit="c-disc-s1t">Start with your client's brand</h3><p data-edit="c-disc-s1">Enter the brand name and its top competitors. That's it – no tracking scripts, no integrations, no technical setup. We find the high-intent keywords and suggest competitors you missed.</p></div>
+    <div class="disc-step rv"><div class="num">Step 2</div><h3 data-edit="c-disc-s2t">We scan the places affiliates actually are</h3><p data-edit="c-disc-s2">Google, YouTube, Instagram, TikTok and 100+ affiliate networks – scanned every week for the creators and sites in your client's niche, matched against its keywords and competitor list.</p></div>
+    <div class="disc-step rv"><div class="num">Step 3</div><h3 data-edit="c-disc-s3t">Change anything, anytime</h3><p data-edit="c-disc-s3">Add, swap or remove keywords and competitors whenever you like – and drop in each client's program details and terms, so the AI keeps every outreach hyper-targeted to that brand.</p></div>
+  </div>
+  <div class="disc-claim rv" data-edit="c-disc-claim">AffiliateFinder.ai is the <b>first</b> software that finds, verifies and recruits affiliates in <b>one workflow</b> – and you stay in control at every step, for every client.</div>
 </section>
 
 <!-- ============ VIDEO STORY (webinar) ============ -->
@@ -1947,6 +2062,33 @@ window.addEventListener('scroll',wordReveal,{passive:true});
 wordReveal();
 
 
+</script>
+<script>
+(function(){
+  var win=document.getElementById('discWindow');if(!win)return;
+  var kwUsed=document.getElementById('kwUsed'),cmpUsed=document.getElementById('cmpUsed');
+  var kc=13,cc=4;
+  function upd(){kwUsed.textContent=kc+'/20 used';cmpUsed.textContent=cc+'/10 used';}
+  win.querySelectorAll('.reco-chip').forEach(function(ch){
+    ch.addEventListener('click',function(){
+      if(ch.classList.contains('cmp')){
+        if(cc>=10)return;
+        var div=document.createElement('div');div.className='cmp-row new';
+        div.innerHTML='<span class="favicon" style="background:linear-gradient(135deg,#7cc6cf,#067280)">'+ch.dataset.ini+'</span><span><b>'+ch.dataset.name+'</b> <span class="dom">'+ch.dataset.dom+'</span></span><span class="aff">scanning…</span>';
+        document.getElementById('cmpRows').appendChild(div);cc++;
+      }else{
+        if(kc>=20)return;
+        var s=document.createElement('span');s.className='kw-chip new';
+        s.innerHTML=ch.dataset.kw+'<span class="vol">'+ch.dataset.vol+'</span><span class="x" role="button" aria-label="Remove">×</span>';
+        document.getElementById('kwChips').appendChild(s);kc++;
+      }
+      ch.remove();upd();
+    });
+  });
+  document.getElementById('kwChips').addEventListener('click',function(e){
+    if(e.target.classList.contains('x')){e.target.closest('.kw-chip').remove();kc--;upd();}
+  });
+})();
 </script>
 </body>
 </html>
