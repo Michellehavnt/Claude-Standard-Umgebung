@@ -826,48 +826,27 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .pk-mail.in{opacity:1;transform:none}
 .pk-cursor{position:absolute;z-index:5;top:0;left:0;opacity:0;transition:transform .65s cubic-bezier(.5,.1,.3,1),opacity .3s;pointer-events:none;filter:drop-shadow(0 2px 4px rgba(16,20,24,.3))}
 @media(max-width:560px){.pk-row{flex-wrap:wrap;gap:10px}.pk-next{text-align:left}.pk-id small{font-size:10px}}
-.cp-card{position:relative;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 14px 34px rgba(16,20,24,.08);min-height:330px}
-.cp-stage{position:absolute;inset:0;padding:22px 24px 46px;opacity:0;transform:translateX(14px);transition:opacity .45s,transform .45s;pointer-events:none}
-.cp-stage.on{opacity:1;transform:none}
-.cp-title{font-size:14px;font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.cp-gen{font-size:10px;font-weight:700;color:#12b76a;background:rgba(18,183,106,.1);border:1px solid rgba(18,183,106,.3);border-radius:999px;padding:3px 9px}
-.cp-types{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.cp-type{position:relative;border:1px solid var(--line);border-radius:12px;padding:11px 12px}
-.cp-type b{font-size:12.5px;display:block}
-.cp-type small{display:block;font-size:10.5px;color:var(--ink-mute);margin-top:3px;line-height:1.45}
-.cp-type.on{border-color:rgba(6,114,128,.55);background:rgba(6,114,128,.05);box-shadow:0 0 0 3px rgba(6,114,128,.08)}
-.cp-type .ck{position:absolute;top:9px;right:9px;width:16px;height:16px;border-radius:50%;background:var(--teal);color:#fff;font-size:9px;display:grid;place-items:center;font-weight:800}
-.cp-field{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:11px;padding:10px 13px;margin-bottom:9px;font-size:12px}
-.cp-field small{font-size:9.5px;color:var(--ink-mute);font-weight:700;text-transform:uppercase;letter-spacing:.05em;flex:none}
-.cp-field span{font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cp-field svg{margin-left:auto;flex:none;color:var(--ink-mute)}
-.cp-foot{display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-top:14px}
-.cp-btn{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:#fff;background:#0c2733;border-radius:999px;padding:10px 18px;transition:transform .18s}
-.cp-btn.press{transform:scale(.93)}
-.cp-mailhead{font-size:11px;font-weight:700;color:var(--ink-mute);margin-bottom:8px}
-.cp-subj{font-size:13px;font-weight:700;border:1px solid var(--line);border-radius:11px;padding:11px 13px;margin-bottom:12px}
-.cp-lines{display:flex;flex-direction:column;gap:9px;padding:2px 0 14px}
-.cp-lines i{height:8px;border-radius:99px;background:rgba(16,20,24,.06)}
-.cp-lines i:nth-child(1){width:94%}.cp-lines i:nth-child(2){width:80%}.cp-lines i:nth-child(3){width:62%}
-.cp-fups{display:flex;gap:8px;flex-wrap:wrap}
-.cp-fups span{font-size:10.5px;font-weight:700;color:var(--ink-soft);border:1px solid var(--line);border-radius:999px;padding:5px 11px;background:var(--cream)}
-.cp-set{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:11px;padding:10px 13px;margin-bottom:9px;font-size:12px}
-.cp-set small{font-size:9.5px;color:var(--ink-mute);font-weight:700;text-transform:uppercase;letter-spacing:.05em;flex:none}
-.cp-set span{font-weight:650}
-.cp-set em{font-style:normal;margin-left:auto;font-size:10.5px;color:var(--ink-mute)}
-.cp-days{display:flex;gap:6px;margin-bottom:9px}
-.cp-days i{font-style:normal;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:10.5px;font-weight:700;border:1px solid var(--line);color:var(--ink-mute)}
-.cp-days i.on{background:#0c2733;border-color:#0c2733;color:#fff}
-.cp-toggle{width:34px;height:20px;border-radius:999px;background:rgba(16,20,24,.15);position:relative;transition:background .3s;flex:none}
-.cp-toggle i{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .3s}
-.cp-toggle.on{background:var(--teal)}
-.cp-toggle.on i{left:16px}
-.cp-live{font-size:11.5px;font-weight:800;color:#12b76a;opacity:0;transform:translateY(3px);transition:opacity .35s,transform .35s}
-.cp-live.in{opacity:1;transform:none}
-.cp-dots{position:absolute;left:0;right:0;bottom:14px;display:flex;gap:6px;justify-content:center}
-.cp-dots i{width:6px;height:6px;border-radius:50%;background:rgba(16,20,24,.15);transition:background .3s,transform .3s}
-.cp-dots i.on{background:var(--teal);transform:scale(1.25)}
-@media(max-width:560px){.cp-card{min-height:360px}.cp-set em{display:none}}
+.cp2-stack{position:relative}
+.cp2-ghost{position:absolute;left:14px;right:14px;top:0;bottom:0;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 30px rgba(16,20,24,.05)}
+.cp2-ghost.g1{transform:translateY(9px) scale(.985)}
+.cp2-ghost.g2{transform:translateY(18px) scale(.965);opacity:.65}
+.cp2-mail{position:relative;background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:0 16px 38px rgba(16,20,24,.09);transition:transform .32s ease,opacity .32s ease}
+.cp2-mail.fly{transform:translateY(-24px) scale(.985);opacity:0}
+.cp2-head{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+.cp2-head img{width:34px;height:34px;border-radius:50%;object-fit:cover;flex:none}
+.cp2-head b{font-size:13px;display:block;letter-spacing:-.01em}
+.cp2-head small{display:block;font-size:10.5px;color:var(--ink-mute);margin-top:2px;font-variant-numeric:tabular-nums}
+.cp2-tag{margin-left:auto;font-size:10px;font-weight:700;color:var(--teal);background:rgba(6,114,128,.08);border:1px solid rgba(6,114,128,.22);border-radius:999px;padding:4px 10px;white-space:nowrap}
+.cp2-subj{font-size:13px;font-weight:700;letter-spacing:-.01em;border-top:1px solid var(--line);padding-top:12px}
+.cp2-lines{display:flex;flex-direction:column;gap:8px;padding-top:12px}
+.cp2-lines i{height:7px;border-radius:99px;background:rgba(16,20,24,.06)}
+.cp2-lines i:nth-child(1){width:88%}.cp2-lines i:nth-child(2){width:64%}
+.cp2-action{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:26px}
+.cp2-btn{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#fff;background:#0c2733;border-radius:999px;padding:12px 22px;box-shadow:0 12px 26px rgba(12,39,51,.22);transition:transform .18s}
+.cp2-btn svg{flex:none}
+.cp2-btn.press{transform:scale(.93)}
+.cp2-status{font-size:12px;font-weight:700;color:var(--teal);font-variant-numeric:tabular-nums}
+.cp2-meta{display:block;text-align:center;margin-top:12px;font-size:11px;color:var(--ink-mute)}
 .jb-head{display:flex;align-items:center;margin-bottom:12px}
 .jb-head b{font-size:13.5px;letter-spacing:-.01em}
 .jb-new{margin-left:auto;font-size:10.5px;font-weight:800;color:#fff;background:linear-gradient(100deg,#0a9aa8,#067280);border-radius:999px;padding:4px 11px;font-variant-numeric:tabular-nums}
@@ -1345,35 +1324,19 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
         </div></div>
       </div>
       <div class="jn-row">
-        <div class="jn-copy rv"><div class="num">03</div><h3 data-edit="c-jn-s3-t">Email hundreds of affiliates in one click</h3><p data-edit="c-jn-s3-d">AffiliateFinder writes a personalized email and follow-up sequence for every creator. Each message is researched from their actual content, so every email reads like you spent an hour researching them.<br><br>Create campaigns in minutes. Send from your inbox with auto warm-up and human-like send patterns – so emails actually land in the inbox. Bounces, unsubscribes, and replies are handled automatically.</p></div>
-        <div class="jn-vis rv"><div class="cp">
-          <div class="cp-card">
-            <div class="cp-stage on">
-              <div class="cp-title">Start a new campaign</div>
-              <div class="cp-types">
-                <div class="cp-type on"><b>Affiliate</b><small>Recruit affiliates to promote you for commission.</small><span class="ck">✓</span></div>
-                <div class="cp-type"><b>Sponsorship</b><small>Pay creators to post about you.</small></div>
-              </div>
-              <div class="cp-field"><small>Name</small><span>Q3 fitness creators</span></div>
-              <div class="cp-field"><small>Reaching</small><span>Haven't contacted yet (19)</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
-              <div class="cp-foot"><span class="cp-btn">Continue →</span></div>
+        <div class="jn-copy rv"><div class="num">03</div><h3 data-edit="c-jn-s3-t">Email hundreds of affiliates in one click</h3><p data-edit="c-jn-s3-d">AI writes a personal email and follow-ups for every creator, researched from their content. Hit send once – auto warm-up and human-like sending make sure they land in the inbox, not in spam.</p></div>
+        <div class="jn-vis rv"><div class="cp2">
+          <div class="cp2-stack">
+            <div class="cp2-ghost g2" aria-hidden="true"></div>
+            <div class="cp2-ghost g1" aria-hidden="true"></div>
+            <div class="cp2-mail" id="cpMail">
+              <div class="cp2-head"><img src="https://randomuser.me/api/portraits/med/women/44.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><span><b id="cpName">Mara | Lift Daily</b><small id="cpMeta">Email 1 of 247</small></span><span class="cp2-tag">✦ AI-written</span></div>
+              <div class="cp2-subj" id="cpSubj">Your resistance band video got me thinking, Mara</div>
+              <div class="cp2-lines" aria-hidden="true"><i></i><i></i></div>
             </div>
-            <div class="cp-stage">
-              <div class="cp-title">AI writes every email<span class="cp-gen">✦ Generated</span></div>
-              <div class="cp-mailhead">Email 1 · Day 0 · Mara | Lift Daily</div>
-              <div class="cp-subj">Your resistance band video got me thinking, Mara</div>
-              <div class="cp-lines" aria-hidden="true"><i></i><i></i><i></i></div>
-              <div class="cp-fups"><span>Follow-up · day 3</span><span>Follow-up · day 7</span><span>Researched from her content</span></div>
-            </div>
-            <div class="cp-stage">
-              <div class="cp-title">Campaign settings</div>
-              <div class="cp-set"><small>Sending hours</small><span>9:00 AM – 5:00 PM</span></div>
-              <div class="cp-days" aria-hidden="true"><i class="on">M</i><i class="on">T</i><i class="on">W</i><i class="on">T</i><i class="on">F</i><i>S</i><i>S</i></div>
-              <div class="cp-set"><small>Auto warm-up</small><span class="cp-toggle on"><i></i></span><em>human-like send patterns</em></div>
-              <div class="cp-foot"><span class="cp-live" id="cpLive">Live ✓</span><span class="cp-btn" id="cpLaunch">Launch campaign</span></div>
-            </div>
-            <div class="cp-dots" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
           </div>
+          <div class="cp2-action"><span class="cp2-btn" id="cpLaunch"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg>Send campaign</span><span class="cp2-status" id="cpStat"></span></div>
+          <small class="cp2-meta">Auto warm-up on · sending Mon–Fri, 9 AM – 5 PM</small>
         </div></div>
       </div>
       <div class="jn-row flip">
@@ -2299,18 +2262,28 @@ wordReveal();
     }
   }
   async function loopCamp(){
-    var stages=[].slice.call(document.querySelectorAll('.cp-stage'));if(!stages.length)return;
-    var dots=[].slice.call(document.querySelectorAll('.cp-dots i'));
-    var launch=document.getElementById('cpLaunch'),live=document.getElementById('cpLive');
-    function show(i){stages.forEach(function(s,k){s.classList.toggle('on',k===i)});dots.forEach(function(d,k){d.classList.toggle('on',k===i)})}
+    var mail=document.getElementById('cpMail');if(!mail)return;
+    var name=document.getElementById('cpName'),meta=document.getElementById('cpMeta'),subj=document.getElementById('cpSubj');
+    var btn=document.getElementById('cpLaunch'),stat=document.getElementById('cpStat');
+    var ppl=[
+      {n:'Mara | Lift Daily',s:'Your resistance band video got me thinking, Mara',a:'women/44'},
+      {n:'gearscout.io',s:'Loved your home gym buyer\u2019s guide, Alex',a:'men/32'},
+      {n:'FitStack Reviews',s:'Your dumbbell reviews deserve a partner offer',a:'men/22'}
+    ];
+    function set(i,k){var p=ppl[i%3];name.textContent=p.n;subj.textContent=p.s;meta.textContent='Email '+k+' of 247';
+      var im=mail.querySelector('img');if(im)im.src='https://randomuser.me/api/portraits/med/'+p.a+'.jpg';}
     while(run){
-      live.classList.remove('in');
-      show(0);await wait(3000);if(!run)return;
-      show(1);await wait(3300);if(!run)return;
-      show(2);await wait(1700);if(!run)return;
-      launch.classList.add('press');await wait(200);launch.classList.remove('press');
-      live.classList.add('in');
-      await wait(2600);
+      mail.classList.remove('fly');set(0,1);stat.textContent='';
+      await wait(1800);if(!run)return;
+      btn.classList.add('press');await wait(180);btn.classList.remove('press');
+      stat.textContent='Sending 247 personalized emails\u2026';
+      for(var k=1;k<=3&&run;k++){
+        mail.classList.add('fly');await wait(340);
+        set(k,k+1);mail.classList.remove('fly');await wait(600);
+      }
+      if(!run)return;
+      stat.textContent='All sent \u2713 landing in inboxes';
+      await wait(3000);
     }
   }
   async function loopInbox(){
