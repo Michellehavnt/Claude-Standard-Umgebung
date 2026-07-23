@@ -794,29 +794,27 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .jm-bar{display:flex;gap:6px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--cream)}
 .jm-bar i{width:9px;height:9px;border-radius:50%;background:#e3ddd2}
 .jm-body{padding:18px}
-.sc-inputs{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}
-.sc-col small{display:block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-mute);margin-bottom:8px}
-.sc-chips{display:flex;flex-wrap:wrap;gap:6px;min-height:56px;align-content:flex-start}
-.sc-chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:#a3591d;background:rgba(236,111,31,.05);border:1px solid rgba(236,111,31,.28);border-radius:999px;padding:5px 10px;opacity:0;transform:scale(.7);transition:opacity .35s,transform .35s}
+.scn-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:20px}
+.sc-chip{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:650;color:var(--ink-soft);background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px;box-shadow:0 6px 16px rgba(16,20,24,.06);opacity:0;transform:scale(.7);transition:opacity .35s,transform .35s}
 .sc-chip.in{opacity:1;transform:none}
-.sc-chip.cmp{color:#14304a;border-color:rgba(20,48,74,.25);background:#fff}
-.sc-chip.cmp img{width:14px;height:14px;border-radius:4px;object-fit:contain}
-.sc-viz{position:relative;margin-top:6px}
-.sc-hub{display:table;margin:0 auto;position:relative;z-index:1;font-size:11px;font-weight:700;color:var(--ink-soft);border:1px solid var(--line);background:var(--cream);border-radius:999px;padding:6px 14px}
-.sc-lines{display:block;width:100%;height:78px;margin-top:-4px}
-.sc-lines path{fill:none;stroke:rgba(6,114,128,.2);stroke-width:1.5}
-.sc-tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-.sc-tile{display:flex;flex-direction:column;align-items:center;gap:6px;border:1px solid var(--line);border-radius:12px;padding:10px 4px 8px;color:var(--ink-soft);transition:border-color .35s,box-shadow .35s,color .35s,background .35s}
-.sc-tile .ic{height:18px;display:grid;place-items:center;font-size:14px;font-weight:800}
-.sc-tile svg{width:18px;height:18px}
-.sc-tile .lb{font-size:9px;font-weight:700;color:var(--ink-mute);white-space:nowrap}
-.sc-tile.on{border-color:rgba(6,114,128,.5);background:rgba(6,114,128,.05);color:var(--teal);box-shadow:0 0 18px rgba(10,154,168,.25)}
+.sc-chip .cdot{width:7px;height:7px;border-radius:50%;background:linear-gradient(120deg,#f59a5b,#ec6f1f)}
+.sc-chip img{width:15px;height:15px;border-radius:4px;object-fit:contain}
+.scn-hubwrap{display:flex;justify-content:center;position:relative;z-index:1}
+.sc-hub{font-size:12px;font-weight:700;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 16px;box-shadow:0 10px 24px rgba(16,20,24,.08)}
+.sc-lines{display:block;width:100%;height:80px;margin-top:-4px}
+.sc-lines path{fill:none;stroke:rgba(6,114,128,.18);stroke-width:1.5}
+.scn-tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.sc-tile{display:flex;flex-direction:column;align-items:center;gap:8px}
+.sc-tile .bx{width:54px;height:54px;border-radius:16px;background:#fff;border:1px solid var(--line);box-shadow:0 10px 26px rgba(16,20,24,.07);display:grid;place-items:center;transition:transform .35s,box-shadow .35s,border-color .35s}
+.sc-tile .bx svg{width:26px;height:26px}
+.sc-tile .lb{font-size:10.5px;font-weight:700;color:var(--ink-mute);white-space:nowrap;transition:color .35s}
+.sc-tile.on .bx{transform:translateY(-4px) scale(1.07);border-color:rgba(6,114,128,.35);box-shadow:0 16px 34px rgba(10,154,168,.22)}
 .sc-tile.on .lb{color:var(--teal)}
-.sc-status{display:flex;align-items:center;gap:9px;margin-top:14px;border-top:1px solid var(--line);padding-top:12px;font-size:11.5px;font-weight:600;color:var(--ink-soft)}
+.scn-status{display:flex;align-items:center;gap:9px;width:fit-content;margin:22px auto 0;background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 18px;box-shadow:0 8px 20px rgba(16,20,24,.06);font-size:12px;font-weight:600;color:var(--ink-soft)}
 .sc-dot{flex:none;width:8px;height:8px;border-radius:50%;background:#12b76a;animation:scpulse 1.4s ease-in-out infinite}
 @keyframes scpulse{50%{opacity:.35}}
-.sc-found{margin-left:auto;font-size:11px;font-weight:800;color:var(--teal);font-variant-numeric:tabular-nums}
-@media(max-width:520px){.sc-inputs{grid-template-columns:1fr}.sc-chips{min-height:0}}
+.sc-found{font-size:12px;font-weight:800;color:var(--teal);font-variant-numeric:tabular-nums;margin-left:2px}
+@media(max-width:520px){.sc-tile .bx{width:44px;height:44px;border-radius:13px}.sc-tile .bx svg{width:21px;height:21px}.sc-tile .lb{font-size:8.5px}}
 .jm-res{margin-top:12px;display:flex;flex-direction:column;gap:8px}
 .jm-r{display:flex;align-items:center;gap:11px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;opacity:0;transform:translateY(10px);transition:opacity .45s ease,transform .45s ease,border-color .3s,background .3s}
 .jm-r.in{opacity:1;transform:none}
@@ -1297,28 +1295,29 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
     <div class="jn-rows">
       <div class="jn-row">
         <div class="jn-copy rv"><div class="num">01</div><h3 data-edit="c-jn-s1-t">Start your search</h3><p data-edit="c-jn-s1-d">Add your client's keywords and competitors – we scan Google, YouTube, Instagram, TikTok and 100+ affiliate networks every week.</p></div>
-        <div class="jn-vis rv"><div class="jm"><div class="jm-bar" aria-hidden="true"><i></i><i></i><i></i></div><div class="jm-body">
-          <div class="sc-inputs">
-            <div class="sc-col"><small>Keywords</small><div class="sc-chips" id="scKw">
-              <span class="sc-chip">best resistance bands</span><span class="sc-chip">home gym setup</span><span class="sc-chip">protein powder review</span>
-            </div></div>
-            <div class="sc-col"><small>Competitors</small><div class="sc-chips" id="scCmp">
-              <span class="sc-chip cmp"><img src="https://www.google.com/s2/favicons?domain=gymshark.com&sz=64" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">Gymshark</span><span class="sc-chip cmp"><img src="https://www.google.com/s2/favicons?domain=myprotein.com&sz=64" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">MyProtein</span>
-            </div></div>
+        <div class="jn-vis rv"><div class="scn">
+          <div class="scn-chips">
+            <span id="scKw" style="display:contents">
+              <span class="sc-chip"><i class="cdot"></i>best resistance bands</span>
+              <span class="sc-chip"><i class="cdot"></i>home gym setup</span>
+              <span class="sc-chip"><i class="cdot"></i>protein powder review</span>
+            </span>
+            <span id="scCmp" style="display:contents">
+              <span class="sc-chip"><img src="https://www.google.com/s2/favicons?domain=gymshark.com&sz=64" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">Gymshark</span>
+              <span class="sc-chip"><img src="https://www.google.com/s2/favicons?domain=myprotein.com&sz=64" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">MyProtein</span>
+            </span>
           </div>
-          <div class="sc-viz">
-            <span class="sc-hub">🇺🇸 yourclient.com</span>
-            <svg class="sc-lines" viewBox="0 0 520 84" preserveAspectRatio="none" aria-hidden="true"><path d="M260,6 C260,46 52,40 52,78"/><path d="M260,6 C260,46 156,42 156,78"/><path d="M260,6 C260,48 260,48 260,78"/><path d="M260,6 C260,46 364,42 364,78"/><path d="M260,6 C260,46 468,40 468,78"/><circle r="3" fill="#0a9aa8" opacity=".85"><animateMotion dur="2.4s" begin="0.0s" repeatCount="indefinite" path="M260,6 C260,46 52,40 52,78"/></circle><circle r="3" fill="#0a9aa8" opacity=".85"><animateMotion dur="2.4s" begin="0.45s" repeatCount="indefinite" path="M260,6 C260,46 156,42 156,78"/></circle><circle r="3" fill="#0a9aa8" opacity=".85"><animateMotion dur="2.4s" begin="0.9s" repeatCount="indefinite" path="M260,6 C260,48 260,48 260,78"/></circle><circle r="3" fill="#0a9aa8" opacity=".85"><animateMotion dur="2.4s" begin="1.35s" repeatCount="indefinite" path="M260,6 C260,46 364,42 364,78"/></circle><circle r="3" fill="#0a9aa8" opacity=".85"><animateMotion dur="2.4s" begin="1.8s" repeatCount="indefinite" path="M260,6 C260,46 468,40 468,78"/></circle></svg>
-            <div class="sc-tiles">
-              <div class="sc-tile"><span class="ic">G</span><span class="lb">Google</span></div>
-              <div class="sc-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="13" rx="4"/><path d="M10.2 9.6v5.8l5-2.9z" fill="currentColor" stroke="none"/></svg><span class="lb">YouTube</span></div>
-              <div class="sc-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1.1" fill="currentColor" stroke="none"/></svg><span class="lb">Instagram</span></div>
-              <div class="sc-tile"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 3c.4 2.3 1.9 3.9 4.2 4.2v3.1c-1.6 0-3-.5-4.2-1.3v6.3c0 3.7-2.6 6-5.9 6-3.2 0-5.5-2.2-5.5-5.2 0-3.1 2.4-5.3 5.7-5.3.3 0 .7 0 1 .1v3.2a2.6 2.6 0 0 0-1-.2c-1.5 0-2.5.9-2.5 2.2 0 1.2 1 2.1 2.4 2.1 1.6 0 2.7-1.1 2.7-3V3h3.1z"/></svg><span class="lb">TikTok</span></div>
-              <div class="sc-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.6 2.4 3.9 5.2 3.9 8.5s-1.3 6.1-3.9 8.5c-2.6-2.4-3.9-5.2-3.9-8.5s1.3-6.1 3.9-8.5z"/></svg><span class="lb">100+ networks</span></div>
-            </div>
+          <div class="scn-hubwrap"><span class="sc-hub">🇺🇸 yourclient.com</span></div>
+          <svg class="sc-lines" viewBox="0 0 520 84" preserveAspectRatio="none" aria-hidden="true"><path d="M260,6 C260,46 52,40 52,78"/><path d="M260,6 C260,46 156,42 156,78"/><path d="M260,6 C260,48 260,48 260,78"/><path d="M260,6 C260,46 364,42 364,78"/><path d="M260,6 C260,46 468,40 468,78"/><circle r="3" fill="#0a9aa8" opacity=".85"><animateMotion dur="2.4s" begin="0.0s" repeatCount="indefinite" path="M260,6 C260,46 52,40 52,78"/></circle><circle r="3" fill="#0a9aa8" opacity=".85"><animateMotion dur="2.4s" begin="0.45s" repeatCount="indefinite" path="M260,6 C260,46 156,42 156,78"/></circle><circle r="3" fill="#0a9aa8" opacity=".85"><animateMotion dur="2.4s" begin="0.9s" repeatCount="indefinite" path="M260,6 C260,48 260,48 260,78"/></circle><circle r="3" fill="#0a9aa8" opacity=".85"><animateMotion dur="2.4s" begin="1.35s" repeatCount="indefinite" path="M260,6 C260,46 364,42 364,78"/></circle><circle r="3" fill="#0a9aa8" opacity=".85"><animateMotion dur="2.4s" begin="1.8s" repeatCount="indefinite" path="M260,6 C260,46 468,40 468,78"/></circle></svg>
+          <div class="scn-tiles">
+            <div class="sc-tile"><span class="bx"><svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></span><span class="lb">Google</span></div>
+            <div class="sc-tile"><span class="bx"><svg viewBox="0 0 24 24"><path fill="#FF0000" d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.3 31.3 0 0 0 0 12a31.3 31.3 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.3 31.3 0 0 0 24 12a31.3 31.3 0 0 0-.5-5.8z"/><path fill="#fff" d="M9.6 15.6V8.4l6.2 3.6z"/></svg></span><span class="lb">YouTube</span></div>
+            <div class="sc-tile"><span class="bx"><svg viewBox="0 0 24 24"><defs><radialGradient id="igsc" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="5%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><rect width="24" height="24" rx="6.5" fill="url(#igsc)"/><rect x="3" y="3" width="18" height="18" rx="4.6" fill="none" stroke="#fff" stroke-width="1.7"/><circle cx="12" cy="12" r="4.3" fill="none" stroke="#fff" stroke-width="1.7"/><circle cx="17.2" cy="6.8" r="1.2" fill="#fff"/></svg></span><span class="lb">Instagram</span></div>
+            <div class="sc-tile"><span class="bx"><svg viewBox="0 0 24 24"><path fill="#25F4EE" transform="translate(-0.7,-0.4)" d="M16.6 3c.4 2.3 1.9 3.9 4.2 4.2v3.1c-1.6 0-3-.5-4.2-1.3v6.3c0 3.7-2.6 6-5.9 6-3.2 0-5.5-2.2-5.5-5.2 0-3.1 2.4-5.3 5.7-5.3.3 0 .7 0 1 .1v3.2a2.6 2.6 0 0 0-1-.2c-1.5 0-2.5.9-2.5 2.2 0 1.2 1 2.1 2.4 2.1 1.6 0 2.7-1.1 2.7-3V3h3.1z"/><path fill="#FE2C55" transform="translate(0.7,0.4)" d="M16.6 3c.4 2.3 1.9 3.9 4.2 4.2v3.1c-1.6 0-3-.5-4.2-1.3v6.3c0 3.7-2.6 6-5.9 6-3.2 0-5.5-2.2-5.5-5.2 0-3.1 2.4-5.3 5.7-5.3.3 0 .7 0 1 .1v3.2a2.6 2.6 0 0 0-1-.2c-1.5 0-2.5.9-2.5 2.2 0 1.2 1 2.1 2.4 2.1 1.6 0 2.7-1.1 2.7-3V3h3.1z"/><path fill="#0a0f16" d="M16.6 3c.4 2.3 1.9 3.9 4.2 4.2v3.1c-1.6 0-3-.5-4.2-1.3v6.3c0 3.7-2.6 6-5.9 6-3.2 0-5.5-2.2-5.5-5.2 0-3.1 2.4-5.3 5.7-5.3.3 0 .7 0 1 .1v3.2a2.6 2.6 0 0 0-1-.2c-1.5 0-2.5.9-2.5 2.2 0 1.2 1 2.1 2.4 2.1 1.6 0 2.7-1.1 2.7-3V3h3.1z"/></svg></span><span class="lb">TikTok</span></div>
+            <div class="sc-tile"><span class="bx"><svg viewBox="0 0 24 24" fill="none" stroke="#067280" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.6 2.4 3.9 5.2 3.9 8.5s-1.3 6.1-3.9 8.5c-2.6-2.4-3.9-5.2-3.9-8.5s1.3-6.1 3.9-8.5z"/></svg></span><span class="lb">100+ networks</span></div>
           </div>
-          <div class="sc-status"><span class="sc-dot"></span><span id="scLabel">Setting up your search…</span><span class="sc-found" id="scFound"></span></div>
-        </div></div></div>
+          <div class="scn-status"><span class="sc-dot"></span><span id="scLabel">Setting up your search…</span><span class="sc-found" id="scFound"></span></div>
+        </div></div>
       </div>
       <div class="jn-row flip">
         <div class="jn-copy rv"><div class="num">02</div><h3 data-edit="c-jn-s2-t">Pick your best matches</h3><p data-edit="c-jn-s2-d">Save the ones worth your time – verified owner emails included.</p></div>
