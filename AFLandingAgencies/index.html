@@ -1089,18 +1089,25 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .faq-item .a{padding:0 4px 22px;font-size:14.5px;color:var(--ink-soft);max-width:640px}
 
 /* ---------- final CTA + footer ---------- */
-.final{position:relative;text-align:center;padding:120px 0 130px;overflow:hidden}
-.final::before{
-  content:'';position:absolute;inset:0;z-index:-1;
-  background:
-    radial-gradient(800px 500px at 50% 100%,rgba(10,154,168,.12),transparent 70%),
-    radial-gradient(700px 500px at 10% 0%,rgba(240,150,110,.10),transparent 60%);
-}
-.final h2{max-width:760px;margin:0 auto 18px}
-.final .sub{margin:0 auto 34px}
-footer{border-top:1px solid var(--line);padding:38px 0;font-size:13px;color:var(--ink-mute)}
+.final{position:relative;text-align:center;padding:130px 0 140px;overflow:hidden;background:#0a0f16;color:#fff}
+.final::before{content:'';position:absolute;inset:0;opacity:.55;
+  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:22px 22px}
+.final::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(820px 520px at 50% 100%,rgba(10,154,168,.22),transparent 70%),radial-gradient(700px 500px at 10% 0%,rgba(240,150,110,.1),transparent 60%)}
+.final .wrap{position:relative;z-index:1}
+.final h2{max-width:760px;margin:0 auto 18px;color:#fff}
+.final .sub{margin:0 auto 34px;color:rgba(255,255,255,.65)}
+.final .btn.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.3)}
+.final .btn.ghost:hover{box-shadow:0 12px 30px rgba(0,0,0,.4);border-color:rgba(255,255,255,.5)}
+.final .hero-disclaimer{color:rgba(255,255,255,.5)}
+.final .hero-disclaimer b{color:rgba(255,255,255,.8)}
+.final .hp-text{color:rgba(255,255,255,.6)}
+.final .hp-text b{color:#fff}
+.final .hp-avatars img{border-color:#131a22;box-shadow:0 2px 10px rgba(0,0,0,.5)}
+footer{background:#0a0f16;border-top:1px solid rgba(255,255,255,.08);padding:38px 0;font-size:13px;color:rgba(255,255,255,.45)}
 footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
-footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
+footer a{color:rgba(255,255,255,.65);text-decoration:none;margin-left:22px}
 </style>
 </head>
 <body>
