@@ -784,11 +784,13 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .disc-head p{margin-top:16px;font-size:15.5px;color:var(--ink-soft)}
 .disc-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .disc-window{min-width:880px;display:grid;grid-template-columns:180px 1fr;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-card);overflow:hidden;text-align:left}
-.disc-side{border-right:1px solid var(--line);background:var(--cream);padding:18px 12px}
+.disc-side{border-right:1px solid var(--line);background:#fff;padding:18px 12px}
 .disc-side .grp{font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mute);margin:16px 10px 6px}
 .disc-side .grp:first-child{margin-top:0}
-.disc-side .it{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);padding:7px 10px;border-radius:8px}
-.disc-side .it.on{background:rgba(6,114,128,.1);color:var(--teal);font-weight:700}
+.disc-side .it{display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:600;color:#33475b;padding:7px 10px;border-radius:9px}
+.disc-side .it svg{flex:none;opacity:.7}
+.disc-side .it.on svg{opacity:1}
+.disc-side .it.on{background:#e9eef2;color:#14304a;font-weight:700}
 .disc-main{padding:22px 24px 26px}
 .disc-main .dm-top{display:flex;align-items:center;gap:12px}
 .disc-main .dm-top h4{font-size:16px;font-weight:800;letter-spacing:-.02em}
@@ -798,21 +800,24 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .dpanel{border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:#fff}
 .dpanel .dp-head{display:flex;align-items:center;gap:8px;margin-bottom:12px}
 .dpanel .dp-head b{font-size:13px;font-weight:800}
-.dpanel .dp-used{margin-left:auto;font-size:10.5px;font-weight:700;color:var(--teal);background:rgba(6,114,128,.08);border-radius:999px;padding:4px 10px}
+.dpanel .dp-used{margin-left:auto;font-size:10.5px;font-weight:700;color:#0e7c8a;background:#e6f3f6;border-radius:999px;padding:4px 10px}
 .kw-chips{display:flex;flex-wrap:wrap;gap:8px}
 .kw-chip{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:600;color:#a3591d;background:rgba(236,111,31,.05);border:1px solid rgba(236,111,31,.28);border-radius:999px;padding:6px 11px}
-.kw-chip .vol{font-size:9.5px;font-weight:700;color:var(--ink-mute);background:rgba(16,20,24,.06);border-radius:999px;padding:2px 7px}
+.kw-chip .vol{font-size:9.5px;font-weight:700;color:#9c5a20;background:rgba(236,111,31,.14);border-radius:999px;padding:2px 7px}
 .kw-chip .x{cursor:pointer;color:rgba(163,89,29,.5);font-weight:700;font-size:13px;line-height:1;padding:0 2px}
 .kw-chip .x:hover{color:#a3591d}
 .kw-chip.new,.cmp-row.new{animation:chipIn .35s ease}
 @keyframes chipIn{from{transform:scale(.75);opacity:0}to{transform:scale(1);opacity:1}}
-.dp-reco{margin-top:14px;border:1px dashed rgba(236,111,31,.35);border-radius:12px;padding:10px 12px;background:rgba(236,111,31,.03)}
+.dp-reco{margin-top:14px;border:1px solid rgba(236,111,31,.16);border-radius:14px;padding:10px 12px;background:#fdf6ee}
 .dp-reco .rl{font-size:10.5px;font-weight:700;color:#a3591d;margin-bottom:8px}
-.dp-reco.cmp{border-color:rgba(6,114,128,.35);background:rgba(6,114,128,.03)}
-.dp-reco.cmp .rl{color:var(--teal)}
+.dp-reco.cmp{border-color:rgba(20,48,74,.12);background:#f4f7f9}
+.dp-reco.cmp .rl{color:#14304a}
 .reco-chip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:#a3591d;background:#fff;border:1px solid rgba(236,111,31,.3);border-radius:999px;padding:6px 11px;margin:0 6px 4px 0;cursor:pointer;transition:transform .12s ease,box-shadow .12s ease}
 .reco-chip:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(16,20,24,.12)}
-.reco-chip.cmp{color:var(--teal);border-color:rgba(6,114,128,.3)}
+.reco-chip.cmp{color:#14304a;border-color:rgba(20,48,74,.2)}
+.reco-chip .favicon{width:16px;height:16px;border-radius:5px;font-size:7px}
+.cmp-row .chev{flex:none;color:var(--ink-mute)}
+.cmp-note{margin-top:10px;font-size:10.5px;color:var(--ink-mute);line-height:1.5}
 .cmp-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:12.5px}
 .cmp-row:last-child{border-bottom:0}
 .cmp-row .favicon{width:26px;height:26px;border-radius:8px;font-size:9px}
@@ -1369,16 +1374,16 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
     <div class="disc-window" id="discWindow">
       <aside class="disc-side" aria-hidden="true">
         <div class="grp">Discovery</div>
-        <span class="it">Overview</span><span class="it on">Search</span><span class="it">Targeting</span><span class="it">Revenue</span><span class="it">Exclusions</span>
+        <span class="it"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Overview</span><span class="it on"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>Search</span><span class="it"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/></svg>Targeting</span><span class="it"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6.5v11M14.8 8.8c-.5-.9-1.6-1.3-2.8-1.3-1.7 0-2.9.9-2.9 2.1 0 2.9 5.8 1.5 5.8 4.4 0 1.2-1.2 2.1-2.9 2.1-1.2 0-2.3-.4-2.8-1.3"/></svg>Revenue</span><span class="it"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M3.5 20c.7-3.3 2.9-5 5.5-5s4.8 1.7 5.5 5"/><path d="M16.5 8.5l4 4M20.5 8.5l-4 4"/></svg>Exclusions</span>
         <div class="grp">Outreach</div>
-        <span class="it">Offer</span><span class="it">Brand Context</span><span class="it">Voice</span><span class="it">Sending</span><span class="it">Templates</span>
+        <span class="it"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h8l10 10-8 8L3 11z"/><circle cx="7.5" cy="7.5" r="1.4"/></svg>Offer</span><span class="it"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4"/><path d="M9.5 12h5M9.5 16h5"/></svg>Brand Context</span><span class="it"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h9M17.5 8H20M4 16h3.5M12.5 16H20"/><circle cx="15" cy="8" r="2.2"/><circle cx="10" cy="16" r="2.2"/></svg>Voice</span><span class="it"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg>Sending</span><span class="it"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M4 16V4h12"/></svg>Templates</span><span class="it"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4L8 20l-5 1 1-5z"/></svg>Signature</span>
       </aside>
       <div class="disc-main">
-        <div class="dm-top"><h4>Search</h4><span class="dm-brand">yourbrand.com</span></div>
+        <div class="dm-top"><h4>Search</h4><span class="dm-brand">🇺🇸 yourbrand.com</span></div>
         <div class="dm-sub">Choose the competitors and keywords we scan every week. We use them to surface affiliates already promoting brands and topics like yours.</div>
         <div class="disc-cols">
           <div class="dpanel">
-            <div class="dp-head"><b>Keywords</b><span class="dp-used" id="kwUsed">13/20 used</span></div>
+            <div class="dp-head"><b>Keywords</b><span class="dp-used" id="kwUsed">🚀 13/20 used</span></div>
             <div class="kw-chips" id="kwChips">
             <span class="kw-chip">best resistance bands<span class="vol">410</span><span class="x" role="button" aria-label="Remove">×</span></span>
             <span class="kw-chip">home gym for small spaces<span class="vol">330</span><span class="x" role="button" aria-label="Remove">×</span></span>
@@ -1391,18 +1396,20 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
               <div class="rl">✦ Recommended for you. Tap to add</div>
               <span class="reco-chip" data-kw="marathon fueling guide" data-vol="162">+ marathon fueling guide</span><span class="reco-chip" data-kw="adjustable dumbbells review" data-vol="154">+ adjustable dumbbells review</span><span class="reco-chip" data-kw="pre-workout for women" data-vol="149">+ pre-workout for women</span>
             </div>
+            <div class="dp-add"><span>+ Add Keyword</span></div>
           </div>
           <div class="dpanel">
-            <div class="dp-head"><b>Competitors</b><span class="dp-used" id="cmpUsed">4/10 used</span></div>
+            <div class="dp-head"><b>Competitors</b><span class="dp-used" id="cmpUsed">🚀 4/10 used</span></div>
             <div id="cmpRows">
-          <div class="cmp-row"><span class="favicon" style="background:linear-gradient(135deg,#f3b8a0,#e3a1bd)">FF</span><span><b>FlexFuel</b> <span class="dom">flexfuel.com</span></span><span class="socials"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 3c.4 2.3 1.9 3.9 4.2 4.2v3.1c-1.6 0-3-.5-4.2-1.3v6.3c0 3.7-2.6 6-5.9 6-3.2 0-5.5-2.2-5.5-5.2 0-3.1 2.4-5.3 5.7-5.3.3 0 .7 0 1 .1v3.2a2.6 2.6 0 0 0-1-.2c-1.5 0-2.5.9-2.5 2.2 0 1.2 1 2.1 2.4 2.1 1.6 0 2.7-1.1 2.7-3V3h3.1z"/></svg></span><span class="aff">412 affiliates</span></div>
-          <div class="cmp-row"><span class="favicon" style="background:linear-gradient(135deg,#a4c6e8,#c3b6ec)">IP</span><span><b>IronPeak</b> <span class="dom">ironpeak.fit</span></span><span class="socials"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 3c.4 2.3 1.9 3.9 4.2 4.2v3.1c-1.6 0-3-.5-4.2-1.3v6.3c0 3.7-2.6 6-5.9 6-3.2 0-5.5-2.2-5.5-5.2 0-3.1 2.4-5.3 5.7-5.3.3 0 .7 0 1 .1v3.2a2.6 2.6 0 0 0-1-.2c-1.5 0-2.5.9-2.5 2.2 0 1.2 1 2.1 2.4 2.1 1.6 0 2.7-1.1 2.7-3V3h3.1z"/></svg></span><span class="aff">286 affiliates</span></div>
-          <div class="cmp-row"><span class="favicon" style="background:linear-gradient(135deg,#a9dcc3,#8fccd4)">SL</span><span><b>StrideLab</b> <span class="dom">stridelab.com</span></span><span class="socials"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 3c.4 2.3 1.9 3.9 4.2 4.2v3.1c-1.6 0-3-.5-4.2-1.3v6.3c0 3.7-2.6 6-5.9 6-3.2 0-5.5-2.2-5.5-5.2 0-3.1 2.4-5.3 5.7-5.3.3 0 .7 0 1 .1v3.2a2.6 2.6 0 0 0-1-.2c-1.5 0-2.5.9-2.5 2.2 0 1.2 1 2.1 2.4 2.1 1.6 0 2.7-1.1 2.7-3V3h3.1z"/></svg></span><span class="aff">197 affiliates</span></div>
-          <div class="cmp-row"><span class="favicon" style="background:linear-gradient(135deg,#f2d3a0,#f3b8a0)">CK</span><span><b>CoreKit</b> <span class="dom">corekit.co</span></span><span class="socials"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 3c.4 2.3 1.9 3.9 4.2 4.2v3.1c-1.6 0-3-.5-4.2-1.3v6.3c0 3.7-2.6 6-5.9 6-3.2 0-5.5-2.2-5.5-5.2 0-3.1 2.4-5.3 5.7-5.3.3 0 .7 0 1 .1v3.2a2.6 2.6 0 0 0-1-.2c-1.5 0-2.5.9-2.5 2.2 0 1.2 1 2.1 2.4 2.1 1.6 0 2.7-1.1 2.7-3V3h3.1z"/></svg></span><span class="aff">88 affiliates</span></div>
+          <div class="cmp-row"><span class="favicon" style="background:linear-gradient(135deg,#f3b8a0,#e3a1bd)">FF</span><span><b>FlexFuel</b> <span class="dom">flexfuel.com</span></span><span class="socials"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 3c.4 2.3 1.9 3.9 4.2 4.2v3.1c-1.6 0-3-.5-4.2-1.3v6.3c0 3.7-2.6 6-5.9 6-3.2 0-5.5-2.2-5.5-5.2 0-3.1 2.4-5.3 5.7-5.3.3 0 .7 0 1 .1v3.2a2.6 2.6 0 0 0-1-.2c-1.5 0-2.5.9-2.5 2.2 0 1.2 1 2.1 2.4 2.1 1.6 0 2.7-1.1 2.7-3V3h3.1z"/></svg></span><span class="aff">412 affiliates</span><svg class="chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
+          <div class="cmp-row"><span class="favicon" style="background:linear-gradient(135deg,#a4c6e8,#c3b6ec)">IP</span><span><b>IronPeak</b> <span class="dom">ironpeak.fit</span></span><span class="socials"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 3c.4 2.3 1.9 3.9 4.2 4.2v3.1c-1.6 0-3-.5-4.2-1.3v6.3c0 3.7-2.6 6-5.9 6-3.2 0-5.5-2.2-5.5-5.2 0-3.1 2.4-5.3 5.7-5.3.3 0 .7 0 1 .1v3.2a2.6 2.6 0 0 0-1-.2c-1.5 0-2.5.9-2.5 2.2 0 1.2 1 2.1 2.4 2.1 1.6 0 2.7-1.1 2.7-3V3h3.1z"/></svg></span><span class="aff">286 affiliates</span><svg class="chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
+          <div class="cmp-row"><span class="favicon" style="background:linear-gradient(135deg,#a9dcc3,#8fccd4)">SL</span><span><b>StrideLab</b> <span class="dom">stridelab.com</span></span><span class="socials"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 3c.4 2.3 1.9 3.9 4.2 4.2v3.1c-1.6 0-3-.5-4.2-1.3v6.3c0 3.7-2.6 6-5.9 6-3.2 0-5.5-2.2-5.5-5.2 0-3.1 2.4-5.3 5.7-5.3.3 0 .7 0 1 .1v3.2a2.6 2.6 0 0 0-1-.2c-1.5 0-2.5.9-2.5 2.2 0 1.2 1 2.1 2.4 2.1 1.6 0 2.7-1.1 2.7-3V3h3.1z"/></svg></span><span class="aff">197 affiliates</span><svg class="chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
+          <div class="cmp-row"><span class="favicon" style="background:linear-gradient(135deg,#f2d3a0,#f3b8a0)">CK</span><span><b>CoreKit</b> <span class="dom">corekit.co</span></span><span class="socials"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 3c.4 2.3 1.9 3.9 4.2 4.2v3.1c-1.6 0-3-.5-4.2-1.3v6.3c0 3.7-2.6 6-5.9 6-3.2 0-5.5-2.2-5.5-5.2 0-3.1 2.4-5.3 5.7-5.3.3 0 .7 0 1 .1v3.2a2.6 2.6 0 0 0-1-.2c-1.5 0-2.5.9-2.5 2.2 0 1.2 1 2.1 2.4 2.1 1.6 0 2.7-1.1 2.7-3V3h3.1z"/></svg></span><span class="aff">88 affiliates</span><svg class="chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
             </div>
+            <div class="cmp-note">Icons show which social profiles we found. Open a competitor to check or correct its handles.</div>
             <div class="dp-reco cmp">
               <div class="rl">✦ Recommended for you. Tap to add</div>
-              <span class="reco-chip cmp" data-name="PulseWear" data-dom="pulsewear.co" data-ini="PW">+ PulseWear</span><span class="reco-chip cmp" data-name="TrailForm" data-dom="trailform.com" data-ini="TF">+ TrailForm</span>
+              <span class="reco-chip cmp" data-name="PulseWear" data-dom="pulsewear.co" data-ini="PW"><span class="favicon" style="background:linear-gradient(135deg,#8fccd4,#067280)">PW</span>PulseWear <b>+</b></span><span class="reco-chip cmp" data-name="TrailForm" data-dom="trailform.com" data-ini="TF"><span class="favicon" style="background:linear-gradient(135deg,#c3b6ec,#a4c6e8)">TF</span>TrailForm <b>+</b></span>
             </div>
             <div class="dp-add"><span>+ Add Competitor</span></div>
           </div>
@@ -2033,13 +2040,13 @@ wordReveal();
   var win=document.getElementById('discWindow');if(!win)return;
   var kwUsed=document.getElementById('kwUsed'),cmpUsed=document.getElementById('cmpUsed');
   var kc=13,cc=4;
-  function upd(){kwUsed.textContent=kc+'/20 used';cmpUsed.textContent=cc+'/10 used';}
+  function upd(){kwUsed.textContent='\ud83d\ude80 '+kc+'/20 used';cmpUsed.textContent='\ud83d\ude80 '+cc+'/10 used';}
   win.querySelectorAll('.reco-chip').forEach(function(ch){
     ch.addEventListener('click',function(){
       if(ch.classList.contains('cmp')){
         if(cc>=10)return;
         var div=document.createElement('div');div.className='cmp-row new';
-        div.innerHTML='<span class="favicon" style="background:linear-gradient(135deg,#7cc6cf,#067280)">'+ch.dataset.ini+'</span><span><b>'+ch.dataset.name+'</b> <span class="dom">'+ch.dataset.dom+'</span></span><span class="aff">scanning…</span>';
+        div.innerHTML='<span class="favicon" style="background:linear-gradient(135deg,#7cc6cf,#067280)">'+ch.dataset.ini+'</span><span><b>'+ch.dataset.name+'</b> <span class="dom">'+ch.dataset.dom+'</span></span><span class="aff">scanning…</span><svg class="chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
         document.getElementById('cmpRows').appendChild(div);cc++;
       }else{
         if(kc>=20)return;
