@@ -850,9 +850,7 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .disc-step .num{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--teal)}
 .disc-step h3{font-size:16px;font-weight:750;letter-spacing:-.02em;margin-top:10px}
 .disc-step p{margin-top:10px;font-size:13.5px;line-height:1.7;color:var(--ink-soft)}
-.disc-claim{margin:68px auto 0;max-width:760px;text-align:center;font-size:clamp(17px,1.9vw,21px);font-weight:650;line-height:1.55;letter-spacing:-.015em;color:var(--ink)}
-.disc-claim::before{content:'';display:block;width:44px;height:2px;background:var(--teal);margin:0 auto 22px}
-.disc-claim b,.disc-head h2 .accent,.deals-head h2 .accent{background:linear-gradient(105deg,#12b0bf 0%,#067280 55%,#0a4e58 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.disc-head h2 .accent,.deals-head h2 .accent{background:linear-gradient(105deg,#12b0bf 0%,#067280 55%,#0a4e58 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
 @media(max-width:900px){.disc{padding-top:90px}.disc-steps{grid-template-columns:1fr;gap:32px;margin-top:52px}}
 
 /* ---------- customer story ---------- */
@@ -954,7 +952,10 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .fw-steps .fw-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:5px}
 .fw-steps .fw-row b{margin-bottom:0}
 .fw-steps .tag{flex:none;font-size:9.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#8ed6de;background:rgba(10,154,168,.14);border:1px solid rgba(142,214,222,.28);border-radius:999px;padding:4px 10px}
-.fw-stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:76px;border-top:1px solid rgba(255,255,255,.1);padding-top:44px}
+.fw-stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:56px;border-top:1px solid rgba(255,255,255,.1);padding-top:44px}
+.fw-claim{margin:76px auto 0;max-width:760px;text-align:center;font-size:clamp(17px,1.9vw,21px);font-weight:650;line-height:1.55;letter-spacing:-.015em;color:#fff}
+.fw-claim::before{content:'';display:block;width:44px;height:2px;background:linear-gradient(90deg,#0a9aa8,#8ed6de);margin:0 auto 22px}
+.fw-claim b{background:linear-gradient(100deg,#8ed6de,#0a9aa8);-webkit-background-clip:text;background-clip:text;color:transparent}
 .fw-stats .fs{text-align:center;padding:0 26px}
 .fw-stats .fs+.fs{border-left:1px solid rgba(255,255,255,.1)}
 .fw-stats b{display:block;font-size:clamp(30px,3.4vw,44px);font-weight:800;letter-spacing:-.04em;line-height:1.05;background:linear-gradient(100deg,#8ed6de,#0a9aa8);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -1491,7 +1492,6 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
     <div class="disc-step rv"><div class="num">02</div><h3 data-edit="c-disc-s2t">We scan the places affiliates actually are</h3><p data-edit="c-disc-s2">Google, YouTube, Instagram, TikTok and 100+ affiliate networks – scanned every week for the creators and sites in your client's niche – in any country, in any language.</p></div>
     <div class="disc-step rv"><div class="num">03</div><h3 data-edit="c-disc-s3t">Change anything, anytime</h3><p data-edit="c-disc-s3">Add or remove keywords, hashtags and competitors, filter affiliates by country or language – and drop in each client's program details and terms, so the AI keeps every outreach hyper-targeted to that brand.</p></div>
   </div>
-  <div class="disc-claim rv" data-edit="c-disc-claim">AffiliateFinder.ai is the <b>first</b> software that finds, verifies and recruits affiliates in <b>one workflow</b> – and you stay in control at every step, for every client.</div>
 </section>
 
 <!-- ============ VIDEO STORY (webinar) ============ -->
@@ -1701,6 +1701,7 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
         <li><span class="num">04</span><div><div class="fw-row"><b data-edit="c-fw-s4-t">Watch your inbox fill up</b><span class="tag">Every week</span></div><p data-edit="c-fw-s4-d">Qualified affiliates reply, move through the client's pipeline and sign. Then the wheel spins again for the next brand.</p></div><i class="bar" aria-hidden="true"></i></li>
       </ol>
     </div>
+    <div class="fw-claim rv" data-edit="c-fw-claim">AffiliateFinder.ai is the <b>first</b> software that finds, verifies and recruits affiliates in <b>one workflow</b>.</div>
     <div class="fw-stats rv">
       <div class="fs"><b>38%</b><span data-edit="c-fw-stat1">average response rate across outreach campaigns</span></div>
       <div class="fs"><b>1 click</b><span data-edit="c-fw-stat2">to launch personal emails and follow-ups</span></div>
