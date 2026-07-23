@@ -939,14 +939,27 @@ h2{font-size:clamp(32px,4.4vw,56px)}
 .fw-hub b{position:relative;display:block;font-size:16px;letter-spacing:-.01em}
 .fw-hub span{position:relative;display:block;margin-top:4px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5)}
 .fw-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;counter-reset:fw}
-.fw-steps li{display:flex;gap:16px;align-items:flex-start;padding:18px 20px;border:1px solid rgba(255,255,255,.09);
-  border-radius:16px;background:rgba(255,255,255,.03);cursor:pointer;
-  transition:border-color .4s,background .4s,transform .4s}
-.fw-steps li.on{border-color:rgba(142,214,222,.6);background:rgba(10,154,168,.1);transform:translateX(8px)}
+.fw-steps li{position:relative;overflow:hidden;display:flex;gap:16px;align-items:flex-start;padding:20px 22px;border:1px solid rgba(255,255,255,.09);
+  border-radius:18px;background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.015));cursor:pointer;
+  transition:border-color .45s,background .45s,transform .45s,box-shadow .45s}
+.fw-steps li::before{content:'';position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent)}
+.fw-steps li.on{border-color:rgba(142,214,222,.5);background:linear-gradient(160deg,rgba(10,154,168,.17),rgba(10,154,168,.04));transform:translateX(6px);box-shadow:0 20px 44px rgba(0,0,0,.35)}
+.fw-steps li .bar{position:absolute;left:0;bottom:0;height:2px;width:100%;transform:scaleX(0);transform-origin:left;background:linear-gradient(90deg,#0a9aa8,#8ed6de);opacity:0}
+.fw-steps li.on .bar{opacity:1;animation:fwbar 2.8s linear forwards}
+@keyframes fwbar{to{transform:scaleX(1)}}
 .fw-steps .num{flex:none;font-size:12px;font-weight:800;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:5px 8px;font-variant-numeric:tabular-nums;transition:color .4s,border-color .4s}
 .fw-steps li.on .num{color:#8ed6de;border-color:rgba(142,214,222,.5)}
 .fw-steps b{display:block;font-size:15px;letter-spacing:-.01em;margin-bottom:5px}
 .fw-steps p{font-size:13px;line-height:1.6;color:rgba(255,255,255,.58);margin:0}
+.fw-steps .fw-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:5px}
+.fw-steps .fw-row b{margin-bottom:0}
+.fw-steps .tag{flex:none;font-size:9.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#8ed6de;background:rgba(10,154,168,.14);border:1px solid rgba(142,214,222,.28);border-radius:999px;padding:4px 10px}
+.fw-stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:76px;border-top:1px solid rgba(255,255,255,.1);padding-top:44px}
+.fw-stats .fs{text-align:center;padding:0 26px}
+.fw-stats .fs+.fs{border-left:1px solid rgba(255,255,255,.1)}
+.fw-stats b{display:block;font-size:clamp(30px,3.4vw,44px);font-weight:800;letter-spacing:-.04em;line-height:1.05;background:linear-gradient(100deg,#8ed6de,#0a9aa8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.fw-stats span{display:block;margin-top:9px;font-size:12.5px;color:rgba(255,255,255,.55);line-height:1.55}
+@media(max-width:720px){.fw-stats{grid-template-columns:1fr;gap:28px;padding-top:36px;margin-top:56px}.fw-stats .fs+.fs{border-left:0}}
 
 /* ---------- video story (webinar) ---------- */
 .vstory{padding:100px 0 110px}
@@ -1667,7 +1680,7 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
     <div class="fw-head rv">
       <span class="fw-pill">The flywheel</span>
       <h2 data-edit="c-fw-title">Set it spinning once.<br><span class="hl">It keeps recruiting.</span></h2>
-      <p data-edit="c-fw-sub">Four steps to start – then the loop runs itself for every brand you manage, and new affiliates arrive weekly.</p>
+      <p data-edit="c-fw-sub">Four steps, zero technical setup – then the loop runs itself for every brand you manage, and new affiliates arrive weekly.</p>
     </div>
     <div class="fw-grid">
       <div class="fw-viz rv" aria-hidden="true">
@@ -1682,11 +1695,16 @@ footer a{color:var(--ink-soft);text-decoration:none;margin-left:22px}
         </div>
       </div>
       <ol class="fw-steps rv">
-        <li class="on"><span class="num">01</span><div><b data-edit="c-fw-s1-t">Start your search</b><p data-edit="c-fw-s1-d">Type what your client sells. AffiliateFinder scans five channels and returns everyone already talking about products like theirs – scored and ranked.</p></div></li>
-        <li><span class="num">02</span><div><b data-edit="c-fw-s2-t">Pick your best matches</b><p data-edit="c-fw-s2-d">Skim the match scores, save the ones worth your time. Verified owner emails come attached – no digging.</p></div></li>
-        <li><span class="num">03</span><div><b data-edit="c-fw-s3-t">Send your campaign in one click</b><p data-edit="c-fw-s3-d">Personal emails and follow-ups go out on autopilot. You approve – it executes.</p></div></li>
-        <li><span class="num">04</span><div><b data-edit="c-fw-s4-t">Watch your inbox fill up</b><p data-edit="c-fw-s4-d">Qualified affiliates reply, move through the client's pipeline and sign. Then the wheel spins again for the next brand.</p></div></li>
+        <li class="on"><span class="num">01</span><div><div class="fw-row"><b data-edit="c-fw-s1-t">Start your search</b><span class="tag">Just type</span></div><p data-edit="c-fw-s1-d">Type what your client sells. AffiliateFinder scans five channels and returns everyone already talking about products like theirs – scored and ranked.</p></div><i class="bar" aria-hidden="true"></i></li>
+        <li><span class="num">02</span><div><div class="fw-row"><b data-edit="c-fw-s2-t">Pick your best matches</b><span class="tag">Emails included</span></div><p data-edit="c-fw-s2-d">Skim the match scores, save the ones worth your time. Verified owner emails come attached – no digging.</p></div><i class="bar" aria-hidden="true"></i></li>
+        <li><span class="num">03</span><div><div class="fw-row"><b data-edit="c-fw-s3-t">Send your campaign in one click</b><span class="tag">One click</span></div><p data-edit="c-fw-s3-d">Personal emails and follow-ups go out on autopilot. You approve – it executes.</p></div><i class="bar" aria-hidden="true"></i></li>
+        <li><span class="num">04</span><div><div class="fw-row"><b data-edit="c-fw-s4-t">Watch your inbox fill up</b><span class="tag">Every week</span></div><p data-edit="c-fw-s4-d">Qualified affiliates reply, move through the client's pipeline and sign. Then the wheel spins again for the next brand.</p></div><i class="bar" aria-hidden="true"></i></li>
       </ol>
+    </div>
+    <div class="fw-stats rv">
+      <div class="fs"><b>38%</b><span data-edit="c-fw-stat1">average response rate across outreach campaigns</span></div>
+      <div class="fs"><b>1 click</b><span data-edit="c-fw-stat2">to launch personal emails and follow-ups</span></div>
+      <div class="fs"><b>0</b><span data-edit="c-fw-stat3">technical setup – just type what your client sells</span></div>
     </div>
   </div>
 </section>
