@@ -1178,11 +1178,11 @@ footer .af-logo{filter:brightness(0) invert(1);opacity:.9!important}
     <div class="hero-right">
     <div class="mock-stage rv">
       <div class="app-shell">
-        <img src="img/dashboard-discover.webp" width="3366" height="1696" fetchpriority="high" alt="AffiliateFinder Discover – 20,539 matched affiliates ranked by match score, with verified emails and one-click outreach">
+        <img src="img/dashboard-discover-1600.webp" srcset="img/dashboard-discover-900.webp 900w, img/dashboard-discover-1600.webp 1600w" sizes="(max-width:980px) 92vw, 620px" width="3366" height="1696" fetchpriority="high" alt="AffiliateFinder Discover – 20,539 matched affiliates ranked by match score, with verified emails and one-click outreach">
       </div>
       <div class="phone-mock" aria-hidden="true">
         <div class="phone-screen">
-          <video class="ph-video" src="video/hero-mobile.mp4" poster="video/hero-poster.jpg" autoplay muted loop playsinline preload="metadata"></video>
+          <video class="ph-video" src="video/hero-mobile.mp4" poster="video/hero-poster.jpg" muted loop playsinline preload="none"></video>
         </div>
       </div>
       <div class="lapcards" aria-hidden="true">
@@ -2363,5 +2363,6 @@ wordReveal();
   });
 })();
 </script>
+<script>addEventListener("load",function(){setTimeout(function(){document.querySelectorAll(".ph-video").forEach(function(v){try{v.play()}catch(e){}})},250)})</script>
 </body>
 </html>
