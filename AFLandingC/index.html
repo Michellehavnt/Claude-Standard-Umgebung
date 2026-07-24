@@ -1122,6 +1122,7 @@ footer .af-logo{filter:brightness(0) invert(1);opacity:.9!important}
   footer a{margin-left:12px;white-space:nowrap}
 }
 </style>
+<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
 </head>
 <body>
 <div class="grain" aria-hidden="true"></div>
@@ -2340,6 +2341,17 @@ wordReveal();
   }
   window.addEventListener('resize',fit);
   fit();setTimeout(fit,400);
+})();
+</script>
+<script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+<script>
+/* Calendly links open as on-page popup instead of a new tab */
+(function(){
+  document.querySelectorAll('a[href*="calendly.com"]').forEach(function(a){
+    a.addEventListener('click',function(e){
+      if(window.Calendly){e.preventDefault();window.Calendly.initPopupWidget({url:a.href});}
+    });
+  });
 })();
 </script>
 </body>
